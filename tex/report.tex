@@ -1,0 +1,143 @@
+\documentclass[12pt,a4paper]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx, overcite}
+\graphicspath{.}
+
+\begin{document}
+
+\title{Diffusion through polymer brush membrane and polymer brush pore.}
+
+\author{Mikhail Y.Laktionov}
+
+\maketitle
+
+\begin{abstract}
+Effective diffusion coefficient has been calculated using insertion free energy profiles for planar polymer brush.
+\end{abstract}
+
+\section{Insertion free energy calculation}
+
+Using the results from our previous paper [] we can calculate polymer density profiles for polymer brush. 
+As has been shown the results of SF-SCF numerical are close enough to SS-SCF analytical results this allows to use less computationally demanding analytical SS-SCF approach.
+
+A polymer brush pore has been calculated using SF-SCF approach.
+
+We suggest that free energy penalty can be split in two terms:
+
+\begin{equation}
+    F = \Pi(\phi, \chi_{PS}) \cdot V + \gamma(\phi, \chi_{ads}) \cdot S
+    \label{fe}
+\end{equation}
+
+where $\Pi$ is osmotic pressure,
+$\gamma$ is surface related coefficient (the excess of surface free energy per unit area),
+$\phi$ is local polymer density,
+$\chi_{PS}$ is Flory parameter for polymer-solvent interaction,
+$\chi_{ads} \equiv \chi_{PC} - \chi_{PS}(1-\phi)$ is universal measure of particle attractiveness to a polymer brush (free energy change upon replacement of a contact of monomer unit with solvent by a contact with the surface).
+
+In the paper[] we have shown that both terms depend on local polymer only, thus knowing the polymer density and interaction parameters we can calculate insertion free energy. 
+
+The first osmotic term in eq \ref{fe} can be calculated using analytical expression for osmotic pressure
+
+\begin{equation}
+	\Pi(z)= k_BT[-\ln(1-\phi(z)) - \phi(z) -\chi_{PS}\phi^2(z)]
+	\label{pi}
+\end{equation}
+
+to calculate excess surface free energy we have to calculate $\gamma(\phi, \chi_{ads})$, as there is no analytical expression to calculate $\gamma$, we use the next expression obtained by fitting SF-SCF numerical data
+
+\begin{equation}
+    \gamma(\chi_{ads}, \phi)=(\chi_{ads}-\chi_{ads}^{(crit)})(a_1\phi+a_2\phi^{2})
+    \label{gamma_fit}
+\end{equation}
+    
+where $\chi_{ads}=\phi_{PC}-\phi_{PS}(1-\phi)$ and $a_1,a_2$ are numerical fitting parameters and we neglected higher order terms in $\phi$ in the last bracket in eq \ref{gamma_fit}. The value of $\chi_{ads}^{(crit)}$ depends on the local properties of the lattice where polymer chain performs its random walk. For the simple cubic lattice $\chi_{ads}^{(crit)}=6ln(5/6)$.
+The rough estimate of $a_1$ and $a_2$ are $0.16$ and $0.08$, respectively.
+
+\section{Planar polymer brush membrane}
+
+Consider planar polymer brush membrane \ref{fig:membrane}, let us examine effective diffusion coefficient. Here we will not take into account any possible interaction between the film (or any other substrate the chains are grafted on) and a particle. 
+
+For the next calculation we selected degree of polymerization $N=300$ and grafting density $\sigma = 0.02$, so that the parameters are consistent with the ones found in real biological systems like nucleopores[].
+
+\begin{figure}
+    \center
+    \includegraphics[width =2in]{membrane.pdf}
+    \caption{Planar polymer brush membrane}
+    \label{fig:membrane}
+\end{figure}
+
+The brush thickness and polymer density distribution depend on the solvent regime. Smooth and wide distribution of the polymer density corresponds to good solvent regimes $\chi_{PS} \leq 0.5$, whilst in poor solvent regime boxlike distribution observed (fig \ref{fig:phi_planar}). Clearly, free energy penalty profiles in the poor solvent regime will also appear boxlike.
+
+\begin{figure}
+    \center
+    \includegraphics[width =\textwidth]{phi_plain.pdf}
+    \caption{Polymer density distribution for planar polymer brush with $N=300$, $\sigma = 0.02$ at different solvent regimes.}
+    \label{fig:phi_planar}
+\end{figure}
+
+Polymer density distributions allow us to calculate insertion free energy profiles, that are also depend on particle size and interaction parameter of polymer-particle interaction $\chi_{PC}$. 
+
+Take arbitrary particle size $d=10$ and a set of polymer-particle interaction parameters from repulsive to inert and attractive. In the figure \ref{fig:fe_planar} the frames show insertion free energy profile at different solvent regimes from a good solvent regime on the left to poorer ones on the right. Line colors are corresponds to different $\chi_{PC}$. 
+One can see that in the poor solvent free energy profiles are boxlike for every $\chi_{PC}$, the magnitude is also increasing when $\chi_{PS}$ is increasing.
+
+\begin{figure}
+    \center
+    \includegraphics[width =\textwidth]{free_energy.pdf}
+    \caption{Insertion free energy penalty for planar polymer brush with $N=300$, $\sigma = 0.02$ at different solvent regimes and polymer-particle interaction parameters.}
+    \label{fig:fe_planar}
+\end{figure}
+
+To calculate effective diffusion $D_{eff}$ through the membrane we mirror free energy profile to make it an even function and than we integrate obtained function using the next equation
+
+\begin{equation}
+    D_{eff} = D \frac{1}{2H}\left(\int_{-H}^{H}e^{U(x)}dx\right)^{-1}
+\end{equation}
+
+where $H$ is polymer brush thickness. Here we consider diffusion coefficient $D=1$.
+
+The dependency of effective diffusion $D_{eff}$ on polymer-particle interaction parameter $\chi_{PC}$ is shown on figure \ref{fig:D_eff_planar}. 
+In the poor solvent (red line) the dependency in semi-log plot is almost straight line which is expected consider boxlike free energy profile. In good and theta solvent we can see a plato when $\chi_{PC}$ decreasing, means diminishing results in diffusion rate the higher affinity of a particle to the polymer is. 
+
+\begin{figure}
+    \center
+    \includegraphics[width =\textwidth]{D_eff_membrane.pdf}
+    \caption{The dependency of effective diffusion $D_{eff}$ on polymer-particle interaction parameter $\chi_{PC}$ for planar polymer brush membrane with $N=300$, $\sigma = 0.02$ at different solvent regimes.}
+    \label{fig:D_eff_planar}
+\end{figure}
+
+\begin{figure}
+    \center
+    \includegraphics[width =\textwidth]{D_eff_membrane_2.pdf}
+    \caption{The dependency of effective diffusion $D_{eff}$ on polymer-solvent interaction parameter $\chi_{PS}$ for planar polymer brush membrane with $N=300$, $\sigma = 0.02$ at different particle affinity.}
+    \label{fig:D_eff_planar_2}
+\end{figure}
+
+\section{Pore with a polymer brush interior}
+
+
+
+\begin{figure}
+    \center
+    \includegraphics[width =2in]{pore.pdf}
+    \caption{Planar polymer brush membrane}
+    \label{fig:membrane}
+\end{figure}
+
+\begin{figure}
+    \center
+    \includegraphics[width =\textwidth]{pore_central_axis_phi.pdf}
+    \caption{Polymer density distribution in pore center axis ($r=0$) $N=300$, $\sigma = 0.02$ at different solvent regimes.}
+    \label{fig:phi_pore}
+\end{figure}
+
+
+\begin{figure}
+    \center
+    \includegraphics[width =\textwidth]{pore_central_fe.pdf}
+    \caption{Free energy penalty to insert a particle of $d=10$ through the central axis of a pore interiored with a polymer brush $N=300$, $\sigma = 0.02$ at different solvent regimes and polymer-particle interaction parameters.}
+    \label{fig:fe_planar}
+\end{figure}
+
+
+\end{document}
