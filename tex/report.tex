@@ -2,6 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{graphicx, overcite}
 \graphicspath{.}
+\newcommand{\unit}[1]{\ensuremath{\, \mathrm{#1}}}
 
 \begin{document}
 
@@ -92,6 +93,7 @@ To calculate effective diffusion $D_{eff}$ through the membrane we mirror free e
 
 \begin{equation}
     D_{eff} = D \frac{1}{2H}\left(\int_{-H}^{H}e^{U(x)}dx\right)^{-1}
+    \label{D_eff}
 \end{equation}
 
 where $H$ is polymer brush thickness. Here we consider diffusion coefficient $D=1$.
@@ -115,29 +117,111 @@ In the poor solvent (red line) the dependency in semi-log plot is almost straigh
 
 \section{Pore with a polymer brush interior}
 
-
-
 \begin{figure}
     \center
     \includegraphics[width =2in]{pore.pdf}
-    \caption{Planar polymer brush membrane}
+    \caption{Diffusion through a pore}
     \label{fig:membrane}
 \end{figure}
 
-\begin{figure}
-    \center
-    \includegraphics[width =\textwidth]{pore_central_axis_phi.pdf}
-    \caption{Polymer density distribution in pore center axis ($r=0$) $N=300$, $\sigma = 0.02$ at different solvent regimes.}
-    \label{fig:phi_pore}
-\end{figure}
+To define lattice geometry dimensions are expressed in Kuhn segments length of disordered peptide chains. We suggest that the length is constant and equal to $a = 0.76 \unit{nm}$.
+Degree of polymerization $N=300$ with grafting density $\sigma=0.02$ which corresponds to $5.5 \unit{pmol}/\unit{cm}^2$. 
+Pore diameter and membrane thickness is about $40 \unit{nm}$ for nucleopores, it translates to 52 Kuhn segment length.
 
+Polymer density distribution was calculated and presented on Figure \ref{fig:phi2d} for different solvent strength, no particle in pore yet.
 
 \begin{figure}
     \center
-    \includegraphics[width =\textwidth]{pore_central_fe.pdf}
-    \caption{Free energy penalty to insert a particle of $d=10$ through the central axis of a pore interiored with a polymer brush $N=300$, $\sigma = 0.02$ at different solvent regimes and polymer-particle interaction parameters.}
-    \label{fig:fe_planar}
+    \hspace*{-0.3in}
+    \includegraphics[width =3in]{phi_2d_0.1.pdf}
+    \hspace*{-0.6in}
+    \includegraphics[width =3in]{phi_2d_0.2.pdf}
+    \vspace*{-0.6in}
+
+    \hspace*{-0.3in}
+    \includegraphics[width =3in]{phi_2d_0.3.pdf}
+    \hspace*{-0.6in}
+    \includegraphics[width =3in]{phi_2d_0.4.pdf}
+    \vspace*{-0.6in}
+
+    \hspace*{-0.3in}
+    \includegraphics[width =3in]{phi_2d_0.5.pdf}
+    \hspace*{-0.6in}
+    \includegraphics[width =3in]{phi_2d_0.6.pdf}
+    \vspace*{-0.6in}
+
+
+    \includegraphics[width =4in]{phi_2d_0.7.pdf}
+    \caption{Polymer density 2d diagrams for different solvent strength. 
+    Pore diameter and membrane thickness 40nm (52a), $N=300$, $\sigma=0.02$}
+    \label{fig:phi2d}
 \end{figure}
 
+In the good solvent polymer is swollen and expelled from the pore, while in poor solvent polymer chains are contained mostly inside the pore.
+To illustrate how pronounced this effect is take a look on Figure \ref{fig:phi_cross} where polymer densities are plotted for different cross-sections parallel to the membrane walls. The central cross-section ($shift=0$) corresponds to polymer distribution in the pore center, $\mathrm{shift}=s/2=26$ corresponds to the edge of the pore ($s$ - membrane thickness). 
+%See selected cross-section drawn as red lines in inset in Figure \ref{fig:phi_cross}.   
+
+\begin{figure}
+    \center
+    \includegraphics[width =\textwidth]{phi_cross.pdf}
+    \caption{Polymer density distribution at different cross-section normal to $z$-axis. 
+    shift=0 corresponds to the pore center, shift=26 corresponds to the pore edge}
+    \label{fig:phi_cross}
+\end{figure}
+
+We suggest that particles move coaxial to a pore, to calculate insertion free energy profile we use polymer density distribution along axis $z$ for $r=0$ (Figure \ref{fig:phi_center}). 
+
+\begin{figure}
+    \center
+    \includegraphics[width =\textwidth]{phi_center.pdf}
+    \caption{Polymer density distribution in pore along $z$-axis at different solvent strength.}
+    \label{fig:phi_center}
+\end{figure}
+
+Insertion free energy depend not only on Flory interaction parameters $\chi_{PS}, \chi_{PC}$, but particle size $d$ that defines surface to volume ratio. We compare free energy profiles for particles of sizes $d = [4,10]$ and sets of Flory interaction parameters in Figure \ref{fig:fe_center}.
+
+\begin{figure}
+    \center
+    \hspace*{-0.3in}
+    \includegraphics[width =3in]{fe_center_0.3_4.pdf}
+    \hspace*{-0.6in}
+    \includegraphics[width =3in]{fe_center_0.3_10.pdf}
+    
+    \hspace*{-0.3in}
+    \includegraphics[width =3in]{fe_center_0.5_4.pdf}
+    \hspace*{-0.6in}
+    \includegraphics[width =3in]{fe_center_0.5_10.pdf}
+    
+    \hspace*{-0.3in}
+    \includegraphics[width =3in]{fe_center_0.7_4.pdf}
+    \hspace*{-0.6in}
+    \includegraphics[width =3in]{fe_center_0.7_10.pdf}
+    \caption{Insertion free energy profile for a particle moving along $z$-axis for different particle sizes and solvent strength}
+    \label{fig:fe_center}
+\end{figure}
+
+Integrating of this profiles using eqn \ref{D_eff} we calculated effective diffusion coefficient. Dependency of effective diffusion coefficient Flory interaction parameters $\chi_{PS}, \chi_{PC}$ and particle size $d$ on Figures \ref{fig:D_eff_on_chi_ps}, \ref{fig:D_eff_on_chi_pc}.
+
+\begin{figure}
+    \center
+    \hspace*{-0.3in}
+    \includegraphics[width =3in]{D_eff_on_chi_ps_4.pdf}
+    \hspace*{-0.6in}
+    \includegraphics[width =3in]{D_eff_on_chi_ps_10.pdf}
+
+    \caption{Effective diffusion coefficient on solvent strength $\chi_{PS}$ at different particle size $d$ and particle affinity $\chi_{PC}$}
+    \label{fig:D_eff_on_chi_ps}
+\end{figure}
+
+\begin{figure}
+    \center
+    \hspace*{-0.3in}
+    \includegraphics[width =3in]{D_eff_on_chi_pc_4.pdf}
+    \hspace*{-0.6in}
+    \includegraphics[width =3in]{D_eff_on_chi_pc_10.pdf}
+
+    \caption{Effective diffusion coefficient on particle affinity $\chi_{PC}$ at different particle size $d$ and solvent strength $\chi_{PS}$}
+    \label{fig:D_eff_on_chi_pc}
+\end{figure}
 
 \end{document}
