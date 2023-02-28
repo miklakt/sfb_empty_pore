@@ -4,7 +4,7 @@ import numpy as np
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
 import functools
-import ascf_pb
+#import ascf_pb
 import scipy.stats as st
 from scipy import signal
 
@@ -136,3 +136,4 @@ if __name__ == "__main__":
     width = 1
     D = [D_eff(box_function(A_,width, pad_), b = width+2*pad_) for A_, pad_ in  zip(A,pad)]
     plt.plot(A, D)
+# %%

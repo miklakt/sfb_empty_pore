@@ -8,8 +8,9 @@ import matplotlib.patches as patches
 import matplotlib.transforms as transforms
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import theory
-import ascf_pb
+import scf_pb
 LAST_USED_COLOR = lambda: plt.gca().lines[-1].get_color()
+#%%
 
 def particle_viewport(array2d, pc, viewport, ph =None, pw = None):
     x0 = int(pc-viewport[1])

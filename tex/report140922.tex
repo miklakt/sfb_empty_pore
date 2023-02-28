@@ -1,0 +1,196 @@
+\documentclass[12pt,a4paper]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx, overcite}
+\graphicspath{.}
+\newcommand{\unit}[1]{\ensuremath{\, \mathrm{#1}}}
+
+\graphicspath{{../fig/}}
+
+\begin{document}
+
+\title{Particle transport through polymer brush pore.}
+
+\author{Mikhail Y.Laktionov}
+
+\maketitle
+
+\begin{abstract}
+Transport of particles through a pore interiored with polymer brush has been studied using SS-SCF and SF-SCF approaches. 
+The influence of solvent quality and particle affinity is quantified.
+\end{abstract}
+
+\section{Theory of colloid transport through the polymer brush pore}
+
+Particles with size smaller than correlation length  of polymer solution experience no difference from diffusion in pure solvent, for the larger particles with size bigger than the correlation length the diffusion rate of particles slows down when enter polymer mesh.
+
+This is since larger particles are subjected to topological constrains and must wait for the polymer chains to relax in order to hop from one local polymer network cage to another.
+Hopping diffusion coefficient were studied using scaling theory by Rubinstein et al. []
+In the paper we introduce several diffusion coefficients normalized in a different way.
+
+Stokesian diffusion for a probe particle determined by the particle diameter d and solvent viscosity , and scales as
+
+\begin{equation}
+    D_s \simeq \frac{k_B T}{\eta_s d}
+\end{equation}
+
+For larger particles we must account the effect of surrounding polymer mesh with correlation length $\varepsilon$
+
+\begin{equation}
+    D_{eff} \simeq D_s \frac{\varepsilon^2}{d^2}
+\end{equation}
+
+Finally, apparent diffusion coefficient for a particle moving through a polymer brush pore
+\begin{equation}
+    D_{pore} = \left( \frac{1}{2b} \int_{-b}^{b} {D_{eff} \{ \phi(z, r=0) \}}^{-1} e^{\Delta F(z)} dz \right)
+\end{equation}
+where $z$ is distance units in polymer segments, b is the distance from the pore center, $\Delta F(z)$ local insertion free energy penalty for a particle and $\phi(z, r=0)$ - local polymer density on $z$-axis.
+The choice of $b$ is somewhat ambiguous, however has little effect on $D_{pore}$ when $D_{pore} < D_s$. Large values of $b$ brings $D_{pore}$ closer to $D_s$.
+
+\section{Polymer brush in a pore model, morphology and colloid insertion free energy}
+\subsection{Model and calculation approach}
+We consider a polymer brush with degree of polymerization N and grafted the inner surface of finite thickness pore. The pore walls are impermeable for the polymer. 
+Polymer chains are densely grafted to the surface by one of the ends. 
+Number of polymer chains per unit area (expressed in the polymer segment length) $\sigma$ is a measure of grafting density. 
+Pore diameter is about 50 times bigger than Kuhn segment length of the polymer.
+As it is shown in ref[] analytical strong-stretching self-consistent field (SS-SCF) approximation segment results in parabolic segment potential dependency on the distance z from grafting surface.
+The spatial distribution is calculated using two gradients Scheutjens-Fleer lattice method (SF-SCF).
+In our model we exploit axial symmetry of the pore and particle, all the spatial distribution are calculated on cylindrical coordinate system as $f(z, r)$.
+The model is schematically presented in Figure \ref{fig: scheme3d}.
+
+We suggest that the polymer segment length is constant and equal to $a = 0.76 \mbox{nm}$ (disordered proteins segment length). 
+Degree of polymerization $N=300$ with grafting density $\sigma=0.02$ which corresponds to $5.5 \mbox{pmol}/\mbox{cm}^2$. 
+Pore diameter and membrane thickness is about $40 \mbox{nm}$ for nucleopores, it translates to 52 Kuhn segment length.
+
+
+\begin{figure}
+    \includegraphics[width = \textwidth]{./scheme.png}
+    \caption[]{Schematic representation of a nanopore (yellow cross-sectioned ring) and a going through particle (yellow cylinder), the lattice used for numeric SF-SCF computation is represented with grey surfaces and black lines, an example lattice unit is shown as a turquoise cuboid. 
+    The interior of the pore is grafted with a polymer brush, the grafting surface is shown on the pore cross-section as red lines.
+    On the vertical plane is color coded (blue-white-red) spatial polymer volume density distribution.
+    The yellow bodies are impermeable for the polymer chains.
+    The system has axial symmetry respectively to \emph{z}-axis.}
+    \label{fig: scheme3d}
+\end{figure}
+
+\subsection{Spatial polymer density distribution}
+
+In Figure \ref{fig: phi2d_close} we present polymer density distribution in side the pore and in the adjacent space. The series of frames shows the evolution of the distribution when the solvent quality decreases ($\chi_{PS}$ increases). 
+Note that in good solvent the brush is not confined in the pore, on the contrary there is significant amount of the polymer in the adjacent to the pore space.
+In the poor solvent the brush is collapsing and agglomerates mostly inside the pore.
+An interesting fact is there is some value of $\chi_{PS}^{open}$ (not shown on the figure)
+when the pore is \emph{open}, which means there is a central channel inside the pore with no polymer.
+The value of $\chi_{PS}^{open}$ for the finite thickness pore is larger than it is predicted by infinite pore in one dimensional SF-SCF calculation. %%todo write why
+
+To illustrate the protrusion of the polymer outside the pore we present Figure \ref{fig: phi_z} and \ref{fig: phi_cross}. 
+Figure \ref{fig: phi_z} shows the polymer density profiles along central \emph{z}-axis, the plot is sectioned with vertical dashed grey lines into the spaces outside and inside the pore. 
+Note that for the cases of good and moderately poor solvent the polymer density profile extends further than annotated \emph{in pore} section. When solvent is poor the polymer density profile remains inside the \emph{in pore} section.
+The same trend in different manner is shown in Figure \ref{fig: phi_cross}, the polymer densities profiles are plotted on \emph{r}-axis perpendicular to $z$-axis for selected values of $z$. 
+The selected cross-section are shown in Figure \ref{fig: phi2d_close} on the very first frame with vertical red lines.
+
+With \emph{shift} values in the frames of \ref{fig: phi_cross} we mark the position of a cross-section perpendicular to \emph{z}-axis, where \emph{shift} =0 corresponds to the center of the pore, while \emph{shift} = 5, 20, 26 corresponds to different $z$ distances from the pore center, however still inside the pore, {shift} = 30, 40 capture adjacent to the pore space.
+The plots for {shift} = 0, 5 are almost identical, which indicates no gradients in $z$-direction in the pore center and its vicinity.
+The plot for {shift} = 40 shows, that in good solvent some amount of polymer ($\phi \approx 0.1$) can be found far outside the pore (about pore radius far from the pore wall).
+From the frame for {shift} = 30, 40 we can see that the polymer "wraps" around the pore wall.
+
+\begin{figure}
+    \includegraphics[width = \textwidth]{./phi_heatmaps.pdf}
+    \caption[]{Polymer density 2d diagrams for the pores immersed in a solvents of different strength. 
+    The pore diameter is 40nm (52a), $N=300$, $\sigma=0.02$}
+    \label{fig: phi2d_close}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width = \textwidth]{phi_center.pdf}
+    \caption[]{Polymer density distribution in pore along $z$-axis at different solvent strength.
+    The pore diameter is 40nm (52a), $N=300$, $\sigma=0.02$}
+    \label{fig: phi_z}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width = \textwidth]{./phi_cross.pdf}
+    \caption{Polymer density distribution at different cross-section normal to $z$-axis. 
+    shift=0 corresponds to the pore center, shift=26 corresponds to the pore edge}
+    \label{fig: phi_cross}
+\end{figure}
+
+\subsection{Colloid transport characterization}
+
+To characterize apparent diffusion coefficient for the transport through the pore $D_{pore}$ with eq [] we first have calculate insertion free energy penalty for each point on the $z$-axis.
+The insertion free energy penalty defined by solvent quality $\chi_{PS}$, particle affinity $\chi_{PC}$ and particle characteristic size.
+In the Figure \ref{fig: fe_z_on_chi_pc} we plotted insertion free energy barriers/wells for particle transport for the set of particles with different affinities $\chi_{PC}$, from repulsive $\chi_{PC} =0.5$ and inert $\chi_{PC} =0.0$ to strongly adsorbant $\chi_{PC} =-3.0$.
+The upper frame of the Figure \ref{fig: fe_z_on_chi_pc} corresponds to a good solvent $\chi_{PS} =0.4$ and
+the lower one corresponds to a poor solvent $\chi_{PS} =0.9$. 
+From this two frames of the Figure \ref{fig: fe_z_on_chi_pc} we can state that particle affinity defines the amplitude of a free energy barrier/well while solvent quality governs overall form of a free energy barrier/well.
+
+The impact of solvent quality $\chi_{PS}$ on a a free energy barrier/well is pictured in Figure \ref{fig: fe_z_on_chi_ps}.
+The next trend is apparent, the lower is the free energy well the more narrow it becomes.
+This makes a difference when calculating apparent diffusion coefficient for the transport through the pore $D_{pore}$, not only in the free energy term, but also in the integration interval.
+This makes it difficult to come up with a convention how to define the integration interval.
+
+
+
+
+\begin{figure}
+    \includegraphics[width = 0.7\textwidth]{fe_center_on_chi_pc_0.4_4.pdf}
+    \includegraphics[width = 0.7\textwidth]{fe_center_on_chi_pc_0.9_4.pdf}
+    \caption[]{Insertion free energy profile for a particle moving along $z$-axis in good and poor solvents at different particle affinities.
+    The pore diameter is 40nm (52a), $N=300$, $\sigma=0.02$
+    }
+    \label{fig: fe_z_on_chi_pc}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width = \textwidth]{fe_center_on_chi_ps_-1.0_4.pdf}
+    \caption[]{Insertion free energy profile for a slightly adsorbant particle moving along $z$-axis of the pore at different solvent strength.
+    The pore diameter is 40nm (52a), $N=300$, $\sigma=0.02$
+    }
+    \label{fig: fe_z_on_chi_ps}
+\end{figure}
+
+In free energy calculation we used polymer density profiles for an empty pores resulted from SF-SCF calculations for a polymer brush pores immersed in solvents of different strength $\chi_{PS}$.
+It is possible to make SF-SCF with an implicit particle placed, while is more accurate to reduce computational cost we use the routines from our previous paper ref[].
+Essentially, we calculate osmotic term in free energy change analytically with SS-SCF approach, and approximate surface short-range interaction related term.
+To justify this approach we present the comparison of rigorous SF-SCF calculation and our approach in Figure \ref{fig: fe_z_comparison}.
+The calculation were done for the different solvent qualities and slightly adsorbant particle $\chi_{PC} = -1.0$, from the Figure \ref{fig: fe_z_comparison} we conclude that the results are close and consistent.
+
+\begin{figure}
+    \includegraphics[width = \textwidth]{./insertion_free_energy_pore.pdf}
+    \caption[]{Comparison of SS-SCF (lines) and SF-SCF(circles) results of insertion free energy for a slightly adsorbant particle moving along $z$-axis in the pore at different solvent strength.
+    The pore diameter is 40nm (52a), $N=300$, $\sigma=0.02$
+    }
+    \label{fig: fe_z_comparison} 
+\end{figure}
+
+Finally, we calculate apparent diffusion coefficient as function of interaction parameters $\chi_{PS}, \chi_{PC}$, the results presented in Figure \ref{fig: D_eff_on_chi_ps} and \ref{fig: D_eff_on_chi_pc} as $D_{pore}$ normalized by diffusion coefficient of the particle in a pure solvent $D_s$.
+There are two frames in  Figure \ref{fig: D_eff_on_chi_ps}, the reason is ambiguous integration interval (see Figure \ref{fig: fe_z_on_chi_ps}), the first frame corresponds to the constant interval slightly bigger than the pore thickness (extends about a half of the pore radius outside the pore), the second frame corresponds to the wider integration interval, extends about two times the pore radius outside the pore.
+
+From the two frames of Figure \ref{fig: D_eff_on_chi_ps} we conclude that wider integration interval, naturally, brings apparent diffusion coefficient  $D_{pore}$ closer to the diffusion coefficient in a pure solvent $D_s$, although, this effect is important for promoted diffusion $D_{pore} > D_s$.
+Note that $D_{pore}/D_s > 1$ values in the upper frame transforms to the lower values in the lower frame.
+
+
+\begin{figure}
+    \includegraphics[width = \textwidth]{D_eff_on_chi_ps_4.pdf}
+    \includegraphics[width = \textwidth]{D_eff_on_chi_ps_4_adj.pdf}
+    \caption[]{Apparent diffusion coefficient of particles with diameter d=4 through a pore as a function of solvent strength for particles of different affinities. 
+    On the lower frames the adjacent to the pore space is accounted, the thickness of the space outside the pore walls are approximately equal to the pore walls thickness.
+    The pore diameter is 40nm (52a), $N=300$, $\sigma=0.02$
+    }
+    \label{fig: D_eff_on_chi_ps}
+\end{figure}
+
+$D_{pore}$ monotonically depends on $\chi_{PC}$, higher $D_{pore}$ is always corresponds to higher particle affinity (lower $\chi_{PC}$), the trends are presented in the Figure \ref{fig: D_eff_on_chi_pc}.
+The dependency on $\chi_{PS}$ is non-monotonic, so for every $\chi_{PC}$ there is optimal value of $\chi_{PS}$. 
+The non-monotonic behavior is explained by several factors: 
+1)$\chi_{PS}(1-\phi)$ term in surface related free energy change; 
+2)decreased particle mobility at higher polymer density in collapsed brush; 
+3)in the case of constant integration interval the effect the pure solvent regions being integrated over.
+
+\begin{figure}
+    \includegraphics[width = \textwidth]{D_eff_on_chi_pc_4.pdf}
+    \caption[]{Apparent diffusion coefficient of particles with diameter d=4 through a pore as a function of particle affinity at different solvent strength. 
+    The pore diameter is 40nm (52a), $N=300$, $\sigma=0.02$
+    }
+    \label{fig: D_eff_on_chi_pc}
+\end{figure}
+
+\end{document}
