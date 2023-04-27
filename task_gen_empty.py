@@ -1,9 +1,8 @@
 #%%
 import sfbox_utils
 import numpy as np
-from tenacity import retry
 #%%
-template =  sfbox_utils.read_input.parse_file("template.txt")
+template =  sfbox_utils.read_input.parse_file("sfb_templates/template_empty.txt")
 
 def set_system_geometry(r, s, h, l1, l2):
     xlayers = r+h
@@ -80,7 +79,7 @@ def generate_task_empty_pore(r, s, h, l1, l2, chi_PW, chi_PS, N, theta, **kwargs
 
     return d
 # %%
-for chi in [0.0, 0.1]:
+for chi in [1.1]:
     args = dict(
         r = 26,
         s = 52,

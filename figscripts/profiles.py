@@ -54,7 +54,7 @@ def phi_center(CHI_PS, s, r):
     ax.set_xlabel("$z$")
     ax.legend(title = "$\chi_{PS}$")
     return fig
-chi_PSs = [0.0, 0.4, 0.6, 0.8, 0.9]
+chi_PSs = [0.0, 0.3, 0.6, 0.9, 1.1]
 #chi_PSs=[ 0.5, 0.6, 0.7, 0.8, 0.9]
 s = 52
 r = 26
@@ -62,6 +62,7 @@ fig = phi_center(chi_PSs, s, r)
 fig.savefig(fig_path+f"phi_center.pdf")
 fig.savefig(fig_path+f"phi_center.png", dpi =300)
 #fig.savefig("/home/ml/Studium/sfb_empty_pore/conference/phi_center.png", dpi=600)
+#%%
 # %%
 def fe_center_on_chi_pc(CHI_PC, d, chi_ps, s, r):
     fig, ax = plt.subplots()
@@ -244,9 +245,9 @@ fig = D_eff_on_chi_PC(d, s, r)
 fig.savefig(fig_path+f"D_eff_on_chi_pc_{d}.pdf")
 # %%
 s=52
-shifts = [0, 5, 20, 26, 30, 40, 50]
+shifts = [0, 5, 10, 20, 26, 30, 40]
 fig, axs = plt.subplots(nrows = int(len(shifts)/2), ncols=2, sharex=True, sharey=True)
-for chi in [0.1, 0.3, 0.5, 0.7, 0.8, 0.9]:
+for chi in [0.1, 0.3, 0.5, 0.7, 0.9, 1.1]:
     for ax, shift in zip(axs.reshape(-1), shifts):
         plot_data = get_by_kwargs(df, chi_PS = chi, s=s, r=r)
         r = plot_data.r.squeeze()

@@ -7,7 +7,7 @@ import itertools
 import utils
 #%%
 ref_tbl = pd.read_pickle("reference_table.pkl")
-working_dir = path = pathlib.Path("1405")
+working_dir = path = pathlib.Path("poor_solvent_pore")
 
 
 def set_system_geometry(r, s, h, l1, l2, **_):
@@ -147,19 +147,19 @@ init_args = dict(
         l1 = 120,
         l2 = 120,
         chi_PW = 0,
-        chi_PC = -1.5,
+        chi_PC = 0,
         N=300,
         sigma = 0.02,
-        ph = 4, 
-        pw = 4,
-        #chi_PS = ...
+        ph = 16, 
+        pw = 16,
+        #chi_PS = 1
         #pc = ...
 )
 step = 3
 ylayers = init_args["l1"]+init_args["s"]+init_args["l2"]
 pc_ground_energy = 20
 pc_list = [pc_ground_energy] + list(range(48+step, int(ylayers/2)+1, step)) + [int(ylayers/2)]
-chi_ps_list = [0.3, 0.4, 0.5, 0.6, 0.7]
+chi_ps_list = [1.0]
 
 ifiles_data = []
 fnames = []
