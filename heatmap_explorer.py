@@ -3,7 +3,9 @@ def plot_heatmap_and_profiles(array,
     vline_x:int=0, hline_y:int=0, 
     xlabel="X", ylabel="Y", zlabel="Z",
     update_zlim = True,
-    x0=0, y0=0, dx=1, dy=1
+    x0=0, y0=0, dx=1, dy=1,
+    zmin = None,
+    zmax = None
     ):
     import numpy as np
     import matplotlib.pyplot as plt
@@ -15,7 +17,19 @@ def plot_heatmap_and_profiles(array,
 
     X,Y = np.shape(array)
     aspect_ratio = X/Y
-    zmax, zmin= np.max(array), np.min(array)
+
+    if zmin is None:
+        zmin = np.min(array)
+    if zmax is None:
+        zmax = np.max(array)
+    
+    if isinstance(zmin, str):
+        perc = float(zmin)
+        zmin = np.percentile(array, perc)
+
+    if isinstance(zmax, str):
+        perc = float(zmax)
+        zmax = np.percentile(array, perc)
 
     extent = [x0, x0+X*dx, y0, y0+Y*dy]
     xlim = (x0, x0+X*dx)
@@ -84,7 +98,9 @@ def plot_heatmap_and_profiles(array,
         cmap='seismic', 
         interpolation='nearest', 
         origin = "lower",
-        extent = extent
+        extent = extent,
+        vmin = zmin,
+        vmax = zmax
         )
     
     hline_mark = ax.axhline(y=y_arr[hline_y], color = "green", linewidth = 0.7)
@@ -193,6 +209,7 @@ def plot_heatmap_and_profiles(array,
     fig.canvas.mpl_disconnect(fig.canvas.manager.key_press_handler_id) 
     fig.canvas.mpl_connect('key_press_event', on_press)
     fig.canvas.mpl_connect('button_press_event', on_click)
+    fig.canvas.manager.set_window_title(zlabel)
     return fig
 
 

@@ -1,5 +1,4 @@
 #%%
-from typing import Dict, List
 import pandas as pd
 import numpy as np
 import pandas as pd
@@ -16,21 +15,81 @@ def check_if_exist(dataframe, **kwargs):
     return all([any(dataframe[k] == v) for k,v in kwargs.items()])
 
 def get_by_kwargs(dataframe, **kwargs):
-    return dataframe.loc[(dataframe[list(kwargs)] == pd.Series(kwargs)).all(axis=1)]
+    selected = dataframe
 
-def ground_energy_correction(df, group_columns):
-    df.sort_values(by = group_columns, inplace = True)
-    df.reset_index(drop = True, inplace=True)
-    for idx, group in df.groupby(by =group_columns):
-        y_max=group['pc'].min()
-        energy_0 = group.loc[group['pc'] == y_max, 'free_energy'].squeeze()
-        if not(isinstance(energy_0, float)):
-            raise ValueError("Ground energy cannot be 'float'\n" \
-                    + f"idx: {idx}, ymax: {y_max}, value: {energy_0}, type: {type(energy_0)}")
-        df.loc[group.index, 'free_energy'] = df.loc[group.index, 'free_energy'] - energy_0
+    for key, value in kwargs.items():
+        #print (key)
+        if selected.empty: return selected
+        
+        if isinstance(value, list):
+            selected = selected.loc[selected[key].isin(value)]
+            continue
+    
+        if isinstance(value, tuple):
+            op = value[0]
+            arg = value[1]
+            if op in ["!=", ">=", ">", "<=", "<"]:
+                eval_str = fr"selected.loc[selected['{key}']{op}{arg}]"
+                selected = eval(eval_str)
+                continue
+            
+            elif op == "close":
+                value = (selected[key] - arg).abs().idxmin()
+                selected = selected.loc[value]
+                continue
+            else:
+                raise ArithmeticError("No operation defined")
+            
+        if value == "smallest":
+            value = selected[key].min()
+        if value == "largest":
+            value = selected[key].max()
+        
+        selected = selected.loc[selected[key]==value]
 
-def load_datasets(df : pd.DataFrame, keys : List):
-    for key in keys:
-        df[key] = np.nan
-        df[key] = df[key].astype(object)
-        df[key] = df.apply(lambda _: sfbox_utils.store.load_dataset(_.h5file, f"/{key}"), axis=1)
+    return selected
+
+
+def calculation_result_to_initial_guess_file(calc_result, save_to = None):
+    xlayers = calc_result.xlayers
+    ylayers = calc_result.ylayers
+    gradients = (2, xlayers+2, ylayers+2)
+    s = calc_result.s
+    phibulk_solvent = 1
+    molecules = {"P" : calc_result.dataset["P_G"], "S" : calc_result.dataset["S_G"]}
+    molecules.update({f"P{i}" : calc_result.dataset[f"P{i}_G"] for i in range(s)})
+    for k, v in molecules.items():
+        molecules[k] = np.pad(v.squeeze(), ((1,1),(1,1)), "edge")
+    alphabulks = {k : 1.0 for k in molecules.keys()}
+
+    initial_guess_dict = {"state" : molecules, "phibulk solvent" : phibulk_solvent, "alphabulk" : alphabulks, "gradients" : gradients}
+    if save_to is None:
+        sfbox_utils.write_initial_guess("initial_guess.ig", initial_guess_dict)
+    else:
+        sfbox_utils.write_initial_guess(save_to, initial_guess_dict)
+    return initial_guess_dict
+# %%
+
+def find_closest_in_reference(reference_tbl, requires_dict, optional_dict = {}, return_only_one = False):
+    df = get_by_kwargs(reference_tbl, **requires_dict)
+    if df.empty:
+        return None
+    if len(df)==1:
+        return df
+
+    optional_df = df
+    for key in optional_dict.keys():
+        if len(optional_df)==1:
+            print(f"last optional key used: {key}")
+            break
+        new_optional_df = get_by_kwargs(optional_df, **{key : optional_dict[key]})
+        if len(new_optional_df) == 0:
+            break
+        optional_df = new_optional_df
+
+    if return_only_one:
+        if not isinstance(optional_df, pd.Series):
+            raise KeyError("Too many records, try too concretize search arguments")
+    
+    return optional_df
+# %%
