@@ -4,35 +4,40 @@ import numpy as np
 import matplotlib.pyplot as plt
 import extract_features
 import pandas as pd
-# %%
-fname = "r=26_s=52_h=40_l1=120_l2=120_chi_PS=1.1_chi_PW=0_N=300_sigma=0.02"
-data = next(sfbox_utils.read_output.parse_file(
-    f"temp/{fname}.out",
-    #read_fields=["mon : P : phi : profile",
-    #             "lat : 2G : n_layers_x",
-    #            "lat : 2G : n_layers_y",],
-    ))
+import pathlib
 #%%
-import pickle
-with open(f'empty_pore_pickles/{fname}.pkl', 'wb') as handle:
-    pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
-# %%
-features = extract_features.pore_geometry(data)
-features.update(extract_features.polymer_density(data, **features))
-features.update({
-        "chi_PW" : data['chi list:P:chi - W'],
-        "chi_PS" : data['chi list:P:chi - S'],
-        "free_energy" : data['sys:noname:free energy'],
-        })
-features['theta_per_unit_length'] = features['theta']/features['s']
-features["filename"] = f"{fname}.out"
+dir = pathlib.Path("temp5")
+#%%
+def process_data(raw_data):
+    import extract_features
+    data = extract_features.pore_geometry(raw_data)
+    data.update(extract_features.polymer_density(raw_data, **data))
+    data.update(extract_features.polymer_potential(raw_data, **data))
+    data.update(extract_features.strands_density(raw_data, **data))
+    data.update(extract_features.chi_params(raw_data))
+    data.update(extract_features.free_energy(raw_data))
+    data["sigma"] = round(data["sigma"], 4)
+    data["comment"] = "independent_run"
+    return data
 
-#%%
-dataset = pd.read_pickle("empty_brush.pkl")
+def name_file(data, timestamp = True):
+    keys = ["chi_PS", "r", "xlayers", "ylayers", "N", "sigma"]
+    name = "_".join([f"{k}_{data[k]}" for k in keys])
+    if data.get("comment"):
+        name = "_".join([data['comment'], name])
+    return name
 # %%
-to_append = pd.DataFrame([{k:features[k] for k in dataset.columns}])
+for filename in dir.glob("*.out"):
+    print(filename)
+    sfbox_utils.store.store_file_sequential(
+        file=filename,
+        process_routine=process_data,
+        naming_routine=name_file,
+        dir = "h5_empty_pore",
+        on_file_exist="rename",
+    )
 # %%
-dataset = pd.concat([dataset, to_append], ignore_index=True)
+master = sfbox_utils.store.create_reference_table(storage_dir="h5_empty_pore")
 # %%
-pd.to_pickle(dataset, "empty_brush.pkl")
+master.to_pickle("reference_table_empty_brush.pkl")
 # %%
