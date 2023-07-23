@@ -7,8 +7,11 @@ import itertools
 import utils
 
 #%%
-ref_tbl = pd.read_pickle("reference_table_empty_brush.pkl")
-
+try:
+    ref_tbl = pd.read_pickle("reference_table_slit.pkl")
+except FileNotFoundError:
+    ref_tbl = pd.DataFrame()
+#%%
 def set_system_geometry(r, s, h, l1, l2, **_):
     xlayers = r+h
     ylayers = l1+s+l2
@@ -28,7 +31,7 @@ def set_system_geometry(r, s, h, l1, l2, **_):
     return d
 
 def set_polymer_brush(N, sigma, r, s, l1, **_):
-    theta_per_ring =  2*np.pi*r*N*sigma
+    theta_per_layer =  N*sigma
     x1 = r+1
     y1 = l1+1
     y2 = l1+s
@@ -43,7 +46,7 @@ def set_polymer_brush(N, sigma, r, s, l1, **_):
         {f'mol:pol{i}:freedom': 'restricted' for i in range(s)}
     )
     d.update(
-        {f'mol:pol{i}:theta': theta_per_ring for i in range(s)}
+        {f'mol:pol{i}:theta': theta_per_layer for i in range(s)}
     )
 
     d.update(
@@ -95,7 +98,7 @@ def translate_to_sfbox(data):
         set_chi
     ]
 
-    init_statement =  sfbox_utils.read_input.parse_file("sfb_templates/template_empty.txt")[0]
+    init_statement =  sfbox_utils.read_input.parse_file("sfb_templates/template_slit.txt")[0]
     
     init_statement.update(
         translation_chain(init_statements_builder, **init_keys))
@@ -150,56 +153,59 @@ def continuously_change_chi_PS(
     return ifile_data
 
 # %%
+def create_input_files(working_dir, init_args):
+    working_dir = pathlib.Path(working_dir)
+    continue_unfinished = True
+    try:
+        working_dir.mkdir(parents=True, exist_ok=False)
+    except FileExistsError:
+        print("Folder is already there")
+
+    ifile_data = continuously_change_chi_PS(init_args, 0.8, 1.2, 0.05)
+    translated = translate_to_sfbox(ifile_data)
+    translated = sort_keys(translated)
+
+    if continue_unfinished:
+        ig_data = utils.find_closest_in_reference(
+            ref_tbl,
+            init_args | {"chi_PS" : ("close", ifile_data[0]["chi_PS"])},
+            return_only_one = True
+            )
+        if (ig_data is not None) and (not ig_data.empty):
+            #print("Initial guess is found")
+            pass
+        else:
+            ig_data = False
+
+    input_file = working_dir/(args_to_name(ifile_data[0], ignore_keys=["initial_guess"]) + ".in")
+    initial_guess_file = input_file.with_suffix(".ig")
+
+    if ig_data is not False: 
+        utils.calculation_result_to_initial_guess_file(ig_data, initial_guess_file)
+
+    if initial_guess_file.exists():
+        print("Initial guess file is found")
+        translated[0].update({"newton:isaac:initial_guess":"file"})
+        translated[0].update({"newton:isaac:initial_guess_input_file":"filename.ig"})
+        try:
+            translated[1].update({"newton:isaac:initial_guess":"previous_result"})
+        except IndexError:
+            pass
+
+    sfbox_utils.write_input.write_input_file(input_file, translated)
+    print(f"Number of calculations: {len(translated)}")
+
+#%%
 init_args = dict(
-    r = 26,
-    s = 52,
+    r = 20,
+    s = 40,
     h = 40,
-    l1 = 120,
-    l2 = 120,
-    #chi_PS = chi,
+    l1 = 50,
+    l2 = 50,
     chi_PW = -1,
     N=300,
-    sigma = 0.02
+    sigma = 0.04
 )
-working_dir = path = pathlib.Path("temp9")
-continue_unfinished = True
-try:
-    working_dir.mkdir(parents=True, exist_ok=False)
-except FileExistsError:
-    print("Folder is already there")
+create_input_files("temp12", init_args)
 #%%
-ifile_data = continuously_change_chi_PS(init_args, 1.1, 1.2, 0.01)
-translated = translate_to_sfbox(ifile_data)
-translated = sort_keys(translated)
-
-if continue_unfinished:
-    ig_data = utils.find_closest_in_reference(
-        ref_tbl,
-        init_args | {"chi_PS" : ("close", ifile_data[0]["chi_PS"])},
-        return_only_one = True
-        )
-    if (ig_data is not None) and (not ig_data.empty):
-        #print("Initial guess is found")
-        pass
-    else:
-        ig_data = False
-# %%
-input_file = working_dir/(args_to_name(ifile_data[0], ignore_keys=["initial_guess"]) + ".in")
-initial_guess_file = input_file.with_suffix(".ig")
-# %%
-if ig_data is not False: 
-    utils.calculation_result_to_initial_guess_file(ig_data, initial_guess_file)
-# %%
-if initial_guess_file.exists():
-    print("Initial guess file is found")
-    translated[0].update({"newton:isaac:initial_guess":"file"})
-    translated[0].update({"newton:isaac:initial_guess_input_file":"filename.ig"})
-    try:
-        translated[1].update({"newton:isaac:initial_guess":"previous_result"})
-    except IndexError:
-        pass
-# %%
-sfbox_utils.write_input.write_input_file(input_file, translated)
-
-print(f"Number of calculations: {len(translated)}")
-# %%
+sfbox_utils.sfbox_calls(dir = "temp12")

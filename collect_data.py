@@ -54,7 +54,8 @@ def name_file(data, timestamp = True):
 
 #%%
 #dir  =  "old/data/raw/particle_insertion/"
-dir = "/home/ml/Downloads/temp7"
+#dir = "/home/ml/Downloads/temp7"
+dir = "temp9"
 for file in pathlib.Path(dir).glob("*.out"):
     if file:
         sfbox_utils.store.store_file_parallel(
@@ -94,4 +95,3 @@ master.pc = master.pc - (master.l1+master.s/2)
 master.pc = master.pc.astype(int)
 master.to_pickle("reference_table.pkl")
 # %%
- 

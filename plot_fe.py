@@ -6,6 +6,8 @@ import pickle
 import utils
 import pandas as pd
 from scipy.signal import convolve
+import sfbox_utils
+import seaborn as sns
 #%%
 def cylynder_r0_kernel(radius:int, height:int = None):
     if height is None:
@@ -32,145 +34,147 @@ def Pi(phi, chi_PS, trunc = False):
         Pi_[Pi_<1e-16]=0
     return Pi_
 
-def gamma(a0, a1, chi_PS, chi_PC, phi):
+def gamma(chi_PS, chi_PC, phi, X):
+    a0, a1 = X
     chi_crit = 6*np.log(5/6)
-    chi_ads = chi_PC - chi_PS*(1-phi)
-    gamma = (chi_ads - chi_crit)*(a0*phi+a1*phi**2)
+    phi_corrected = (a0 + a1*chi_PC)*phi
+    chi_ads = chi_PC - chi_PS*(1-phi_corrected)
+    gamma = (chi_ads - chi_crit)*phi_corrected/6
     return gamma
 
-def free_energy_cylinder(radius, data, a0, a1,  chi_PS, chi_PC):
+def free_energy_cylinder(radius, data, chi_PS, chi_PC, gamma_func, X_args):
     volume, surface = cylynder_r0_kernel(radius)
-    phi = data["phi"][0:radius]
-    phi = np.pad(phi, ((0, 0),(radius,radius-1)))
+    phi = data.dataset["phi"].squeeze()
+    if np.shape(phi)[0] == 1:
+        phi = np.tile(phi, (radius, 1))
+    phi = np.pad(phi[0:radius], ((0, 0),(radius,radius-1)))
     Pi_arr = Pi(phi, chi_PS)
-    gamma_arr = gamma(a0, a1, chi_PS, chi_PC,  phi)
+    gamma_arr = gamma_func(chi_PS, chi_PC, phi, X_args)
     osmotic = convolve(Pi_arr, volume, 'valid')[0]
     surface = convolve(gamma_arr, surface, 'valid')[0]
-    return osmotic, surface
+    #extra = X_args[2]*radius**2
+    return osmotic, surface#, extra
 
-def free_energy_approx(radius, data, a0, a1, chi_PS, chi_PC):
+def free_energy_approx(radius, data, chi_PS, chi_PC, gamma_func, X_args):
     volume, surface =cylinder_volume_surface(radius)
-    phi = data["phi"][0, :]
+    phi = data.dataset["phi"].squeeze()[0, :]
     Pi_arr = Pi(phi, chi_PS)
-    gamma_arr = gamma(a0, a1, chi_PS, chi_PC,  phi)
+    gamma_arr = gamma_func(chi_PS, chi_PC, phi, X_args)
     osmotic = Pi_arr*volume
     surface = gamma_arr*surface
     return osmotic, surface
 
+def create_cost_function(df, df_empty, gamma_func):
+    def cost_function(X):
+        cost = np.array([])
+        for (chi_PS, chi_PC, pw), group in df.groupby(by = ["chi_PS", "chi_PC", "pw"]):
+            empty_pore_data = utils.get_by_kwargs(df_empty, chi_PS = chi_PS)
+            if empty_pore_data.empty:
+                continue
+            osm, sur = free_energy_cylinder(
+                int(pw/2), empty_pore_data, 
+                chi_PS, chi_PC, gamma_func, X
+                )
+            tot = osm+sur
+            delta_fe = group.apply(lambda _: _.free_energy - tot[int(_.pc+len(tot)//2)], axis = 1)
+            cost = np.concatenate([cost, delta_fe.to_numpy()])
+        return cost
+    return cost_function
 
+X = None
 #%%
-chi_PC = 0
-chi_PS = 1
 s = 52
 r = 26
-ph =8
-pw =8
-particle_in_pore = pd.read_pickle("reference_table.pkl")
-particle_in_pore = utils.get_by_kwargs(
-    particle_in_pore,
-    chi_PC =chi_PC,
-    chi_PS = chi_PS,
-    s=s,
-    r=r,
-    ph=ph,
-    pw = pw
-    ).sort_values(by = "pc")
-#%%
-empty_pore = pd.read_pickle("empty_brush.pkl")
-empty_pore = utils.get_by_kwargs(empty_pore, chi_PS = chi_PS, r=26, s = 52).squeeze()
+ph =4
+pw =ph
 
-a0 = 0.18
-a1 = -0.09
-osm_appr, sur_appr = free_energy_approx(pw/2, empty_pore,
-        a0=a0, a1=a1, chi_PS = chi_PS, chi_PC = chi_PC
+master = pd.read_pickle("reference_table.pkl")
+#master = master.loc[master["comment"] == "grown_from_small"]
+master_empty = pd.read_pickle("reference_table_empty_brush.pkl")
+master_empty = master_empty.loc[(master_empty.s == s) & (master_empty.r== r)]
+master = master.loc[master.chi_PC.isin([-1.5, -1.0, -0.5, 0]) & (master.ph==ph)]
+
+
+if X is None:
+    gamma_f = gamma
+    X0 = [1,0]
+    f = create_cost_function(master, master_empty, gamma_f)
+    from scipy.optimize import least_squares
+    res = least_squares(f, X0)
+    X =res.x
+
+g = sns.FacetGrid(
+    master, 
+    row = "chi_PC", col = "chi_PS", 
+    hue = "ph", 
+    #sharey=False, 
+    sharey= True,
+    hue_kws=dict(marker = "s")
     )
-tot_appr = osm_appr+sur_appr
+g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
+g.add_legend()
 
-osm, sur = free_energy_cylinder(int(pw/2), empty_pore, a0, a1, chi_PS, chi_PC)
-tot = osm+sur
+for (chi_PC, chi_PS), ax in g.axes_dict.items():
+    empty_pore_data = utils.get_by_kwargs(master_empty, chi_PS = chi_PS)
+    osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X)
+    tot = osm+sur
+    x = list(range(-len(tot)//2, len(tot)//2))
+    ax.plot(x, tot, color = "red")
 #%%
-#fig, (ax1, ax2) = plt.subplots(nrows=2, sharex = True)
-fig, ax2 = plt.subplots()
-#ax1.imshow(empty_pore["phi"], origin = "lower")
-
-ax2.plot(tot_appr, label = "approx")
-
-ax2.plot(tot, label = "conv")
-
-ax2.plot(
-    particle_in_pore["pc"],
-    particle_in_pore["free_energy"],
-    marker = "s",
-    linewidth = 0.2,
-    markerfacecolor = 'none',
-    markeredgecolor = "blue",
-    color = "blue",
-    label = "sfbox")
-
-ax2.legend()
-
-ax2.set_xlabel("$z$")
-ax2.set_ylabel("$\Delta F$")
-
-limits = (min(np.min(particle_in_pore["free_energy"]), np.min(tot)), max(np.max(particle_in_pore["free_energy"]), np.max(tot)))
-yscale= limits[1]-limits[0]
-ax2.set_ylim(limits[0]-0.2*yscale, limits[1]+0.2*yscale)
-
-ax2.set_xlim(0, particle_in_pore["ylayers"].head(1).squeeze())
-
-ax2.set_title(f"Insertion free energy for {chi_PS=}, {chi_PC=}, {a0=}, {a1=}, d={pw}")
-# %%
-utils.load_datasets(particle_in_pore, ["phi"])
+chi_crit = 6*np.log(5/6)
+chi_pc_crit = (1-X[0])/X[1]
 #%%
-r_cut = 50
-z_cut = 30
-wall_thickness = 52
-l1 = 120
-extent = [-z_cut-wall_thickness/2, z_cut+wall_thickness/2, -r_cut, r_cut]
-def cut_and_mirror(arr):
-    cut = arr.T[0:r_cut, l1-z_cut:l1+wall_thickness+z_cut]
-    return np.vstack((np.flip(cut), cut[:,::-1]))
-for pc, data in particle_in_pore.groupby(by = ["pc"]):
-    #zc = pc - int(data["ylayers"]/2)
-    zc =int(data["ylayers"]/2)-pc
-    if np.abs(zc)>50:continue
-    fig, ax = plt.subplots()
-    phi = cut_and_mirror(data["phi"].squeeze().T).T
-    ax.imshow(phi, cmap = "cividis", origin = "lower", extent = extent)
-    levels = [0, 0.001, 0.05, 0.6, 0.68]
-    c = ax.contour(phi, colors = "red", origin = "lower", extent = extent, levels = levels)
-    ax.clabel(c, inline=True, zorder=2)
-    fe = float(data["free_energy"])
-    fig.text(0.5, 0.75,
-             f"$\Delta F = {fe:.3f}$\n"+"$z_{c}$"+f"$={zc}$", color = "white"
-             )
+s = 52
+r = 26
+ph =6
+pw =6
 
-    fig.savefig(f"frames/chi_PS_1.0_d_{pw}/{pc}.pdf")
+master = pd.read_pickle("reference_table.pkl")
+master_empty = pd.read_pickle("reference_table_empty_brush.pkl")
+master_empty = master_empty.loc[(master_empty.s == s) & (master_empty.r== r)]
+master = master.loc[master.chi_PC.isin([-1.5, -1.0, -0.5, 0]) & (master.ph==ph)]
+
+g = sns.FacetGrid(
+    master, 
+    row = "chi_PC", col = "chi_PS", 
+    hue = "ph", 
+    sharey=False, 
+    hue_kws=dict(marker = "s")
+    )
+g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
+g.add_legend()
+
+for (chi_PC, chi_PS), ax in g.axes_dict.items():
+    empty_pore_data = utils.get_by_kwargs(master_empty, chi_PS = chi_PS)
+    osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X)
+    tot = osm+sur
+    x = list(range(-len(tot)//2, len(tot)//2))
+    ax.plot(x, tot, color = "red")
+
 # %%
-r_cut = 50
-z_cut = 30
-wall_thickness = 52
-l1 = 120
-extent = [-z_cut-wall_thickness/2, z_cut+wall_thickness/2, -r_cut, r_cut]
-def cut_and_mirror(arr):
-    cut = arr.T[0:r_cut, l1-z_cut:l1+wall_thickness+z_cut]
-    return np.vstack((np.flip(cut), cut[:,::-1]))
-phi0 = cut_and_mirror(empty_pore["phi"].squeeze().T).T
-for pc, data in particle_in_pore.groupby(by = ["pc"]):
-    #zc = pc - int(data["ylayers"]/2)
-    zc =int(data["ylayers"]/2)-pc
-    if np.abs(zc)>50:continue
-    fig, ax = plt.subplots()
-    phi = cut_and_mirror(data["phi"].squeeze().T).T
-    phi = phi-phi0
-    ax.imshow(phi, cmap = "seismic", origin = "lower", extent = extent, vmin = -0.4, vmax = 0.4)
-    levels = [0, 0.01, 0.05, 0.1, 0.2, 0.4]
-    c = ax.contour(phi, colors = "red", origin = "lower", extent = extent, levels = levels)
-    ax.clabel(c, inline=True, zorder=2)
-    fe = float(data["free_energy"])
-    fig.text(0.5, 0.75,
-             f"$\Delta F = {fe:.3f}$\n"+"$z_{c}$"+f"$={zc}$", color = "white"
-             )
+ph =6
+pw = ph
+#X=[1, 0]
+master = pd.read_pickle("reference_table_planar.pkl")
+master_empty = pd.read_pickle("reference_table_planar_empty.pkl")
+master = master.loc[master.chi_PS.isin([0.3, 0.4, 0.5, 0.6, 0.7]) & (master.ph==ph) & (master.pw==pw)]
 
-    fig.savefig(f"frames/dleta_phi_chi_PS_1.0_d_{pw}/{pc}.pdf")
+gamma_f = gamma
+
+g = sns.FacetGrid(
+    master, 
+    row = "chi_PC", col = "chi_PS", 
+    hue = "ph", 
+    sharey=False, 
+    hue_kws=dict(marker = "s")
+    )
+g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
+g.add_legend()
+
+for (chi_PC, chi_PS), ax in g.axes_dict.items():
+    empty_pore_data = utils.get_by_kwargs(master_empty, chi_PS = chi_PS)
+    osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X)
+    tot = osm+sur
+    x = list(range(len(tot)))
+    ax.plot(x, tot, color = "red")
 # %%

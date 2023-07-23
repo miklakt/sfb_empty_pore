@@ -46,3 +46,5 @@ venv/
 *.ig
 *.pkl_old
 *.hdf5
+
+*.sh

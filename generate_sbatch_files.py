@@ -1,7 +1,7 @@
 #%%
 import pathlib
 
-dir = pathlib.Path("temp8")
+dir = pathlib.Path("temp10")
 
 #%%
 for i, file in enumerate(dir.glob("*.in")):
@@ -36,11 +36,11 @@ os.popen(f'cp ~/.local/bin/sfbox {dir.absolute()}/sfbox')
 with open(dir/f"run_jobs", "w") as sbatch_run:
     sbatch_run.write(
 """#!/bin/bash
-# Generated file
-#!/bin/bash
+chmod +x sfbox
 for f in *.sh
 do
         sbatch "$f"
 done
 """
     )
+# %%

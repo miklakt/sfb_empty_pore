@@ -11,9 +11,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from symbolic_convex_planar import h_V, V_h
 # %%
-s = 1
-r = 0.5
-V = 0.4
+s = 20
+r = 40
+V = 308/4
 # %%
 x = np.linspace(0, r, 400, endpoint=True)
 y_convex = [float(Y_convex(s, V, r)(x_)) for x_ in x]
@@ -28,11 +28,11 @@ y_saddle = [float(Y_saddle(s, r, V)(x_)) for x_ in x]
 x = np.linspace(0, 2*r, 800, endpoint=True)
 y_convex = np.hstack([y_convex, np.flip(y_convex)])
 y_concave = np.hstack([y_concave, np.flip(y_concave)])
-y_saddle = np.hstack([y_saddle, np.flip(y_saddle)])
+#y_saddle = np.hstack([y_saddle, np.flip(y_saddle)])
 #%%
 s_concave = S_concave(s,r,V)
 s_convex = S_convex(s, V, r)
-s_saddle = S_saddle(s, r, V)
+#s_saddle = S_saddle(s, r, V)
 # %%
 fig, ax = plt.subplots()
 
@@ -44,9 +44,9 @@ ax.plot(x, y_concave, label = "concave", color = "green")
 ax.plot(x, -y_concave, color = "green")
 ax.fill_between(x, y_concave, -y_concave, alpha =0.05, color = "green")
 
-ax.plot(x, y_saddle, label = "saddle", color = "red", linestyle = "--")
-ax.plot(x, -y_saddle, color = "red", linestyle = "--")
-ax.fill_between(x, y_saddle, -y_saddle, alpha =0.001, color = "red")
+#ax.plot(x, y_saddle, label = "saddle", color = "red", linestyle = "--")
+#ax.plot(x, -y_saddle, color = "red", linestyle = "--")
+#ax.fill_between(x, y_saddle, -y_saddle, alpha =0.001, color = "red")
 
 ax.set_xlim(0, 2*r)
 

@@ -16,7 +16,7 @@ V = symbols("V", positive = True)
 # %%
 #SVG(filename ="drawing.svg")
 
-# %% [markdown]
+#%% [markdown]
 # Minimize surface
 # $$
 # dS = \sqrt{1+y^{\prime}} dx
@@ -239,4 +239,13 @@ def S(s_, V_, r_ = None):
     h_ = h_V(s_, V_, r_)
     return S_h(s_, h_)
 
+#%%
+def total_surface_energy(chi_PS, chi_PW, s_, s_min, V_, r_ = None):
+    PS_surf = S(s_, V_, r_)*chi_PS
+    PW_surf = s_*chi_PW
+    total_energy = PS_surf+PW_surf
+    return total_energy
 
+
+
+# %%

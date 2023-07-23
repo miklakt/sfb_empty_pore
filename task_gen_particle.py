@@ -180,35 +180,33 @@ def move_along_z(
 
     return ifile_data
 
-def grow_particle(init_args, ph_start, ph_end, skip_found = False):
-    ifiles_data = []
-    fnames = []
-    ifile_data = []
-    init = True
+def grow_particle(
+        init_args, 
+        ph_start, 
+        ph_end, 
+        skip_found = True
+        ):
     ph_list = list(range(ph_start, ph_end+2, 2))
-    for ph in ph_list:
-        if len(
-            utils.get_by_kwargs(
-                ref_tbl, ph = ph, pw=ph, **init_args
-                    )
-                ) == 0 or not(skip_found):
-            if init:
-                ifile_data.append(
-                    dict(**init_args, ph = ph, pw = ph)
-                )
-                init = False
-            else:
-                ifile_data.append(dict(ph = ph, pw = ph))
     
+    ifile_data = []
+
+    skipped = 0
+    
+    for ph in ph_list:
+        record_in_reference = utils.get_by_kwargs(ref_tbl, ph = ph, pw = ph, **init_args)
+        
+        if len(record_in_reference) == 0 or not(skip_found):
+            ifile_data.append(dict(ph = ph, pw = ph))
+        
+        else:
+            skipped = skipped+1
+
     if ifile_data:
-        ifiles_data.append(ifile_data)
-        fname = args_to_name(ifile_data[0], ignore_keys=["ph"])+".in"
-        fnames.append(fname)
-    ifiles = [
-        create_input_file_data(i) for i in ifiles_data
-    ]
-    return ifiles, fnames
-            
+        ifile_data[0].update(init_args)
+
+    print(f"Calculation skipped: {skipped}")
+
+    return ifile_data     
 #%%
 init_args = dict(
         r = 26,
@@ -217,12 +215,12 @@ init_args = dict(
         l1 = 120,
         l2 = 120,
         chi_PW = 0,
-        chi_PC = 0.0,
+        chi_PC = -1.5,
         N=300,
         sigma = 0.02,
         ph = 4,
         pw = 4,
-        chi_PS = 0.4
+        chi_PS = 0.3
 )
 working_dir = path = pathlib.Path("temp8")
 continue_unfinished = True
@@ -264,4 +262,68 @@ if initial_guess_file.exists():
 sfbox_utils.write_input.write_input_file(input_file, translated)
 
 print(f"Number of calculations: {len(translated)}")
+# %%
+init_args = dict(
+        r = 26,
+        s = 52,
+        h = 40,
+        l1 = 120,
+        l2 = 120,
+        chi_PW = 0,
+        #chi_PC = -1.0,
+        N=300,
+        sigma = 0.02,
+        #chi_PS = 0.3,
+        #pc = -126
+)
+working_dir = path = pathlib.Path("temp10")
+continue_unfinished = True
+try:
+    working_dir.mkdir(parents=True, exist_ok=False)
+except FileExistsError:
+    print("Folder is already there")
+#%%
+import itertools
+for chi_PS, chi_PC, pc in itertools.product(
+    [0.3, 0.4, 0.5, 0.6, 0.7],
+    [0, -0.5, -1.0, -1.5],
+    [0, -126, -26, -39, -52, -65, -78]
+    ):
+    init_args.update(dict(chi_PS = chi_PS, chi_PC = chi_PC, pc = pc))
+    ifile_data = grow_particle(init_args, 4, 32)
+    if not(ifile_data):
+        continue
+    translated = translate_to_sfbox(ifile_data)
+    translated = sort_keys(translated)
+
+    if continue_unfinished:
+        ig_data = utils.find_closest_in_reference(
+            ref_tbl,
+            init_args | {"ph" : ("close", ifile_data[0]["ph"])},
+            return_only_one = True
+            )
+        if (ig_data is not None) and (not ig_data.empty):
+            #print("Initial guess is found")
+            pass
+        else:
+            ig_data = False
+
+    input_file = working_dir/(args_to_name(ifile_data[0], ignore_keys=["ph", "initial_guess"]) + ".in")
+    initial_guess_file = input_file.with_suffix(".ig")
+    if ig_data is not False: 
+        utils.calculation_result_to_initial_guess_file(ig_data, initial_guess_file)
+
+    if initial_guess_file.exists():
+        print("Initial guess file is found")
+        translated[0].update({"newton:isaac:initial_guess":"file"})
+        translated[0].update({"newton:isaac:initial_guess_input_file":"filename.ig"})
+        try:
+            translated[1].update({"newton:isaac:initial_guess":"previous_result"})
+        except IndexError:
+            pass
+
+    sfbox_utils.write_input.write_input_file(input_file, translated)
+
+    print(f"Number of calculations: {len(translated)}")
+
 # %%
