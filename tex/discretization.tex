@@ -1,0 +1,186 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{graphicx}
+\usepackage[
+backend=biber,
+natbib=true,
+style=numeric,
+sorting=none
+]{biblatex}
+\graphicspath{fig}
+
+\begin{document}
+
+\title{Notes on numerical procedures}
+\author{Mikhail Y.Laktionov}
+\maketitle
+
+\section{System geometry}
+
+System geometry, coordinate system, lattice and discretization techniques are schematically shown in \ref{fig:main} 
+
+\begin{figure}    
+    \includegraphics[width = \linewidth]{fig/main_figure.png}
+    \caption{Schematic cutaway diagram of system geometry, space discretization, boundary conditions and polymer brush morphology. 
+    The pore walls are green rigid body impermeable for particles and polymer brush. The inner surface of a pore is grafted with polymer chains (red curved lines), the grafting surface is pictured as red straight line on the horizontal cross-section plane. 
+    The polymer concentration profile ($\phi$) has axial symmetry the profile is presented as a heatmap on the vertical cross-section plane. 
+    The particle stationary concentration profile ($c$) is a heatmap on the horizontal cross-section plane. 
+    Particle enters the system from the left inlet (constant concentration) and leave the system from the right outlet (absolute sink), the flux of particle is drawn with red arrows on the horizontal cross-section plane.
+    Degenerate cylindrical coordinate system and lattice has only two coordinates $(r, z)$, lattice volume element is a square toroid. Particle is discretized into a set of surface and volume elements.
+    Lattice width is equal to polymer chains Kuhn segment.}
+    \label{fig:main}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width = 5in]{fig/pore_geometry.png}
+\end{figure}
+
+\section{Particle insertion free energy}
+
+Insertion free energy is split into two contribution: osmotic and surface free energy.
+
+Assuming probe particle case osmotic contribution is defined as an integral of polymer brush osmotic pressure over particle volume.
+
+\begin{eqnarray}
+    F_{osm} = \int_V \Pi dV
+    \\
+    F_{sur} = \int_S \gamma dV
+    \\
+    F_{osm [i, k]} = \sum_{l=i-d/2}^{i+d/2-1} \sum_{m=\max(k-d/2, 0)}^{k+d/2-1} \Pi_{[l,m]} v_{[l, m]} = \Pi \ast v
+    \\
+    F_{sur [i, k]} = \sum_{l=i-d/2}^{i+d/2-1} \sum_{m=\max(k-d/2, 0)}^{k+d/2-1} \gamma_{[l,m]} s_{[l, m]} = \gamma \ast s
+\end{eqnarray}
+
+\begin{equation}
+    D = \frac{D_{0}}{1+\phi^2 d^2}
+\end{equation}
+
+\begin{equation}
+    P_{theory} = \frac{2 D r_{pore}}{\pi + 2 s / r_{pore}}
+\end{equation}
+
+\begin{equation}
+    P_{convergent} = \frac{2 D r_{pore}}{\pi}
+\end{equation}
+
+\begin{eqnarray}
+    j_0 = c_0 P
+    \\
+    P_{channel} = \left[\int_{-s/2}^{s/2} \left( \int_{0}^{r_{pore}} D e^{-\Delta F / kT} r dr \right)^{-1} dz \right]^{-1}
+    \\
+    P = P_{channel}  + P_{convergent}
+\end{eqnarray}
+
+
+\begin{equation}
+    P_{channel} = \left[\sum_{k=-s/2}^{s/2} \left( \sum_{i=0}^{r_{pore}} \Delta F_{[i,k]} \cdot (2i+1) \right)^{-1} \right]^{-1}
+\end{equation}
+
+
+\begin{figure}
+    \includegraphics[width = 3in]{fig/particle_integration_element.png}
+    \includegraphics[width = 2.5in]{fig/particle_integration_element_2.png}
+\end{figure}
+
+
+
+
+Diffusion of colloid particle in the presence of potential field governed by Smoluchowski equation. The equation is closely connected to advection-diffusion and drift-diffusion equation.
+
+\begin{equation}
+    \partial_{t} c(r,z,t) = \nabla \cdot D(r,z)(\nabla c(r, z, t) +  c(r, z, t) \nabla U)
+\end{equation}
+
+Here $c$ is the concentration of the colloidal particles, $D$ is the local diffusion coefficient, and $U \equiv \Delta F$ is the position-dependent free energy of insertion which plays the role of the potential of mean force.
+
+
+Consider an element of the regular grid with a constant volume $V(i,k)$ and surface area $S(i,k)$.
+The change in the concentration in the element is defined by the net flux of colloid particle through the element surface which can be expressed using divergence theorem.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = \textwidth]{fig/regular_grid.png}
+    \caption{Spatial discretization, indexing and boundary conditions}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = \textwidth]{fig/neigboring.png}
+    \caption{Stencil, grid values}
+\end{figure}
+
+\begin{equation}
+    \partial_{t}c(i,k) = \nabla_{V} j = \int_{S(i,k)} j dS = \int_{V(i,k)} \nabla \cdot j dV
+\end{equation}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[]{fig/element_divergence.png}
+    \caption{Grid element and net flux (flux divergence) trough the borders}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{fig/element_divergence_2.png}
+\end{figure}
+
+
+\begin{eqnarray}
+    \lambda_{n}[i,k] = A[i,k]/V[i,k] = 1+r_[i,k]^{-2}
+    \\
+    \lambda_{s}[i,k] = A[i,k-1]/V[i,k] = 1-r_[i,k]^{-2}
+    \\
+    \lambda_{e} = \lambda_{w} = 1
+    \\
+    \nabla_V[i, k] j = \lambda_{n}[i,k] j_r[i,k] - \lambda_{s}[i,k] j_r[i,k-1] + \lambda_{e}[i,k] j_z[i,k] - \lambda_{w}[i,k] j_z[i,k-1]
+    \\
+\end{eqnarray}
+\begin{eqnarray}
+    Pe_{z}[i,k] = \Delta_{z} U[i,k] = \Delta F[i+1, k] - \Delta F[i, k]
+    \\
+    Pe_{r}[i,k] = \Delta_{r} U[i,k] = \Delta F[i, k+1] - \Delta F[i, k]
+    \\
+    D_{z}[i,k] = \frac{D[i+1,k] + D[i,k]}{2}
+    \\
+    D_{r}[i,k] = \frac{D[i,k+1] + D[i,k]}{2}
+    \\
+    \alpha_{z,r} = \frac{e^{Pe_{z,r}/2} - 1}{e^{Pe_{z,r}} - 1}
+\end{eqnarray}
+\begin{eqnarray}
+    c_{e}[i,k] = c[i+1,k] \alpha_{z}[i,k] + c[i, k] (1 - \alpha_{z}[i,k])
+    \\
+    c_{w}[i,k] = c[i-1,k] (1-\alpha_{z}[i-1,k]) + c[i, k] \alpha_{z}[i-1,k]
+    \\
+    c_{n}[i,k] = c[i,k+1] \alpha_{r}[i,k] + c[i, k] (1 - \alpha_{r}[i,k])
+    \\
+    c_{s}[i,k] = c[i,k+1] (1-\alpha_{z}[i,k-1]) + c[i, k] \alpha_{z}[i,k-1]
+\end{eqnarray}
+\begin{eqnarray}
+    j_{e, drift}[i,k] = D_z[i,k] \Delta_{z} U[i,k] c_e[i,k]
+    \\
+    j_{w, drift}[i,k] = D_z[i-1,k] \Delta_{z} U[i-1,k] c_w[i,k]
+    \\
+    j_{n, drift}[i,k] = D_r[i,k] \Delta_{r} U[i,k] c_n[i,k]
+    \\
+    j_{s, drift}[i,k] = D_r[i,k-1] \Delta_{r} U[i,k-1] c_s[i,k]
+\end{eqnarray}
+
+\begin{eqnarray}
+    j_{e, diff}[i,k] = D_z[i,k]  (c[i+1,k] - c[i,k])
+    \\
+    j_{w, diff}[i,k] = D_z[i,k]  (c[i,k] - c[i-1,k])
+    \\
+    j_{n, diff}[i,k] = D_r[i,k]  (c[i,k+1] - c[i,k])
+    \\
+    j_{s, diff}[i,k] = D_z[i,k]  (c[i,k] - c[i,k-1])
+\end{eqnarray}
+
+\begin{eqnarray}
+    j = j_{drift}+j_{diff}
+\end{eqnarray}
+
+\begin{equation}
+    \nabla_{V} j = -\lambda_w j_w + \lambda_e j_e - \lambda_s j_s + \lambda_n j_n
+\end{equation}
+
+\end{document}

@@ -53,8 +53,6 @@ def name_file(data, timestamp = True):
     return name
 
 #%%
-#dir  =  "old/data/raw/particle_insertion/"
-#dir = "/home/ml/Downloads/temp7"
 dir = "temp9"
 for file in pathlib.Path(dir).glob("*.out"):
     if file:

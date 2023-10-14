@@ -1,35 +1,26 @@
 #%%
 from scf_pb import generate_sphere_volume_surface_kernel
-import pandas as pd
+import pickle_cache
 #%%
-pkl_file = "spherical_kernels.pkl"
-#%%
+@pickle_cache.pickle_lru_cache()
 def generate_spherical_kernel(radius, r):
-    df = pd.read_pickle(pkl_file)
-    stored = df.query(f"radius == {radius} & r=={r}")
-    if len(stored) == 0:
-        print(f"calculating the kernel for {radius=}, {r=}")
-        volume, surface, extent = generate_sphere_volume_surface_kernel(radius, r)
-        extent = (extent[0], extent[1])
-        row = {
-            "radius":radius,
-            "r": r,
-            "volume": volume,
-            "surface": surface,
-            "extent": extent
-            }
-        df = df.append(row, ignore_index = True)
-        df.to_pickle(pkl_file)
-    else:
-        stored = dict(stored.squeeze())
-        volume = stored["volume"]
-        surface = stored["surface"]
-        extent = stored["extent"]
+    print(f"calculating the kernel for {radius=}, {r=}")
+    volume, surface, extent = generate_sphere_volume_surface_kernel(radius, r)
+    extent = (extent[0], extent[1])
     return volume, surface, extent
 
 #%%
 if __name__ == "__main__":
-    for radius in range(16,17):
+    for radius in range(2,10):
         for r in range(70):
-            generate_spherical_kernel(radius, r)
+            kernel = generate_spherical_kernel(radius, r)
+# %%
+if __name__ == "__main__":
+    kernel = generate_sphere_volume_surface_kernel(3, 4)
+    plt.pcolormesh(kernel[0], edgecolors='k', linewidth=2)
+    ax = plt.gca()
+    ax.set_aspect('equal')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    plt.savefig("vol.svg")
 # %%

@@ -1,0 +1,124 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{graphicx}
+\usepackage[
+backend=biber,
+natbib=true,
+style=numeric,
+sorting=none
+]{biblatex}
+
+\addbibresource{flow.bib}
+\title{Diffusion of colloids through a cylindrical pore in a membrane}
+
+\author{L. Klushin}
+
+\date{August 2023}
+\begin{document}
+\maketitle
+
+
+
+
+The goal of this work is to understand the transport of colloidal particles though a cylindrical pore in a membrane, the pore being decorated by a polymer brush grafted to its inner surface. For that purpose, we find the stationary diffusive flux of colloidal particles through the pore and analyze how it is affected by the parameters of the pore, the brush, and the colloid. A natural starting point is the diffusive flux through an empty pore without any brush. The earliest approach to that problem goes back to Lord Rayleigh who analyzed a potential flow though a circular aperture (pore) in a planar membrane of negligible thickness while recognizing and exploiting its electrostatic and gravitational analogies\cite{Strutt1878}.  In a standard setup, the position of the membrane coincides with the XY plane at  $z=0$, and the pore is a circle of radius a. The concentration of the diffusing species is fixed to be 0 and c far away from the membrane (at   $z\rightarrow\mp\infty$, respectively).  The equipotential surfaces are oblate spheroids and the streamlines form confocal hyperboloids of revolution\cite{Cooke1966}.
+The net flux through the pore is given by
+
+
+\begin{equation}
+\Phi=2Dac\label{eq:flux_Ral}
+\end{equation}
+
+\noindent where $D$ is the diffusion coefficient. The fact that the flux is proportional to the linear size of the pore rather than its area was a subject of some historical discussion \cite{Cooke1966}.
+Diffusion through a cylindrical pore in a membrane of finite thickness $L$ also allows an analytical solution but in this case it involves an implicit infinite series \cite{Brunn1984}. The lowest order approximation turns out to be quite accurate (with an error of less than 6 percent in the full range of the $\frac{L}{a}$ ratio) and reads:
+
+\begin{equation}
+    \Phi=\frac{2Dac}{1+\frac{2L}{\pi a}}\label{eq:flux_finlength}
+\end{equation}
+
+Eq (\ref{eq:flux_finlength}) admits a most natural interpretation in terms of the total resistance, $R=\frac{c}{\Phi}$:
+
+\begin{equation}
+R=\frac{L}{D\pi a^{2}}+\frac{1}{2Da}\label{eq:resistance}
+\end{equation}
+
+The first term can be recognized as the resistance of the cylindrical pore itself (the resistivity of the medium being $D^{-1}$ while the second term is the Rayleigh resistance of the pore of infinitesimal thickness as deduced from Eq  (\ref{eq:flux_Ral}) . The latter represents the effects of the convergent flow at the entrance of the pore and its symmetric counterpart on the exit side of the membrane, while the flow lines inside the cylindrical pore turn out to be approximately axial. The relatively small error carried by the approximate solution  (\ref{eq:resistance})  is due to deviations from flow axiality inside the pore and to the corresponding minor modification of the convergent flow at the entrance/exit as compared to the case of a membrane of negligible thickness.. 
+Altogether the resistance of the setup with a membrane of finite thickness and the boundary conditions imposed at $z\rightarrow\mp\infty$ coincides with that of an equivalent cylinder of the same radius $a$ and of total length $L_{eq}=L+l_{R}$   where the additional length,  $l_{R}=\frac{\pi}{2}a$ , accounts for the Rayleigh resistance contribution. The boundary conditions of fixed concentration are now imposed at the caps of the equivalent cylinder, see the cartoon illustration in Figure \ref{fig:flow_cartoon}. In what follows, we will refer to the additional cylindrical sections outside the membrane, each of length $\frac{l_{R}}{2}=\frac{\pi}{4}a$ , as the Rayleigh cylinders.
+ 
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{flowcartoon.pdf}
+    \caption{ (a) Cartoon representing the flow lines for a pore in a thick membrane with the boundary conditions imposed far way from the membrane (at $\pm\infty$). (b) An equivalent cylinder with the boundary conditions imposed at the caps leading to strictly axial flow lines; additional cylindrical sections (transparent) represent the Rayleigh resistance and have the length of  $\frac{l_{R}}{2}=\frac{\pi}{4}a$  each, where $a$ is the radius of the pore. The equivalent cylinder accurately approximates the total flux in the situation depicted in panel (a).}
+    \label{fig:flow_cartoon}
+\end{figure}
+
+
+The notion of the equivalent cylinder is very helpful for estimating the effects of the brush in the interior of the pore on the diffusive flux. Interaction of the brush with the diffusing particles is described via the insertion free energy profile, which is in turn linked to the profiles of the brush concentration and of the osmotic pressure \cite{Laktionov2023}. On top of that, we introduce the position-dependent diffusion coefficient which depends on the local polymer concentration and accounts for slower diffusion through a semidilute polymer mesh \cite{Laktionov2023}.
+Diffusion of colloidal particles in the presence of an effective potential is described by the Smoluchowsky equation which represents a high friction limit of the Fokker-Planck equation \cite{Risken1996}:
+
+\begin{equation}
+    \frac{\partial c(\textbf{r},t)}{\partial t}=\nabla\cdotp D(\textbf{r})\left(\nabla c(\textbf{r},t)+c(\textbf{r},t)\nabla\Delta F(\textbf{r})\right)
+    \label{eq:smoluchowsky}
+\end{equation}
+Here $c$ is the concentration of the colloidal particles, $D$ is the local (position-dependent) diffusion coefficient, and $\Delta F$ is the position-dependent free energy of insertion which plays the role of the potential of mean force.
+We assume the axial (cylindrical) symmetry of the pore. Together with the stationary conditions, this implies that all the relevant functions,i.e. $c$, $\Delta F$, and $D$ depend on the axial coordinate $z$ and the radial coordinate $r$ but not on the azimuthal angle.
+The stationary flux density has two components linked to the corresponding components of the gradients of the particle concentration and the insertion free energy:
+
+
+\begin{equation}
+j_{z}(z,r)=-D(z,r)\left(\frac{\partial c(z,r)}{\partial z}+c(z,r)\frac{\partial\Delta F(z,r)}{\partial z}\right)\label{eq:flux_axial}
+\end{equation}
+
+\begin{equation}
+j_{r}(z,r)=-D(z,r)\left(\frac{\partial c(z,r)}{\partial r}+c(z,r)\frac{\partial\Delta F(z,r)}{\partial r}\right),
+\label{eq:flux_radial}
+\end{equation}
+\noindent where $c(z,r)$ is the stationary colloid concentration.
+
+A general analytical solution of the stationary equation is not available to our best knowledge. Here we discuss an approximate solution which amounts to neglecting the radial component of the flux density within the pore. This is inspired by the fact that the net transport across the membrane is associated only with the axial component of the flux density, and by the notion of the equivalent cylinder with the boundary conditions imposed at its caps as introduced above. 
+We seek the solution for the stationary colloid concentration in the form of a modified Boltzmann distribution, similar to the planar case explored earlier \cite{Laktionov2023}:                                                         
+
+\begin{equation}
+c(z,r)=\psi(z)e^{-\Delta F(z,r)}\label{eq:stationary_c_ansatz}
+\end{equation}
+
+For the axial flux density, we obtain:
+
+\begin{equation}
+j_{z}(z,r)=-D(z,r)\psi'(z)e^{-\Delta F(z,r)}\label{eq:flux_ansatz}
+\end{equation}
+
+\noindent Here the prime in  $\psi'(z)$ stands for the derivative with respect to $z$. Stationarity implies that the net flux over any cross-section of the pore is the same, independent of the position  $z$ :
+
+\begin{equation}
+\Phi=\int_{0}^{a}2\pi rdrj_{z}(z,r)=\psi'(z)\int_{0}^{a}2\pi rdrD(z,r)e^{-\Delta F(z,r)}=const,\label{eq:fi_const}
+\end{equation}
+
+\noindent where $a$ is the radius of the pore as introduced above. Solving for $\psi(z)$  we obtain 
+
+\begin{equation}
+\psi(z)=C-\Phi\int_{0}^{z}\left(\int_{0}^{a}2\pi rdrD(z',r)e^{-\Delta F(z',r)}\right)^{-1}dz'\label{eq:psi}
+\end{equation}
+
+\noindent Here the origin of the Z-axis,  $z=0$, is placed at one of the caps of the equivalent cylinder  of total length $L_{eq}= L+\frac{\pi}{2}a$  . Assuming the insertion free energy outside the pore is zero, $ C$  can be recognized as the colloid concentration at the boundary with $z=0$ which plays the role of the source.   We impose the zero boundary condition at the opposite cap of the equivalent cylinder (the sink) and obtain for the total resistance, $R=C/\Phi$ : 
+
+\begin{equation}
+R=\int_{0}^{L_{eq}}\left(\int_{0}^{a}2\pi rdrD(z',r)e^{-\Delta F(z',r)}\right)^{-1}dz'\label{eq:res_with_brush}
+\end{equation}
+
+In our previous paper we noted that the product $D(z',r)e^{-\Delta F(z',r)}$ has the meaning of local conductivity. Then integration over the pore cross-section gives the inverse resistance per unit length (as appropriate for resistors connected in parallel) and the integration over the axial coordinate simply adds contributions from all the slices connected in series. This simple interpretation is of course consistent with neglecting the radial component of the flux density. Naturally, if the brush is absent and the insertion free energy vanishes everywhere, Eq  (\ref{eq:res_with_brush}) reduces to Eq (\ref{eq:resistance}). 
+The assumption that the brush is entirely contained in the interior of the pore is well justified under poor solvent conditions. Contrary to that, in a $\Theta$- or good solvent the brush would swell producing a fringe that resides outside the pore, see Figure (NEEDS AN ILLUSTRATION!!). In this case, the flow lines at the entrance to the pore are modified and the Rayleygh resistance may not fairly represent the corresponding contribution. 
+In order to produce a reliable approximate scheme for good solvent conditions we consider separately the situations with positive and negative insertion free energies. Negative insertion free energies are rather exceptional under good solvent conditions. We propose that in this case  the resistance of the entrance/exit regions is bounded between the Rayleigh resistance (without any brush effects) and the resistance of the Rayleigh cylinder filled with the actual brush fringe, and use both these estimates in our calculations.
+Positive insertion free energies are much more common. In this case, the resistance of the pore interior is always dominant, and the accuracy in estimating the resistance contributions from the entrance/exit regions is not of a major concern. Hence neglect the tentative changes in the picture of the flow lines and evaluate both the pore interior and the brush fringe contributions by applying  Eq (\ref{eq:res_with_brush}) with the insertion free energy profile defined everywhere within the equivalent cylinder.
+Another computational aspect that must be addressed in the case when the brush fringe extends not just beyond the membrane but beyond the caps of the additional Ryleigh cylinders as well. Then the insertion free energy is non-zero at the source and the sink boundaries, and Eq (\ref{eq:res_with_brush}) must be modified such that the free energy of insertion $\Delta F(z,r)$ is counted from the reference state that represents the colloid free energy averaged over the different radial positions along the boundary cap of the Ryleigh cylinder. Another way out is to shift the position of the boundary cap away from membrane so that the brush fringe does not touch it. Then the reference state of the colloid in a pure solvent is restored. Our results are rather insensitive to the choice of treatment of the fringe problem for the reasons discussed above.
+
+For spherical colloidal particles of finite size the coordinates $(z,r)$ refer to the position of its center while the insertion free energy is obtained by integrating the volume and the surface contributions (see Eqs. (?)-(SEE TEXT ON FREE ENERGY EVALUATION))  over the volume and the surface of the colloid, respectively.
+
+The question of how several pores in the same membrane interfere affecting their permeability was first posed by Rayleigh himself \cite{Strutt1878}. Fabrikant  proposed a quantitative theory for a negligibly thin membrane with several circular apertures of different radii and arbitrary mutual positions \cite{Fabrikant1985}. The resultant effect of the pore interference is an increase in the pore permeability since the Rayleigh resistance is partially shared by the neighboring pores. However, the effect is quite small (a few percent) whenever the distance between the pore centers is larger than their diameters but an order of magnitude or more. It is intuitively clear that once the resistance due to a finite pore length and due to the brush is non-negligible, the mutual interference effect becomes even smaller. Hence, we are not concerned with this aspect of the problem.
+
+\medskip
+
+\printbibliography
+
+
+
+\end{document}

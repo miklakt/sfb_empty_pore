@@ -5,7 +5,9 @@ def plot_heatmap_and_profiles(array,
     update_zlim = True,
     x0=0, y0=0, dx=1, dy=1,
     zmin = None,
-    zmax = None
+    zmax = None,
+    mask = None,
+    cmap = "seismic"
     ):
     import numpy as np
     import matplotlib.pyplot as plt
@@ -14,6 +16,8 @@ def plot_heatmap_and_profiles(array,
     #matplotlib.use('Qt5Agg')
     #plt.matplotlib.rcParams['figure.dpi'] = 300
 
+    if mask is not None:
+        array = np.ma.array(array, mask = mask)
 
     X,Y = np.shape(array)
     aspect_ratio = X/Y
@@ -92,19 +96,22 @@ def plot_heatmap_and_profiles(array,
     ax_x.set_ylabel(zlabel)
     ax_y.set_xlabel(zlabel)
 
-
+    cmap_ = matplotlib.cm.get_cmap(cmap)
+    cmap_.set_bad(color='green')
     im = ax.imshow(
         array.T, 
-        cmap='seismic', 
-        interpolation='nearest', 
+        cmap=cmap_, 
+        interpolation='none', 
         origin = "lower",
         extent = extent,
         vmin = zmin,
         vmax = zmax
         )
+
+
     
-    hline_mark = ax.axhline(y=y_arr[hline_y], color = "green", linewidth = 0.7)
-    vline_mark = ax.axvline(x=x_arr[vline_x], color = "green", linewidth = 0.7)
+    hline_mark = ax.axhline(y=y_arr[hline_y], color = "black", linewidth = 0.7)
+    vline_mark = ax.axvline(x=x_arr[vline_x], color = "black", linewidth = 0.7)
 
     cbar = fig.colorbar(im, ax=ax, cax = cbar_ax, 
                         orientation = "horizontal",
@@ -112,11 +119,11 @@ def plot_heatmap_and_profiles(array,
     cbar.set_label(zlabel, labelpad = -40)
 
 
-    vline_profile, = ax_y.plot(vline_data, y_arr, color = "green")
-    vline_scatter, = ax_y.plot(x_arr[vline_x], zvalue, color = "darkgreen", marker = 's', markerfacecolor="none")
+    vline_profile, = ax_y.plot(vline_data, y_arr, color = "black")
+    vline_scatter, = ax_y.plot(x_arr[vline_x], zvalue, color = "black", marker = 's', markerfacecolor="none")
     
-    hline_profile, = ax_x.plot(x_arr, hline_data, color = "green")
-    hline_scatter, = ax_x.plot(zvalue, y_arr[hline_y], color = "darkgreen", marker = 's', markerfacecolor="none")
+    hline_profile, = ax_x.plot(x_arr, hline_data, color = "black")
+    hline_scatter, = ax_x.plot(zvalue, y_arr[hline_y], color = "black", marker = 's', markerfacecolor="none")
     
     
     fig_size=7
