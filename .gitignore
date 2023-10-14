@@ -3,6 +3,8 @@
 *.in
 *.out
 *.pkl
+*.pickle
+*.bak
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -23,12 +25,19 @@ __pycache__/
 *.cb2
 .*.lb
 *.synctex.gz
+*.blg
+*.fdb_latexmk
+*.xml
+*.bcf
+*.bbl
 
 ## Intermediate documents:
 *.dvi
 *.xdv
 *-converted-to.*
 *.pdf
+
+*.ipynb
 
 *.png
 *.svg
