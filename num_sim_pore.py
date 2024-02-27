@@ -49,8 +49,8 @@ a0, a1 = [0.70585835, -0.31406453]
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
 d = 16
-chi_PC = -1.5
-chi = 0.4
+chi_PC = -1
+chi = 0.6
 walls_only = False
 
 fields_ = calculate_fields(
@@ -100,19 +100,23 @@ else:
      f"simulation_data/{d=}_{chi=}_{chi_PC=}_{zlayers=}_{rlayers=}_{dt=}_{differencing}.h5"
 s = SimulationManager(drift_diffusion, inflow_boundary, simulation_name)
 #%%
-drift_diffusion.c_arr = np.exp(-drift_diffusion.U_arr)
+#drift_diffusion.c_arr = np.exp(-drift_diffusion.U_arr)
 #%%
 s.run(100, 1000)
 s.run(100, 10000)
 #%%
-s.run(100, 100000)
+s.run(10, 100000)
 # %%
 plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get())
 # %%
 plt.plot(drift_diffusion.J_z_tot().get())
 # %%
 # %%
+print("d",   "chi_PS",    "chi_PC",   "J_tot",    "J_tot_err")
 print(
+    d,
+    chi,
+    chi_PC,
     np.mean(drift_diffusion.J_z_tot().get()), 
     np.std(drift_diffusion.J_z_tot().get())
     )

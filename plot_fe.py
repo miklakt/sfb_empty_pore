@@ -1,8 +1,9 @@
 #%%
-import sfbox_utils
 import matplotlib.pyplot as plt
+import matplotlib.transforms as transforms
+import matplotlib.patches as mpatches
+
 import numpy as np
-import pickle
 import utils
 import pandas as pd
 from scipy.signal import convolve
@@ -38,7 +39,6 @@ def gamma(chi_PS, chi_PC, phi, X):
     a0, a1 = X
     chi_crit = 6*np.log(5/6)
     phi_corrected = (a0 + a1*chi_PC)*phi
-    #phi_corrected = (a0 + a1*chi_PC)*phi
     chi_ads = chi_PC - chi_PS*(1-phi_corrected)
     gamma = (chi_ads - chi_crit)*phi_corrected/6
     return gamma
@@ -87,14 +87,15 @@ X = None
 #%%
 s = 52
 r = 26
-ph =32
-pw =32
+ph =8
+pw =8
 
 master = pd.read_pickle("reference_table.pkl")
 #master = master.loc[master["comment"] == "grown_from_small"]
 master_empty = pd.read_pickle("reference_table_empty_brush.pkl")
 master_empty = master_empty.loc[(master_empty.s == s) & (master_empty.r== r)]
-master = master.loc[master.chi_PC.isin([-1.5, -1.0, -0.5, 0]) & (master.ph==ph)]
+master = master.loc[master.chi_PC.isin([-1.0, -0.5, 0.0]) & (master.ph==ph)]
+master = master.loc[master.chi_PS.isin([0.4, 0.5, 0.6])]
 
 
 
@@ -106,17 +107,20 @@ if X is None:
     res = least_squares(f, X0)
     X =res.x
 
-X = [0.70585835, -0.31406453]
+#X = [0.70585835, -0.31406453]
+#X = [1, 0]
 
 g = sns.FacetGrid(
     master, 
     row = "chi_PC", col = "chi_PS", 
     hue = "ph", 
-    sharey=True, 
-    #sharey= True,
-    hue_kws=dict(marker = "s")
+    #sharey= "row", 
+    sharey = True,
+    sharex= True,
+    hue_kws=dict(marker = "s", color = "red")
     )
-g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
+#g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
+g.set_axis_labels(x_var = "$z$", y_var = "$F / k_BT$")
 
 
 for (chi_PC, chi_PS), ax in g.axes_dict.items():
@@ -126,12 +130,64 @@ for (chi_PC, chi_PS), ax in g.axes_dict.items():
     x = list(range(-len(tot)//2, len(tot)//2))
     ax.plot(x, tot, color = "red")
 
-    osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X, trunc =True)
-    tot = osm+sur
-    ax.plot(x, tot, color = "darkred", linestyle = "--")
-ax.plot([], [], color = "red", label = "model")
-ax.plot([], [],color = "darkred", linestyle = "--", label = "$P>0$")
+    ax.plot(x, osm, color = "green", linewidth = 0.5, linestyle = "--")
+    ax.plot(x, sur, color = "blue", linewidth = 0.5, linestyle = "--")
+
+    #osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X, trunc =True)
+    #tot = osm+sur
+    #ax.plot(x, tot, color = "darkred", linestyle = "--")
+    
+    ax.set_xlim(-75, 75)
+
+    
+    #ax.axvline(-s/2, color = "grey", linestyle = "--", linewidth =0.5)
+    #ax.axvline(s/2, color = "grey", linestyle = "--", linewidth =0.5)
+    trans = transforms.blended_transform_factory(
+    ax.transData, ax.transAxes
+    )
+
+    rect = mpatches.Rectangle((-s/2, 0), width=s, height=1, transform=trans,
+                          color='grey', alpha=0.15)
+    ax.add_patch(rect)
+    
+    ax.axhline(0, color = "black", linewidth = 0.5)
+    ax.set_title(f"$\chi_{{PS}} = {chi_PS}$ $\chi_{{PC}} = {chi_PC}$")
+    #ax.set_title("$\chi_{}$")
+    #ax.set_xlabel("")
+    #ax.set_ylabel("")
+
+
+
+    data = master.query(f"chi_PS == {chi_PS} & chi_PC == {chi_PC}")
+    ax.scatter(data["pc"], data["free_energy"], 
+               marker = "s", fc = "none", ec = "red")
+
+
+ax.plot([], [], color = "red", label = "$\Delta F_{SF}$")
+ax.scatter([], [], marker = "s", fc = "none", ec = "red", label = "$\Delta F_{tot}$")
+ax.plot([], [],  color = "green", linewidth = 0.5, linestyle = "--", label = "$\Delta F_{osm}$")
+ax.plot([], [],  color = "blue", linewidth = 0.5, linestyle = "--", label = "$\Delta F_{sur}$")
+
 ax.legend()
+#ax.plot([], [],color = "darkred", linestyle = "--", label = "$P>0$")
+plt.gcf().set_size_inches(4,4)
+#g.add_legend()
+g.savefig("/home/ml/Desktop/grid.svg")
+#%%
+#%%
+volume, surface = cylynder_r0_kernel(8, 16)
+fig, ax = plt.subplots(nrows = 2, sharex = True)
+fig.set_size_inches(4,4.5)
+
+ax[0].pcolormesh(volume, edgecolor = "black", linewidth = 0.7)
+ax[0].axis("equal")
+
+ax[1].pcolormesh(surface, edgecolor = "black", linewidth = 0.7)
+ax[1].axis("equal")
+
+ax[1].set_xticks(np.arange(0,18, 2))
+
+fig.savefig("/home/ml/Desktop/cylindrical_kernel.svg")
 #%%
 s = 52
 r = 26
@@ -164,9 +220,9 @@ for (ph, chi_PC), ax in g.axes_dict.items():
     x = list(range(-len(tot)//2, len(tot)//2))
     ax.plot(x, tot, color = "red")
 
-    osm, sur = free_energy_cylinder(int(ph/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X, trunc =True)
-    tot = osm+sur
-    ax.plot(x, tot, color = "darkred", linestyle = "--")
+    #osm, sur = free_energy_cylinder(int(ph/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X, trunc =True)
+    #tot = osm+sur
+    #ax.plot(x, tot, color = "darkred", linestyle = "--")
 ax.plot([], [], color = "red", label = "model")
 ax.plot([], [],color = "darkred", linestyle = "--", label = "$P>0$")
 ax.legend()
@@ -186,18 +242,10 @@ ax.text(chi_pc_crit, 1, f"$\chi^{{*}}_{{PC}} = {chi_pc_crit:.2f}$", va = "bottom
 ax.set_xlabel("$\chi_{PC}$")
 ax.set_ylabel("$\phi^{*} / \phi$")
 fig.set_size_inches(3,3)
-fig.savefig("kernel_figs/phi_correction.svg")
+plt.tight_layout()
+fig.savefig("/home/ml/Desktop/phi_correction.png", dpi =600)
 #%%
-kwargs = dict(
-    s = 52,
-    r = 26
-    ph =16
-    pw =ph
-    chi_PS = 0.6
-    chi_PC = -1
-    pc = 0
-    )
-datum = utils.get_by_kwargs
+
 # %%
 ph =8
 pw = ph
@@ -232,21 +280,4 @@ for (chi_PC, chi_PS), ax in g.axes_dict.items():
     osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X, trunc =True)
     tot = osm+sur
     ax.plot(x, tot, color = "darkred", linestyle = "--")
-
-# %%
-data = master.iloc[2048].dataset["phi"].squeeze()
-data = data[:,int(292/2-50):int(292/2+50)]
-fig, ax = plt.subplots()
-ax.imshow(
-    data, 
-    interpolation='none', 
-    #extent = [-292/2, 292/2, 0, 66], 
-    origin = "lower", 
-    aspect = "equal"
-    )
-ax.set_xlabel("$z$")
-ax.set_ylabel("$r$")
-#ax.set_xticks(np.arange(0, radius*2+1, 1))
-#ax.set_yticks(np.arange(kernel[2][0], kernel[2][1]+1, 1))
-#ax.grid(which='both', color='black', linestyle='-', linewidth=2, zorder = 0)
 # %%

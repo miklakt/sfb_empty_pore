@@ -11,7 +11,7 @@ def pickle_lru_cache(maxsize=None, filename=None, purge_cache = True):
         func_hash = hashlib.md5(inspect.getsource(func).encode()).hexdigest()
 
         if filename is None:
-            filename = func.__name__+".cache.pickle"
+            filename = "__pickle_cache__/" + func.__name__+".cache.pickle"
             filename_backup = filename+".bak"
         
         if not os.path.exists(filename):

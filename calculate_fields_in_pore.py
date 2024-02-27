@@ -39,23 +39,17 @@ def volume_free_energy(phi, chi_PS, d, trunc=True):
 def free_energy_phi(phi, chi_PS, chi_PC, d, a0, a1):
     return surface_free_energy(phi, chi_PS, chi_PC, d, a0, a1)+volume_free_energy(phi, chi_PS, d)
 
-def mobility_phi(phi, k, d):
+def mobility_Rubinstein(phi, k, d, prefactor = 1):
     eps = np.where(phi==0, 0.0, 1/phi)
-    m = eps * eps / (d * d)
+    m = eps * eps / (d * d)/prefactor
     m = m /(1.0 + m**k)**(1 / k)
     m = np.where(phi>0, m, 1.0)
+    m = m
     return m
 
-#def integrate_cylinder(array_zr):
-#    Nz, Nr = np.shape(array_zr)
-#    H = Nz
-#    A = Nr**2/2
-#    r = np.arange(0, Nr)
-#    element_volume = 2*r
-#    element_volume[0] = 1/4
-#    P_z = np.sum(array_zr*element_volume, axis = 1)**(-1)
-#    P = np.sum(P_z)**(-1)
-#    return P
+def mobility_Phillies(phi, beta, nu):
+    m = np.where(phi==0, 1.0, np.exp(-beta*np.power(phi, nu)))
+    return m
 
 @lru_cache()
 def generate_circle_kernel(d):
@@ -69,7 +63,7 @@ def generate_circle_kernel(d):
                 a[i,j] = True
     return a
 
-@pickle_cache.pickle_lru_cache(purge_cache=False)
+@pickle_cache.pickle_lru_cache(purge_cache=True)
 def calculate_fields(
         a0, a1, 
         chi_PC, chi, 
@@ -77,7 +71,9 @@ def calculate_fields(
         exclude_volume = True, 
         truncate_pressure = False, 
         method = "convolve", 
-        mobility_correction = "vol_average"
+        mobility_correction = "vol_average",
+        mobility_model = "Rubinstein",
+        **mobility_model_kwargs
         ):
     fields = utils.get_by_kwargs(master_empty, chi_PS = chi, s = wall_thickness, r = pore_radius).squeeze()
     phi = fields.dataset["phi"].squeeze().T
@@ -121,33 +117,46 @@ def calculate_fields(
         mobility[fields["walls"]==True] = 0
         fields["mobility"] = mobility
     else:
-        if mobility_correction == "vol_average_corrected":
-            average_corrected_phi = (a0 + a1*chi_PC)*phi
-        elif mobility_correction == "vol_average":
-            average_corrected_phi = phi
-        fields["average_corrected_phi"] = convolve_particle_volume(average_corrected_phi.T, d, convolve_mode).T / volume(d)
-    
-        mobility = mobility_phi(fields["average_corrected_phi"], 1, d)
-        mobility[fields["walls"]==True] = 0
-        fields["mobility"] = mobility
+        if mobility_correction != "none":
+            if mobility_correction == "vol_average_corrected":
+                average_corrected_phi = (a0 + a1*chi_PC)*phi
+            elif mobility_correction == "vol_average":
+                average_corrected_phi = phi
+            fields["corrected_phi"] = convolve_particle_volume(average_corrected_phi.T, d, convolve_mode).T / volume(d)
+        else:
+            fields["corrected_phi"] = phi
 
-    fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])
+
+        if mobility_model=="Rubinstein":
+            if "prefactor" in mobility_model_kwargs:
+                prefactor = mobility_model_kwargs["prefactor"]
+            else:
+                prefactor = 1
+            k=1
+            mobility = mobility_Rubinstein(fields["corrected_phi"], k, d, prefactor)
+        
+        elif mobility_model=="Phillies":
+            beta = mobility_model_kwargs["beta"]
+            nu = mobility_model_kwargs["nu"]
+            mobility = mobility_Phillies(fields["corrected_phi"], beta, nu)
+
+    mobility[fields["walls"]==True] = 0
+    fields["mobility"] = mobility
 
     #==pore permeability
     #----pore with no polymer brush in it----
     #for the reference and normalization
-    empty_pore_conductivity = np.ones_like(fields["phi"])
-    empty_pore_conductivity[fields["walls"]==True] = 0
+    #empty_pore_conductivity = np.ones_like(fields["phi"])
+    #empty_pore_conductivity[fields["walls"]==True] = 0
 
     #----permeability on z----
     #numerical integration over z-crossection in cylindrical coordinates
     r = np.arange(0, pore_radius)
-    #a_z = 2*r
-    #a_z[0] = 1/4
     get_permeability_z = lambda x: np.sum(x[:, 0:pore_radius]*(2*r+1), axis = 1)#*2*np.pi
+    fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])
     
     fields["permeability_z"] = get_permeability_z(fields["conductivity"])
-    fields["permeability_z_empty"] = get_permeability_z(empty_pore_conductivity)
+    #fields["permeability_z_empty"] = get_permeability_z(empty_pore_conductivity)
 
     return fields
 
@@ -159,9 +168,10 @@ def integrate_permeability_over_z(fields, L):
     lb = l1-L
     rb = l1+wall_thickness+L+1 #+1 because of the offset after convolution
     get_permeability = lambda x: np.sum(x[lb:rb]**(-1))**(-1)
-    p = {}
-    p["permeability"] = get_permeability(fields["permeability_z"])
-    p["permeability_empty"] = get_permeability(fields["permeability_z_empty"])
-    return p
+    #p = {}
+    #p["permeability"] = get_permeability(fields["permeability_z"])
+    #p["permeability_empty"] = get_permeability(fields["permeability_z_empty"])
+    #return p
+    return get_permeability(fields["permeability_z"])
 
 #%%

@@ -1,5 +1,6 @@
 \documentclass[12pt, a4paper]{article}
 \usepackage{graphicx}
+\usepackage{amsmath}
 \usepackage[
 backend=biber,
 natbib=true,
@@ -16,39 +17,95 @@ sorting=none
 
 \section{System geometry}
 
-System geometry, coordinate system, lattice and discretization techniques are schematically shown in \ref{fig:main} 
-
-\begin{figure}    
-    \includegraphics[width = \linewidth]{fig/main_figure.png}
-    \caption{Schematic cutaway diagram of system geometry, space discretization, boundary conditions and polymer brush morphology. 
-    The pore walls are green rigid body impermeable for particles and polymer brush. The inner surface of a pore is grafted with polymer chains (red curved lines), the grafting surface is pictured as red straight line on the horizontal cross-section plane. 
-    The polymer concentration profile ($\phi$) has axial symmetry the profile is presented as a heatmap on the vertical cross-section plane. 
-    The particle stationary concentration profile ($c$) is a heatmap on the horizontal cross-section plane. 
-    Particle enters the system from the left inlet (constant concentration) and leave the system from the right outlet (absolute sink), the flux of particle is drawn with red arrows on the horizontal cross-section plane.
-    Degenerate cylindrical coordinate system and lattice has only two coordinates $(r, z)$, lattice volume element is a square toroid. Particle is discretized into a set of surface and volume elements.
-    Lattice width is equal to polymer chains Kuhn segment.}
-    \label{fig:main}
-\end{figure}
 
 \begin{figure}
+    \centering
+    \includegraphics[width = \linewidth]{fig/main_figure.pdf}
+    \caption{
+        Schematic cutaway diagram of system geometry, space discretization, boundary conditions and polymer brush morphology.
+        The radial axis $r$ (1) and the axis $z$ (2) defines cylindrical coordinates with degenerate angular coordinates.
+        If $z$ is held constant a flat circular plane is traced, $z=0$ traces a plane at the origin (3). 
+        If $r$ is held constant a cylindrical surface is traced.
+        The space is discretized using regular 2D grid (4) with element size $\delta z = \delta r = a$, where $a$ is Kuhn segment length.
+        Each element of the grid has a finite volume equal to a square toroid traced by the cylindrical and circular surfaces (5).
+        \\
+        The studied system is a pore in an infinite solvent reservoir (6).
+        The pore walls (7) are rigid body impermeable for particles and polymer brush. The inner surface of a pore is grafted with homopolymer chains (8) with grafting density $\sigma$ and degree of polymerization $N$, 
+        the grafting surface (9) is pictured as red straight line on the horizontal cross-section plane.
+        \\
+        Spherical particles (10) with diameter $d$ diffuse from the left semi-infinite reservoir. 
+        %Particles concentration infinitely far from the pore to the left defined $c_0$. 
+        The ingress of particles shown with green arrows(11) and simulated as a source with constant concentration of particles $c_0$ placed far from the pore.
+        \\
+        %The particles are transported through the pore and to the right semi-infinite reservoir with particle concentration $c=0$. 
+        The egress of particles shown with red arrows(12) and simulated as a perfect sink with constant concentration of particles $c=0$ placed far from the pore.
+        \\
+        Particles are discretized by grid elements occupancy, e.g. how much of a particle volume occupy grid element volume. The discretization of particle volume is shown as a heatmap (13) under the particle.  
+        \\
+        The polymer volume concentration profile ($\phi$) has axial symmetry the profile is presented as a heatmap on the vertical cross-section plane. 
+        The particle stationary concentration profile normalized by the bulk concentration ($c/c_0$) is a heatmap on the horizontal cross-section plane.
+    }
+    \label{fig:main}
+\end{figure}
+    
+System geometry, coordinate system, lattice and discretization techniques are schematically shown in \ref{fig:main} 
+\begin{figure}
     \includegraphics[width = 5in]{fig/pore_geometry.png}
+
+    \label{fig:size}
 \end{figure}
 
 \section{Particle insertion free energy}
 
 Insertion free energy is split into two contribution: osmotic and surface free energy.
 
-Assuming probe particle case osmotic contribution is defined as an integral of polymer brush osmotic pressure over particle volume.
+Assuming probe particle case osmotic contribution is defined as an integral of polymer brush osmotic pressure over particle volume. The system is spatially discretized into finite volume elements, the integral can be approximated as a Riemann sum over finite volume elements. 
+
+To calculate osmotic term of the particle insertion free energy osmotic pressure is summed over the all elements occupied by the particle weighted by the occupancy. 
 
 \begin{eqnarray}
     F_{osm} = \int_V \Pi dV
     \\
     F_{sur} = \int_S \gamma dV
     \\
-    F_{osm [i, k]} = \sum_{l=i-d/2}^{i+d/2-1} \sum_{m=\max(k-d/2, 0)}^{k+d/2-1} \Pi_{[l,m]} v_{[l, m]} = \Pi \ast v
+    F_{osm [i, k]} = \sum_{l=i-d/2}^{i+d/2-1} \sum_{m=\max\{k-d/2, 0\}}^{k+d/2-1} \Pi_{[l,m]} \cdot v_{[l, m]} = \Pi \ast v
     \\
-    F_{sur [i, k]} = \sum_{l=i-d/2}^{i+d/2-1} \sum_{m=\max(k-d/2, 0)}^{k+d/2-1} \gamma_{[l,m]} s_{[l, m]} = \gamma \ast s
+    \sum_{l=i-d/2}^{i+d/2-1} \sum_{m=\max\{k-d/2, 0\}}^{k+d/2-1} v_{[l, m]} = V
+    \\
+    F_{sur [i, k]} = \sum_{l=i-d/2}^{i+d/2-1} \sum_{m=\max\{k-d/2, 0\}}^{k+d/2-1} \gamma_{[l,m]} \cdot s_{[l, m]} = \gamma \ast s
+    \\
+    \sum_{l=i-d/2}^{i+d/2-1} \sum_{m=\max\{k-d/2, 0\}}^{k+d/2-1} s_{[l, m]} = S
 \end{eqnarray}
+
+For the case of cylindrical particle moving along $z$-axis
+\begin{eqnarray}
+    v_{[i,k]}=2\pi(i+1)
+    \\
+    s_{[i,k]} = 
+    \begin{cases}
+        2\pi(i+1), & \text{if}\ k=0 \text{ or } k=d-1 \\
+        2 \pi i,   & \text{if}\ i=d/2 \\
+        0,         & \text{otherwise}
+    \end{cases}
+\end{eqnarray}
+
+\begin{eqnarray}
+    \sum_{i,k} v_{[i,k]} = \frac{\pi d^{3}}{4}
+    \\
+    \sum_{i,k} s_{[i,k]} = \frac{3}{2} \pi d^{2}
+\end{eqnarray}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{fig/cylindrical_particle_discretization.png}
+    \caption{Cutaway diagram for the discretization of a cylindrical particle centered along $z$-axis.
+    \\The body of a particle is green cylinder (1) with a center marked with a red cross (2).
+    \\ The heatmap on the vertical cross-section is volume occupancy of the particle with the grid elements(3)
+    \\ The heatmap on the horizontal cross-section is surface occupancy of the particle with the grid elements(4)
+    \\
+    Vertical axis $i$ is parallel to system coordinates axis $r$. Axis $k$ is coaxial to axis $z$.
+    }
+\end{figure}
 
 \begin{equation}
     D = \frac{D_{0}}{1+\phi^2 d^2}
@@ -182,5 +239,22 @@ The change in the concentration in the element is defined by the net flux of col
 \begin{equation}
     \nabla_{V} j = -\lambda_w j_w + \lambda_e j_e - \lambda_s j_s + \lambda_n j_n
 \end{equation}
+
+
+\begin{figure}
+    \includegraphics[width = \linewidth]{fig/fig1.pdf}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width = \linewidth]{fig/fig2.pdf}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width = \linewidth]{fig/fig3.pdf}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width = 3in]{fig/phi_correction.pdf}
+\end{figure}
 
 \end{document}
