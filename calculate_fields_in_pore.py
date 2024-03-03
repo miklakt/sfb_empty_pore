@@ -64,12 +64,12 @@ def generate_circle_kernel(d):
     return a
 
 def add_walls(fields, exclude_volume = True, d = None):
-    l1 = fields["l1"].squeeze()
-    l2 = fields["l2"].squeeze()
-    xlayers = fields["xlayers"].squeeze()
-    ylayers = fields["ylayers"].squeeze()
-    pore_radius = fields["r"].squeeze()
-    wall_thickness = fields["s"].squeeze()
+    l1 = fields["l1"]
+    l2 = fields["l2"]
+    xlayers = fields["xlayers"]
+    ylayers = fields["ylayers"]
+    pore_radius = fields["r"]
+    wall_thickness = fields["s"]
 
     W_arr = np.zeros((xlayers, ylayers))
     W_arr[l1:l1+wall_thickness+1, pore_radius:] = True
@@ -80,10 +80,70 @@ def add_walls(fields, exclude_volume = True, d = None):
     fields["walls"] = W_arr
 
 def calculate_pressure(fields, truncate = False):
-    phi = fields["phi"].squeeze()
-    chi = fields["chi_PS"].squeeze()
+    phi = fields["phi"]
+    chi = fields["chi_PS"]
     fields["Pi"] = Pi(phi, chi, truncate)
 
+def calculate_gamma(fields, a0, a1):
+    phi = fields["phi"]
+    chi = fields["chi_PS"]
+    chi_PC = fields["chi_PC"]
+    fields["gamma"] = gamma(chi, chi_PC, phi, a0, a1)
+    fields["a0"] = a0
+    fields["a1"] = a1
+
+def calculate_energy(fields, d, method):
+    #==free energy calculation==
+    #----approximate method----
+    if method == "approx":
+        fields["surface"] = fields["gamma"]*surface(d)
+        fields["osmotic"] = fields["Pi"]*volume(d)
+    #----convolution method the output is staggered----
+    if method == "convolve":
+        convolve_mode = "valid"
+        fields["surface"] = convolve_particle_surface(fields["gamma"].T, d, convolve_mode).T
+        fields["osmotic"] = convolve_particle_volume(fields["Pi"].T, d, convolve_mode).T
+    #----convolution method the output is centered----
+    if method == "convolve_same":
+        convolve_mode = "same"
+        fields["surface"] = convolve_particle_surface(fields["gamma"].T, d, convolve_mode).T
+        fields["osmotic"] = convolve_particle_volume(fields["Pi"].T, d, convolve_mode).T
+    #----total free energy----
+    fields["free_energy"] = fields["surface"] + fields["osmotic"]
+
+def calculate_corrected_phi(fields, a0, a1, correction = "average", d = None, convolve_mode = "valid"):
+    phi = fields["phi"]
+    chi_PC = fields["chi_PC"]
+    if correction != "none":
+        if correction == "vol_average_corrected":
+            average_corrected_phi = (a0 + a1*chi_PC)*phi
+        elif correction == "average":
+            average_corrected_phi = phi
+            fields["corrected_phi"] = convolve_particle_volume(average_corrected_phi.T, d, convolve_mode).T / volume(d)
+    else:
+        fields["corrected_phi"] = phi
+
+def calculate_mobility(fields, d, model, model_kwargs = {}, phi_arr = "phi"):
+    if model=="Rubinstein":
+        if "prefactor" in model_kwargs:
+            prefactor = model_kwargs["prefactor"]
+        else:
+            prefactor = 1
+        k=1
+        mobility = mobility_Rubinstein(fields[phi_arr], k, d, prefactor)
+    
+    elif model=="Phillies":
+        beta = model_kwargs["beta"]
+        nu = model_kwargs["nu"]
+        mobility = mobility_Phillies(fields[phi_arr], beta, nu)
+
+    elif model == "none":
+        xlayers = fields["xlayers"]
+        ylayers = fields["ylayers"]
+        mobility = np.ones((xlayers, ylayers))
+        mobility[fields["walls"]==True] = 0
+    
+    fields["mobility"] = mobility
 
 
 @pickle_cache.pickle_lru_cache(purge_cache=True)
