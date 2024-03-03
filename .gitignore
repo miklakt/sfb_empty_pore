@@ -57,3 +57,13 @@ venv/
 *.hdf5
 
 *.sh
+
+## other
+*.skp
+*.skb
+*.FCStd
+*.FCStd1
+*.ipynb
+*.docx
+*.doc
+*.png

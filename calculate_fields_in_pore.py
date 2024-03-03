@@ -63,6 +63,29 @@ def generate_circle_kernel(d):
                 a[i,j] = True
     return a
 
+def add_walls(fields, exclude_volume = True, d = None):
+    l1 = fields["l1"].squeeze()
+    l2 = fields["l2"].squeeze()
+    xlayers = fields["xlayers"].squeeze()
+    ylayers = fields["ylayers"].squeeze()
+    pore_radius = fields["r"].squeeze()
+    wall_thickness = fields["s"].squeeze()
+
+    W_arr = np.zeros((xlayers, ylayers))
+    W_arr[l1:l1+wall_thickness+1, pore_radius:] = True
+    if exclude_volume:
+        if d is None:
+            raise ValueError("No particle size specified")
+        W_arr = ndimage.binary_dilation(W_arr, structure = generate_circle_kernel(d))
+    fields["walls"] = W_arr
+
+def calculate_pressure(fields, truncate = False):
+    phi = fields["phi"].squeeze()
+    chi = fields["chi_PS"].squeeze()
+    fields["Pi"] = Pi(phi, chi, truncate)
+
+
+
 @pickle_cache.pickle_lru_cache(purge_cache=True)
 def calculate_fields(
         a0, a1, 
