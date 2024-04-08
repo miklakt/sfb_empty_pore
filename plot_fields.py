@@ -41,11 +41,13 @@ pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
 
 d = 8
-chi_PC = -1.0
+chi_PC = -1.5
 chi = 0.5
+sigma = 0.03
 fields = calculate_fields(
     a0, a1, d=d,
     chi_PC=chi_PC, chi=chi,
+    sigma = sigma,
     wall_thickness=wall_thickness,
     pore_radius=pore_radius,
     #**method
@@ -161,7 +163,9 @@ fields = calculate_fields(
     a0, a1, d=d,
     chi_PC=chi_PC, chi=chi,
     wall_thickness=wall_thickness,
-    pore_radius=pore_radius
+    pore_radius=pore_radius,
+    sigma = 0.02,
+
     )
 
 #%%

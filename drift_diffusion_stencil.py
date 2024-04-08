@@ -53,9 +53,14 @@ class DriftDiffusionKernelFactory:
 
         #++updating fields++
         self.c_arr = xp.zeros(domain_size)
+
         self.J_arr = xp.zeros((*domain_size,2))
+        self.J_dif_arr = xp.zeros((*domain_size,2))
+        self.J_adv_arr = xp.zeros((*domain_size,2))
         self.grad_c_arr = xp.zeros((*domain_size,2))
+
         self.div_J_arr = xp.zeros((domain_size))
+        # self.div_J_prev_arr = xp.zeros((domain_size))
 
     def __set_arrays(self, kwargs):
         for kwarg, value in kwargs.items():
@@ -102,11 +107,13 @@ class DriftDiffusionKernelFactory:
             Pe_x = self.Pe_x_arr, 
             Pe_y = self.Pe_y_arr
             )
-        self.Pe_x, self.Pe_y = ps.fields(
+
+        self.alpha_x, self.alpha_y = ps.fields(
             "alpha_x, alpha_y: [2d]", 
             alpha_x = self.alpha_x_arr,
             alpha_y = self.alpha_y_arr
             )
+
         self.lambda_n, self.lambda_s = ps.fields(
             "lambda_n, lambda_s: [2d]", 
             lambda_n = self.lambda_n_arr, 
@@ -122,14 +129,25 @@ class DriftDiffusionKernelFactory:
             c_next=self.c_arr
             )
         
-        self.J = ps.fields("J(2): [2d]", 
+        self.J = ps.fields("J(2): [2d]",
                            J = self.J_arr)
+
+        self.J_dif = ps.fields("J_dif(2): [2d]",
+                    J_dif = self.J_dif_arr)
         
-        self.grad_c = ps.fields("grad_c(2): [2d]", 
+        self.J_adv = ps.fields("J_adv(2): [2d]",
+                J_adv = self.J_adv_arr)
+    
+
+        
+        self.grad_c = ps.fields("grad_c(2): [2d]",
                            grad_c = self.grad_c_arr)
-        
-        self.div_J = ps.fields("div_J: [2d]", 
+                
+        self.div_J = ps.fields("div_J: [2d]",
                            div_J = self.div_J_arr)
+        
+        # self.div_J_prev = ps.fields("div_J_prev: [2d]", 
+        #                    div_J_prev = self.div_J_prev_arr)
 
     def __init__(self, W_arr = None, U_arr = None, D_arr = None, differencing = "hybrid", **kwargs) -> None:
         if W_arr is not None:
@@ -171,9 +189,15 @@ class DriftDiffusionKernelFactory:
             self.alpha_y_arr[(self.Pe_y_arr >= 2)]=0.0
             self.alpha_y_arr[(self.Pe_y_arr <= -2)]=1.0
 
-        if differencing == "power_law":
+        elif differencing == "power_law":
             self.alpha_x_arr = alpha_power_law(self.Pe_x_arr)
             self.alpha_y_arr = alpha_power_law(self.Pe_y_arr)
+
+        elif differencing == "central":
+            pass
+
+        else:
+            raise ValueError("Wrong differencing scheme")
 
         
         self.__init_fields()
@@ -182,57 +206,69 @@ class DriftDiffusionKernelFactory:
         self.dt = dt
         @ps.kernel
         def kernel_desc():
-  
+            # N for North
             c_P = self.c[0,0]
             c_E = self.c[1,0]
             c_W = self.c[-1,0]
             c_N = self.c[0,1]
             c_S = self.c[0,-1]
-
+            
+            # concentration gradients
             grad_c_e = c_E - c_P
             grad_c_w = c_P - c_W
             grad_c_n = c_N - c_P
             grad_c_s = c_P - c_S
 
-            #xaxis
-            J_dif_e =   self.D_x[0,0]*grad_c_e
+            # Diffusion flux flux, due to potential gradient
+            J_dif_e =   -self.D_x[0,0]*grad_c_e
             J_dif_w =   -self.D_x[-1,0]*grad_c_w
-            #yaxis
-            J_dif_n =   self.D_y[0,0]*grad_c_n
+            J_dif_n =   -self.D_y[0,0]*grad_c_n
             J_dif_s =   -self.D_y[0,-1]*grad_c_s
-                        
-            alpha_e = self.alpha_x_arr[0,0]
-            alpha_w = 1.0-self.alpha_x_arr[-1,0]
-            alpha_n = self.alpha_y_arr[0,0]
-            alpha_s = 1.0-self.alpha_y_arr[0,-1]
 
+            #alpha depends on Peclet number           
+            alpha_e = self.alpha_x[0,0]
+            alpha_w = 1.0-self.alpha_x[-1,0]
+            alpha_n = self.alpha_y[0,0]
+            alpha_s = 1.0-self.alpha_y[0,-1]
+
+            #concentration at faces, with upwind correction    
             c_e = c_E*alpha_e + c_P*(1.0-alpha_e)
             c_w = c_W*alpha_w + c_P*(1.0-alpha_w)
             c_n = c_N*alpha_n + c_P*(1.0-alpha_n)
             c_s = c_S*alpha_s + c_P*(1.0-alpha_s)
             
 
-            #xaxis
-            J_adv_e =   self.D_x[0,0]*self.dU_x[0,0]*c_e
-            J_adv_w =  -self.D_x[-1,0]*self.dU_x[-1,0]*c_w
-            #yaxis
-            J_adv_n =   self.D_y[0,0]*self.dU_y[0,0]*c_n
-            J_adv_s =  -self.D_y[0,-1]*self.dU_y[0,-1]*c_s
+            # Advection flux, due to potential gradient
+            J_adv_e =   -self.D_x[0,0]*self.dU_x[0,0]*c_e
+            J_adv_w =   -self.D_x[-1,0]*self.dU_x[-1,0]*c_w
+            J_adv_n =   -self.D_y[0,0]*self.dU_y[0,0]*c_n
+            J_adv_s =   -self.D_y[0,-1]*self.dU_y[0,-1]*c_s
 
 
             J_E = J_dif_e+J_adv_e
             J_W = J_dif_w+J_adv_w
-            J_N = (J_dif_n+J_adv_n)
-            J_S = (J_dif_s+J_adv_s)
+            J_N = J_dif_n+J_adv_n
+            J_S = J_dif_s+J_adv_s
 
-            J_tot = J_E + J_W + J_N*self.lambda_n[0,0] +J_S*self.lambda_s[0,0]
+            J_tot_current = -J_E + J_W - J_N*self.lambda_n[0,0] +J_S*self.lambda_s[0,0]
+            J_tot_prev = -self.div_J[0,0]
+            # Adams–Bashforth methods
+            J_tot = 3/2*(J_tot_current) - 1/2*(J_tot_prev)
+            #J_tot = J_tot_current
 
             self.grad_c[0,0][0] @= grad_c_e
             self.grad_c[0,0][1] @= grad_c_n
-            self.J[0,0][0] @= -J_E
-            self.J[0,0][1] @= -J_N
+
+            self.J_dif[0,0][0] @= J_dif_e
+            self.J_dif[0,0][1] @= J_dif_n
+            self.J_adv[0,0][0] @= J_adv_e
+            self.J_adv[0,0][1] @= J_adv_n
+
+            self.J[0,0][0] @= J_E
+            self.J[0,0][1] @= J_N
+
             self.div_J[0,0] @=  -J_tot
-            self.c_next[0,0] @= c_P+J_tot*self.dt
+            self.c_next[0,0] @= c_P + J_tot*self.dt
         
         self.kernel_desc = kernel_desc
         self.compile_kernel()
@@ -270,19 +306,22 @@ class DriftDiffusionKernelFactory:
             if steps is None: steps = default_steps
             for i in range(steps):
                 self.kernel(
-                    D_x = self.D_x_arr, 
-                    D_y = self.D_y_arr, 
-                    dU_x = self.dU_x_arr, 
+                    D_x = self.D_x_arr,
+                    D_y = self.D_y_arr,
+                    dU_x = self.dU_x_arr,
                     dU_y = self.dU_y_arr,
                     J = self.J_arr,
-                    lambda_s = self.lambda_s_arr, 
+                    J_dif = self.J_dif_arr,
+                    J_adv = self.J_adv_arr,
+                    lambda_s = self.lambda_s_arr,
                     lambda_n = self.lambda_n_arr,
-                    Pe_x = self.Pe_x_arr, 
+                    Pe_x = self.Pe_x_arr,
                     Pe_y = self.Pe_y_arr,
-                    c = self.c_arr, 
+                    c = self.c_arr,
                     c_next = c_tmp_arr,
                     grad_c = self.grad_c_arr,
                     div_J = self.div_J_arr,
+                    # div_J_prev = self.div_J_prev_arr,
                     alpha_x = self.alpha_x_arr,
                     alpha_y = self.alpha_y_arr,
                     )
@@ -451,12 +490,4 @@ class SimulationManager:
         print("File closed")
 
 
-
-
-    
-        
-
-    
-    # def save_fields(self):
-        
 # %%

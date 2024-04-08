@@ -7,7 +7,8 @@ def plot_heatmap_and_profiles(array,
     zmin = None,
     zmax = None,
     mask = None,
-    cmap = "seismic"
+    cmap = "seismic",
+    contour = False,
     ):
     import numpy as np
     import matplotlib.pyplot as plt
@@ -107,6 +108,7 @@ def plot_heatmap_and_profiles(array,
         vmin = zmin,
         vmax = zmax
         )
+    
 
 
     
@@ -118,6 +120,17 @@ def plot_heatmap_and_profiles(array,
                         )
     cbar.set_label(zlabel, labelpad = -40)
 
+    if contour:
+        cs = ax.contour(
+            array.T,
+            cmap=cmap_.reversed(),
+            extent = extent, 
+            origin = "lower",
+            linewidths = 0.3,
+            vmin = zmin,
+            vmax = zmax
+            )
+        cbar.add_lines(cs)
 
     vline_profile, = ax_y.plot(vline_data, y_arr, color = "black")
     vline_scatter, = ax_y.plot(x_arr[vline_x], zvalue, color = "black", marker = 's', markerfacecolor="none")
