@@ -42,20 +42,26 @@ r_cut = None
 z_cut = 80
 fields = pd.read_pickle("reference_table_empty_brush.pkl")
 #fields = get_by_kwargs(fields, r = 26, s = 52)
-fields = get_by_kwargs(fields, chi_PS = 0.7).iloc[1]
+#fields = get_by_kwargs(fields, chi_PS = 0.7).iloc[1]
+fields =get_by_kwargs(fields, chi_PS = 0.5, r = 26, s = 52).sort_values(by = "sigma")
 
-CHI_PS = [0.1, 0.3, 0.5, 0.7, 0.9, 1.1]
-CHI_PS = [0.7]
+#CHI_PS = [0.1, 0.3, 0.5, 0.7, 0.9, 1.1]
+#CHI_PS = [0.7]
+chi_ps = 0.5
 
 #fig, axs = plt.subplots(ncols=3, nrows=2, sharex=True, sharey=True)
-fig, axs = plt.subplots(ncols=1, nrows=1, sharex=True, sharey=True)
+fig, axs = plt.subplots(ncols=2, nrows=6, sharex=True, sharey=True)
+axs = axs.flatten()
+
+axs[-1].remove()
 
 vmin = 0
 vmax = 0.75
 #for chi_ps, ax in zip(CHI_PS, axs.flatten()):
-for chi_ps, ax in zip(CHI_PS, [axs]): 
+for (sigma, field), ax in zip(fields.groupby(by = "sigma"), axs): 
     #field = get_by_kwargs(fields, chi_PS = chi_ps)
-    field = fields
+    #field = fields
+    print(sigma)
     phi_masked, extent = mask_field(field,"phi", r_cut, z_cut)
     #cmap_ = matplotlib.cm.get_cmap("gist_stern_r")
     cmap_ = matplotlib.cm.get_cmap("gnuplot2_r")
@@ -106,7 +112,7 @@ cax.yaxis.tick_right()
 cax.set_xticks([], minor = False)
 cax.set_title("$\phi$")
 plt.tight_layout()
-fig.set_size_inches(2.5, 3)
+fig.set_size_inches(7,18)
 
 #fig.savefig("/home/ml/Desktop/phi_open.svg")
 #%%
@@ -127,7 +133,10 @@ trans = transforms.blended_transform_factory(
         )
 
 for chi_ps in CHI_PS:
-    field = get_by_kwargs(fields, chi_PS = chi_ps)
+    try:
+        field = get_by_kwargs(fields, chi_PS = chi_ps)
+    except KeyError:
+        field = fields
     wall_thickness = field["s"].squeeze()
     pore_radius = field["r"].squeeze()
     l1 = field["l1"].squeeze()
@@ -156,4 +165,48 @@ ax.set_ylabel("$\phi(z, r=0)$")
 fig.set_size_inches(3.5, 3)
 
 fig.savefig("/home/ml/Desktop/phi_center.svg")
+# %%
+import matplotlib.transforms as transforms
+import matplotlib.patches as mpatches
+fig, ax = plt.subplots()
+markers = itertools.cycle(mpl_markers)
+trans = transforms.blended_transform_factory(
+        ax.transData, ax.transAxes
+        )
+
+for sigma, field in fields.groupby(by = "sigma"):
+    # try:
+    #     field = get_by_kwargs(fields, chi_PS = chi_ps)
+    # except KeyError:
+    #     field = fields
+    wall_thickness = field["s"].squeeze()
+    pore_radius = field["r"].squeeze()
+    l1 = field["l1"].squeeze()
+    phi = field.dataset["phi"].squeeze()
+    phi_r0 = phi[0,:]
+
+    z = np.arange(len(phi_r0)) - len(phi_r0)/2
+
+    ax.plot(z, phi_r0, 
+            #label = sigma,
+            color = "black",
+            linewidth = 0.5
+            #marker = next(markers),
+            #markerfacecolor = "None",
+            #markevery = 0.2,
+            )
+    
+rect = mpatches.Rectangle((-wall_thickness/2, 0), width=wall_thickness, height=1, transform=trans,
+                        color='grey', alpha=0.1)
+ax.add_patch(rect)
+ax.legend(title="$\chi_{PS}$")
+ax.set_xlim(-80,80)
+ax.set_ylim(-0.02, 0.3)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel("$\phi(z, r=0)$")
+
+fig.set_size_inches(3.5, 3)
+
+#fig.savefig("/home/ml/Desktop/phi_center.svg")
 # %%

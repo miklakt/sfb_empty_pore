@@ -6,7 +6,7 @@ import extract_features
 import pandas as pd
 import pathlib
 #%%
-dir = pathlib.Path("temp9")
+dir_ = pathlib.Path("temp2603")
 #%%
 def process_data(raw_data):
     import extract_features
@@ -27,7 +27,7 @@ def name_file(data, timestamp = True):
         name = "_".join([data['comment'], name])
     return name
 # %%
-for filename in dir.glob("*.out"):
+for filename in dir_.glob("*.out"):
     print(filename)
     sfbox_utils.store.store_file_sequential(
         file=filename,

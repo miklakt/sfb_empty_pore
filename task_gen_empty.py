@@ -149,6 +149,37 @@ def continuously_change_chi_PS(
 
     return ifile_data
 
+def continuously_change_sigma(
+        init_args,
+        sigma_start,
+        sigma_end,
+        sigma_step,
+        skip_found = True
+    ):
+    #decimals = max(1,int(-np.log10(sigma_step))+1)
+    decimals = 4
+    sigma_list = np.round(np.arange(sigma_start, sigma_end+sigma_step, sigma_step), decimals)
+
+    ifile_data = []
+    skipped = 0
+
+    for sigma in sigma_list:
+        record_in_reference = utils.get_by_kwargs(ref_tbl, sigma = sigma, **init_args)
+
+        if len(record_in_reference) == 0 or not(skip_found):
+            ifile_data.append(dict(sigma = sigma))
+        
+        else:
+            print(f"The calculation is skipped {sigma=}")
+            skipped = skipped+1
+
+    if ifile_data:
+        ifile_data[0].update(init_args)
+
+    print(f"Calculation skipped: {skipped}")
+
+    return ifile_data
+
 # %%
 init_args = dict(
     r = 26,
@@ -156,26 +187,30 @@ init_args = dict(
     h = 40,
     l1 = 120,
     l2 = 120,
-    #chi_PS = chi,
-    chi_PW = -1,
+    chi_PS = 0.5,
+    chi_PW = 0,
     N=300,
-    sigma = 0.02
+    sigma = 0.03
 )
-working_dir = path = pathlib.Path("temp9")
+working_dir = path = pathlib.Path("temp2603")
 continue_unfinished = True
 try:
     working_dir.mkdir(parents=True, exist_ok=False)
 except FileExistsError:
     print("Folder is already there")
-#%%
-ifile_data = continuously_change_chi_PS(init_args, 1.1, 1.2, 0.01)
+##%%
+#ifile_data = continuously_change_chi_PS(init_args, 1.1, 1.2, 0.01)
+#ifile_data = continuously_change_sigma(init_args, 0.004, 0.03, 0.002)
+ifile_data = [{}]
+ifile_data[0].update(init_args)
+
 translated = translate_to_sfbox(ifile_data)
 translated = sort_keys(translated)
-
+##%%
 if continue_unfinished:
     ig_data = utils.find_closest_in_reference(
         ref_tbl,
-        init_args | {"chi_PS" : ("close", ifile_data[0]["chi_PS"])},
+        init_args | {"sigma" : ("close", ifile_data[0]["sigma"])},
         return_only_one = True
         )
     if (ig_data is not None) and (not ig_data.empty):
@@ -183,13 +218,14 @@ if continue_unfinished:
         pass
     else:
         ig_data = False
-# %%
+ig_data = False
+## %%
 input_file = working_dir/(args_to_name(ifile_data[0], ignore_keys=["initial_guess"]) + ".in")
 initial_guess_file = input_file.with_suffix(".ig")
-# %%
+## %%
 if ig_data is not False: 
     utils.calculation_result_to_initial_guess_file(ig_data, initial_guess_file)
-# %%
+## %%
 if initial_guess_file.exists():
     print("Initial guess file is found")
     translated[0].update({"newton:isaac:initial_guess":"file"})
@@ -198,7 +234,7 @@ if initial_guess_file.exists():
         translated[1].update({"newton:isaac:initial_guess":"previous_result"})
     except IndexError:
         pass
-# %%
+## %%
 sfbox_utils.write_input.write_input_file(input_file, translated)
 
 print(f"Number of calculations: {len(translated)}")

@@ -42,8 +42,9 @@ __pycache__/
 *.png
 *.svg
 
-## virual env
+## virual env and cache
 venv/
+*_cache__/
 
 ## media
 *.mp4

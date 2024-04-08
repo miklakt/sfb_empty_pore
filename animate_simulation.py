@@ -22,28 +22,38 @@ def shrink_cbar(ax, shrink=0.9):
     ax.set_position(b)
 
 #%%
+# pore_radius = 26 # pore radius
+# wall_thickness = 52 # wall thickness
+# d = 24
+# chi_PC = -1.25
+# chi = 0.5
+#walls_only = False
+# zlayers = 392+100
+# rlayers = 66+200
+
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d = 24
-chi_PC = -1.25
-chi = 0.5
-walls_only = False
+rlayers = 400
+zlayers = 600
+pore_radius = 26
+wall_thickness = 52
+potential = -2.0
+
 dt = 0.1
-zlayers = 392+100
-rlayers = 66+200
 differencing = "power_law"
 
 flux_empty_pore_theory = get_flux_empty_pore_theory(
-    D = 1, r = pore_radius-d/2, c=1, L = wall_thickness
+    #D = 1, r = pore_radius-d/2, c=1, L = wall_thickness
+    D = 1, r = pore_radius, c=1, L = wall_thickness
 )
 
-if walls_only:
-    simulation_name = \
-    f"simulation_data/{d=}_{zlayers=}_{rlayers=}_{dt=}_{differencing}.h5"
-else:
-    simulation_name = \
-    f"simulation_data/{d=}_{chi=}_{chi_PC=}_{zlayers=}_{rlayers=}_{dt=}_{differencing}.h5"
-
+# if walls_only:
+#     simulation_name = \
+#     f"simulation_data/{d=}_{zlayers=}_{rlayers=}_{dt=}_{differencing}.h5"
+# else:
+#     simulation_name = \
+#     f"simulation_data/{d=}_{chi=}_{chi_PC=}_{zlayers=}_{rlayers=}_{dt=}_{differencing}.h5"
+simulation_name = f"simulation_data/box_potential_{zlayers}_{rlayers}_{potential}_{pore_radius}_{wall_thickness}_{dt=}_{differencing}.h5"
 #simulation_name = "simulation_data/d=8_chi=0.4_chi_PC=-1_zlayers=492_rlayers=216_every=10000_dt=0.01"
 # %%
 def plot_all(dd_obj):
@@ -253,7 +263,7 @@ def plot_all(dd_obj):
 with h5py.File(simulation_name, "r") as simulation_results:
     fig, plot_func = plot_all(simulation_results)
     plot_func(-1)
-    fig.suptitle(f"{d=} {chi=} {chi_PC=}")
+    fig.suptitle(f"{potential=}")
     fig
 #simulation_results.close()
 #%%
