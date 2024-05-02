@@ -44,6 +44,7 @@ __pycache__/
 
 ## virual env and cache
 venv/
+.venv/
 *_cache__/
 
 ## media
