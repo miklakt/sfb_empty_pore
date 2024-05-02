@@ -36,20 +36,26 @@ def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
 
 #%%
 # %%
-a0, a1 = [0.70585835, -0.31406453]
+a0, a1 = 0.70585835, -0.31406453
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
+d = 20
+chi_PC = -2.0
+chi = 0.1
+sigma = 0.02
 
-d = 8
-chi_PC = -1.5
-chi = 0.5
-sigma = 0.03
 fields = calculate_fields(
     a0, a1, d=d,
     chi_PC=chi_PC, chi=chi,
     sigma = sigma,
     wall_thickness=wall_thickness,
     pore_radius=pore_radius,
+    exclude_volume=True,
+    truncate_pressure=False,
+    method= "convolve", 
+    mobility_correction= "vol_average",
+    mobility_model = "Rubinstein",
+    mobility_model_kwargs = {"prefactor":1.0}
     #**method
     )
 # %%

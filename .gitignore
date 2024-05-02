@@ -68,3 +68,6 @@ venv/
 *.docx
 *.doc
 *.png
+
+
+numerical_simulation/simulation_data/*

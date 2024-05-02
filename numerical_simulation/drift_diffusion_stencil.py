@@ -1,10 +1,14 @@
 #%%
+import os, sys
+here = os.path.dirname(__file__)
+sys.path.append(os.path.join(here, '..'))
 from calculate_fields_in_pore import *
 import pystencils as ps
 import sympy as sp
 import h5py
 import tqdm
 import numpy as np
+import time
 
 __cupy__ = True
 if __cupy__:
@@ -21,6 +25,10 @@ def alpha_power_law(Pe):
     alpha = (xp.exp(Pe/2)-1)/(xp.exp(Pe)-1)
     alpha[xp.isclose(Pe, 0)]=0.5
     return alpha
+
+
+def sigmoid_k_one_over_k(steepness, k, x):
+    return (k-1/k)/(1+xp.exp(steepness*x+xp.log(k))) + 1/k
 
 class DriftDiffusionKernelFactory:   
     def __initialize_arrays(self, domain_size):
@@ -396,6 +404,61 @@ class DriftDiffusionKernelFactory:
             }
         return result_dict
 
+    def get_div_J_arr_on_c_arr(self, boundary_handler, dt, smooth_over = 3, steps = 100):
+        self.create_kernel(dt)
+        loop = self.create_update_loop(
+                default_steps=steps,
+                boundary_handler=boundary_handler
+            )
+        def get_J_arr(c_arr_):
+
+            #xp.copyto(self.c_arr, c_arr_)
+            self.c_arr = xp.array(c_arr_).reshape((self.zlayers, self.rlayers))
+            div_J = xp.zeros_like(self.div_J_arr)
+            for _ in tqdm.trange(0, smooth_over):
+                loop()
+                div_J = div_J + self.div_J_arr
+            div_J = div_J/smooth_over
+            return float(xp.sum(xp.abs(div_J)).get())
+        return get_J_arr
+
+    def run_until(
+        self, 
+        boundary_handler, 
+        dt, 
+        target_divJ_tot = 1e-6,
+        check_every = 10000,
+        timeout = 10,
+        jump_every = 10,
+        max_jump = 1,
+        sigmoid_steepness = 1,
+        jump_if_change = 1e-3
+        ):
+        self.create_kernel(dt)
+        loop = self.create_update_loop(
+                default_steps=check_every,
+                boundary_handler=boundary_handler
+            )
+        start_time = time.time()
+        loop()
+        div_J_tot = xp.sum(xp.abs(self.div_J_arr)).get()
+        get_elapsed_time = lambda: time.time() - start_time
+        is_target_reached = lambda: (get_elapsed_time()>timeout) or (div_J_tot<target_divJ_tot)
+        counter = 0
+        div_J_tot_old = div_J_tot
+        while True:
+            loop()
+            div_J_tot = xp.sum(xp.abs(self.div_J_arr)).get()
+            print(f"sum_divJ = {div_J_tot:.4E}, sum_c = {xp.sum(self.c_z_tot()).get():.4E}")
+            if is_target_reached(): break
+            counter = counter+1
+            if jump_every is not None:
+                if counter>=jump_every:
+                    if (abs(div_J_tot - div_J_tot_old)/div_J_tot_old)<jump_if_change:
+                        print(f"sum_divJ does not change in {jump_every} iterations, jump by {max_jump}")
+                        self.c_arr = self.c_arr*sigmoid_k_one_over_k(sigmoid_steepness, max_jump, self.div_J_arr)
+                    counter = 0
+                    div_J_tot_old = div_J_tot
 
 
 

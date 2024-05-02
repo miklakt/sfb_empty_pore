@@ -58,12 +58,19 @@ def cylynder_r0_kernel(radius:int, height:int = None):
 #%%
 #%%
 if __name__ == "__main__":
+    import calculate_fields_in_pore
     df = pd.read_pickle("reference_table_empty_brush.pkl")
     phi = utils.get_by_kwargs(df, chi_PS = 1, r=26, s = 52).dataset["phi"].squeeze()
-    phi_conv = convolve_particle_surface(phi, 16, "same")
+    a0, a1 = 0.70585835, -0.31406453
+    gamma = calculate_fields_in_pore.gamma(0.1, -2, phi, a0, a1)
+    phi_conv = convolve_particle_volume(phi, 20, "valid")
     def mirror(arr):
         cut = arr
         return np.vstack((np.flip(cut), cut)).T
     plt.imshow(mirror(phi_conv))
     #plt.imshow(phi)
+# %%
+    volume, surface, extent = generate_spherical_kernel(10,57)
+    zconv_result=convolve(phi[int(extent[0]):int(extent[1])], volume, mode="valid")
+    plt.imshow(zconv_result)
 # %%

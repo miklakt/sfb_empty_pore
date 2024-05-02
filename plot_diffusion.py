@@ -2,7 +2,8 @@
 import numpy as np
 from calculate_fields_in_pore import    mobility_Rubinstein, \
                                         mobility_Phillies, \
-                                        mobility_FoxFlory
+                                        mobility_FoxFlory, \
+                                        mobility_Hoyst
 
 import matplotlib.pyplot as plt
 
@@ -39,10 +40,10 @@ ax.legend(title = "prefactor")
 # %%
 fig, ax = plt.subplots()
 phi = np.geomspace(0.001, 0.9)
-d = 30
+d = 8
 
 #D_Hoyst = mobility_Hoyst(phi, d = d, alpha=40, delta = 0.7)
-D_Hoyst = mobility_Hoyst(phi, N=300, d = d, alpha=1.63, delta = 0.6, nu = 1)
+D_Hoyst = mobility_Hoyst(phi, N=300, d = d, alpha=1.63, delta = 0.89)
 D_Rubinstein = mobility_Rubinstein(phi, k=1, d=d, prefactor=1)
 #D_Phillies = mobility_Phillies(phi, beta = 8, nu = 0.76)
 #D_FoxFlory = mobility_FoxFlory(phi, N=300)

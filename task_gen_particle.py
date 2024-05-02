@@ -215,21 +215,21 @@ init_args = dict(
         l1 = 120,
         l2 = 120,
         chi_PW = 0,
-        chi_PC = -1.5,
+        chi_PC = -0.0,
         N=300,
         sigma = 0.02,
-        ph = 4,
-        pw = 4,
-        chi_PS = 0.3
+        ph = 8,
+        pw = 8,
+        chi_PS = 0.1
 )
-working_dir = path = pathlib.Path("temp8")
+working_dir = path = pathlib.Path("temp250424")
 continue_unfinished = True
 try:
     working_dir.mkdir(parents=True, exist_ok=False)
 except FileExistsError:
     print("Folder is already there")
 #%%
-ifile_data = move_along_z(init_args, -126, -80, 80)
+ifile_data = move_along_z(init_args, -126, -80, 0, 5)
 translated = translate_to_sfbox(ifile_data)
 translated = sort_keys(translated)
 

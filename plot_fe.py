@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.transforms as transforms
 import matplotlib.patches as mpatches
+import itertools
 
 import numpy as np
 import utils
@@ -89,55 +90,78 @@ s = 52
 r = 26
 ph =8
 pw =8
+sigma = 0.02
 
 master = pd.read_pickle("reference_table.pkl")
 #master = master.loc[master["comment"] == "grown_from_small"]
 master_empty = pd.read_pickle("reference_table_empty_brush.pkl")
-master_empty = master_empty.loc[(master_empty.s == s) & (master_empty.r== r)]
+master_empty = master_empty.loc[(master_empty.s == s) & (master_empty.r== r) & (master_empty.sigma == sigma)]
 master = master.loc[master.chi_PC.isin([-1.0, -0.5, 0.0]) & (master.ph==ph)]
-master = master.loc[master.chi_PS.isin([0.4, 0.5, 0.6])]
+master = master.loc[master.chi_PS.isin([0.1, 0.4, 0.5, 0.6])]
+master = master.loc[master.sigma == sigma]
+#%%
+# if X is None:
+#     gamma_f = gamma
+#     X0 = [1,0]
+#     f = create_cost_function(master, master_empty, gamma_f)
+#     from scipy.optimize import least_squares
+#     res = least_squares(f, X0)
+#     X =res.x
 
-
-
-if X is None:
-    gamma_f = gamma
-    X0 = [1,0]
-    f = create_cost_function(master, master_empty, gamma_f)
-    from scipy.optimize import least_squares
-    res = least_squares(f, X0)
-    X =res.x
-
-#X = [0.70585835, -0.31406453]
+X = [0.70585835, -0.31406453]
 #X = [1, 0]
 
-g = sns.FacetGrid(
-    master, 
-    row = "chi_PC", col = "chi_PS", 
-    hue = "ph", 
-    #sharey= "row", 
-    sharey = True,
-    sharex= True,
-    hue_kws=dict(marker = "s", color = "red")
+# g = sns.FacetGrid(
+#     master, 
+#     row = "chi_PC", col = "chi_PS", 
+#     hue = "ph", 
+#     #sharey= "row", 
+#     sharey = True,
+#     sharex= True,
+#     hue_kws=dict(marker = "s", color = "red")
+#     )
+# #g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
+# g.set_axis_labels(x_var = "$z$", y_var = "$F / k_BT$")
+gamma_f = gamma
+CHI_PC = master.chi_PC.unique()
+CHI_PS = master.chi_PS.unique()
+fig, axs = plt.subplots(
+    nrows=len(CHI_PC)+1,
+    ncols=len(CHI_PS),
+    sharey = "row",
+    sharex= True)
+
+for chi_PS, ax in zip(CHI_PS, axs[0].flatten()):
+    empty_pore_data = utils.get_by_kwargs(master_empty, chi_PS = chi_PS)
+    phi_0 = empty_pore_data.dataset["phi"].squeeze()[0, :]
+    x = list(range(-len(phi_0)//2, len(phi_0)//2))
+    ax.plot(x, phi_0, color = "black")
+    ax.set_ylim(0, 0.3)
+    trans = transforms.blended_transform_factory(
+    ax.transData, ax.transAxes
     )
-#g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
-g.set_axis_labels(x_var = "$z$", y_var = "$F / k_BT$")
 
+    rect = mpatches.Rectangle((-s/2, 0), width=s, height=1, transform=trans,
+                          color='lightgreen', alpha=0.1)
+    ax.add_patch(rect)
 
-for (chi_PC, chi_PS), ax in g.axes_dict.items():
+for (chi_PC, chi_PS), ax in zip(itertools.product(CHI_PC, CHI_PS), axs[1:].flatten()):
+    print(chi_PC, chi_PS)
     empty_pore_data = utils.get_by_kwargs(master_empty, chi_PS = chi_PS)
     osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X)
     tot = osm+sur
     x = list(range(-len(tot)//2, len(tot)//2))
     ax.plot(x, tot, color = "red")
 
-    ax.plot(x, osm, color = "green", linewidth = 0.5, linestyle = "--")
-    ax.plot(x, sur, color = "blue", linewidth = 0.5, linestyle = "--")
+    ax.plot(x, osm, color = "darkorange", linewidth = 0.5, linestyle = "-")
+    ax.plot(x, sur, color = "blue", linewidth = 0.5, linestyle = "-")
 
     #osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X, trunc =True)
     #tot = osm+sur
     #ax.plot(x, tot, color = "darkred", linestyle = "--")
     
     ax.set_xlim(-75, 75)
+    ax.set_ylim(-5, 8)
 
     
     #ax.axvline(-s/2, color = "grey", linestyle = "--", linewidth =0.5)
@@ -147,11 +171,11 @@ for (chi_PC, chi_PS), ax in g.axes_dict.items():
     )
 
     rect = mpatches.Rectangle((-s/2, 0), width=s, height=1, transform=trans,
-                          color='grey', alpha=0.15)
+                          color='lightgreen', alpha=0.1)
     ax.add_patch(rect)
     
     ax.axhline(0, color = "black", linewidth = 0.5)
-    ax.set_title(f"$\chi_{{PS}} = {chi_PS}$ $\chi_{{PC}} = {chi_PC}$")
+    #ax.set_title(f"$\chi_{{PS}} = {chi_PS}$ $\chi_{{PC}} = {chi_PC}$")
     #ax.set_title("$\chi_{}$")
     #ax.set_xlabel("")
     #ax.set_ylabel("")
@@ -160,19 +184,37 @@ for (chi_PC, chi_PS), ax in g.axes_dict.items():
 
     data = master.query(f"chi_PS == {chi_PS} & chi_PC == {chi_PC}")
     ax.scatter(data["pc"], data["free_energy"], 
-               marker = "s", fc = "none", ec = "red")
+               marker = "o", fc = "none", ec = "red", s = 20, linewidth = 0.5)
 
-
+ax.plot([], [], color = "black", label = "$\phi(z)_{r=0}$")
 ax.plot([], [], color = "red", label = "$\Delta F_{SF}$")
-ax.scatter([], [], marker = "s", fc = "none", ec = "red", label = "$\Delta F_{tot}$")
-ax.plot([], [],  color = "green", linewidth = 0.5, linestyle = "--", label = "$\Delta F_{osm}$")
-ax.plot([], [],  color = "blue", linewidth = 0.5, linestyle = "--", label = "$\Delta F_{sur}$")
+ax.plot([], [],  color = "darkorange", linewidth = 0.5, linestyle = "-", label = "$\Delta F_{osm}$")
+ax.plot([], [],  color = "blue", linewidth = 0.5, linestyle = "-", label = "$\Delta F_{sur}$")
+ax.scatter([], [], marker = "o", fc = "none", ec = "red", label = "$\Delta F_{tot}$")
 
-ax.legend()
+axs[0,0].set_ylabel("$\phi$")
+[ax_.set_ylabel("$\Delta F / k_B T$") for ax_ in axs[1:, 0]]
+[ax_.set_xlabel("$z$") for ax_ in axs[-1, :]]
+[ax_.set_title(f"$\chi_{{PS}} = {chi_PS_}$") for ax_, chi_PS_ in zip(axs[0, :], CHI_PS)]
+[ax_.spines[['right', 'top']].set_visible(False) for ax_ in  axs.flatten()]
+
+def add_text_right(ax_, text):
+    ax_.text(1.1, 0.5, text,
+        horizontalalignment='center',
+        verticalalignment='center',
+        rotation='vertical',
+        transform=ax_.transAxes)
+
+[add_text_right(ax_, f"$\chi_{{PC}} = {chi_PC_}$") for ax_, chi_PC_ in zip(axs[1:, -1], CHI_PC)]
+
+
+#axs[-1, -1].legend(ncols = 5, bbox_to_anchor = [1.2, -.5])
+axs[-1, -1].legend()
 #ax.plot([], [],color = "darkred", linestyle = "--", label = "$P>0$")
-plt.gcf().set_size_inches(4,4)
+fig.set_size_inches(6,6)
+#plt.tight_layout()
 #g.add_legend()
-g.savefig("/home/ml/Desktop/grid.svg")
+fig.savefig("/home/ml/Desktop/grid.svg")
 #%%
 #%%
 volume, surface = cylynder_r0_kernel(8, 16)

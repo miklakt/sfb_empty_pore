@@ -131,7 +131,7 @@ markers = itertools.cycle(mpl_markers)
 trans = transforms.blended_transform_factory(
         ax.transData, ax.transAxes
         )
-
+CHI_PS = [0.1, 0.3, 0.5, 0.7, 0.9, 1.1]
 for chi_ps in CHI_PS:
     try:
         field = get_by_kwargs(fields, chi_PS = chi_ps)
@@ -164,7 +164,7 @@ ax.set_ylabel("$\phi(z, r=0)$")
 
 fig.set_size_inches(3.5, 3)
 
-fig.savefig("/home/ml/Desktop/phi_center.svg")
+#fig.savefig("/home/ml/Desktop/phi_center.svg")
 # %%
 import matplotlib.transforms as transforms
 import matplotlib.patches as mpatches

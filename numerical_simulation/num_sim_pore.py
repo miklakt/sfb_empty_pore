@@ -1,0 +1,270 @@
+import os, sys
+here = os.path.dirname(__file__)
+sys.path.append(os.path.join(here, '..'))
+os.chdir("..")
+import drift_diffusion_stencil as drift_diffusion_stencil
+from drift_diffusion_stencil import DriftDiffusionKernelFactory
+from calculate_fields_in_pore import *
+from heatmap_explorer import plot_heatmap_and_profiles
+import tqdm
+import pickle
+import h5py
+import numpy as np
+import matplotlib.pyplot as plt
+
+try:
+    import cupy as xp
+except:
+    import numpy as xp
+#import numpy as xp
+
+def pad_fields(fields, pad_sides, pad_top):
+    padded_fields = {}
+    padded_fields["xlayers"]=fields["xlayers"]+pad_sides*2
+    padded_fields["ylayers"]=fields["ylayers"]+pad_top
+
+    padded_fields["walls"]=xp.array(np.pad(
+        fields["walls"],
+        ((pad_sides, pad_sides), (0, pad_top)), 
+        "edge",
+        ))
+    
+    padded_fields["mobility"]=xp.array(np.pad(
+        fields["mobility"],
+        ((pad_sides, pad_sides), (0, pad_top)), 
+        "constant", constant_values=(True, True)
+        ))
+    
+    padded_fields["mobility"][padded_fields["walls"]==True]=0.0
+    
+    padded_fields["free_energy"]=xp.array(np.pad(
+        fields["free_energy"],
+        ((pad_sides, pad_sides), (0, pad_top)), 
+        "constant", constant_values=(0.0, 0.0)
+        ))
+    return padded_fields
+
+def get_half(fields):
+    z_half = int(np.shape(fields["walls"])[0]/2)
+    for key in ['walls', 'mobility', 'free_energy']:
+        fields[key] = fields[key][:z_half, :]
+#%%
+a0, a1 = [0.70585835, -0.31406453]
+pore_radius = 26 # pore radius
+wall_thickness = 52 # wall thickness
+#d_ = np.arange(6, 22, 2)
+#d_ = [10]
+d = 12
+chi_PC = -1.5
+chi = 0.3
+sigma = 0.02
+
+#for d in d_:
+fields_ = calculate_fields(
+    a0, a1, d=d,
+    chi_PC=chi_PC, chi=chi,
+    sigma = sigma,
+    wall_thickness=wall_thickness,
+    pore_radius=pore_radius,
+    exclude_volume=True,
+    truncate_pressure=False,
+    method= "convolve", 
+    mobility_correction= "vol_average",
+    mobility_model = "Rubinstein",
+    mobility_model_kwargs = {"prefactor":1.0}
+    )
+#%%
+fields = pad_fields(fields_, pad_sides = 100, pad_top = 200)
+half = False
+if half: get_half(fields)
+#%%
+W_arr = fields["walls"]
+D_arr = fields["mobility"]
+U_arr = fields["free_energy"]
+
+zlayers = xp.shape(W_arr)[0]
+rlayers = xp.shape(W_arr)[1]
+differencing = "power_law"
+drift_diffusion = DriftDiffusionKernelFactory(
+    W_arr=W_arr, D_arr = D_arr, U_arr = U_arr,
+    differencing=differencing
+    )
+
+#%%
+dt = 0.2
+drift_diffusion.create_kernel(dt = dt)
+def inflow_boundary(dd):
+    dd.c_arr[0,:]=1 #source left
+    dd.c_arr[:,-1]=dd.c_arr[:,-2] #mirror top
+    #c_arr[:,0]=c_arr[:,1] #mirror bottom
+    #dd.c_arr[:,-1]=dd.c_arr[:,-2] + xp.less_equal(dd.c_arr[:,-2] - dd.c_arr[:,-3], 0) # constant deriv 
+    dd.c_arr[-1,:]=0 #sink  right
+
+#%%
+# c_arr = np.loadtxt("tmp.txt")
+# drift_diffusion.c_arr = xp.array(c_arr)
+#%%
+# drift_diffusion.run_until(
+#     inflow_boundary, dt=0.001, 
+#     target_divJ_tot=1e-3, 
+#     jump_every=None, 
+#     max_jump=1.2, 
+#     timeout = 30,
+#     check_every=1000,
+#     jump_if_change=1e-1,
+#     sigmoid_steepness=100
+#     )
+# c_arr = drift_diffusion.c_arr.get()
+# np.savetxt("tmp.txt", c_arr)
+#%%
+from drift_diffusion_stencil import SimulationManager
+if half:
+    simulation_name = \
+    f"numerical_simulation/simulation_data/{d=}_{zlayers=}_{rlayers=}_{chi=}_{chi_PC=}_{dt=}_{differencing}_half.h5"
+else:
+    simulation_name = \
+    f"numerical_simulation/simulation_data/{d=}_{zlayers=}_{rlayers=}_{chi=}_{chi_PC=}_{dt=}_{differencing}.h5"
+s = SimulationManager(drift_diffusion, inflow_boundary, simulation_name)
+#%%
+c0 = xp.tile(xp.linspace(1,0, zlayers), (rlayers,1)).T
+c0 = c0*np.exp(-drift_diffusion.U_arr)/2
+drift_diffusion.c_arr = c0
+#%%
+# drift_diffusion.c_arr = np.exp(-drift_diffusion.U_arr)/4
+# drift_diffusion.c_arr[drift_diffusion.c_arr==1.0] = 0
+
+s.run(1, 100)
+#%%
+s.run(10, 100)
+#%%
+s.run(10, 1000)
+#%%
+s.run(10, 10000)
+#%%
+s.run(10, 100000)
+#%%
+s.run(20, 1000000)
+#%%
+#s.run(10, 10000000)
+# %%
+plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get())
+plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
+# %%
+plt.plot(drift_diffusion.J_z_tot().get())
+# %%
+print("d",   "chi_PS",    "chi_PC",   "J_tot",    "J_tot_err")
+print(
+    d,
+    chi,
+    chi_PC,
+    np.round(np.mean(drift_diffusion.J_z_tot().get()), 4),
+    np.round(np.std(drift_diffusion.J_z_tot().get()), 4),
+    sep = ", "
+    )
+
+# %%
+import matplotlib
+import matplotlib.colors as plt_colors
+import cmasher as cmr
+fig, ax = plt.subplots()
+
+
+c_arr = drift_diffusion.c_arr.T.get()
+W_arr = drift_diffusion.W_arr.T.get()
+c_arr[W_arr == True] = np.nan
+
+cmap0_1 = cmr.get_sub_cmap("CMRmap_r", 0.0, 0.5)
+cmap1_max = cmr.get_sub_cmap("CMRmap_r", 0.5, 1.0)
+
+cmap0_1.set_bad(color='green')
+cmap1_max.set_bad(color='green')
+
+#cmap_ = cmr.combine_cmaps(cmap0_1, cmap1_max, nodes=[1/np.nanmax(c_arr)])
+
+
+extent = [-zlayers/2, zlayers/2, 0, rlayers]
+
+
+# c_arr_im = ax.imshow(
+#     c_arr,
+#     cmap=cmap0_1, 
+#     extent=extent, 
+#     origin = "lower",  
+#     aspect = 'equal',
+#     vmin = 0,
+#     vmax = 1,
+#     alpha = (c_arr<=1).astype(float)
+#     #norm = norm_,
+#     )
+
+gamma_=0.4
+norm_ = plt_colors.PowerNorm(gamma=gamma_, vmin=1, vmax=np.nanmax(c_arr)) 
+# c_arr_im2 = ax.imshow(
+#     c_arr,
+#     cmap=cmap1_max, 
+#     extent=extent, 
+#     origin = "lower",  
+#     aspect = 'equal',
+#     alpha = (c_arr>1).astype(float),
+#     norm = norm_,
+#     interpolation = "none"
+#     )
+
+# levels = np.arange(0, 1, 0.05)
+
+# levels.sort()
+# contour = ax.contour(
+#     c_arr, 
+#     extent = extent, 
+#     colors = "black",
+#     linewidths = 0.1,
+#     levels = levels
+#     )
+# ax.clabel(contour, inline = False)
+
+x = np.arange(0, zlayers, 10)
+y = np.arange(0, rlayers, 10)
+xx, yy = np.meshgrid(x, y)
+J_arr = drift_diffusion.J_arr.get()
+uv = [J_arr[xx_, yy_] for xx_, yy_ in zip(xx, yy)]
+u = np.moveaxis(uv, -1, 0)[0]
+v = np.moveaxis(uv, -1, 0)[1]
+#norm = np.linalg.norm(np.array((u, v)), axis=0)
+
+xx = xx - zlayers/2
+
+# ax.quiver(
+#    xx, yy, u/norm*2, v/norm*2, 
+#    width = 0.003,
+#     headlength = 3,
+
+#    color = 'grey'
+#    )
+
+#start_points_y = np.arange(1, 27,2)
+#start_points_x = np.ones_like(start_points_y)*dd_obj["zlayers"]/2
+start_points_y = np.arange(0, rlayers-1,15)
+start_points_x = np.ones_like(start_points_y)-zlayers/2
+
+start_points = np.array([start_points_x, start_points_y]).T
+J_arr_stream = ax.streamplot(
+
+    xx, yy, u, v, 
+    #color = norm,
+    color = "grey",
+    start_points = start_points,
+    #broken_streamlines = False,
+    arrowsize = 0,
+    linewidth = 0.3,
+    density = 35
+    )
+
+# c_arr_cbar = plt.colorbar(c_arr_im)
+# c_arr_cbar2 = plt.colorbar(c_arr_im2)
+
+# ax.set_xlabel("$z$")
+# ax.set_ylabel("$r$")
+# c_arr_cbar.set_label("$c/c_0$")
+
+fig.savefig("fig/streamlines.png", dpi =1200, transparent = True)
+# %%

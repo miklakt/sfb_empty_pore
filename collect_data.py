@@ -53,8 +53,8 @@ def name_file(data, timestamp = True):
     return name
 
 #%%
-dir = "temp9"
-for file in pathlib.Path(dir).glob("*.out"):
+dir_ = "temp250424"
+for file in pathlib.Path(dir_).glob("*.out"):
     if file:
         sfbox_utils.store.store_file_parallel(
             file,
@@ -67,7 +67,7 @@ for file in pathlib.Path(dir).glob("*.out"):
                 read_fields_regex = read_fields_regex
             ),
             on_file_exist="keep",
-            on_process_error = "ignore",
+            on_process_error = "raise",
         )
 
 # %%
