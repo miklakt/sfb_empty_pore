@@ -1,6 +1,5 @@
 #%%
 from scf_pb import generate_sphere_volume_surface_kernel
-import pickle_cache
 from joblib import Memory
 memory = Memory("__func_cache__", verbose=1)
 #%%

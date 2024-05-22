@@ -13,7 +13,6 @@ style.use('tableau-colorblind10')
 mpl_markers = ('o', '+', 'x', 's', 'D')
 
 from calculate_fields_in_pore import *
-from pickle_cache import pickle_lru_cache
 
 a0 = 0.70585835
 a1 = -0.31406453
@@ -22,8 +21,9 @@ pore_radius=26
 sigma = 0.02
 
 #%%
-d = np.arange(6, 24, 2)
+#d = np.arange(6, 24, 2)
 d_color = [8, 12, 16, 20]
+d = d_color
 chi_PS = [0.1, 0.3, 0.5]
 chi_PC = np.round(np.arange(-2, 0.2, 0.05),3)
 
@@ -82,12 +82,12 @@ for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
             x, y, 
             **plot_kwargs
             )
-        if d_ in d_color:
-            ax.scatter(
-                1, 
-                result__["thick_empty_pore"].iloc[1],#*d_, 
-                marker = "*"
-                )
+        # if d_ in d_color:
+        #     ax.scatter(
+        #         1, 
+        #         result__["thick_empty_pore"].iloc[1],#*d_, 
+        #         marker = "*"
+        #         )
             #ax.plot(x, result__["thick_empty_pore"], linestyle = "--", color = ax.lines[-1].get_color())
 
     ax.set_title(f"$\chi_{{PS}} = {chi_PS_}$")
@@ -104,7 +104,7 @@ for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
 
 axs[0].set_ylabel(r"$P \cdot \frac{\eta_0}{k_B T} $")
 
-axs[-1].scatter([],[], marker = "*", color = "grey", label = "empty pore")
+#axs[-1].scatter([],[], marker = "*", color = "grey", label = "empty pore")
 axs[-1].legend( 
     #bbox_to_anchor = [1.0, -0.05],
     loc = "lower right"
@@ -152,7 +152,7 @@ for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
 
 axs[0].set_ylabel(r"$P \cdot \frac{\eta_0}{k_B T} $")
 
-axs[-1].scatter([],[], marker = "*", color = "grey", label = "empty pore")
+#axs[-1].scatter([],[], marker = "*", color = "grey", label = "empty pore")
 axs[0].legend( 
     #bbox_to_anchor = [1.0, -0.05],
     loc = "upper right"
@@ -161,9 +161,9 @@ axs[0].legend(
 plt.tight_layout()
 fig.set_size_inches(9, 3)
 # %%
-d = [8, 12, 16, 20]
+d = [8, 12, 16]
 #chi_PS = np.round(np.arange(0,1,0.1),2)
-chi_PS = [0.1, 0.3, 0.5]
+chi_PS = [0.1, 0.3, 0.5, 0.7]
 chi_PS_color = chi_PS
 chi_PC = np.round(np.arange(-2, 0.2, 0.05),3)
 L=20
@@ -171,7 +171,7 @@ L=20
 # model, mobility_model_kwargs = "none", {}
 # model, mobility_model_kwargs = "Phillies", dict(beta = 8, nu = 0.76)
 # model = "Fox-Flory", dict(N = 300)
-model, mobility_model_kwargs = "Rubinstein", {"prefactor":1000}
+model, mobility_model_kwargs = "Rubinstein", {"prefactor":1}
 #model, mobility_model_kwargs = "Hoyst", {"alpha" : 1.63, "delta": 0.89, "N" : 300}
 
 results = []
@@ -245,11 +245,13 @@ for ax, (d_, result_) in zip(axs, results_.groupby(by = "d")):
 axs[0].set_ylabel(r"$P \cdot \frac{\eta_0}{k_B T} $")
 
 #axs[-1].scatter([],[], marker = "*", color = "grey", label = "empty pore")
-axs[-1].legend( 
+axs[0].legend( 
     #bbox_to_anchor = [1.0, -0.05],
     loc = "lower right"
     )
 
 plt.tight_layout()
-fig.set_size_inches(9, 3)
+fig.set_size_inches(6, 2.5)
+plt.tight_layout()
+#fig.savefig("tex/third_report/fig/permeability_on_partition.svg", dpi =600)
 # %%

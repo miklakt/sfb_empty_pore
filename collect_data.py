@@ -53,8 +53,9 @@ def name_file(data, timestamp = True):
     return name
 
 #%%
-dir_ = "temp250424"
+dir_ = "temp160524"
 for file in pathlib.Path(dir_).glob("*.out"):
+    print(file)
     if file:
         sfbox_utils.store.store_file_parallel(
             file,
@@ -69,7 +70,6 @@ for file in pathlib.Path(dir_).glob("*.out"):
             on_file_exist="keep",
             on_process_error = "raise",
         )
-
 # %%
 def ground_energy_correction(df, group_columns):
     df.sort_values(by = group_columns, inplace = True)

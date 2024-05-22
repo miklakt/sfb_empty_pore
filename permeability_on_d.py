@@ -13,7 +13,6 @@ style.use('tableau-colorblind10')
 mpl_markers = ('o', '+', 'x', 's', 'D')
 
 from calculate_fields_in_pore import *
-from pickle_cache import pickle_lru_cache
 
 a0 = 0.70585835
 a1 = -0.31406453
@@ -203,102 +202,4 @@ axs[-1].legend(
 plt.tight_layout()
 fig.set_size_inches(7, 2.5)
 #fig.savefig("fig/permeability_on_d.svg")
-# %%
-
-fig, axs = plt.subplots(ncols = len(chi_PS), sharey=True)
-results_ = results.loc[(results.mobility_model == model)]
-for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
-    markers = itertools.cycle(mpl_markers)
-    for chi_PC_, result__ in result_.groupby(by = "chi_PC"):
-        x = result__["d"]
-        y = 1/result__["permeability"]
-        if chi_PC_ in chi_PC_color:
-            plot_kwargs = dict(
-                label = fr"$\chi_{{PC}} = {chi_PC_}$",
-                #marker = next(markers),
-                #markevery = 0.5,
-                #markersize = 4,
-            )
-        else:
-            plot_kwargs = dict(
-                linewidth = 0.1,
-                color ="black"
-            )
-        ax.plot(
-            x, y, 
-            **plot_kwargs
-            )
-
-        R = simulation_results.query(f"(chi_PS=={chi_PS_})&(chi_PC=={chi_PC_})")
-        ax.scatter(
-            R["d"], 1/(R["J_tot"]/R["d"]/3), 
-            color = ax.lines[-1].get_color(),
-            marker = "o",
-            s = 50,
-            facecolor = "none"
-            )
-
-    ax.plot(
-        d, 
-        1/result__["thick_empty_pore"], 
-        color = "black", 
-        linestyle = "--",
-        label = "$R_{empty}$"
-        )
-
-    ax.plot(
-        d, 
-        1/result__["thin_empty_pore"], 
-        color = "black", 
-        linestyle = ":",
-        label = "$R_{thin}$"
-        )
-
-    # ax.plot(
-    #     d, 
-    #     result__["thin_empty_pore"]*4, 
-    #     color = "black", 
-    #     linestyle = ":",
-    #     label = "$P_{half-pore}$"
-    #     )
-
-
-    ax.scatter(
-        simulation_empty_pore["d"], 
-        1/(simulation_empty_pore["J_tot"]/simulation_empty_pore["d"]/3),
-        color = "black",
-        facecolor = "none",
-        marker = "o",
-        label = "numerical\n simulation",
-        s=50,
-        )
-
-    # ax.scatter(
-    #     simulation_empty_pore_half["d"], 
-    #     simulation_empty_pore_half["J_tot"]/simulation_empty_pore_half["d"]/3,
-    #     color = "black",
-    #     marker = "o",
-    #     label = "simulation",
-    #     s=50,
-    #     )
-
-    ax.set_title(f"$\chi_{{PS}} = {chi_PS_}$")
-    ax.set_ylim(1e-1, 1e3)
-    ax.set_xlabel("d")
-    ax.set_yscale("log")
-    ax.set_xscale("log")
-
-axs[0].set_ylabel(r"$R \cdot \frac{k_B T}{\eta_0}$")
-axs[-1].legend( 
-    bbox_to_anchor = [1.0, -0.05],
-    loc = "lower left"
-    )
-
-text = " ".join([model_formula[model],einstein_visc, rayleigh_length]) + "\n" +\
-     "\n".join([perm_formula, perm_int])
-
-#fig.text(s = text, x = 0.72, y = 0.95, ha = "left", va = "top", fontsize = 14)
-plt.tight_layout()
-fig.set_size_inches(7, 2.5)
-#fig.savefig("fig/permeability_on_d.svg")
-# %%
+#%%

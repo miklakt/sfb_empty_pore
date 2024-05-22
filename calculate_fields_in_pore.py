@@ -5,7 +5,6 @@ from scipy import ndimage
 from functools import lru_cache
 import utils
 from particle_convolution import convolve_particle_surface, convolve_particle_volume
-#import pickle_cache
 from joblib import Memory
 import sfbox_utils
 np.seterr(divide='ignore')
