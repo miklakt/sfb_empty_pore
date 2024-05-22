@@ -44,6 +44,14 @@ def gamma(chi_PS, chi_PC, phi, X):
     gamma = (chi_ads - chi_crit)*phi_corrected/6
     return gamma
 
+def gamma2(chi_PS, chi_PC, phi, X):
+    a0, a1, a2 = X
+    chi_crit = 6*np.log(5/6)
+    phi_corrected = (a0 + a1*chi_PC + a2*chi_PS)*phi
+    chi_ads = chi_PC - chi_PS*(1-phi_corrected)
+    gamma = (chi_ads - chi_crit)*phi_corrected/6
+    return gamma
+
 def free_energy_cylinder(radius, data, chi_PS, chi_PC, gamma_func, X_args, trunc = False):
     volume, surface = cylynder_r0_kernel(radius)
     phi = data.dataset["phi"].squeeze()
@@ -88,27 +96,33 @@ X = None
 #%%
 s = 52
 r = 26
-ph =8
-pw =8
+ph =[8, 12, 16]
+pw =ph
 sigma = 0.02
+chi_PS = [0.4, 0.5, 0.6]
+chi_PC = [-1.0, -0.5, 0.0]
 
 master = pd.read_pickle("reference_table.pkl")
 #master = master.loc[master["comment"] == "grown_from_small"]
 master_empty = pd.read_pickle("reference_table_empty_brush.pkl")
 master_empty = master_empty.loc[(master_empty.s == s) & (master_empty.r== r) & (master_empty.sigma == sigma)]
-master = master.loc[master.chi_PC.isin([-1.0, -0.5, 0.0]) & (master.ph==ph)]
-master = master.loc[master.chi_PS.isin([0.1, 0.4, 0.5, 0.6])]
+master = master.loc[master.chi_PC.isin(chi_PC)]
+master = master.loc[master.ph.isin(ph)]
+master = master.loc[master.chi_PS.isin(chi_PS)]
 master = master.loc[master.sigma == sigma]
 #%%
-# if X is None:
-#     gamma_f = gamma
-#     X0 = [1,0]
-#     f = create_cost_function(master, master_empty, gamma_f)
-#     from scipy.optimize import least_squares
-#     res = least_squares(f, X0)
-#     X =res.x
+#X = [0.70585835, -0.31406453]
+#[ 1.00029355e+00, -9.37511200e-04]
+#X = [1, 0]
+if X is None:
+    gamma_f = gamma2
+    X0 = [1,0,0]
+    f = create_cost_function(master, master_empty, gamma_f)
+    from scipy.optimize import least_squares
+    res = least_squares(f, X0)
+    X =res.x
 
-X = [0.70585835, -0.31406453]
+#X = [1, 0]
 #X = [1, 0]
 
 # g = sns.FacetGrid(
@@ -122,7 +136,7 @@ X = [0.70585835, -0.31406453]
 #     )
 # #g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
 # g.set_axis_labels(x_var = "$z$", y_var = "$F / k_BT$")
-gamma_f = gamma
+gamma_f = gamma2
 CHI_PC = master.chi_PC.unique()
 CHI_PS = master.chi_PS.unique()
 fig, axs = plt.subplots(
@@ -146,22 +160,43 @@ for chi_PS, ax in zip(CHI_PS, axs[0].flatten()):
     ax.add_patch(rect)
 
 for (chi_PC, chi_PS), ax in zip(itertools.product(CHI_PC, CHI_PS), axs[1:].flatten()):
-    print(chi_PC, chi_PS)
-    empty_pore_data = utils.get_by_kwargs(master_empty, chi_PS = chi_PS)
-    osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X)
-    tot = osm+sur
-    x = list(range(-len(tot)//2, len(tot)//2))
-    ax.plot(x, tot, color = "red")
+    for ph_ in ph:
+        ax.plot([],[])
+        print(chi_PC, chi_PS, ph_)
+        empty_pore_data = utils.get_by_kwargs(master_empty, chi_PS = chi_PS)
+        osm, sur = free_energy_cylinder(int(ph_/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X)
+        tot = osm+sur
+        x = list(range(-len(tot)//2, len(tot)//2))
+        ax.plot(x, tot, 
+            #color = "red"
+            )
 
-    ax.plot(x, osm, color = "darkorange", linewidth = 0.5, linestyle = "-")
-    ax.plot(x, sur, color = "blue", linewidth = 0.5, linestyle = "-")
+        data = master.query(f"chi_PS == {chi_PS} & chi_PC == {chi_PC} & ph == {ph_}")
+        ax.scatter(data["pc"], data["free_energy"], 
+                marker = "s", 
+                #fc = "none", 
+                #ec = "red", 
+                fc = ax.lines[-1].get_color(),
+                s = 10, 
+                linewidth = 0.5
+                )
+        ax.scatter(-data["pc"], data["free_energy"], 
+                marker = "s", 
+                #fc = "none", 
+                #ec = "red", 
+                fc = ax.lines[-1].get_color(),
+                s = 10, 
+                linewidth = 0.5
+                )
+    # ax.plot(x, osm, color = "darkorange", linewidth = 0.5, linestyle = "-")
+    # ax.plot(x, sur, color = "blue", linewidth = 0.5, linestyle = "-")
 
     #osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X, trunc =True)
     #tot = osm+sur
     #ax.plot(x, tot, color = "darkred", linestyle = "--")
     
     ax.set_xlim(-75, 75)
-    ax.set_ylim(-5, 8)
+    #ax.set_ylim(-5, 8)
 
     
     #ax.axvline(-s/2, color = "grey", linestyle = "--", linewidth =0.5)
@@ -182,15 +217,12 @@ for (chi_PC, chi_PS), ax in zip(itertools.product(CHI_PC, CHI_PS), axs[1:].flatt
 
 
 
-    data = master.query(f"chi_PS == {chi_PS} & chi_PC == {chi_PC}")
-    ax.scatter(data["pc"], data["free_energy"], 
-               marker = "o", fc = "none", ec = "red", s = 20, linewidth = 0.5)
 
-ax.plot([], [], color = "black", label = "$\phi(z)_{r=0}$")
-ax.plot([], [], color = "red", label = "$\Delta F_{SF}$")
-ax.plot([], [],  color = "darkorange", linewidth = 0.5, linestyle = "-", label = "$\Delta F_{osm}$")
-ax.plot([], [],  color = "blue", linewidth = 0.5, linestyle = "-", label = "$\Delta F_{sur}$")
-ax.scatter([], [], marker = "o", fc = "none", ec = "red", label = "$\Delta F_{tot}$")
+#ax.plot([], [], color = "black", label = "$\phi(z)_{r=0}$")
+ax.plot([], [], color = "red", label = "$\Delta F_{SS}$")
+#ax.plot([], [],  color = "darkorange", linewidth = 0.5, linestyle = "-", label = "$\Delta F_{osm}$")
+#ax.plot([], [],  color = "blue", linewidth = 0.5, linestyle = "-", label = "$\Delta F_{sur}$")
+ax.scatter([], [], marker = "s", fc = "black", label = "$\Delta F_{SF}$", s = 10)
 
 axs[0,0].set_ylabel("$\phi$")
 [ax_.set_ylabel("$\Delta F / k_B T$") for ax_ in axs[1:, 0]]
@@ -213,7 +245,6 @@ axs[-1, -1].legend()
 #ax.plot([], [],color = "darkred", linestyle = "--", label = "$P>0$")
 fig.set_size_inches(6,6)
 #plt.tight_layout()
-#g.add_legend()
 fig.savefig("/home/ml/Desktop/grid.svg")
 #%%
 #%%
@@ -292,6 +323,7 @@ fig.savefig("/home/ml/Desktop/phi_correction.png", dpi =600)
 ph =8
 pw = ph
 #X=[1, 0]
+X = [0.70585835, -0.31406453]
 master = pd.read_pickle("reference_table_planar.pkl")
 master_empty = pd.read_pickle("reference_table_planar_empty.pkl")
 master = master.loc[

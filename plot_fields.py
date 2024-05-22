@@ -39,9 +39,9 @@ def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
 a0, a1 = 0.70585835, -0.31406453
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d = 20
-chi_PC = -2.0
-chi = 0.1
+d = 12
+chi_PC = -1.0
+chi = 0.5
 sigma = 0.02
 
 fields = calculate_fields(
@@ -58,10 +58,47 @@ fields = calculate_fields(
     mobility_model_kwargs = {"prefactor":1.0}
     #**method
     )
+
+perm = calculate_permeability(    
+    a0=a0, a1=a1, d=d,
+    chi_PC=chi_PC, chi_PS=chi,
+    sigma = sigma,
+    wall_thickness=wall_thickness,
+    pore_radius=pore_radius,
+    exclude_volume=True,
+    truncate_pressure=False,
+    method= "convolve",
+    convolve_mode="same",
+    mobility_correction= "vol_average",
+    mobility_model = "Rubinstein",
+    mobility_model_kwargs = {"prefactor":1.0},         
+    integration= "cylindrical_caps",
+    integration_kwargs = dict(spheroid_correction = True)
+    )
+
+fields["resistivity"] = np.log10(fields["conductivity"])
 # %%
+import cmasher as cmr
+cmap0 = cmr.get_sub_cmap("seismic", 0.0, 0.5)
+cmap1 = cmr.get_sub_cmap("seismic", 0.5, 1.0)
+vmin, vmax = 0, 4
+cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(1-vmin)/(vmax-vmin)])
 r_cut = 50
 z_cut = 30
-plot_heatmap(fields, r_cut, z_cut, keys = ["phi", "Pi", "gamma", "free_energy", "mobility", "conductivity"])
+plot_heatmap(fields, r_cut, z_cut, keys = [
+    #"phi", 
+    #"Pi", 
+    #"gamma", 
+    #"free_energy", 
+    #"mobility", 
+    "conductivity", 
+    #"osmotic", 
+    #"surface"
+    ], 
+    cmap = cmap_,
+    zmin=0,
+    zmax = 4,
+    )
 #%%
 d = 8
 chi_PC = [0, -0.5, -1.0, -1.5]

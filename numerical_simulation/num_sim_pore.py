@@ -130,6 +130,8 @@ c0 = xp.tile(xp.linspace(1,0, zlayers), (rlayers,1)).T
 c0 = c0*np.exp(-drift_diffusion.U_arr)/2
 drift_diffusion.c_arr = c0
 #%%
+drift_diffusion.c_arr = xp.array(results["c_arr"][-23])
+#%%
 # drift_diffusion.c_arr = np.exp(-drift_diffusion.U_arr)/4
 # drift_diffusion.c_arr[drift_diffusion.c_arr==1.0] = 0
 
@@ -185,33 +187,32 @@ cmap1_max.set_bad(color='green')
 extent = [-zlayers/2, zlayers/2, 0, rlayers]
 
 
-# c_arr_im = ax.imshow(
-#     c_arr,
-#     cmap=cmap0_1, 
-#     extent=extent, 
-#     origin = "lower",  
-#     aspect = 'equal',
-#     vmin = 0,
-#     vmax = 1,
-#     alpha = (c_arr<=1).astype(float)
-#     #norm = norm_,
-#     )
+c_arr_im = ax.imshow(
+    c_arr,
+    cmap=cmap0_1, 
+    extent=extent, 
+    origin = "lower",  
+    aspect = 'equal',
+    vmin = 0.0,
+    vmax = 1.0,
+    alpha = (c_arr<=1).astype(float)
+    #norm = norm_,
+    )
 
 gamma_=0.4
-norm_ = plt_colors.PowerNorm(gamma=gamma_, vmin=1, vmax=np.nanmax(c_arr)) 
-# c_arr_im2 = ax.imshow(
-#     c_arr,
-#     cmap=cmap1_max, 
-#     extent=extent, 
-#     origin = "lower",  
-#     aspect = 'equal',
-#     alpha = (c_arr>1).astype(float),
-#     norm = norm_,
-#     interpolation = "none"
-#     )
+norm_ = plt_colors.PowerNorm(gamma=gamma_, vmin=1.0, vmax=np.nanmax(c_arr)) 
+c_arr_im2 = ax.imshow(
+    c_arr,
+    cmap=cmap1_max, 
+    extent=extent, 
+    origin = "lower",  
+    aspect = 'equal',
+    alpha = (c_arr>1).astype(float),
+    norm = norm_,
+    interpolation = "none"
+    )
 
-# levels = np.arange(0, 1, 0.05)
-
+# levels = np.concatenate([np.arange(0.90, 1.0, 0.01), np.arange(0.0, 0.2, 0.01)])
 # levels.sort()
 # contour = ax.contour(
 #     c_arr, 
@@ -222,16 +223,17 @@ norm_ = plt_colors.PowerNorm(gamma=gamma_, vmin=1, vmax=np.nanmax(c_arr))
 #     )
 # ax.clabel(contour, inline = False)
 
-x = np.arange(0, zlayers, 10)
-y = np.arange(0, rlayers, 10)
-xx, yy = np.meshgrid(x, y)
-J_arr = drift_diffusion.J_arr.get()
-uv = [J_arr[xx_, yy_] for xx_, yy_ in zip(xx, yy)]
-u = np.moveaxis(uv, -1, 0)[0]
-v = np.moveaxis(uv, -1, 0)[1]
-#norm = np.linalg.norm(np.array((u, v)), axis=0)
 
-xx = xx - zlayers/2
+# x = np.arange(0, zlayers, 10)
+# y = np.arange(0, rlayers, 10)
+# xx, yy = np.meshgrid(x, y)
+# J_arr = drift_diffusion.J_arr.get()
+# uv = [J_arr[xx_, yy_] for xx_, yy_ in zip(xx, yy)]
+# u = np.moveaxis(uv, -1, 0)[0]
+# v = np.moveaxis(uv, -1, 0)[1]
+# #norm = np.linalg.norm(np.array((u, v)), axis=0)
+
+# xx = xx - zlayers/2
 
 # ax.quiver(
 #    xx, yy, u/norm*2, v/norm*2, 
@@ -241,23 +243,23 @@ xx = xx - zlayers/2
 #    color = 'grey'
 #    )
 
-#start_points_y = np.arange(1, 27,2)
-#start_points_x = np.ones_like(start_points_y)*dd_obj["zlayers"]/2
-start_points_y = np.arange(0, rlayers-1,15)
-start_points_x = np.ones_like(start_points_y)-zlayers/2
+# start_points_y = np.arange(1, 27,2)
+# start_points_x = np.ones_like(start_points_y)*zlayers/2
+# start_points_y = np.arange(0, rlayers-1,15)
+# start_points_x = np.ones_like(start_points_y)-zlayers/2
 
-start_points = np.array([start_points_x, start_points_y]).T
-J_arr_stream = ax.streamplot(
+# start_points = np.array([start_points_x, start_points_y]).T
+# J_arr_stream = ax.streamplot(
 
-    xx, yy, u, v, 
-    #color = norm,
-    color = "grey",
-    start_points = start_points,
-    #broken_streamlines = False,
-    arrowsize = 0,
-    linewidth = 0.3,
-    density = 35
-    )
+#     xx, yy, u, v, 
+#     #color = norm,
+#     color = "grey",
+#     start_points = start_points,
+#     #broken_streamlines = False,
+#     arrowsize = 0,
+#     linewidth = 0.3,
+#     density = 35
+#     )
 
 # c_arr_cbar = plt.colorbar(c_arr_im)
 # c_arr_cbar2 = plt.colorbar(c_arr_im2)
@@ -266,5 +268,30 @@ J_arr_stream = ax.streamplot(
 # ax.set_ylabel("$r$")
 # c_arr_cbar.set_label("$c/c_0$")
 
-fig.savefig("fig/streamlines.png", dpi =1200, transparent = True)
+#fig.savefig("fig/streamlines/streamlines_contours.svg", dpi =1200, transparent = True)
+fig.savefig("fig/streamlines/streamlines_heatmap.png", dpi =600, transparent = True)
+# %%
+c = drift_diffusion.c_arr[:,0].get()
+output_filename = f"numerical_simulation/simulation_data/empty_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}.txt"
+c0 = np.loadtxt(output_filename)[:,0]
+fig, axs = plt.subplots(nrows = 2, sharex = True)
+
+x = np.arange(0, zlayers) - zlayers/2
+
+ax = axs[0]
+ax.plot(x, c, label = "$c(z, r=0)$")
+ax.plot(x, c0, label = "$c_{empty}(z, r=0)$")
+ax.set_ylim(0)
+
+ax = axs[1]
+ax.plot(x, c, label = "$c(z, r=0)$")
+ax.plot(x, c0, label = "$c_{empty}(z, r=0)$")
+ax.set_ylim(0, 1.2)
+
+
+ax.set_xlabel("$z$")
+ax.set_ylabel("$c/c_0$")
+ax.legend(loc = "lower left")
+fig.set_size_inches(4,3)
+fig.savefig("fig/streamlines/total_flux_z.svg", transparent = True)
 # %%
