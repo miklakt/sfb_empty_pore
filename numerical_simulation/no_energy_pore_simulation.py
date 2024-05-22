@@ -47,9 +47,9 @@ def pad_fields(fields, pad_sides, pad_top):
 a0, a1 = [0.70585835, -0.31406453]
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d=24
-chi_PC = -1.75
-chi = 0.3
+d=6
+chi_PC = -2.0
+chi = 0.1
 sigma = 0.02
 
 
@@ -66,11 +66,12 @@ fields_ = calculate_fields(
     mobility_model = "Rubinstein",
     mobility_model_kwargs = {"prefactor":1.0}
     )
-    #%%
+#%%
 fields = pad_fields(fields_, pad_sides = 100, pad_top = 200)
 
 W_arr = fields["walls"]
 D_arr = fields["mobility"]
+#D_arr = xp.ones_like(W_arr, dtype = float)
 U_arr = xp.zeros_like(W_arr)
 
 zlayers = xp.shape(W_arr)[0]
@@ -90,6 +91,7 @@ def inflow_boundary(dd):
     dd.c_arr[-1,:]=0 #sink  right
 
 output_filename = f"numerical_simulation/simulation_data/no_free_energy_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}_{chi}.txt"
+#output_filename = f"numerical_simulation/simulation_data/empty_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}.txt"
 try:
     c0 = xp.loadtxt(output_filename)
     drift_diffusion.c_arr = xp.array(c0)
@@ -100,10 +102,11 @@ except FileNotFoundError:
 dt = 0.1
 drift_diffusion.run_until(
     inflow_boundary, dt=dt,
-    target_divJ_tot=1e-12,
+    target_divJ_tot=1e-8,
     jump_every=None,
-    timeout=1
+    timeout=1000
     )
+#%%
 c_arr = drift_diffusion.c_arr.get()
 #%%
 np.savetxt(output_filename, c_arr)

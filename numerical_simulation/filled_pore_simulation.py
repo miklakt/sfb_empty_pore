@@ -49,9 +49,9 @@ pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
 #d_ = np.arange(6, 22, 2)
 #d_ = [10]
-d = 24
-chi_PC = -1.75
-chi = 0.3
+d = 6
+chi_PC = -2.0
+chi = 0.1
 sigma = 0.02
 
 #for d in d_:
@@ -93,9 +93,9 @@ try:
 except FileNotFoundError:
     print("No previous calculation found")
     try:
-        print("Initial guess is found")
         c0 = xp.loadtxt(no_energy_calculation)
         c0 = c0*xp.exp(-drift_diffusion.U_arr)
+        print("Initial guess is found")
     except FileNotFoundError:
         print("Initial guess is not found")
 
@@ -108,13 +108,13 @@ def inflow_boundary(dd):
     #dd.c_arr[:,-1]=dd.c_arr[:,-2] + xp.less_equal(dd.c_arr[:,-2] - dd.c_arr[:,-3], 0) # constant deriv 
     dd.c_arr[-1,:]=0 #sink  right
 #%%
-c_arr = np.loadtxt("tmp.txt")
-drift_diffusion.c_arr = xp.array(c_arr)
+# c_arr = np.loadtxt("tmp.txt")
+# drift_diffusion.c_arr = xp.array(c_arr)
 #%%
 dt = 0.25
 drift_diffusion.run_until(
     inflow_boundary, dt=dt,
-    target_divJ_tot=1e-3,
+    target_divJ_tot=1e-4,
     jump_every=10,
     timeout=6000,
     max_jump=1e30,
@@ -130,7 +130,6 @@ plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_
 plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
 # %%
 plt.plot(drift_diffusion.J_z_tot().get())
-plt.ylim(-1,1)
 # %%
 print("d",   "chi_PS",    "chi_PC",   "J_tot",    "J_tot_err")
 print(
@@ -162,6 +161,7 @@ results = pd.DataFrame(columns=["d",   "chi_PS",    "chi_PC",   "J_tot",    "J_t
         (18, 0.1, -2.0, 40.3837, 2.1726),
         (14, 0.1, -2.0, 58.1557, 0.5443),
         (4, 0.1, -2.0, 12.5677, 0.0287),
+        (6, 0.1, -2.0, 21.755, 0.0028),
         (10, 0.3, -1.75, 46.8653, 0.1363),
         (4, 0.1, -1.75, 9.0709, 0.0208),
         (6, 0.1, -1.75, 11.6507, 0.0269),
@@ -178,8 +178,6 @@ results = pd.DataFrame(columns=["d",   "chi_PS",    "chi_PC",   "J_tot",    "J_t
         (12, 0.3, -1.75, 53.1488, 0.8342),
         (14, 0.3, -1.75, 56.2245, 0.3548),
         (20, 0.3, -1.75, 56.7624, 1.5648),
-        (24, 0.3, -1.75, 0.75, 100),
-        (30, 0.3, -1.75, 0.2, 100)
     ]
 )
 # %%

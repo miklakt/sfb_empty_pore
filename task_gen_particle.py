@@ -215,25 +215,26 @@ init_args = dict(
         l1 = 120,
         l2 = 120,
         chi_PW = 0,
-        chi_PC = -0.0,
+        chi_PC = -0.75,
         N=300,
         sigma = 0.02,
-        ph = 8,
-        pw = 8,
-        chi_PS = 0.1
+        ph =4,
+        pw = 4,
+        chi_PS = 0.5
 )
-working_dir = path = pathlib.Path("temp250424")
+working_dir = path = pathlib.Path("temp160624")
 continue_unfinished = True
 try:
     working_dir.mkdir(parents=True, exist_ok=False)
 except FileExistsError:
     print("Folder is already there")
 #%%
-ifile_data = move_along_z(init_args, -126, -80, 0, 5)
+ifile_data = move_along_z(init_args, -126, -80, 0, 1)
 translated = translate_to_sfbox(ifile_data)
 translated = sort_keys(translated)
 
 if continue_unfinished:
+    del init_args["chi_PC"]
     ig_data = utils.find_closest_in_reference(
         ref_tbl,
         init_args | {"pc" : ("close", ifile_data[0]["pc"])},
