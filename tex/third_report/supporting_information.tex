@@ -33,6 +33,7 @@ Leeds, LS2 9JT, United Kingdom}
 \begin{document}
 \maketitle
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    JHH GHJKL;'
 \subsection*{List of variables and abbreviations}
 $k_B$ - Boltzmann constant \\
 $T$ - temperature \\
@@ -47,120 +48,133 @@ $\chi_{\textrm{PS}}$ - Flory polymer-solvent interaction parameter  \\
 $\chi_{\textrm{PC}}$ - Flory polymer-colloid interaction parameter  \\
 $\chi_{\textrm{CS}}$ - Flory colloid-solvent interaction parameter  \\
 $z$ - a coordinate on the axis of the cylindrical coordinates coaxial to the pore \\
-$r$ - a radial coordinate of the cylindrical coordinate system \\
-$z_{c}, r_{c}$ - coordinates of a colloid particle center in cylindrical coordinates \\
+$r$ - radial coordinate of the cylindrical coordinate system \\
+$z_{c}, r_{c}$ - coordinates of the colloid particle center in cylindrical coordinates \\
 $\Delta F$ - analytical insertion free energy penalty to place spherical particle \\
 $\Delta F_{\textrm{osm}}$ - osmotic contribution to analytical insertion free energy penalty to place spherical particle \\
 $\Delta F_{\textrm{sur}}$ - surface contribution to analytical insertion free energy penalty to place spherical particle \\
-$\Delta F_{\textrm{SF}}$ - insertion free energy penalty to place cylindrical particle calculated with Scheutjens-Fleer approach \\
+$\Delta F_{\textrm{SF}}$ - insertion free energy penalty to place cylindrical particle calculated using Scheutjens-Fleer approach \\
 $\xi$ - semi-dilute polymer solution correlation length \\
-$\phi$ - local volume concentration of polymer segments \\
-$\phi^{\textrm{empty}}$ - local volume concentration of polymer segments in an undisturbed polymer brush \\
+$\phi$ - local volume concentration of the polymer segments in an polymer brush\\
+$\phi^{\textrm{ins}}$ - local volume concentration of polymer segments disturbed by an inserted particle\\
 $\Delta \phi$ - change in the volume concentration of polymer segments when colloid particle is present \\
 $\phi^{\ast}$ - apparent local volume concentration of polymer segments \\
 $\Pi$ - Flory mean field local osmotic pressure \\
 $\gamma$ - surface tension coefficient \\
 $b_0, b_1$ - depletion/accumulation correction coefficient \\
-$\textbf{V}(r_{c})$ - particle volume occupation matrix for a spherical particle with radial coordinate of the center $r_{c}$ \\
-$\textbf{S}(r_{c})$ - particle surface occupation matrix for a spherical particle with radial coordinate of the center $r_{c}$ \\
-$c$ - the stationary local concentration of diffusing colloid particles \\
+$\textbf{V}(r_{c})$ - particle volume occupation matrix for a spherical particle with the radial coordinate of the center $r_{c}$ \\
+$\textbf{S}(r_{c})$ - particle surface occupation matrix for a spherical particle with the radial coordinate of the center $r_{c}$ \\
+$c$ - stationary local concentration of diffusing colloid particles \\
 $c^{\textrm{empty}}$ - the stationary local concentration of diffusing colloid particles through a pore with no polymer brush \\
 $c_0$ - concentration of diffusing colloid particles in the bulk \\
 $D$ - local colloid particle diffusion coefficient \\
 $D_0$ - colloid particle diffusion coefficient in the pure solvent \\
-$R$ - total resistance of the pore to colloid particles diffusion in semi-infinite solution \\
-$R^{\textrm{empty}}$ - total resistance of the pore with no polymer brush to colloid particles diffusion in semi-infinite solution \\
+$R$ - total resistance of the pore to colloid particle diffusion in a semi-infinite solution \\
+$R^{\textrm{empty}}$ - total resistance of the pore with no polymer brush to colloid particle diffusion in a semi-infinite solution \\
 $R_{\textrm{conv}}$ - the convergent flow contribution to total resistance \\
-$R_{\textrm{channel}}$ - the contribution from the pore's channel to total resistance \\
-$R^{\textrm{empty}}_{\textrm{conv}}$ - the convergent flow contribution to total resistance of the pore with no polymer brush \\
-$R^{\textrm{empty}}_{\textrm{channel}}$ - the contribution from the pore's channel to total resistance of the pore with no polymer brush \\
-$P$ - permeability of the pore to colloid particles diffusion in semi-infinite solution \\
-$\eta_{0}$ - the dynamic viscosity of the pure solvent \\
+$R_{\textrm{channel}}$ - the contribution from the pore's channel to the total resistance \\
+$R^{\textrm{empty}}_{\textrm{conv}}$ - the convergent flow contribution to the total resistance of the pore with no polymer brush \\
+$R^{\textrm{empty}}_{\textrm{channel}}$ - the contribution from the pore's channel to the total resistance of the pore with no polymer brush \\
+$P$ - permeability of the pore to colloid particle diffusion in semi-infinite solution \\
+$\eta_{0}$ - dynamic viscosity of the pure solvent \\
 $\textrm{PC}$ - colloid particle partition coefficient between the bulk and the polymer brush \\
-$J$ - the stationary net flux of colloid particles through the pore \\
-$j$ - the stationary colloid particles flux density \\
+$J$ - stationary net flux of colloid particles through the pore \\
+$j$ - stationary colloid particles flux density \\
 $\rho^{-1}$ - local conductivity to colloid particle diffusion \\
 \\
-$\nabla_{V} j$ - the flux divergence of a lattice element \\
+$\nabla_{V} j$ - flux divergence of a lattice element \\
 $\textrm{n,e,s,w}$ - lattice element face indices; namely \textit{north, east, south, west} \\
-$\textrm{N,E,S,W,C}$ - neighboring lattice elements indices; namely \textit{north, east, south, west, center} \\
-$\lambda_{\textrm{n}}$ - ratio between neighboring lattice element volumes in the given direction \\
+$\textrm{N,E,S,W,C}$ - neighboring lattice element indices; namely \textit{north, east, south, west, center} \\
+$\lambda_{\textrm{n}}$ - ratio of neighboring lattice element volumes in the given direction \\
 $j_{\textrm{n}}$ - flux density between neighboring lattice elements in the given direction \\
 $j^{\textrm{pot}}_{\textrm{n}}$ - potential flux density between neighboring lattice elements in the given direction \\
 $j^{\textrm{dif}}_{\textrm{n}}$ - diffusive flux density between neighboring lattice elements in the given direction \\
-$\alpha_{\textrm{n}}$ - neighboring lattice elements weights to calculate the concentration on the face in a given direction \\
+$\alpha_{\textrm{n}}$ - neighboring lattice element weights used to calculate the concentration on the face in a given direction \\
 $\textrm{Pe}_{\textrm{n}}$ - the Péclet number for a flux between neighboring lattice elements in the given direction \\
 $c_{\textrm{N}}$ - concentration in the neighboring or current lattice element \\
-$c_{\textrm{n}}$ - concentration at the face between the current and a neighboring lattice elements \\ 
-$c^{t}_{\textrm{C}}$ - concentration in the current lattice element at the given time $t$ \\ 
+$c_{\textrm{n}}$ - concentration at the face between the current and a neighboring lattice element \\ 
+$c^{t}_{\textrm{C}}$ - concentration in the current lattice element at a given time $t$ \\ 
 $D_{\textrm{N}}$ - local diffusion coefficient in the neighboring lattice element \\
-$D_{\textrm{n}}$ - local diffusion coefficient at the face between the current and a neighboring lattice elements \\
+$D_{\textrm{n}}$ - local diffusion coefficient at the face between the current and a neighboring lattice element \\
 \\
 CFD - Computational Fluid Dynamics \\
 SF-SCF - Scheutjens-Fleer Self-Consistent Field \\
 NPC - Nuclear Pore Complex \\
 NTR - Nuclear Transport Receptor \\
 MEP - Microtubule Intrinsic Proteins \\
+FJC - Free-Joined Chain \\
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Brief summary of the computation routines}
 
-The paper is naturally split between the main text and Supplementary Information. 
-The main results, condensed description and simplified formalism are presented in the main text.
-An extended explanation of used method and routines are presented here for the interested readers. 
+The paper is naturally split between the main text and the Supplementary Information. 
+The main results, condensed description, and simplified formalism are presented in the main text.
+An extended explanation of the used method and routines is presented here for interested readers. 
 
-Each of the methods used in this paper has their shortcomings, we put our best efforts to forego this shortcomings, by combining different approaches in a complimentary manner. 
-To reflect it, the next narrative goes together with a roadmap of the paper in Figure \ref{fig:paper_roadmap}.
+Each of the methods used in this paper has its shortcomings, and we put our best efforts to forego these shortcomings by combining different approaches in a complimentary manner. 
+To reflect this, the next narrative goes together with a roadmap of the paper in Figure \ref{fig:paper_roadmap}.
 
-Let us start from the end, the particular interest of the paper was to calculate resistance $R$ of a cylindrical mesopore in a membrane to a diffusion of nanocolloid particles. 
-The inner surface of the pore is decorated with a densely grafted to the inner surface polymer chains forming polymer brush, which modulates the nanocolloid transport in a complex manner.
+Let us start from the end. The particular interest of this paper was to calculate the resistance $R$ of a cylindrical mesopore in a membrane to the diffusion of nanocolloid particles. 
+The inner surface of the pore is decorated with a densely grafted to the inner surface polymer chains, forming a polymer brush, which modulates nanocolloid transport in a complex manner.
 
-The presence of polymer brush introduce changes in local diffusion coefficient $D$ compared to diffusion coefficient in the pure solvent $D_0$, the short-range interaction of polymer with the solvent and colloid particle creates free landscape.
+The presence of a polymer brush changes the local diffusion coefficient $D$ compared with the diffusion coefficient in the pure solvent $D_0$, and the short-range interaction of polymer with the solvent and colloid particle creates free landscape.
 
-To find nanocolloid flux through such pore and the pore resistance the problem is formulated as massless particle diffusion in potential field, depending on the context applicable equations can be called Focker-Plank equation in the limit of strong friction, advection-diffusion or drift-diffusion equation and finally Smouluchowsky diffusion equation.
-We are interested in stationary solution $\partial c_t = 0$ of the Smouluchowsky equation.
+In the Figure \ref{fig:colloid_transport_SI} we schematically show nanocolloid particles interaction and diffusive transport through a polymer brush-filled mesopore. 
 
-The key components to define the Smouluchowsky equation are local diffusion coefficient $D$ and insertion free energy $\Delta F$ (potential field). 
+To find the nanocolloid flux through such pores and the pore resistance, the problem is formulated as massless particle diffusion in potential field.
+Depending on the context, applicable equations can be called Focker-Plank equation in the limit of strong friction, advection-diffusion or drift-diffusion equation, and finally the Smouluchowsky diffusion equation.
+We are interested in the stationary solution $\partial c_t = 0$ of the Smouluchowsky equation.
 
-Local diffusion coefficient depends on the polymer volume concentration $\phi$ and particle size. 
-The polymer brush forms polymer solution with a concentration dependent correlation length $\xi$. 
+The key components that define the Smouluchowsky equation are the local diffusion coefficient $D$ and the insertion free energy $\Delta F$ (potential field). 
+
+The local diffusion coefficient depends on the polymer volume concentration $\phi$ and particle size. 
+The polymer brush forms a polymer solution with a concentration-dependent correlation length $\xi$. 
 Particles with a size $d>\xi$ experience additional friction of the polymer mesh. 
 As a result, the diffusion is slowed down compared to the pure solvent $D_0/D<1$.
 
-The effect were studied and several models were proposed [refs\dots]. 
+The effects were studied and several models were proposed [refs\dots]. 
 In this paper we chose the model proposed by the authors in [\dots].
-The models assumes a non-sticky particles, and tend to overestimate diffusion coefficient for the particles with high affinity to the polymer.
+The model assumes a non-sticky particles and, tend to overestimate the diffusion coefficient for particles with high affinity to the polymer.
 
-As we mentioned before, the second component to define Smouluchowsky equation is insertion free energy. 
-When a nanocolloid particle is inserted in a brush the free energy of the system is changed compared to the particle in the bulk solution. 
+As mentioned before, the second component to define the Smouluchowsky equation is the insertion free energy. 
+When a nanocolloid particle is inserted into a brush, the free energy of the system is changed compared with that of the particle in the bulk solution. 
 
-Insertion free energy can be split in two terms: osmotic $F_{\textrm{osm}}$ and surface $F_{\textrm{sur}}$; that scales with the particle volume and surface, respectively.
+Insertion free energy can be split into two terms: osmotic $F_{\textrm{osm}}$ and surface $F_{\textrm{sur}}$; that scales with particle volume and surface, respectively.
 
-To calculate the osmotic term the Flory osmotic pressure is integrated over particle volume, that depends on local polymer volume concentration $\phi$ and polymer-solvent interaction parameter $\chi_{\textrm{PS}}$.
-The surface contribution is proportional to the particle surface, with surface tension coefficient $\gamma$ and found by performing integration over the particle surface.
+To calculate the osmotic term, the Flory osmotic pressure is integrated over the particle volume, which depends on the local polymer volume concentration $\phi$ and polymer-solvent interaction parameter $\chi_{\textrm{PS}}$.
+The surface contribution is proportional to the particle surface, with a surface tension coefficient $\gamma$ and found by integrating over the particle surface.
 
-Surface tension coefficient $\gamma(\phi, \chi_{\textrm{PS}}, \chi_{\textrm{PC}})$ has non trivial dependency on the local polymer volume concentration, polymer-solvent interaction parameter $\chi_{\textrm{PS}}$ and polymer-colloid interaction parameter $\chi_{\textrm{PC}}$.
-The problem become even more complex as the polymer volume concentration $\phi$ in the vicinity of the inserted particle distorted compared to the empty brush $\phi^{\textrm{empty}}$, forming depletion region $\Delta \phi <0$ for inert and slightly attractive particles and regions enriched with polymer $\Delta \phi >0$ for attractive particles ($\Delta \phi = \phi - \phi^{\textrm{empty}}$).
+The surface tension coefficient $\gamma(\phi, \chi_{\textrm{PS}}, \chi_{\textrm{PC}})$ has non-trivial dependency on the local polymer volume concentration, the polymer-solvent interaction parameter $\chi_{\textrm{PS}}$ and the polymer-colloid interaction parameter $\chi_{\textrm{PC}}$.
+The problem becomes even more complex as the polymer volume concentration $\phi^{\textrm{ins}}$ in the vicinity of the inserted particle becomes distorted compared to the empty brush $\phi$, forming a depletion region $\Delta \phi <0$ for inert and slightly attractive particles and a region enriched with polymer $\Delta \phi >0$ for attractive particles ($\Delta \phi = \phi^{\textrm{ins}} - \phi$).
 
-To our best knowledge there is now general purely analytical solution to calculate surface tension coefficient $\gamma$ for a given particle size and local polymer concentration $\phi$.
-To account for local distortion in the polymer volume concentration $\phi$ we introduce correction to volume concentration of the empty brush $\phi^{\textrm{empty}}$ with coefficient $b_0, b_1$, making apparent $\phi^{\ast}$ volume concentration dependent on the polymer-colloid interaction parameter $\chi_{\textrm{PC}}$ to compute corrected surface tension coefficient $\gamma(\phi^{\ast},\chi_{\textrm{PS}}, \chi_{\textrm{PC}})$.
+To the best of our knowledge, there is no general purely analytical solution to calculate the surface tension coefficient $\gamma$ for a given particle size and local polymer concentration $\phi$.
+To account for local distortion in the polymer volume concentration $\phi$ we introduce correction to the polymer volume concentration of the empty brush $\phi$ with coefficient $b_0, b_1$, making apparent $\phi^{\ast}$ volume concentration dependent on the polymer-colloid interaction parameter $\chi_{\textrm{PC}}$ to compute the corrected surface tension coefficient $\gamma(\phi^{\ast},\chi_{\textrm{PS}}, \chi_{\textrm{PC}})$.
 
-The correction coefficient can be found by fitting procedure if particle size $d$, polymer concentration profile $\phi$ and interaction parameters $\chi_{\textrm{PS}}, \chi_{\textrm{PC}}$ are known.
+The correction coefficient can be found by fitting if the particle size $d$, polymer concentration profiles $\phi$ and interaction parameters $\chi_{\textrm{PS}}, \chi_{\textrm{PC}}$ are known.
 
-Yet within the chosen framework insertion free energy $\Delta F$ for a spherical particle with an arbitrary diameter $d$ and coordinates of the center $z_c, r_c$ is not accessible and we still miss local polymer concentration of the empty undisturbed polymer brush $\phi^{\textrm{empty}}$ to calculate osmotic pressure $\Pi$ and surface tension coefficient $\gamma$.
-This motivates to employ another approach to calculate missing features, in this paper Scheutjens-Fleer Self-Consistent Field (SF-SCF) approach is utilized.
+However, within the chosen framework, the insertion free energy $\Delta F$ for a spherical particle with an arbitrary diameter $d$ and coordinates of the center $z_c, r_c$ is not accessible, and we still miss the local polymer concentration of the empty undisturbed polymer brush $\phi$ to calculate the osmotic pressure $\Pi$ and surface tension coefficient $\gamma$.
+This motivates us to employ another approach to calculate missing features. 
+In this paper Scheutjens-Fleer Self-Consistent Field (SF-SCF) approach is used.
 
-SF-SCF numerical method can be used to find equilibrium distribution of chain molecules.
-In this method the space is discretized into regular lattice, the average volume fraction of the molecules is calculated in each lattice site, such that overall system free energy is minimized.
-Nanocolloid particles and the membrane is defined as lattice cells impermeable for a polymer with some surface affinity to the polymer.
-The natural choice for a pore is a cylindrical coordinate system, as the system has the axial symmetry, the coordinate system has a degenerate angular coordinate.
-Not to break axial symmetry of the cylindrical pore, only cylindrical particles can embedded in the polymer brush coaxial with the system's main axis.
+The SF-SCF numerical method can be used to find the equilibrium distribution of chain molecules.
+In this method, the space is discretized into a regular lattice, and the average volume fraction of the molecules is calculated in each lattice site, such that the overall system free energy is minimized.
+In the core of the method is iterative search for segment potential $\mathbf{u}$ and consistent with it polymer volume concentration $\phi$, such that the Helmholtz energy of the system is minimized.
 
-The results of SF-SCF are local polymer concentrations $\phi, \phi^{\textrm{empty}}$ and insertion free energy $\Delta F_{\textrm{SF}}$ of a cylindrical particle with an arbitrary axial coordinate $z$ and fixed radial coordinate $r=0$. 
-Obviously, it is not the same as insertion free energy of a spherical particle with an arbitrary position $\Delta F$.
-Primarily, using this data we perform the mapping insertion between them, by fitting correction coefficients $b_0, b_1$.
+In the coarse-grained representation the short range interactions defined by the contacts of the neighboring lattice elements and interaction parameters (see the insets in Figure \ref{fig:colloid_transport_SI}).
+Nanocolloid particles and the membrane are defined as lattice cells impermeable to the polymer with some surface affinity to the polymer.
+The natural choice for a pore is a cylindrical coordinate system with a degenerate angular coordinate, as the system has the axial symmetry.
+To avoid breaking the axial symmetry of the cylindrical pore, only cylindrical particles can be embedded in the polymer brush coaxially with the system's main axis $z$. (Figure \ref{fig:sf-scf_scheme})
 
-Finally, the roadmap in Figure \ref{fig:paper_roadmap} starts with control parameters that defines geometrical features of the pore, polymer brush morphology, particle size and interaction parameters.
+The results of SF-SCF are the local polymer concentrations $\phi, \phi^{\textrm{ins}}$ and insertion free energy $\Delta F_{\textrm{SF}}$ of a cylindrical particle with an arbitrary axial coordinate $z$ and fixed radial coordinate $r=0$. 
+Obviously, it is not the same as the insertion free energy of a spherical particle with an arbitrary position $\Delta F$.
+Primarily, using these data we perform the mapping between them by fitting correction coefficients $b_0, b_1$.
+
+To recap, the SF-SCF approach is superior to the analytical approach in that, it makes no assumptions about insertion free energy, works for arbitrary size particles and explicitly returns local polymer concentration for an empty polymer brush $\phi$ and local polymer concentration for a polymer brush with an inserted colloid particle $\phi^{\textrm{ins}}$.
+We can not use it to calculate the insertion free energy $\Delta F$ of a spherical particle with an arbitrary position because it breaks the axial symmetry. 
+The SF-SCF insertion free energy results $\Delta F_{\textrm{SF}}$ and polymer brush volume concentration $\phi$ are used to map analytical results by fitting correction coefficients $b_0, b_1$
+
+Finally, the roadmap in Figure \ref{fig:paper_roadmap} starts with control parameters that define the geometrical features of the pore, polymer brush morphology, particle size, and interaction parameters.
+See the control parameters in Figure \ref{fig:colloid_transport_SI}.
 
 \begin{figure}
     \centering
@@ -171,39 +185,128 @@ Finally, the roadmap in Figure \ref{fig:paper_roadmap} starts with control param
     \label{fig:paper_roadmap}
 \end{figure}
 
+
 \begin{figure}
     \centering
     \includegraphics[scale = 0.9]{fig/pore_cartoon_SI.png}
     \caption{
-        Schematic illustration of colloid particle interaction and diffusive transport through a pore filled with polymer brush. 
-        The brush is formed by linear polymer chains (red strands) with a degree of polymerization $N$, uniformly grafted with grafting density $\sigma$  
-        to the inner surface of a cylindrical pore in an impermeable membrane. The pore radius is $r_{pore}$ and the thickness of the membrane is $s$.
+        Schematic illustration of colloid particle interaction and diffusive transport through a polymer brush-filled pore. 
+        The brush is formed by linear polymer chains (red strands) with a degree of polymerization $N$, uniformly grafted with grafting density $\sigma$ to the inner surface of a cylindrical pore in an impermeable membrane. 
+        The pore radius is $r_{pore}$ and the thickness of the membrane is $s$.
         Polymer chains are flexible with a statistical segment length $a$ and volume $\sim a^3$.
         \\
-        The local mobility of the particles in the solvent $D/D_{0}$ is defined by their size ($d$), the presence of polymer chains impedes colloid transport by decreasing local mobility.
-        % When a colloid placed in the brush it changes system free energy, which interprets in local insertion free energy.
-        % The negative landscape of local insertion free facilitates colloid transport, whilst free energy barrier can halt the transport.
-        The local insertion free energy arise from the contact of colloid particle with brush, and depends on Flory interaction parameters $\chi$ (upper inset). 
+        The local mobility of the particles in the solvent $D/D_{0}$ is defined by their size ($d$), and the presence of polymer chains impedes colloid transport by decreasing local mobility.
+        The local insertion free energy arises from the contact of the colloid particle with the brush, and depends on the Flory interaction parameters $\chi$ (upper inset). 
         \\
-        To calculate insertion free energy polymer brush, solvent and particle coarse-grained into regular elements (lower inset) having finite volume and contact area.
+        To calculate the insertion free energy of the polymer brush, solvent and particle coarse-grained into regular elements (lower inset) having finite volume and contact area.
         }
-    \label{fig:colloid_transport}
-\end{figure}
+        \label{fig:colloid_transport_SI}
+    \end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{The SF-SCF numerical method}
+
+The method is based on the minimization of the excess Helmholtz energy with a constrain of all volume concentrations end up to unity (incompressibility condition).
+The method use discrete space coordinates, as the system exhibit axial symmetry, the space is discretized into homogeneously curved two gradient lattices \emph{i. e.} cylindrical lattice with degenerate angular direction.
+The result is discrete density profile that correspond to a minimum excess Helmholtz energy.
+
+There are two coordinate axes: longitudinal $z$ and radial $r$ (Figure \ref{fig:sf-scf_scheme}). 
+While $rz$ coordinate system looks identical to the two dimensional Cartesian coordinates (Figure \ref{fig:sf-scf_scheme} lower frame) on the figures, each element of the lattice is square toroid, the mean-field approximation is applied in angular direction, means properties in angular direction are uniform.
+(For the two dimensional Cartesian coordinates each element is square box with an infinite height.)
+
+In the discrete space the membrane and an inserted colloid particle are coarse-grained, and defined as the lattice elements impermeable for the solvent and polymer, and illustrated with crossed out cells filled with green (membrane) and yellow (colloid particle) in  the lower frame of Figure \ref{fig:sf-scf_scheme}.
+In this discrete coarse-grained approach the membrane is modeled as a rectangle toroid with the inner radius equal to $r_{\textrm{pore}}$ and the outer radius much greater than the inner radius.
+The inserted particle is modeled as a cylinder with height and diameter $d$.
+
+The polymer chain modeled as free-joined chain (FJC) with segment length $a$, every next segment can travel in some direction on the lattice, with each of the possible direction has some probability (red chain in Figure \ref{fig:sf-scf_scheme}).
+The resulting local polymer concentration of the polymer $\phi$ is weighted sum of all possible paths the chain can take.
+
+
+To minimize excess Helmholtz energy we introduce a Lagrangian with a multipliers $\alpha(r,z)$
+\begin{equation}
+    \begin{split}
+    F[\mathbf{u}, \boldsymbol{\phi}, \boldsymbol{\alpha}] = F_{ent}[\mathbf{u}] - \sum\limits_{r,z} \sum\limits_X u_X(r, z) \phi_X(r, z) + \\
+    + F_{int} [\boldsymbol{\phi}] 
+    + \sum\limits_{r,z} \alpha(r, z) \left( \sum\limits_X \phi_X(r, z) - 1 \right)
+    \end{split} 
+\end{equation}
+where $\phi_X(x, z)$ is density profile of segment type $X$ (polymer, colloid or solvent), $u_X(x, z)$ is a potential field of segment type $X$, $F_{ent}[\mathbf{u}]$ is mixing entropy term, $F_{int} [\boldsymbol{\phi}]$ is the interaction part of free energy. 
+
+The condition for the minimum of the functional is a system of three variations:
+
+\begin{equation}
+    \label{eq:energy_min_system}
+    \begin{cases}
+    \frac{\partial F}{\partial \boldsymbol{\alpha}} = 0 \\
+    \frac{\partial F}{\partial \boldsymbol{\phi}} = 0 \\
+        \frac{\partial F}{\partial \mathbf{u}} = 0 \\
+    \end{cases}
+\end{equation}
+
+The first conditions in eq.\ref{eq:energy_min_system} assures system incompressibility.
+
+The second condition result in the potential field equation:
+\begin{equation}
+    \label{eq:u-phi}
+    u_A(x, z) =\sum\limits_{B} \chi_{A,B} \left(\phi_B(x,z) - \phi_B^b \right) + \alpha(x, z)
+\end{equation}
+where $\chi_{A,B}$ is parameter Flory between segments $A$ and $B$, and $\phi_B^b$ is volume fraction of $B$ in the bulk (equal to 1 for the solvent and zero otherwise).
+
+The FJC can be considered as a Markov process starting at some segment $s_{i}$ at coordinate $r_{i}, z_{i}$ that goes through intermediate step to the segment $s_{k}$ and coordinate $r_{k}, z_{k}$ (red chain in Figure \ref{fig:sf-scf_scheme}).
+As the result such process has a statistical weight $G(\{r_{k}, z_{k}\}, s_{k} | \{r_{i}, z_{i}\}, s_{i})$.
+
+All the Markov processes that starts with the segment $s_{i}$ and ends with the segment $s_{k}$ at coordinates ${r, z}$ found as the sum over all possible starting coordinates:
+\begin{equation}
+    G(\{r, z\}, s_{k} | s_{i}) = \sum_{r^{\prime}, z^{\prime}} G(\{r, z\}, s_{i} | \{r^{\prime}, z^{\prime}\}, s_{i})
+\end{equation}
+
+The statistical weight of all possible processes that starts form the segment $s_{i}$ and ends with the segment $s_{k}$ is a the sum over all possible coordinates:
+\begin{equation}
+    G(s_{k} | s_{i}) = \sum_{r, z} G(\{r, z\}, s_{k} | s_{i})
+\end{equation}
+
+When $s_{i}=1$ and $s_{k}=N$ the result contains the statistical weight of all possible and allowed conformation of the chain, and is the single chain partition function $q = G(N|1)$
+
+Let $G(r, z) = G(\{r, z\}, 1|1)$ be the initial conditions of the Markov process, which contains just one segment (starts and ends at segment $1$).
+The segment potential $\mathbf{u}$ acts on this segment, thus Boltzmann statistical weights are applied:
+
+\begin{equation}
+    G(r, z) = \exp(-u(r,z))
+\end{equation}
+
+The volume density distribution of a segment $s_i$ at a coordinate $r_{i}, z_{i}$ is found from the composition law:
+\begin{equation}
+    \phi(\{r, z\}, s_{i}) = \frac{2 \pi r_{\textrm{pore}} \sigma N}{q} \frac{G(\{r, z\}, s_n | 1) G(\{r, z\}, (N-s_n+1) | 1)}{G(r, z)}
+\end{equation}
+where $G(\{r, z\}, s_n | 1) G(\{r, z\}, (N-s_n+1) | 1)$ are forward and backward propagators, respectively; $\sigma$ is grafting density and $N$ is the chain length.
+
+Finally, the volume concentration at a coordinate $r, z$ is found as the sum of all segments:
+\begin{equation}
+    \phi(r, z) = \sum_{i}^{N} \phi(\{r, z\}, s_{i})
+\end{equation}
+
+Numerical algorithm solve Scheutjens-Fleer system of non-linear equations, such that segment potential $\mathbf{u}$ is consistent with the volume concentration $\mathbf{\phi}$.
+The relationship between segment potential and volume concentration is defined in eq. \ref{eq:u-phi}.
+
+For the calculations we used the package \emph{SFbox} kindly provided by F.A.M. Leermakers [\dots].
+
+
 
 \begin{figure}
-    \centering
-    \includegraphics[scale = 0.7]{fig/sf-scf_scheme.png}
-    \caption{
-        Schematic layout of lattice size and geometrical features for cylindrical pore model for the SF-SCF method.
-        The axes of $rz$-coordinate system are drawn arrows, blue arrow for $r$-axis and black arrow for $z$-axis which is also the axis of system symmetry.
+        \centering
+        \includegraphics[scale = 0.7]{fig/sf-scf_scheme.png}
+        \caption{
+            Schematic layout of the lattice size and geometrical features for the cylindrical pore model for the SF-SCF method.
+        The axes of $rz$-coordinate system are drawn arrows, a blue arrow for $r$-axis and a black arrow for $z$-axis which is also the axis of system symmetry.
         The origin of cylindrical coordinate system is in the center of the pore.
-        In SF-SCF scheme space is discretized, the elements of the lattice are either occupied or not by bodies impermeable for polymer and solvent.
+        In the SF-SCF scheme, space is discretized, and the elements of the lattice are either occupied or not by bodies impermeable fto the polymer and solvent.
         The membrane and particle defined on $rz$-coordinate grid, see black horizontal grid.
         \\
         In the utilized SF-SCF scheme only coaxial cylindrical colloid particle (yellow cylinder) moving along axis $z$ can be modelled to calculate insertion free energy. 
         Particle position is controlled by the particle center coordinate $z_c$.
         }
-    \label{fig:particle_insertion_0}
+    \label{fig:sf-scf_scheme}
 \end{figure}
 
 \begin{figure}
@@ -223,9 +326,9 @@ Finally, the roadmap in Figure \ref{fig:paper_roadmap} starts with control param
     \caption{
         Non-local perturbation in polymer density when a particle with size comparable to pore radius is inserted. This explains why insertion free energy is underestimated by analytical scheme for a larger particles.
         $d=16, \chi_{PS} = 0.5, \chi_{PC} = -1.5$
-        $\Delta \phi = \phi - \phi^{\textrm{empty}}$
+        $\Delta \phi = \phi^{\textrm{ins}} - \phi$
         }
-    \label{fig:particle_insertion_0}
+    \label{fig:particle_insertion_1}
 \end{figure}
 
 
@@ -310,7 +413,7 @@ Finally, the roadmap in Figure \ref{fig:paper_roadmap} starts with control param
     The polymer volume concentration profile ($\phi$) has axial symmetry the profile is presented as a heatmap on the vertical cross-section plane. 
     The particle stationary concentration profile normalized by the bulk concentration ($c/c_0$) is a heatmap on the horizontal cross-section plane.
         }
-    \label{fig:integration_scheme}
+    \label{fig:cutaway_diagram}
 \end{figure}
 
 
