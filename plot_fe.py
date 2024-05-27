@@ -47,8 +47,8 @@ def gamma(chi_PS, chi_PC, phi, X):
 def gamma2(chi_PS, chi_PC, phi, X):
     a0, a1, a2 = X
     chi_crit = 6*np.log(5/6)
-    phi_corrected = (a0 + a1*chi_PC + a2*chi_PS)*phi
-    chi_ads = chi_PC - chi_PS*(1-phi_corrected)
+    #phi_corrected = (a0 + a1*chi_PC + a2*chi_PS)*phi
+    chi_ads = a0*chi_PC - a1*chi_PS*chi_PC + a2*chi_PS
     gamma = (chi_ads - chi_crit)*phi_corrected/6
     return gamma
 
@@ -96,11 +96,11 @@ X = None
 #%%
 s = 52
 r = 26
-ph =[8, 12, 16]
+ph =[8, 12]
 pw =ph
 sigma = 0.02
 chi_PS = [0.4, 0.5, 0.6]
-chi_PC = [-1.0, -0.5, 0.0]
+chi_PC = [-1.5, 0.0]
 
 master = pd.read_pickle("reference_table.pkl")
 #master = master.loc[master["comment"] == "grown_from_small"]
@@ -114,14 +114,16 @@ master = master.loc[master.sigma == sigma]
 #X = [0.70585835, -0.31406453]
 #[ 1.00029355e+00, -9.37511200e-04]
 #X = [1, 0]
+gamma_f = gamma
 if X is None:
-    gamma_f = gamma2
-    X0 = [1,0,0]
-    f = create_cost_function(master, master_empty, gamma_f)
+    X0 = [1,0]
+    fit_data = pd.read_pickle("reference_table.pkl")
+    fit_data = fit_data.loc[(fit_data.ph == 4)&(fit_data.s == s)&(fit_data.r== r)]
+    f = create_cost_function(fit_data, master_empty, gamma_f)
     from scipy.optimize import least_squares
     res = least_squares(f, X0)
     X =res.x
-
+#%%
 #X = [1, 0]
 #X = [1, 0]
 
@@ -136,7 +138,7 @@ if X is None:
 #     )
 # #g.map_dataframe(sns.scatterplot, x="pc", y="free_energy")
 # g.set_axis_labels(x_var = "$z$", y_var = "$F / k_BT$")
-gamma_f = gamma2
+#gamma_f = gamma
 CHI_PC = master.chi_PC.unique()
 CHI_PS = master.chi_PS.unique()
 fig, axs = plt.subplots(
@@ -245,7 +247,7 @@ axs[-1, -1].legend()
 #ax.plot([], [],color = "darkred", linestyle = "--", label = "$P>0$")
 fig.set_size_inches(6,6)
 #plt.tight_layout()
-fig.savefig("/home/ml/Desktop/grid.svg")
+#fig.savefig("/home/ml/Desktop/grid.svg")
 #%%
 #%%
 volume, surface = cylynder_r0_kernel(8, 16)
@@ -316,7 +318,7 @@ ax.set_xlabel("$\chi_{PC}$")
 ax.set_ylabel("$\phi^{*} / \phi$")
 fig.set_size_inches(3,3)
 plt.tight_layout()
-fig.savefig("/home/ml/Desktop/phi_correction.png", dpi =600)
+#fig.savefig("/home/ml/Desktop/phi_correction.png", dpi =600)
 #%%
 
 # %%
@@ -354,4 +356,62 @@ for (chi_PC, chi_PS), ax in g.axes_dict.items():
     osm, sur = free_energy_cylinder(int(pw/2), empty_pore_data, chi_PS, chi_PC, gamma_f, X, trunc =True)
     tot = osm+sur
     ax.plot(x, tot, color = "darkred", linestyle = "--")
+# %%
+s = 52
+r = 26
+ph =4
+pw =ph
+sigma = 0.02
+chi_PS = [0.5]
+chi_PC = [-1.5, -0.75, 0.0]
+
+master = pd.read_pickle("reference_table.pkl")
+#master = master.loc[master["comment"] == "grown_from_small"]
+master_empty = pd.read_pickle("reference_table_empty_brush.pkl")
+master_empty = master_empty.loc[(master_empty.s == s) & (master_empty.r== r) & (master_empty.sigma == sigma)]
+master = master.loc[master.chi_PC.isin(chi_PC)]
+master = master.loc[master.ph==ph]
+master = master.loc[master.chi_PS.isin(chi_PS)]
+master = master.loc[master.sigma == sigma]
+# %%
+fig, ax = plt.subplots()
+gamma_f = gamma
+for chi_PC_, df in master.groupby(by ="chi_PC"):
+    empty_pore_data = utils.get_by_kwargs(master_empty, chi_PS = chi_PS)
+    X = [1, 0]
+    osm, sur = free_energy_cylinder(int(ph/2), empty_pore_data, chi_PS, chi_PC_, gamma_f, X)
+    tot = osm+sur
+    tot = tot[:len(tot)//2]
+    x = list(range(-len(tot), 0))
+    ax.plot(x, tot, 
+        linestyle = "--",
+        linewidth= 0.7,
+        )
+    X = [0.70585835, -0.31406453]
+    osm, sur = free_energy_cylinder(int(ph/2), empty_pore_data, chi_PS, chi_PC_, gamma_f, X)
+    tot = osm+sur
+    tot = tot[:len(tot)//2]
+    x = list(range(-len(tot), 0))
+    ax.plot(x, tot, 
+        color = ax.lines[-1].get_color(),
+        label = "$\chi_{PC}=$" + str(chi_PC_)
+        )
+    df = df.loc[df.pc<=0]
+    ax.scatter(df.pc, df.free_energy, marker = "o", s =20, facecolor = "none", edgecolor = ax.lines[-1].get_color())
+
+ax.scatter([],[], marker = "o", s =20, facecolor = "none", edgecolor = 'black', label = "SF-SCF")
+ax.plot([],[], linestyle = "--", linewidth= 0.7, color = "k", label = "$b_0 = 1.0, b_1 = 0.0$")
+ax.plot([],[], color = "k", label = "$b_0 = 0.7, b_1 = -0.3$")
+
+ax.axvline(-26, color = "green")
+
+
+ax.legend(title = r"")
+ax.set_xlim(-60,0)
+
+ax.set_xlabel("z")
+ax.set_ylabel("$\Delta F / k_B T$")
+
+fig.set_size_inches(4,3)
+fig.savefig("fig/fit.svg")
 # %%

@@ -99,7 +99,7 @@ The rest of the paper is organized as follows:
     \caption{
         Schematic illustration of colloid particle interaction and diffusive transport through a pore filled with polymer brush. 
         The brush is formed by linear polymer chains (red strands) with a degree of polymerization $N$, uniformly grafted with grafting density $\sigma$  
-        to the inner surface of a cylindrical pore in an impermeable membrane. The pore radius is $r_{pore}$ and the thickness of the membrane is $s$.
+        to the inner surface of a cylindrical pore in an impermeable membrane. The pore radius is $r_{\textrm{pore}}$ and the thickness of the membrane is $s$.
         Polymer chains are flexible with a statistical segment length $a$ and volume $\sim a^3$.
 }
     \label{fig:colloid_transport}
@@ -143,8 +143,8 @@ through polymer-filled pore.
     \includegraphics[scale = 1.0]{fig/phi_hm_grid.png}
     \caption{
     Polymer volume fraction $\phi(z,r)$ profiles in cylindrical coordinates for a polymer brush grafted inside a cylindrical pore at varied solvent quality calculated using SF-SCF theory. 
-    The solvent quality is quantified  by Flory-Huggins parameter $\chi_{PS}$ ranging from 0.1 to 0.9, that is, from good to poor solvent conditions.
-    (the value of $\chi_{PS}$ is written on the top of each frame).
+    The solvent quality is quantified  by Flory-Huggins parameter $\chi_{\textrm{PS}}$ ranging from 0.1 to 0.9, that is, from good to poor solvent conditions.
+    (the value of $\chi_{\textrm{PS}}$ is written on the top of each frame).
     \todo{The specific choice of the brush and pore parameters...}
     Polymer volume fraction profiles $\phi(z,r)$ are presented as a colormaps,
     where white color corresponds to pure solvent, yellow to magenta is low polymer concentration, blue to black correspond to high concentration.
@@ -156,13 +156,13 @@ through polymer-filled pore.
 \end{figure}
 
 The conformations adopted by polymer chains grafted to the pore walls are controlled by strong (under overlapping conditions) intermolecular interactions and depend on the solvent quality. 
-The latter can be quantified by Flory-Huggins solubility parameter $\chi_{PS}$ (here subscript "PS" denotes polymer-solvent interaction). 
-The values of $\chi_{PS}<0.5$ and $\chi_{PS}>0.5$ correspond to good or poor solvent, respectively, whereas $\chi_{PS}=0.5$ in $\theta-$solvent.
+The latter can be quantified by Flory-Huggins solubility parameter $\chi_{\textrm{PS}}$ (here subscript "PS" denotes polymer-solvent interaction). 
+The values of $\chi_{\textrm{PS}}<0.5$ and $\chi_{\textrm{PS}}>0.5$ correspond to good or poor solvent, respectively, whereas $\chi_{\textrm{PS}}=0.5$ in $\theta-$solvent.
 
 
 The swelling/deswelling conformational transition triggered by variation in the solvent quality in the brush grafted inside the pore is illustrated on Figure \ref{fig:phi_hm_grid}, \ref{fig:phi_center}.
 As one can see from Figure \ref{fig:phi_hm_grid}, \ref{fig:phi_center},
-under good or theta-solvent conditions ($\chi_{PS}\leq 0.5$) the brush is swollen and fills not only interior of the pore but also protrudes outside the pore. 
+under good or theta-solvent conditions ($\chi_{\textrm{PS}}\leq 0.5$) the brush is swollen and fills not only interior of the pore but also protrudes outside the pore. 
 On the contrary, in poor solvent, polymer brush is predominantly condensed inside the pore though (for chosen set of the pore and brush parameters) at moderately poor solvent strength
 a fraction of the collapsed polymer chains form condensed "caps" at both ends of the pore.
 It is worth noting that in the case of sufficiently wide pore and small polymerization degree/grafting density, an open channel free of polymer 
@@ -172,7 +172,7 @@ may appear under poor solvent strength conditions in the pore center, as discuss
 Colloid particles has a bulk concentration $c_0$ in one of the reservoirs and allowed to diffuse into the other reservoir with pure solvent only through the pore.
 Colloid particle interaction with solvent and polymer are very complex, we consider approximate model, where the particle has homogenous surface with a given affinity to polymer and solvent.
 When a particle come into contact with a polymer, the contact colloid-solvent (CS) and polymer-solvent (PS) are substituted to the contact polymer-colloid (PC).
-The particles, approximated with a sphere with diameter $d$, the affinity to the polymer is controlled with Flory-Huggins interaction parameter $\chi_{PC}$, 
+The particles, approximated with a sphere with diameter $d$, the affinity to the polymer is controlled with Flory-Huggins interaction parameter $\chi_{\textrm{PC}}$, 
 where subscript PC denotes polymer-colloid interaction. Without loss in generality $\chi_{CS}=0.0$, where subscript PS denotes colloid-solvent interaction.
 
 
@@ -187,48 +187,48 @@ Positive $\Delta F$ thus implies that the brush repels the particle, and vice ve
 
 As long as the particle size is larger than the correlation length in semidilute polymer solution, to which the brush can be locally assimilated, but significanltly smaller than the characteristic 
 pore size (coinciding under pore filling conditions with characteristic dimensions of individual macromolecules), 
-the insertion free energy $\Delta F(z,r)$ can be decoupled into two contributions: osmotic $\Delta F_{osm}(z,r)$ and surface $\Delta F_{sur}(z,r)$ free energy,
+the insertion free energy $\Delta F(z,r)$ can be decoupled into two contributions: osmotic $\Delta F_{\textrm{osm}}(z,r)$ and surface $\Delta F_{\textrm{sur}}(z,r)$ free energy,
 
 \begin{eqnarray}
-    \Delta F = \Delta F_{osm} + \Delta F_{sur}
+    \Delta F = \Delta F_{\textrm{osm}} + \Delta F_{\textrm{sur}}
     \\
-    \Delta F_{osm} = \int_{V} \Pi(z,r) dV
+    \Delta F_{\textrm{osm}} = \int_{V} \Pi(z,r) dV
     \\
-    \Delta F_{sur} = \oint_{S} \gamma (z,r) dS
+    \Delta F_{\textrm{sur}} = \oint_{S} \gamma (z,r) dS
 \label{Delta_F}
 \end{eqnarray}
 where the integration is performed over the particle volume or the particle surface, respectively.
 
-The osmotic contribution, $\Delta F_{osm}(z,r)$, is proportional to the particle volume and accounts for the work performed against excess osmotic pressure upon insertion of the partivle into the brush
+The osmotic contribution, $\Delta F_{\textrm{osm}}(z,r)$, is proportional to the particle volume and accounts for the work performed against excess osmotic pressure upon insertion of the partivle into the brush
 The osmotic pressure in the brush can be calculated from local polymer density using Flory mean field approach, that leads to 
 \begin{equation}
 	\Pi(z,r)=  \phi(z,r)\frac{\partial f\{\phi(z,r)\}}{\partial \phi(z,r)} - f\{\phi(z,r)\}= 
-	k_BT[-\ln(1-\phi(z,r)) - \phi(z,r) -\chi_{PS}\phi^2(z,r)]
+	k_BT[-\ln(1-\phi(z,r)) - \phi(z,r) -\chi_{\textrm{PS}}\phi^2(z,r)]
 \end{equation}
 where
 $$
-f\{\phi(z,r)\}=(1-\phi(z,r))\ln(1-\phi(z,r)) +\chi_{PS}\phi(z,r)(1-\phi(z,r))
+f\{\phi(z,r)\}=(1-\phi(z,r))\ln(1-\phi(z,r)) +\chi_{\textrm{PS}}\phi(z,r)(1-\phi(z,r))
 $$
 is the mean-field Flory expression for the interaction free energy per unit volume of the polymer solution of concentration (volume fraction) $\phi(z,r)$.
 
-As long as osmotic pressure inside the brush is positive, $\Pi(z,r)$, the $\Delta F_{osm}(z,r)$ term is positive as well and dominating for sufficiently large particle. 
+As long as osmotic pressure inside the brush is positive, $\Pi(z,r)$, the $\Delta F_{\textrm{osm}}(z,r)$ term is positive as well and dominating for sufficiently large particle. 
 
 The surface contribution is proportional to the particle surface, with surface tension coefficient $\gamma (z,r)$ approximated as
 \begin{eqnarray}
-    \gamma = \frac{1}{6}(\chi_{ads} - \chi_{crit})\phi^{\ast}
+    \gamma = \frac{1}{6}(\chi_{\textrm{ads}} - \chi_{crit})\phi^{\ast}
     \\
-    \chi_{ads} = \chi_{PC} - \chi_{PS}(1-\phi^{\ast})
+    \chi_{\textrm{ads}} = \chi_{\textrm{PC}} - \chi_{\textrm{PS}}(1-\phi^{\ast})
     \\
-    \phi^{\ast}= (b_{0} + b_{1}\chi_{PC})\phi
+    \phi^{\ast}= (b_{0} + b_{1}\chi_{\textrm{PC}})\phi
 \end{eqnarray}
 Here $\gamma$ is a free energy change upon replacement of a contact of the unit surface area of the particle with the pure solvent by a contact with polymer solution of concentration $\phi$.
 %When the particle placed into the brush, it creates a region depleted from polymer, if the particle is substantially attractive the region is enriched in polymer.
 Coefficients $b_0$ and $b_1$ are introduced to account for  depletion/accumulation of polymer in the proximity of the colloid particle surface, thus correcting local polymer concentration in an empty brush 
 to the apparent concentration $\phi^{\ast}$. Coefficients $b_0$ and $b_1$ are subject to fitting.
-Depending on the strength of polymer particle interaction parameter $\chi_{PC}$ and solvent strength quantified by  $\chi_{PS}$, the sign of $\gamma \sim (\chi_{ads} - \chi_{crit})\phi^{\ast}$ may be either politive or negative.
-In the former case there is a depleated of polymer layer near the particle surface, that gives rise to positive $\gamma$ and, in combination with $\Delta F_{osm}(z,r)\geq 0$, overall positive insertion free energy $\Delta F(z,r)$: 
-The particle is repeled from the brush. The latter case of negative $\gamma$ corresponds to polymer adsorption on the particle surface and to competition between $\Delta F_{osm}(z,r)\geq 0$ and $\Delta F_{surf}(z,r)\leq 0$, 
-that may result in $\Delta F(z,r) = \Delta F_{osm} + \Delta F_{sur}\leq 0$ and preferential accumulation of particles inside the brush. Since both $\Delta F_{osm}\{\phi(z,r)\}$ and $\Delta F_{surf}\{\phi(z,r)\}$ depend
+Depending on the strength of polymer particle interaction parameter $\chi_{\textrm{PC}}$ and solvent strength quantified by  $\chi_{\textrm{PS}}$, the sign of $\gamma \sim (\chi_{\textrm{ads}} - \chi_{\textrm{crit}})\phi^{\ast}$ may be either politive or negative.
+In the former case there is a depleated of polymer layer near the particle surface, that gives rise to positive $\gamma$ and, in combination with $\Delta F_{\textrm{osm}}(z,r)\geq 0$, overall positive insertion free energy $\Delta F(z,r)$: 
+The particle is repeled from the brush. The latter case of negative $\gamma$ corresponds to polymer adsorption on the particle surface and to competition between $\Delta F_{\textrm{osm}}(z,r)\geq 0$ and $\Delta F_{surf}(z,r)\leq 0$, 
+that may result in $\Delta F(z,r) = \Delta F_{\textrm{osm}} + \Delta F_{\textrm{sur}}\leq 0$ and preferential accumulation of particles inside the brush. Since both $\Delta F_{\textrm{osm}}\{\phi(z,r)\}$ and $\Delta F_{surf}\{\phi(z,r)\}$ depend
 on local polymer density $\phi(z,r)$ the net insertion free energy $\Delta F(z,r)$ is position-dependent as well, and it may exhibit rough 2D patterns.
 
 Because the 2D distributions of the polymer volume fraction $\phi(z,r)$ in an unperturbed brush are calculated using lattice SF-SCF method, a special discretization scheme was emploied for integration 
@@ -263,9 +263,9 @@ assure reference value $\Delta F_{SF}(z_c \rightarrow \pm infty) = 0$
 %These values were ground state corrected such that the system total free energy of a particle in bulk solution equal to zero $F_{SF}(z_c \gg 0) = 0$.
 
 %For fixed pore radius $r$, membrane thickness $s$, polymer grafting density $\sigma$ and polymerization degree $N$ insertion free energy along $z$ 
-%were explored for different values of interaction parameters $\chi_{PC}$, $\chi_{PS}$ and particle size $d$.
-%Polymer-colloid interaction parameter $\chi_{PC}$ ranged from -1.5 (attractive colloid particle) to 0.0 (inert colloid particle).
-%Polymer-solvent interaction parameter $\chi_{PS}$ ranged from 0.0 (good solvent) to 1.0 (poor solvent).
+%were explored for different values of interaction parameters $\chi_{\textrm{PC}}$, $\chi_{\textrm{PS}}$ and particle size $d$.
+%Polymer-colloid interaction parameter $\chi_{\textrm{PC}}$ ranged from -1.5 (attractive colloid particle) to 0.0 (inert colloid particle).
+%Polymer-solvent interaction parameter $\chi_{\textrm{PS}}$ ranged from 0.0 (good solvent) to 1.0 (poor solvent).
 %Cylindrical particles with equal diameter $d$ and height were explored for size ranging from 4 to 24 unit lengths.
 
 
@@ -273,10 +273,10 @@ assure reference value $\Delta F_{SF}(z_c \rightarrow \pm infty) = 0$
     \centering
     \includegraphics[width = 4in]{fig/fe_scf_grid2.png}
     \caption{ 
-    The insertion free energy calculated by analytical (SS-SCF) and SF-SCF methods for a cylindrical particles with varied diameter and height $d=[8, 12, 16]$ moving along the main axis of the pore with radius $r_{pore} = 26$ and membrane thickness $s=52$.
-    Solvent quality is varied near $\theta$-point with $\chi_{PS} = [0.4, 0.5, 0.6]$, ordered from left to right column, respectively.
+    The insertion free energy calculated by analytical (SS-SCF) and SF-SCF methods for a cylindrical particles with varied diameter and height $d=[8, 12, 16]$ moving along the main axis of the pore with radius $r_{\textrm{pore}} = 26$ and membrane thickness $s=52$.
+    Solvent quality is varied near $\theta$-point with $\chi_{\textrm{PS}} = [0.4, 0.5, 0.6]$, ordered from left to right column, respectively.
     Polymer volume fractions along the main axis of the pore $\phi(z,r=0)$ at different solvent qualities are shown in the first row.
-    The results are presented for two particle affinities to polymer chains $\chi_{PC} = -0.5$ in the middle row and $\chi_{PC} = -1.0$, i.e. form less to more attractive particles.
+    The results are presented for two particle affinities to polymer chains $\chi_{\textrm{PC}} = -0.5$ in the middle row and $\chi_{\textrm{PC}} = -1.0$, i.e. form less to more attractive particles.
     \\
     Horizontal axes corresponds to position of the particle's center $z_c$, vertical axes corresponds to polymer volume fraction for the first row or free energy value in the others.
     \\
@@ -295,7 +295,7 @@ assure reference value $\Delta F_{SF}(z_c \rightarrow \pm infty) = 0$
         Schematic illustration of excluded volume effect.
         \\
         As a spherical colloid particle can not come closer than $d/2$ to the membrane the excluded volume is defined by the equidistant surface and is shown as greenish area that envelops the membrane.
-        Naturally, the cross-section area of the pore that supports transport shrinks to $r_{pore}^{\ast} = r_{pore} - d/2$.
+        Naturally, the cross-section area of the pore that supports transport shrinks to $r_{\textrm{pore}}^{\ast} = r_{\textrm{pore}} - d/2$.
     }
     \label{fig:excluded_volume}
 \end{figure}
@@ -312,8 +312,8 @@ assure reference value $\Delta F_{SF}(z_c \rightarrow \pm infty) = 0$
     The flux is shown with streamlines marked with small arrows which is the average trajectory of a massless particle. 
     Far enough from the pore the solution to the equation is symmetrical, streamlines are perpendicular to isoconcentration countours wich are oblate spheroids; similar to analytical solution for an empty pore \cite{Brunn, 1984}. 
     \\
-    The solution is presented for a spherical colloid particle with diameter $d = 12$, polymer-colloid interaction parameter $\chi_{PC} = -1.5$ (high affinity) in a good solvent $\chi_{PS} = 0.3$. 
-    The pore has a radius $r_{pore} = 26$ with the thickness of membrane $s = 52$.
+    The solution is presented for a spherical colloid particle with diameter $d = 12$, polymer-colloid interaction parameter $\chi_{\textrm{PC}} = -1.5$ (high affinity) in a good solvent $\chi_{\textrm{PS}} = 0.3$. 
+    The pore has a radius $r_{\textrm{pore}} = 26$ with the thickness of membrane $s = 52$.
     Brush forming chains has a length $N=300$ with a grafting density $\sigma = 0.02$ chains per unit area.
     }
     \label{fig:streamlines}
@@ -337,7 +337,7 @@ assure reference value $\Delta F_{SF}(z_c \rightarrow \pm infty) = 0$
 In Figure \ref{fig:fe_scf_grid} the insertion free energy profiles $\Delta F(z,r=0)$ calculated by analytical scheme and by SF-SCF method are presented as a function of position of a cylindrical particle along the pore axis.
 While the SF-SCF method provides the net free energy, the analytical scheme allows decoupling of the free energy into osmotic and surface contributions, which are shown separately in Figure \ref{fig:fe_scf_grid}.
 The numerical coefficients $b_0$ and $b_1$ in eq \ref{} are chosen by the best fit, but appear to be fairly universal and independent of the particle size and interaction parameters $\chi_{PS,PC}$.
-Remarkably, the fit fails when the size $d$ became comparable with the pore diameter or in the case of extreme $\chi_{ads}$ values when analytical scheme is not applicable because of strong perturbation 
+Remarkably, the fit fails when the size $d$ became comparable with the pore diameter or in the case of extreme $\chi_{\textrm{ads}}$ values when analytical scheme is not applicable because of strong perturbation 
 of the brush structure by inserted particle, while SF-SCF method can still be safely used
 for the evaluation of the insertion free energy.
 
@@ -366,15 +366,15 @@ by using the insertion free energy $\Delta F(z,r)$ available from analytical sch
     \caption{
         Total resistance $R$ of the polymer brush mesopore in a membrane with a finite thickness $s$ in semi-infinite reservoir for a spherical colloid particle as a function of particle size for different solvent quality and particle affinity.
         \\
-        Solvent quality is defined with polymer-solvent interaction parameter $\chi_{PS}$ ranging from good to theta-solvent, three frames from left to right corresponds to a set of $\chi_{PS} = {0.1, 0.3, 0.5}$.
+        Solvent quality is defined with polymer-solvent interaction parameter $\chi_{\textrm{PS}}$ ranging from good to theta-solvent, three frames from left to right corresponds to a set of $\chi_{\textrm{PS}} = {0.1, 0.3, 0.5}$.
         \\
-        Colored solid lines corresponds to different values of polymer-colloid interaction parameter $\chi_{PC} = {-2.0, -1.75, -1.50, -1.25}$ from more to less attractive particle. 
+        Colored solid lines corresponds to different values of polymer-colloid interaction parameter $\chi_{\textrm{PC}} = {-2.0, -1.75, -1.50, -1.25}$ from more to less attractive particle. 
         The color code explained in the legend.
         \\
         Dashed black line traces analytical solution to resistance of an empty pore $R^{\textrm{empty}} = R^{\textrm{empty}}_{\textrm{convergent}} + R^{\textrm{empty}}_{\textrm{channel}}$ of of the same shape to a diffusing spherical particle of size $d$.
-        Dotted black line traces the convergent flow contribution to the total resistance of the empty pore $R^{\textrm{empty}}_{\textrm{convergent}} = \frac{\pi}{2 (r_{pore} - d/2)} \frac{3 d \eta_0}{k_B T}$.
+        Dotted black line traces the convergent flow contribution to the total resistance of the empty pore $R^{\textrm{empty}}_{\textrm{convergent}} = \frac{\pi}{2 (r_{\textrm{pore}} - d/2)} \frac{3 d \eta_0}{k_B T}$.
         Dash-dotted line traces the pore channel contribution to the total resistance of the empty pore
-        $R^{\textrm{empty}}_{\textrm{channel}} = \frac{s}{(r_{pore} - d/2)^2} \frac{3  d \eta_0}{k_B T}$.
+        $R^{\textrm{empty}}_{\textrm{channel}} = \frac{s}{(r_{\textrm{pore}} - d/2)^2} \frac{3  d \eta_0}{k_B T}$.
         \\
         Selected cases were calculated numerically using computational fluid dynamics (CFD) methods, the results shown as square markers that shares the same color as solid lines.
         \\
@@ -389,11 +389,11 @@ by using the insertion free energy $\Delta F(z,r)$ available from analytical sch
     \includegraphics[width = \textwidth]{fig/resistivity_contourplot.png}
     \caption{
         Total resistance $R$ of the polymer brush mesopore in finite thickness membrane in semi-infinite reservoir for a spherical colloid particle as a function of particle size and particle affinity at different solvent strength.
-        Solvent quality is defined with polymer-solvent interaction parameter $\chi_{PS}$ ranging from good to theta-solvent, three frames from left to right corresponds to a set of $\chi_{PS} = {0.1, 0.3, 0.5}$.
+        Solvent quality is defined with polymer-solvent interaction parameter $\chi_{\textrm{PS}}$ ranging from good to theta-solvent, three frames from left to right corresponds to a set of $\chi_{\textrm{PS}} = {0.1, 0.3, 0.5}$.
         \\
         Contour lines trace isovalues of total resistance $R \frac{k_B T}{\eta_0}$ normalized by viscosity of the pure solvent $\eta_0$.
         \\
-        % Selectivity is defined as relative change in total flux with respect to change in particle size or affinity (polymer-solvent interaction parameter $\chi_{PC}$).
+        % Selectivity is defined as relative change in total flux with respect to change in particle size or affinity (polymer-solvent interaction parameter $\chi_{\textrm{PC}}$).
         Selectivity with respect to size corresponds to to distances between contour lines in horizontal direction, selectivity with respect to particle affinity corresponds to distances between contour lines in vertical direction.
         The region below red lines correspond to the total resistance to lower empty pore of the same geometry for a given particle size $d$.
         While in the regions high above red lines the selectivity is enhanced, it can not be utilized due to high resistance (low flux).
@@ -408,8 +408,8 @@ by using the insertion free energy $\Delta F(z,r)$ available from analytical sch
     \centering
     \includegraphics[scale = 1.0]{fig/permeability_on_partition.png}
     \caption{
-        Mapping of polymer brush pore permeability to partitioning.  for a set of colloid sizes $d = {8, 12, 16}$; as indicated atop the graphs and solvent strengths $\chi_{PS} = {0.1, 0.3, 0.5}$ with symbols and colors as indicated in the legend. 
-        In the plots partitioning defined as $\textrm{PC} = \frac{1}{V_{brush}}\int_{V_{brush}} \frac{c_{eq}}{c_0} dV$ and permeability $P$ is normalized by the pure solvent viscosity $\eta_{0}$.
+        Mapping of polymer brush pore permeability to partitioning.  for a set of colloid sizes $d = {8, 12, 16}$; as indicated atop the graphs and solvent strengths $\chi_{\textrm{PS}} = {0.1, 0.3, 0.5}$ with symbols and colors as indicated in the legend. 
+        In the plots partitioning defined as $\textrm{PC} = \frac{1}{V_{\textrm{brush}}}\int_{V_{\textrm{brush}}} \frac{c_{eq}}{c_0} dV$ and permeability $P$ is normalized by the pure solvent viscosity $\eta_{0}$.
         Vertical red lines corresponds to $\textrm{PC}=1$, when average colloid concentration inside the pore is equal to bulk concentration.
         }
         \label{fig:permeability_on_partition}
