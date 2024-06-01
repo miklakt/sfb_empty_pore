@@ -577,60 +577,63 @@ The developed analytical approach can not account for this additional negative e
 \begin{multicols}{2}
 
 Here we present general consideration and formalism on the integration over the particle volume and surface
-for an arbitrary shaped particle with the inhomogeneous surface.
+for an arbitrary shaped particle with a inhomogeneous surface.
+In this section we use bold symbols for matrices, sets, functionals and functions without enclosed arguments. 
 
-Obviously, integration over the solid body volume and surface is a trivial task for a simple geometries like sphere or cylinder.
-Our goal is develop an approach that works for Cartesian and curved coordinate systems, computationally efficient, has a discrete form for the integrations on a regular lattice, can be generalized to an arbitrary shaped, positioned and rotated particles with inhomogeneous surface.
+Obviously, integration over a solid body volume and surface is a trivial task for a simple geometries like sphere or cylinder.
+Our goal is develop an approach that works for Cartesian and curvilinear coordinate systems, 
+computationally efficient, 
+can be discretized for the integrations on a regular lattice, 
+general to an arbitrary shaped, positioned and rotated particles with inhomogeneous surface.
 The other goal is to exploit system symmetry if possible.
 
-Particular to this paper, we exploit axial symmetry with respect to $z$-axis (properties uniform along the angular axis) to perform computationally efficient calculation on the regular lattice defined on the $rz$ of the cylindrical coordinates.
+In particular, we exploit axial symmetry with respect to $z$-axis (properties uniform along the angular axis) to perform computationally efficient calculation on the regular lattice defined on the $rz$ of the cylindrical coordinates.
 
-A three dimensional solid body can be defined with signed distance function $\textrm{SDF}: \mathbb{R}^3 \to \mathbb{R}$, which is negative inside the body and positive outside.
+A three dimensional solid body can be defined with signed distance function $\bm{\textrm{SDF}}: \mathbb{R}^3 \to \mathbb{R}$, which is negative inside the body and positive outside.
 
 $\textrm{SDF}$ has remarkable properties, it can be rotated, translated and scaled. 
 There is a plethora of $\textrm{SDF}$ known for simple geometries like sphere, spheroid, capsule and \textit{etc.}
-Moreover, $\textrm{SDF}$ can be easily defined for a affine transformation and Boolean operations on solids, which enables complex geometries.
+Moreover, $\textrm{SDF}$ it is trivial to apply affine transformation and Boolean operations on solids, which enables complex geometries.
 
-Consider $\textrm{SDF}(\bm{x})$ is defined for a solid body placed at the origin of Cartesian coordinate system, where $\bm{x} = (x_0, x_1, x_2) \in \mathbb{R}^3$ and $\hat{b}_0, \hat{b}_1, \hat{b}_2$ is the basis.
-We apply inverse transform matrix in homogenous coordinates $(x_0, x_1, x_2, 1)$ to construct $\textrm{SDF}$ for an arbitrary translated and rotated solid body (also sheared and scaled).
+\textbf{Cartesian coordinates}
+
+Consider $\textrm{SDF}(\bm{x})$ is defined for a solid body placed at the origin of Cartesian coordinate system, where $\bm{x} = x_0, x_1, x_2 \in \mathbb{R}^3$ with the a basis $\hat{b}_0, \hat{b}_1, \hat{b}_2$.
+We apply inverse transform matrix in homogenous coordinates to construct $\textrm{SDF}$ for an arbitrary translated and rotated solid body (also sheared and scaled).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.75\linewidth]{fig/particle_orientation.png}
+    \caption{
+        Particle orientation ini ZYZ Euler angles
+    }
+    \label{fig:particle_orientation}
+\end{figure}
+
 
 The rotation is defined as the Euler angles $\bm{\theta} = \theta_0, \theta_1, \theta_2 \in \bm{SO(3)}$.
-%We use the next convention for Euler angles: $\theta_0$ - polar angle, $\theta_1$ - azimuthal angle, $\theta_2$ - intrinsic angle; the angles measured to the solid body local coordinate system.
 We use the ZYZ convention for Euler angles:
-\begin{itemize}
-    \item $\theta_0 \in [0, 2\pi)$ - rotation about the $z$-axis, 
-    \item $\theta_1 \in [0, \pi)$ - rotation about the $y$-axis, 
-    \item $\theta_2 \in [0, 2\pi)$ - rotation about the $z$-axis again.
-\end{itemize}
+$\theta_0 \in [0, 2\pi)$ - rotation about the $z$-axis,
+$\theta_1 \in [0, \pi)$ - rotation about the $y$-axis,
+$\theta_2 \in [0, 2\pi)$ - rotation about the $z$-axis again. 
+(See Figure \ref{fig:particle_orientation})
 
 
 Let us construct $\textrm{SDF}(x_0, x_1, x_2)$ for a translated and rotated solid body.
 The rotation and translation can be described as a matrix:
 
 \begin{equation}
-    \begin{gathered}
-    \bm{M}(\bm{x}^\prime, \bm{\theta}) =
+    \begin{aligned}
+    &\bm{M}(\bm{x}^\prime, \bm{\theta}) =
     \\
-    \scalemath{0.8}{
+    &\scalemath{0.8}{
         \begin{pmatrix}
             c\theta_2 c\theta_1 c\theta_0 - s\theta_2 s\theta_0 & -c\theta_2 c\theta_1 s\theta_0 - s\theta_2 c\theta_0 & c\theta_2 s\theta_1 & x^{\prime}_0 \\
-            s\theta_2 c\theta_1 c\theta_0 + c\theta_2 s\theta_0 & -s\theta_2 c\theta_1 s\theta_0 + c\theta_2 c\theta_0 & s\theta_2 s\theta_1 & x^{\prime}_2 \\
+            s\theta_2 c\theta_1 c\theta_0 + c\theta_2 s\theta_0 & -s\theta_2 c\theta_1 s\theta_0 + c\theta_2 c\theta_0 & s\theta_2 s\theta_1 & x^{\prime}_1 \\
             -s\theta_1 c\theta_0 & s\theta_1 s\theta_0 & c\theta_1 & x^{\prime}_2 \\
             0 & 0 & 0 & 1
         \end{pmatrix}
     }
-    %\cdot
-    % \\
-    % \cdot & 
-    % \scalemath{0.8}{
-    % \begin{vmatrix}
-    % 1&0&0&x_0^{\prime}\\
-    % 0&1&0&x_1^{\prime}\\
-    % 0&0&1&x_2^{\prime}\\
-    % 0&0&0&1
-    % \end{vmatrix}
-    %}
-    \end{gathered}
+    \end{aligned}
 \end{equation}
 where $c$ and $s$ stand for cosine and sine, respectively. 
  
@@ -640,7 +643,7 @@ The modified $\textrm{SDF}$ for a translated and rotated solid body:
 \end{equation}
 where $\textrm{SDF}_{0}$ is the original function for a solid body placed in the origin of Cartesian coordinates.
 
-Using the $\textrm{SDF}$ we can define an indicator function for the volume that determine whether a given point is inside or outside, indicator function that determine whether a given point is on the surface and the surface normals.
+Using the $\textrm{SDF}$ we can define a volume indicator function $\bm{\delta}_V$ that determine whether a given point is inside or outside the particle, surface indicator function that determine whether a given point is on the surface $\bm{\delta}_S$ and finally recover the surface normals $\hat{\bm{n}}$:
 
 \begin{gather}
     \bm{\delta}_V = H(-\textrm{SDF})\\
@@ -649,47 +652,35 @@ Using the $\textrm{SDF}$ we can define an indicator function for the volume that
 \end{gather}
 where $H$ is the Heaviside function, $\delta$ is the Dirac function.
 
-%Let us find orientational average of the volume and surface integral for a function $g(\bm{x})$:
-% \begin{gather}
-%         \left.G\right|_V (\bm{x}^{\prime}) = \frac{1}{8\pi^2} \iint \limits_{\Omega_{\theta}, V(\bm{x}^{\prime}, \bm{\theta})} g(\bm{x})dV d \bm{\theta}\\
-%         \left.G\right|_S (\bm{x}^{\prime}) = \frac{1}{8\pi^2} \iint \limits_{\Omega_{\theta}, S(\bm{x}^{\prime}, \bm{\theta})} g(\bm{x})dS d \bm{\theta}
-% \end{gather}
-%Note that integration domains depend on the current particle position $\bm{x}^{\prime}$ and orientation $\bm{\theta}$.
-
-Let us find orientational average of the volume and surface integral for a function $g(\bm{x})$ in Cartesian coordinates, we can use the indicator functions to fix the integration domain:
-\begin{equation}
+For any particles other than a spherical particle with homogenous space, we might be interested in the orientation average integral.
+Let us find orientation average of the volume and surface integral for a function $g(\bm{x})$ in Cartesian coordinates, we can use the indicator functions to fix the integration domain:
+\begin{equation}\label{eq:vol_int_cartesian}
     \left.G\right|_V (\bm{x}^{\prime}) = \frac{1}{8\pi^2} \iint 
-        \limits_{\substack{
-                            % \theta_0 \in [0, 2\pi] \\ 
-                            % \theta_1 \in [0, \pi] \\ 
-                            % \theta_2 \in [0, 2\pi] \\
-                            \bm{\theta} \in \Omega_{\theta} \\
+        \limits_{\substack{\bm{\theta} \in \Omega_{\theta} \\
                             \bm{x} \in \mathbb{R}^3}} 
         \delta_V(\bm{x}, \bm{x}^{\prime}, \bm{\theta}) g(\bm{x}) d \bm{x}  \sin \theta_1d \bm{\theta}
 \end{equation}
-
-\begin{equation}
+\begin{equation}\label{eq:sur_int_cartesian}
     \begin{aligned}
     &\left.G\right|_S (\bm{x}^{\prime}) = \\ & \frac{1}{8\pi^2} \iint 
     \limits_{\substack{
         \bm{\theta} \in \Omega_{\theta} \\
         \bm{x} \in \mathbb{R}^3}}
-        \delta_S(\bm{x}, \bm{x}^{\prime}, \bm{\theta}) g(\bm{x}) \cdot 
-        \frac{\left|\hat{n}(\bm{x}, \bm{x}^{\prime}, \bm{\theta})\right|}{\left|\hat{n}(\bm{x}, \bm{x}^{\prime}, \bm{\theta}) \cdot \hat{b}_2\right|}  dx_0 dx_1  \sin \theta_1 d \bm{\theta}
+        \delta_S(\bm{x}, \bm{x}^{\prime}, \bm{\theta}) g(\bm{x}) 
+        \frac{1}{\left|\hat{n}(\bm{x}, \bm{x}^{\prime}, \bm{\theta}) \cdot \hat{b}_2\right|}  dx_0 dx_1  \sin \theta_1 d \bm{\theta}
     \end{aligned}
 \end{equation}
 where $\Omega_{\theta}$ domain of possible orientations given in Euler angles, $V(\bm{x}^{\prime}, \bm{\theta}) \in \mathbb{R}^3$, $S(\bm{x}^{\prime}, \bm{\theta}) \in \mathbb{R}^2$ are volume and surface integration domains.
 
-When $g(\bm{x})$ is independent from one of the coordinates, particularly, it can describe a property uniform along one or two coordinate axis.
-While the previous equations are still valid, we can redefine some of the equation to drop some dimensions.
+\textbf{Reduced dimensionality}
 
-%Further we present some examples.
+The integrand function $g(\bm{x})$ may be independent from one of the coordinates, particularly, it can describe a property uniform along one or two coordinate axis.
+While the previous expression are still valid, we can redefine some of the equation to drop dimensions and reduce the domain of integration.
 
-Let $g(\bm{x})$ be uniform in $x_2$ direction, means the function can be redefined as $g(x_0, x_1)$.
-We project solid body volume and surface from $\mathbb{R}^3 \to \mathbb{R}^2$.
+
+Let $g(\bm{x})$ be uniform in $x_2$ direction, means the function can be expressed as $g(x_0, x_1)$.
+To perform integrations in $\mathbb{R}^2$ manifold we project solid body volume and surface from $\mathbb{R}^3 \to \mathbb{R}^2$.
 \begin{equation}\label{eq:x2_down}
-    %\begin{aligned}
-        %&
         V_{x_2 \downarrow}(x_0, x_1, x^{\prime}_0, x^{\prime}_1, \bm{\theta}) = 
         \int \limits_{x_2 \in \mathbb{R}}
         \bm{\delta}_V dx_2
@@ -698,14 +689,27 @@ We project solid body volume and surface from $\mathbb{R}^3 \to \mathbb{R}^2$.
         S_{x_2 \downarrow}(x_0, x_1, x^{\prime}_0, x^{\prime}_1, \bm{\theta}) = 
         \int \limits_{x_2 \in \mathbb{R}}
         \bm{\delta}_S
-        \frac{|\hat{\bm{n}}|}{|\hat{\bm{n}} \cdot \hat{b_2}|} dx_2
+        \frac{1}{|\hat{\bm{n}} \cdot \hat{b_2}|} dx_2
     %\end{aligned}
 \end{equation}
-where $x^{\prime}_2$ in $\bm{x}^{\prime}$ is an arbitrary value.
-The integral transformation in eq. \ref{eq:x2_down} is similar to Radon transformation of a solid body into a series of crosscuts.
+where $x^{\prime}_2$ in $\bm{x}^{\prime}$ has an arbitrary value.
 
-Orientation averaged integral over the particle volume and surface, when the integrated function is uniform along one of the axis, can be rewritten as:
-\begin{equation}
+
+
+The integral transformation in eq. \ref{eq:x2_down} is similar to Radon transformation of a solid body into a series of crosscuts, 
+essentially the transformation $V_{x_2 \downarrow}$ outputs a continuos series of tomograms at different projection angles $\bm{\theta}$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.9\linewidth]{fig/arbitrary_particle_projection.png}
+    \caption{
+        Volume and surface projection of an arbitrary shaped particle
+    }
+    \label{fig:arbitrary_particle_projection}
+\end{figure}
+
+When the integrand function $\bm{g}$ is uniform along one of the axis orientation average integral in the eq. \ref{eq:vol_int_cartesian}, \ref{eq:sur_int_cartesian} reduces to:
+\begin{equation} 
     \begin{aligned}
         &\left.G\right|_V (x_0^{\prime}, x_1^{\prime}) = \\
         \frac{1}{8\pi^2} &\iint \limits_{
@@ -725,11 +729,10 @@ Orientation averaged integral over the particle volume and surface, when the int
         g(x_0, x_1) S_{x_2 \downarrow}(x_0, x_1, x^{\prime}_0, x^{\prime}_1, \bm{\theta}) dx_0 dx_1 \sin\theta_1 d\bm{\theta}
     \end{aligned}
 \end{equation}
-Remarkably, in we drop one dimension from the integration to ensure efficient computation.
+Remarkably, in we drop a dimension from the integration which ensure efficient computation without redundant calculations.
 
-Let $g(\bm{x})$ be uniform in $x_0, x_1$ direction, means the function can be redefined as $g(x_2)$.
-We project solid body volume and surface $\mathbb{R}^3 \to \mathbb{R}$.
-
+Let $g(\bm{x})$ be uniform along $x_0, x_1$ direction, means the function can be redefined as $g(x_2)$.
+This time, we integrate in $\mathbb{R}$ manifold and project solid body volume and surface from $\mathbb{R}^3 \to \mathbb{R}$.
 \begin{equation}\label{eq:x0x1_down}
         V_{x_0, x_1 \downarrow}(x_2, x^{\prime}_2, \theta_1, \theta_2) = 
         \iint \limits_{x_0, x_1 \in \mathbb{R}^2}
@@ -741,7 +744,7 @@ We project solid body volume and surface $\mathbb{R}^3 \to \mathbb{R}$.
     \bm{\delta}_S \frac{|\hat{\bm{n}}|}{|\hat{\bm{n}} \cdot \hat{b}_0|} dx_0 dx_1
 \end{equation}
 
-Orientation averaged integral over the particle volume and surface, when the integrated function is uniform along two axis, can be rewritten as:
+When the integrand function $\bm{g}$ is uniform along two axes, orientation average integral in the eq. \ref{eq:vol_int_cartesian}, \ref{eq:sur_int_cartesian} reduces to:
 \begin{gather}
     \begin{aligned}
         &\left.G\right|_V (x_2^{\prime}) = \\
@@ -763,15 +766,17 @@ Orientation averaged integral over the particle volume and surface, when the int
         g(x_2) S_{x_0, x_1 \downarrow}(x_2, x^{\prime}_2, \bm{\theta}) dx_0 dx_1 \sin \theta_1 d\theta_0 d\theta_1
     \end{aligned}
 \end{gather}
-Remarkably, not only we drop two dimensions, we reduce the domain of possible orientation.
-The third Euler angle in ZYZ do not change the projection, hence the change of the domain and the normalization constant.
+Remarkably, not only we drop two dimensions, we take advantage in the symmetries in projections and reduce the domain of orientation.
+The change in the third ZYZ Euler angle result in the equal projections, hence the change of the domain and the normalization constant.
 
 The indicator function we introduced earlier have two major benefits.
 First, it fixes the domain of integration regardless of the particle translation and rotation.
-Second, the integration can be performed in the same manifold for volume and surface.
+Second, integration over the volume and over the surface can be performed in the same manifold.
+The latter makes discretization straightforward, which is often non-trivial task for surface integration.
 
+\textbf{Curvilinear coordinates}
 
-We might prefer to use other than Cartesian coordinate systems, particularly, a cylindrical coordinate system.
+We might prefer to use other than Cartesian coordinate systems, particularly, cylindrical coordinate system.
 Generally, for an orthogonal curvilinear coordinate system $\bm{q} = q_0, q_1, q_2 \in \mathbb{R}^3$ we define the invertible transformation $\bm{T}:\mathbb{R}^3 \to \mathbb{R}^3$ to Cartesian coordinates and transformation $\bm{T}_h(\bm{q}):\mathbb{R}^3 \to \mathbb{R}^4$ to homogeneous coordinates.
 
 \begin{align}
@@ -790,79 +795,91 @@ Generally, for an orthogonal curvilinear coordinate system $\bm{q} = q_0, q_1, q
         1
     \end{pmatrix}
 \end{align}
+The formalism of the homogeneous coordinates allows to express affine transformations as matrix multiplication.
 
-The final form for the $\textrm{SDF}$ in a curvilinear coordinate system:
+The Jacobian matrix for this transformation is:
 \begin{equation}
-    \textrm{SDF}(\bm{q}) = \textrm{SDF}_{0}(\bm{M}(\bm{T}(\bm{q}^\prime), \bm{\theta})^{-1} \bm{T}_h(\bm{q}))
+    \bm{J} = \begin{pmatrix}
+    \frac{\partial x_0}{\partial q_0} & \frac{\partial x_0}{\partial q_1} & \frac{\partial x_0}{\partial q_2} \\
+    \frac{\partial x_1}{\partial q_0} & \frac{\partial x_1}{\partial q_1} & \frac{\partial x_1}{\partial q_2} \\
+    \frac{\partial x_2}{\partial q_0} & \frac{\partial x_2}{\partial q_1} & \frac{\partial x_2}{\partial q_2}
+    \end{pmatrix}
+\end{equation}
+
+The final form for the $\textrm{SDF}$ in a curvilinear coordinates:
+\begin{equation}\label{eq:transform_SDF}
+    \textrm{SDF}(\bm{q}) = \textrm{SDF}_{0}\left(\bm{M}[\bm{T}(\bm{q}^\prime), \bm{\theta}]^{-1} \bm{T}_h(\bm{q})\right)
 \end{equation}
 where $\bm{q}^\prime$ is the solid body position in the curvilinear coordinates.
 
 
 The general expression to calculate volume integral becomes:
 
-\begin{equation}\label{eq:general_int_V}
-    \begin{split}
-        &\left.G\right|_V (x_0^{\prime}, x_1^{\prime}, x_2^{\prime}) = 
-        \\
-        &\frac{1}{8\pi^2} \int_{0}^{2\pi}\int_{0}^{2\pi}\int_{0}^{\pi} \iiint \limits_{x_0, x_1, x_2 \in \mathbb{R}^3} g(x_0, x_1, x_2)  \cdot\\
-        \cdot &H\left[\textrm{SDF}(x_0 - x_0^{\prime}, x_1 - x_1^{\prime}, x_2 - x_2^{\prime}, \theta_0, \theta_1, \theta_2)\right] \cdot \\
-        \cdot &J dx_0 dx_1 dx_2 d\theta_0 d\theta_1 d\theta_2 
-    \end{split}
-\end{equation}
-where 
 \begin{equation}
-    J = \begin{vmatrix}
-        \frac{\partial \hat{e}_0}{\partial x_0} & \frac{\partial \hat{e}_0}{\partial x_1} & \frac{\partial \hat{e}_0}{\partial x_2} \\
-        \frac{\partial \hat{e}_1}{\partial x_0} & \frac{\partial \hat{e}_1}{\partial x_1} & \frac{\partial \hat{e}_1}{\partial x_2} \\
-        \frac{\partial \hat{e}_2}{\partial x_0} & \frac{\partial \hat{e}_2}{\partial x_1} & \frac{\partial \hat{e}_2}{\partial x_2} \\
-    \end{vmatrix}
+    \left.G\right|_V (\bm{q}^{\prime}) = \frac{1}{8\pi^2} \iint 
+        \limits_{\substack{
+                            \bm{\theta} \in \Omega_{\theta} \\
+                            \bm{q} \in \Omega_{q}}} 
+        \delta_V(\bm{q}, \bm{q}^{\prime}, \bm{\theta}) g(\bm{q}) \bm{J} d \bm{q}  \sin \theta_1d \bm{\theta}
 \end{equation}
-is Jacobian matrix of the curvilinear coordinate system. $\hat{e}_0, \hat{e}_1, \hat{e}_2$ local covariant basis vectors of the chosen coordinate system,  $\hat{e}_0, \hat{e}_1, \hat{e}_2$ basis of a local Cartesian coordinate.
-
-The general expression to calculate surface integral:
-
 \begin{equation}\label{eq:general_int_S}
-    \begin{split}
-        &G_{S}(x_0^{\prime}, x_1^{\prime}, x_2^{\prime}) = \\
-        &\frac{1}{8\pi^2} \int_{0}^{2\pi}\int_{0}^{2\pi}\int_{0}^{\pi} \iiint \limits_{x_0, x_1, x_2 \in \mathbb{R}^3} g(x_0, x_1, x_2)  \cdot\\
-        \cdot &\delta\left[\textrm{SDF}(x_0 - x_0^{\prime}, x_1 - x_1^{\prime}, x_2 - x_2^{\prime}, \theta_0, \theta_1, \theta_2)\right] \cdot \\
-        &\frac{\nabla \textrm{SDF}}{\nabla \textrm{SDF} \cdot \hat{x}_2} \left| \frac{\partial \hat{e}_0}{\partial x_0} \times \frac{\partial \hat{e}_1}{\partial x_1}  \right| dx_0 dx_1 dx_2 d\theta_0 d\theta_1 d\theta_2 
-    \end{split}
+    \begin{aligned}
+    &\left.G\right|_S (\bm{q}^{\prime}) = \\ & \frac{1}{8\pi^2} \iint 
+    \limits_{\substack{
+        \bm{\theta} \in \Omega_{\theta} \\
+        \bm{q} \in \Omega_{q}}}
+    \delta_S(\bm{q}, \bm{q}^{\prime}, \bm{\theta}) g(\bm{q}) \cdot 
+    %\frac{1}{\left|\hat{n}(\bm{q}, \bm{q}^{\prime}, \bm{\theta}) \cdot \frac{\partial\bm{T}}{\partial q_2}\right|} \cdot\\
+    %\cdot &\sqrt{\det (\bm{J}_{S}\bm{J}_{S}^T)}
+    \frac{\left|\frac{\partial \bm{T}}{\partial q_0} \times \frac{\partial \bm{T}}{\partial q_1} \right|}{\left|\hat{n}(\bm{q}, \bm{q}^{\prime}, \bm{\theta}) \cdot \frac{\partial\bm{T}}{\partial q_2}\right|} \cdot
+    d\bm{q}  \sin \theta_1 d \bm{\theta}
+    \end{aligned}
 \end{equation}
-where $\delta(x)$ is the Dirac function. 
+% \begin{equation}
+%     \bm{J}_{S} = 
+%     \begin{pmatrix}
+%         \frac{\partial x_0}{\partial q_0} & \frac{\partial x_0}{\partial q_1} \\
+%         \frac{\partial x_1}{\partial q_0} & \frac{\partial x_1}{\partial q_1} \\
+%         \frac{\partial x_2}{\partial q_0} & \frac{\partial x_2}{\partial q_1}
+%     \end{pmatrix}
+% \end{equation}
+where 
+% $\bm{J}_{S}$ - partial Jacobian matrix,
+%$\hat{e}_2 = \frac{\partial\bm{T}}{\partial q_2}$ is a component of the curvilinear coordinates local basis,
+$q_0, q_1, q_2 \in \Omega_{q}$ is a curvilinear coordinates space. 
+For example, $[0, +\infty) \times \bm{S_1} \times \mathbb{R}$ is cylindrical coordinates space.
 
-Eq.\ref{eq:general_int_V} can be easily generalized to account for inhomogeneous surface properties by introducing addition term to the integrand.
-This term can be defined as $h{u(x_0, x_1, x_2), v(x_0, x_1, x_2)}$, to encode surface properties as a $uv$-map.
 
-Particularly, a property uniform in one of the coordinates (\textit{e. g} Flory osmotic pressure $\Pi$ is uniform in the angular direction) can be defined as a function of two independent spatial variables $g(x_0, x_1)$.
-Let us omit rotational dependency, for the sake of clarity.
-As the function $g(x_0, x_1)$ defined in $\mathbb{R}^2$, we project the particle volume and surface from $\mathbb{R}^3$ to $\mathbb{R}^2$ by the next integral transform:
+Eq.\ref{eq:general_int_S} can be easily generalized to account for inhomogeneous surface properties by introducing addition term to the integrand that modifies function $\bm{g}$.
+Consider the surface of a solid body is parametrized with $u(\bm{q}), v(\bm{q})$, 
+We introduce $\bm{h}(\bm{u}, \bm{v})$ to encode surface properties as a $uv$-map.
+To account for particle translation, rotation and coordinate system change we apply respective transformation $\bm{h} = \mathcal{L}{h}_0$, where $\mathcal{L}$ operates on $h_0$, which defined for the particle in Cartesian coordinates placed in the origin, similar to eq.\ref{eq:transform_SDF}.
 
-\begin{equation}
-    \begin{split}
-        &V(x_0^{\prime}, x_1^{\prime}) =\\
-        & \int \limits_{x_2 \in \mathbb{R}} H\left[\textrm{SDF}(x_0 - x_0^{\prime}, x_1 - x_1^{\prime}, x_2 - x_2^{\prime})\right] \left|\frac{\partial \hat{e}_2}{\partial x_2}\right| dx_2
-    \end{split}
+We generalize the integrand function $g(\bm{x}, h[u(\bm{x}), v(\bm{x})])$ or $[\bm{g} \circ \bm{h}(\bm{u}, \bm{v})]$  to account for inhomogeneous surface.
+
+The final expression to the rotational average integral over the surface of an arbitrary shaped and rotated particle with inhomogeneous surface properties in a curvilinear coordinates:
+
+\begin{equation}\label{eq:general_int_S_inhomogenous}
+    \begin{aligned}
+    &\left.G\right|_S (\bm{q}^{\prime}) = \\ & \frac{1}{8\pi^2} \iint 
+    \limits_{\substack{
+        \bm{\theta} \in \Omega_{\theta} \\
+        \bm{q} \in \Omega_{q}}}
+    \bm{\delta}_S \left[\bm{g} \circ \bm{h}(\bm{u}, \bm{v})\right]
+    % \frac{1}{\left|\hat{\bm{n}} \cdot \frac{\partial\bm{T}}{\partial q_2}\right|} \cdot \sqrt{\det (\bm{J}_{S}\bm{J}_{S}^T)}
+    \frac{\left|\frac{\partial \bm{T}}{\partial q_0} \times \frac{\partial \bm{T}}{\partial q_1} \right|}{\left|\hat{\bm{n}} \cdot \frac{\partial\bm{T}}{\partial q_2}\right|}
+    d\bm{q}  \sin \theta_1 d \bm{\theta}
+    \end{aligned}
 \end{equation}
 
-\begin{equation}
-    \begin{split}
-        &S(x_0^{\prime}, x_1^{\prime}) =\\
-        & \int \limits_{x_2 \in \mathbb{R}} \delta\left[\textrm{SDF}(x_0 - x_0^{\prime}, x_1 - x_1^{\prime}, x_2 - x_2^{\prime})\right] \\
-        &\frac{\nabla \textrm{SDF}}{\nabla \textrm{SDF} \cdot \hat{x}_2} \left| \frac{\partial \hat{e}_0}{\partial x_0} \times \frac{\partial \hat{e}_1}{\partial x_1}  \right| dx_2
-    \end{split}
-\end{equation}
-
-\begin{equation}
-    G_{V}(x_0^{\prime}, x_1^{\prime}) = \iint \limits_{x_0, x_1 \in \mathbb{R}^2} g(x_0, x_1) \cdot V(x_0, x_1) dx_0 dx_1
-\end{equation}
-
-\begin{equation}
-    G_{S}(x_0^{\prime}, x_1^{\prime}) = \iint \limits_{x_0, x_1 \in \mathbb{R}^2} g(x_0, x_1) \cdot S(x_0, x_1) dx_0 dx_1
-\end{equation}
-
-Generalization to orientation dependent integration will result in a transform similar to the Radon transform.
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \linewidth]{fig/inhomogeneous_surface.png}
+    \caption{
+        Particle with the inhomogeneous surface defined using $uv$-map
+    }
+    \label{fig:inhomogeneous_surface}
+\end{figure}
     
 \end{multicols}
 
@@ -871,81 +888,83 @@ Generalization to orientation dependent integration will result in a transform s
 \subsection*{Integration over spherical particle}
 \begin{multicols}{2}
 
-In the previous section we discuss the integration over the cylindrical particle volume and surface.
-Here we generalize the idea to a homogeneous spherical particle with an arbitrary position of the center.
+In the previous sections we discuss general general approach to integrate over the volume and surface of an arbitrary particle, as well as a particular case of a cylindrical particle with a center fixed to $z$-axis of cylindrical coordinate system.
 
-The concept is easier to present in the $xyz$ Cartesian coordinates first. 
+Here we present the case of a homogeneous spherical particle with an arbitrary position. 
+We remind that the properties of the pore has axial symmetry, the natural choice is cylindrical coordinate system.
+As the profiles are uniform in angular directions, with degenerate angular axis.  
+%The concept is easier to present in the $xyz$ Cartesian coordinates first. 
 
-Consider a function of interest $g(x,y,z)$, we want to integrate it over the particle volume $G = \int_{V_{\textrm{sphere}}} g dV$.
+% Consider a function of interest $g(x,y,z)$, we want to integrate it over the particle volume $G = \int_{V_{\textrm{sphere}}} g dV$.
 
-Let us define spherical the particle volume using signed distance function:
-\begin{eqnarray}
-    %\begin{split}
-    %    &\textrm{SDF}(x,y,z, x_c, y_c, z_c) =\\
-    %    &\sqrt{(x-x_c)^2 + (y-y_c)^2 + (z-z_c)^2} - d/2
-    %\end{split}
-    \textrm{SDF}(x,y,z) = \sqrt{(x)^2 + (y)^2 + (z)^2} - d/2 \\
-    V(x,y,z) = H(-SDF(x,y,z)) \\
-    \iiint \limits_{(x,y,z)\in \mathbb{R}^3} V(x,y,z) dx dy dz = V_{\textrm{sphere}}
-\end{eqnarray}
-where $H$ is a Heaviside step function, $V_{\textrm{sphere}} = \frac{\pi d^3}{6}$ is the volume of a spherical particle.
+% Let us define spherical the particle volume using signed distance function:
+% \begin{eqnarray}
+%     %\begin{split}
+%     %    &\textrm{SDF}(x,y,z, x_c, y_c, z_c) =\\
+%     %    &\sqrt{(x-x_c)^2 + (y-y_c)^2 + (z-z_c)^2} - d/2
+%     %\end{split}
+%     \textrm{SDF}(x,y,z) = \sqrt{(x)^2 + (y)^2 + (z)^2} - d/2 \\
+%     V(x,y,z) = H(-SDF(x,y,z)) \\
+%     \iiint \limits_{(x,y,z)\in \mathbb{R}^3} V(x,y,z) dx dy dz = V_{\textrm{sphere}}
+% \end{eqnarray}
+% where $H$ is a Heaviside step function, $V_{\textrm{sphere}} = \frac{\pi d^3}{6}$ is the volume of a spherical particle.
 
-Let us place a particle to have the coordinates of the particle's center $x_c, y_c, z_c$. 
-Then we integrate the function $g(x,y,z)$ in the $xyz$-space
-\begin{equation}
-    \begin{split}
-    &G(x_c, y_c, z_c) = \\
-    &\iiint \limits_{(x,y,z)\in \mathbb{R}^3} g(x, y, z) V(x-x_c,y-y_c,z-z_c) dx dy dz
-    \end{split}
-\end{equation}
+% Let us place a particle to have the coordinates of the particle's center $x_c, y_c, z_c$. 
+% Then we integrate the function $g(x,y,z)$ in the $xyz$-space
+% \begin{equation}
+%     \begin{split}
+%     &G(x_c, y_c, z_c) = \\
+%     &\iiint \limits_{(x,y,z)\in \mathbb{R}^3} g(x, y, z) V(x-x_c,y-y_c,z-z_c) dx dy dz
+%     \end{split}
+% \end{equation}
 
-Finally, let $G(x,y,z)$ be the value of the integral for an arbitrary particle position:
-\begin{equation}\label{eq:g_v_conv}
-    G(x,y,z) = (\bm{g} \ast \bm{V})(x,y,z)
-\end{equation}
+% Finally, let $G(x,y,z)$ be the value of the integral for an arbitrary particle position:
+% \begin{equation}\label{eq:g_v_conv}
+%     G(x,y,z) = (\bm{g} \ast \bm{V})(x,y,z)
+% \end{equation}
 
-In a coarse-grained calculation one can expect $g[i,j,k]$ to be defined on the regular grid.
-The eq. \ref{eq:g_v_conv} remains valid in a discrete form.
-\begin{equation}\label{eq:g_v_conv_dicsrete}
-    G[i,j,k] = (\bm{g} \ast \bm{V})[i,j,k]
-\end{equation} 
-Similar to projections matrices in the previous section of SI [\dots], we define $V_{\textrm{sphere}}[i,j,k]$:
+% In a coarse-grained calculation one can expect $g[i,j,k]$ to be defined on the regular grid.
+% The eq. \ref{eq:g_v_conv} remains valid in a discrete form.
+% \begin{equation}\label{eq:g_v_conv_dicsrete}
+%     G[i,j,k] = (\bm{g} \ast \bm{V})[i,j,k]
+% \end{equation} 
+% Similar to projections matrices in the previous section of SI [\dots], we define $V_{\textrm{sphere}}[i,j,k]$:
 
-\begin{gather}\label{eq:v_dicsrete_3d}
-    V[i,j,k] = \iiint \limits_{i, j, k}^{\substack{i+\delta x\\ j+\delta y\\ k+\delta z}} V(x,y,z) dx dy dz
-    \\
-    \sum_{i,j,k} V[i,j,k] = \frac{\pi d^3}{6} \qquad
-    \begin{matrix}
-        i \in [0, d/\delta i) \\ j \in [0, d/\delta j) \\ k \in [0, d/\delta z)
-    \end{matrix}
-\end{gather}
+% \begin{gather}\label{eq:v_dicsrete_3d}
+%     V[i,j,k] = \iiint \limits_{i, j, k}^{\substack{i+\delta x\\ j+\delta y\\ k+\delta z}} V(x,y,z) dx dy dz
+%     \\
+%     \sum_{i,j,k} V[i,j,k] = \frac{\pi d^3}{6} \qquad
+%     \begin{matrix}
+%         i \in [0, d/\delta i) \\ j \in [0, d/\delta j) \\ k \in [0, d/\delta z)
+%     \end{matrix}
+% \end{gather}
 
-where $\delta x, \delta y, \delta z$ is a grid step in the respective directions.
-This discretized volume $V_{\textrm{sphere}}$ is a coarse-grained voxel representation of a sphere with diameter $d$.
+% where $\delta x, \delta y, \delta z$ is a grid step in the respective directions.
+% This discretized volume $V_{\textrm{sphere}}$ is a coarse-grained voxel representation of a sphere with diameter $d$.
 
-Consider a function $g(x,y)$ that defines a property uniform in $z$-direction, the function of interest $g(x,y)$ and $G(x,y)$ are independent on $z$ coordinate.
-We exploit this fact and perform computation efficiently in $\mathbb{R}^2$ space.
+% Consider a function $g(x,y)$ that defines a property uniform in $z$-direction, the function of interest $g(x,y)$ and $G(x,y)$ are independent on $z$ coordinate.
+% We exploit this fact and perform computation efficiently in $\mathbb{R}^2$ space.
 
-Let us project spherical particle volume to $xy$-plane with a next transformation:
-\begin{equation}
-    V(x,y) = \int_{-\infty}^{+\infty} V(x,y,z) dz
-\end{equation}
+% Let us project spherical particle volume to $xy$-plane with a next transformation:
+% \begin{equation}
+%     V(x,y) = \int_{-\infty}^{+\infty} V(x,y,z) dz
+% \end{equation}
 
-Following the same steps that leads to eq.\ref{eq:v_dicsrete_3d}, the discrete form is:
-\begin{gather}
-    V[i,j] = \iint \limits_{i, j}^{\substack{i+\delta x\\ j+\delta y}} V(x,y) dx dy
-    \\
-    \sum_{i,j} V[i,j] = \frac{\pi d^3}{6} \qquad
-    \begin{matrix}
-        i \in [0, d/\delta i) \\ j \in [0, d/\delta j)
-    \end{matrix}
-\end{gather}
+% Following the same steps that leads to eq.\ref{eq:v_dicsrete_3d}, the discrete form is:
+% \begin{gather}
+%     V[i,j] = \iint \limits_{i, j}^{\substack{i+\delta x\\ j+\delta y}} V(x,y) dx dy
+%     \\
+%     \sum_{i,j} V[i,j] = \frac{\pi d^3}{6} \qquad
+%     \begin{matrix}
+%         i \in [0, d/\delta i) \\ j \in [0, d/\delta j)
+%     \end{matrix}
+% \end{gather}
 
-Eq. \ref{eq:g_v_conv},\ref{eq:g_v_conv_dicsrete} are redefined as:
-\begin{eqnarray}
-    G(x,y) = (\bm{g} \ast \bm{V})(x,y)\\
-    G[i,j] = (\bm{g} \ast \bm{V})[i,j]
-\end{eqnarray}
+% Eq. \ref{eq:g_v_conv},\ref{eq:g_v_conv_dicsrete} are redefined as:
+% \begin{eqnarray}
+%     G(x,y) = (\bm{g} \ast \bm{V})(x,y)\\
+%     G[i,j] = (\bm{g} \ast \bm{V})[i,j]
+% \end{eqnarray}
 
 
 
