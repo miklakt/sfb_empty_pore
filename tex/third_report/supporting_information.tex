@@ -518,14 +518,14 @@ A detailed look on the polymer volume concentration profile and its perturbation
 \subsection*{Non-local effects of particle size and position on the polymer volume concentration}
 \begin{multicols}{2}
 In the main text and in the previous section of SI we discussed the particle insertion free, in particular, the effect of particle size $d$ and interaction parameters $\chi_{\textrm{PS}}, \chi_{\textrm{PC}}$.
-As mentioned in the previous chapter, the analytical approach can correctly calculate insertion free energy for a wid set of control parameters $z_c, \chi_{\textrm{PS}}, \chi_{\textrm{PC}}$, which the result of the fit on SF-SCF data.
+As mentioned in the previous chapter, the analytical approach can correctly calculate insertion free energy for a wide set of control parameters $z_c, \chi_{\textrm{PS}}, \chi_{\textrm{PC}}$, which the result of the fit on SF-SCF data.
 
-In Figure\ref{fig:particle_insertion}a we present polymer volume concentration $\phi^{\textrm{ins}}$ colormaps for a polymer brush in a cylindrical mesopore with an inserted cylindrical particle (green square) with the height and the diameter $d=16$ comparable to the pore radius $r_{\textrm{pore}}=26$ and the membrane thickness $s=52$ (hatched green rectangles).
-The polymer volume concentration profiles are computed for an inert $\chi_{\textrm{PC}} = 0.0$ (upper subfigure) and a strongly attractive particle $\chi_{\textrm{PC}} = -1.5$ (lower subfigure) placed at the pore's entrance $|z_c| = 26$.
+In Figure \ref{fig:particle_insertion}a we present polymer volume concentration $\phi^{\textrm{ins}}$ colormaps for a polymer brush in a cylindrical mesopore with an inserted cylindrical particle (green square) with the height and the diameter $d=16$ comparable to the pore radius $r_{\textrm{pore}}=26$ and the membrane thickness $s=52$ (hatched green rectangles).
+The polymer volume concentration profiles are computed for an inert $\chi_{\textrm{PC}} = 0.0$ (upper subfigure) and a strongly attractive $\chi_{\textrm{PC}} = -1.5$ (lower subfigure) particle placed at the pore's entrance $|z_c| = 26$.
 
 The color code is shown in the legend Figure\ref{fig:particle_insertion}d, where white color corresponds to pure solvent, yellow to magenta is low polymer concentration, blue to black correspond to high concentration.
 
-Alongside the polymer volume concentration $\phi^{\textrm{ins}}$ of the polymer brush distorted by the inserted particle, in Figure\ref{fig:particle_insertion}b we plot the distortions of the polymer brush $\Delta \phi = \phi^{\textrm{ins}} - \phi$.
+Alongside, in Figure \ref{fig:particle_insertion}b, the polymer volume concentration $\phi^{\textrm{ins}}$ of the polymer brush distorted by the inserted particle, in Figure\ref{fig:particle_insertion}b we plot the distortions of the polymer brush $\Delta \phi = \phi^{\textrm{ins}} - \phi$.
 The color code is shown in the legend Figure \ref{fig:particle_insertion}e.
 The distortion of the polymer brush is also plot in Figure \ref{fig:particle_insertion}c and Figure \ref{fig:particle_insertion}f in the radial $\Delta \phi(z=z_c, \bm{r})$ and the axial directions $\Delta \phi(\bm{z}, r=0)$, 
 respectively.
@@ -820,7 +820,7 @@ The general expression to calculate volume integral becomes:
         \limits_{\substack{
                             \bm{\theta} \in \Omega_{\theta} \\
                             \bm{q} \in \Omega_{q}}} 
-        \delta_V(\bm{q}, \bm{q}^{\prime}, \bm{\theta}) g(\bm{q}) \bm{J} d \bm{q}  \sin \theta_1d \bm{\theta}
+        \delta_V(\bm{q}, \bm{q}^{\prime}, \bm{\theta}) g(\bm{q}) \det(\bm{J}) d \bm{q}  \sin \theta_1d \bm{\theta}
 \end{equation}
 \begin{equation}\label{eq:general_int_S}
     \begin{aligned}
@@ -853,11 +853,13 @@ For example, $[0, +\infty) \times \bm{S_1} \times \mathbb{R}$ is cylindrical coo
 Eq.\ref{eq:general_int_S} can be easily generalized to account for inhomogeneous surface properties by introducing addition term to the integrand that modifies function $\bm{g}$.
 Consider the surface of a solid body is parametrized with $u(\bm{q}), v(\bm{q})$, 
 We introduce $\bm{h}(\bm{u}, \bm{v})$ to encode surface properties as a $uv$-map.
-To account for particle translation, rotation and coordinate system change we apply respective transformation $\bm{h} = \mathcal{L}{h}_0$, where $\mathcal{L}$ operates on $h_0$, which defined for the particle in Cartesian coordinates placed in the origin, similar to eq.\ref{eq:transform_SDF}.
+For each coordinate on the parametrized particle surface there a value encoded in the $uv$-map, as we demonstrate in Figure \ref{fig:inhomogeneous_surface}.
+
+To account for particle translation, rotation and coordinate system change we apply respective transformation $\bm{h} = \mathcal{L}\bm{h}_0$, where $\mathcal{L}$ operates on $\bm{h}_0$, which defined for the particle in Cartesian coordinates placed in the origin, similar to eq.\ref{eq:transform_SDF}.
 
 We generalize the integrand function $g(\bm{x}, h[u(\bm{x}), v(\bm{x})])$ or $[\bm{g} \circ \bm{h}(\bm{u}, \bm{v})]$  to account for inhomogeneous surface.
 
-The final expression to the rotational average integral over the surface of an arbitrary shaped and rotated particle with inhomogeneous surface properties in a curvilinear coordinates:
+The final expression to the rotational average integral over the surface of an arbitrary shaped and rotated particle with inhomogeneous surface properties in curvilinear coordinates:
 
 \begin{equation}\label{eq:general_int_S_inhomogenous}
     \begin{aligned}
@@ -888,105 +890,85 @@ The final expression to the rotational average integral over the surface of an a
 \subsection*{Integration over spherical particle}
 \begin{multicols}{2}
 
-In the previous sections we discuss general general approach to integrate over the volume and surface of an arbitrary particle, as well as a particular case of a cylindrical particle with a center fixed to $z$-axis of cylindrical coordinate system.
+In the previous sections we discuss general general approach to integrate over the volume and surface of an arbitrary particle, and a particular case of a cylindrical particle with a center fixed to $z$-axis of a cylindrical coordinate system.
 
-Here we present the case of a homogeneous spherical particle with an arbitrary position. 
-We remind that the properties of the pore has axial symmetry, the natural choice is cylindrical coordinate system.
-As the profiles are uniform in angular directions, with degenerate angular axis.  
-%The concept is easier to present in the $xyz$ Cartesian coordinates first. 
+To calculate the insertion free energy for homogeneous spherical particles with an arbitrary position, the perform respective volume and surface integrations (see \todo{eq}).
+We follow the steps described in the previous section, but disregard any orientation averaging.
 
-% Consider a function of interest $g(x,y,z)$, we want to integrate it over the particle volume $G = \int_{V_{\textrm{sphere}}} g dV$.
+We remind that system features exhibit axial symmetry, hence the natural choice is cylindrical coordinate system.
+As the polymer brush profiles and a pore geometrical features are uniform in the angular direction, we use $rz$ cylindrical coordinates with degenerate angular axis.
 
-% Let us define spherical the particle volume using signed distance function:
-% \begin{eqnarray}
-%     %\begin{split}
-%     %    &\textrm{SDF}(x,y,z, x_c, y_c, z_c) =\\
-%     %    &\sqrt{(x-x_c)^2 + (y-y_c)^2 + (z-z_c)^2} - d/2
-%     %\end{split}
-%     \textrm{SDF}(x,y,z) = \sqrt{(x)^2 + (y)^2 + (z)^2} - d/2 \\
-%     V(x,y,z) = H(-SDF(x,y,z)) \\
-%     \iiint \limits_{(x,y,z)\in \mathbb{R}^3} V(x,y,z) dx dy dz = V_{\textrm{sphere}}
-% \end{eqnarray}
-% where $H$ is a Heaviside step function, $V_{\textrm{sphere}} = \frac{\pi d^3}{6}$ is the volume of a spherical particle.
+A translated spherical particle body is defined in Cartesian coordinates $\bm{x} = x,y,z$ with the next $\textrm{SDF}$ function:
+\begin{gather}
+    \textrm{SDF}(\bm{x}, \bm{x}_{c}) = \left| \bm{x} - \bm{x}_{c} \right| - d/2
+    \\
+    \hat{n}(\bm{x}) =  \frac{\bm{x} - \bm{x}_{c}}{d/2}
+\end{gather}
+where $d/2$ is the particle radius, $\bm{x}_{c}$ is the coordinates of the particle center.
 
-% Let us place a particle to have the coordinates of the particle's center $x_c, y_c, z_c$. 
-% Then we integrate the function $g(x,y,z)$ in the $xyz$-space
-% \begin{equation}
-%     \begin{split}
-%     &G(x_c, y_c, z_c) = \\
-%     &\iiint \limits_{(x,y,z)\in \mathbb{R}^3} g(x, y, z) V(x-x_c,y-y_c,z-z_c) dx dy dz
-%     \end{split}
-% \end{equation}
+The transformation from cylindrical coordinates $\bm{q} = r,  \theta, z$ is:
+\begin{equation}
+    \bm{T}(\bm{q}) = 
+    \begin{pmatrix}
+        x = r \cos \theta\\
+        y = r \sin \theta\\
+        z = z
+    \end{pmatrix}
+\end{equation}
 
-% Finally, let $G(x,y,z)$ be the value of the integral for an arbitrary particle position:
-% \begin{equation}\label{eq:g_v_conv}
-%     G(x,y,z) = (\bm{g} \ast \bm{V})(x,y,z)
-% \end{equation}
+Let $\Delta_{\textrm{center}} = \sqrt{r^2 + r_c^2 - 2 r r_c \cos(\theta) + (z-z_c)^2}$ be distance to the particle center, without loss of generality $\theta_c = 0$.
+The important identities used in the later expression:
+\begin{gather}
+    \textrm{SDF} = \Delta_{\textrm{center}} - d/2
+    \\
+    \bm{J} = 
+    \begin{pmatrix}
+        \cos{\theta} & -r\sin\theta & 0 \\
+        \sin{\theta} &  r\cos\theta & 0 \\
+        0           & 0            & 1
+    \end{pmatrix}\\
+    \det(\bm{J}) = r \\
+    \left| \hat{n} \cdot \frac{\partial \bm{T}}{\partial \theta} \right| = \frac{-r^2 \sin \theta + rr_0 \sin \theta \cos \theta}{\Delta_{\textrm{center}}}\\
+    \left| \frac{\partial \bm{T}}{\partial r} \times \frac{\partial \bm{T}}{\partial z} \right| = 1
+\end{gather}
 
-% In a coarse-grained calculation one can expect $g[i,j,k]$ to be defined on the regular grid.
-% The eq. \ref{eq:g_v_conv} remains valid in a discrete form.
-% \begin{equation}\label{eq:g_v_conv_dicsrete}
-%     G[i,j,k] = (\bm{g} \ast \bm{V})[i,j,k]
-% \end{equation} 
-% Similar to projections matrices in the previous section of SI [\dots], we define $V_{\textrm{sphere}}[i,j,k]$:
+According to \todo{eq}, to find osmotic term in the insertion free energy $\Delta F_{\textrm{osm}}$ we integrate Flory osmotic pressure $\Pi(r,z)$ over the particle volume.
+To find the surface term $\Delta F_{\textrm{sur}}$ we integrate surface tension coefficient $\gamma(r,z)$ over the particle surface. 
+Following the routine described in the previous section of SI, we find the particle volume $V_{\theta \downarrow}$ and surface projection $S_{\theta \downarrow}$ on $rz$-plane of the cylindrical coordinates:
 
-% \begin{gather}\label{eq:v_dicsrete_3d}
-%     V[i,j,k] = \iiint \limits_{i, j, k}^{\substack{i+\delta x\\ j+\delta y\\ k+\delta z}} V(x,y,z) dx dy dz
-%     \\
-%     \sum_{i,j,k} V[i,j,k] = \frac{\pi d^3}{6} \qquad
-%     \begin{matrix}
-%         i \in [0, d/\delta i) \\ j \in [0, d/\delta j) \\ k \in [0, d/\delta z)
-%     \end{matrix}
-% \end{gather}
+\begin{gather}
+    \begin{aligned}
+        V_{\theta \downarrow}(r, z, r_c, z_c) = 2\int_{0}^{\pi} H\left(\Delta_{\textrm{center}} - d/2\right) r d\theta
+    \end{aligned}\\
+    \begin{aligned}
+        &S_{\theta \downarrow}(r, z, r_c, z_c) = \\
+        &2\int_{0}^{\pi} \delta \left(\Delta_{\textrm{center}} - d/2\right) \frac{\Delta_{\textrm{center}}}{-r \sin \theta + r_0 \sin \theta \cos \theta} d\theta
+    \end{aligned}
+\end{gather}
 
-% where $\delta x, \delta y, \delta z$ is a grid step in the respective directions.
-% This discretized volume $V_{\textrm{sphere}}$ is a coarse-grained voxel representation of a sphere with diameter $d$.
+The SF-SCF results are coarse-grained and defined on the regular $rz$-grid, we discretize projections \todo{eq} on the same grid.
+\begin{eqnarray}
+    V(r_c)[i, k] = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} V_{\theta \downarrow} (r, z, r_c, z_c) dr dz
+    \\
+    S(r_c)[i, k] = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} V_{\theta \downarrow} (r, z, r_c, z_c) dr dz
+\end{eqnarray}
+where $z_c$ has an arbitrary value.
+Note, compared to Cartesian projection, cylindrical projections depend on $r_c$, because in $rz$-space translation is not an affine transformation.
 
-% Consider a function $g(x,y)$ that defines a property uniform in $z$-direction, the function of interest $g(x,y)$ and $G(x,y)$ are independent on $z$ coordinate.
-% We exploit this fact and perform computation efficiently in $\mathbb{R}^2$ space.
+The discrete volume and surface projection has a geometrical meaning.
+We illustrate it in Figures \ref{fig:spherical_kernel}, \ref{fig:spherical_kernel_2} where a volume and surface projection are explained.
+The particle center has an offset $r_c$ from the cylindrical lattice $z$-axis.
+To construct particle volume projection element $V(r_c)[i,k]$, for each lattice element (blue opaque square toroid) we determine volume of the lattice element occupied by the particle (red body, marked with the word 'volume').
+The particle volume projection element $S(r_c)[i,k]$ is the piece of particle surface (green patch, marked with the word 'surface') embraced in a lattice element.
+As an example, $16 \times 16$ volume projection matrix $V(r_c = 8)[i,k]$ for a spherical particle with the diameter $d=16$ is shown as a blue-green-yellow colormap, where blue color means the lattice element is not occupied by the particle.
 
-% Let us project spherical particle volume to $xy$-plane with a next transformation:
-% \begin{equation}
-%     V(x,y) = \int_{-\infty}^{+\infty} V(x,y,z) dz
-% \end{equation}
-
-% Following the same steps that leads to eq.\ref{eq:v_dicsrete_3d}, the discrete form is:
-% \begin{gather}
-%     V[i,j] = \iint \limits_{i, j}^{\substack{i+\delta x\\ j+\delta y}} V(x,y) dx dy
-%     \\
-%     \sum_{i,j} V[i,j] = \frac{\pi d^3}{6} \qquad
-%     \begin{matrix}
-%         i \in [0, d/\delta i) \\ j \in [0, d/\delta j)
-%     \end{matrix}
-% \end{gather}
-
-% Eq. \ref{eq:g_v_conv},\ref{eq:g_v_conv_dicsrete} are redefined as:
-% \begin{eqnarray}
-%     G(x,y) = (\bm{g} \ast \bm{V})(x,y)\\
-%     G[i,j] = (\bm{g} \ast \bm{V})[i,j]
-% \end{eqnarray}
-
-
-
-
-
+Figure \ref{fig:spherical_kernel_2} compliments Figure \ref{fig:spherical_kernel} with $z$-view and explains some geometrical features.
 
 \begin{figure}[H]
         \centering
         \includegraphics[scale = 0.7]{fig/spherical_kernel.png}
         \caption{
             Spherical particle volume and surface projection in a cylindrical lattice.
-            % The particle has the center offset from the cylindrical lattice $z$ axis used in discretization.
-            % \\
-            % To construct particle volume element matrix $v[k,i]$, for each lattice element (yellow opaque square toroid) one determines volume of the lattice element occupied by the particle (red body, marked with the word 'volume').
-            % \\
-            % To construct particle surface element matrix $s[k,i]$, for each lattice element (yellow opaque square toroid) one determines surface of the lattice element occupied by the particle (green surfaces, marked with the word 'surface').
-            % \\
-            % As an example, volume element matrix $v[k,i]$ is shown as a blue-green-yellow colormap, 
-            % where blue color means the lattice element is not occupied by the particle.
-            % \\
-            % For this figure a spherical particle with $d=16$ were selected, the center of the particle has a radial offset $r_c=8$ and arbitrary $z_c$ coordinate,
-            % $i \in [0,15]$, $k \in [0,15]$.
         }
         \label{fig:spherical_kernel}
     \end{figure}
@@ -997,7 +979,7 @@ As the profiles are uniform in angular directions, with degenerate angular axis.
     \caption{
         Spherical particle volume and surface projection in a cylindrical lattice, $z$-plane view.
     }
-    \label{fig:spherical_kernel}
+    \label{fig:spherical_kernel_2}
 \end{figure}
     
 \end{multicols}
