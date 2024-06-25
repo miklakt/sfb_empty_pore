@@ -37,27 +37,27 @@ def H_dist(d, r, theta, z, r_c, z_c):
     return dist(r, theta, z, r_c, z_c)-d/2<0
 
 # %%
-dr = 0.02
-dz = 0.02
-r=np.arange(0, 4,dr)
-z=np.arange(0, 4,dz)
-dtheta = 0.1
-theta = np.arange(0, 2*np.pi, dtheta)
-r_c = 1
-z_c = 2
-d = 3
-#delta = np.array([[delta_dist(d, r_, 0.0, z_, r_c, z_c) for r_ in r] for z_ in z])
-H = np.array([[[H_dist(d, r_, theta_, z_, r_c, z_c) for r_ in r] for z_ in z] for theta_ in theta])
-#V =
-# %%
-voxel = ((H+r)*H)
-V = np.sum(((H+r)*H),axis=0).T
-plt.imshow(V, origin = "lower", extent = [min(z), max(z), min(r), max(r)])
-# %%
-np.pi*d**3/6
-# %%
-# ax = plt.figure().add_subplot(projection='3d')
-# ax.voxels(voxel)
-# %%
-np.sum(voxel)*dr*dz*dtheta/2
-# %%
+# dr = 0.02
+# dz = 0.02
+# r=np.arange(0, 4,dr)
+# z=np.arange(0, 4,dz)
+# dtheta = 0.1
+# theta = np.arange(0, 2*np.pi, dtheta)
+# r_c = 1
+# z_c = 2
+# d = 3
+# #delta = np.array([[delta_dist(d, r_, 0.0, z_, r_c, z_c) for r_ in r] for z_ in z])
+# H = np.array([[[H_dist(d, r_, theta_, z_, r_c, z_c) for r_ in r] for z_ in z] for theta_ in theta])
+# #V =
+# # %%
+# voxel = ((H+r)*H)
+# V = np.sum(((H+r)*H),axis=0).T
+# plt.imshow(V, origin = "lower", extent = [min(z), max(z), min(r), max(r)])
+# # %%
+# np.pi*d**3/6
+# # %%
+# # ax = plt.figure().add_subplot(projection='3d')
+# # ax.voxels(voxel)
+# # %%
+# np.sum(voxel)*dr*dz*dtheta/2
+# # %%
