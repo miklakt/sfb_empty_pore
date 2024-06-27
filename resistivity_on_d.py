@@ -81,7 +81,7 @@ chi_PC = chi_PC_color
 # model, mobility_model_kwargs = "none", {}
 # model, mobility_model_kwargs = "Phillies", dict(beta = 8, nu = 0.76)
 # model = "Fox-Flory", dict(N = 300)
-model, mobility_model_kwargs = "Rubinstein", {"prefactor":100}
+model, mobility_model_kwargs = "Rubinstein", {"prefactor":1}
 #model, mobility_model_kwargs = "Hoyst", {"alpha" : 1.63, "delta": 0.89, "N" : 300}
 
 results = []
@@ -107,7 +107,7 @@ results = pd.DataFrame(results)
 
 #%%
 show_contributions = True
-show_CFD = False
+show_CFD = True
 show_analytical = True
 if show_contributions:
     fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 3, sharex = True)

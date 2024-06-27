@@ -245,7 +245,8 @@ def integrate_with_cylindrical_caps(
             conductivity_ = base_conductivity+element_conductivity
             
             if spheroid_correction:
-                conductivity_ = conductivity_*(2*np.log(3))/np.pi
+                #conductivity_ = conductivity_*(2*np.log(3))/np.pi
+                conductivity_ = conductivity_*(pore_radius**2 + 4*dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
         conductivity[i] = conductivity_
     return conductivity
 
@@ -266,8 +267,10 @@ def integrate_conductivity_cylindrical_caps(
         spheroid_correction=spheroid_correction
         )
     if spheroid_correction:
-        R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(4*np.log(3)*pore_radius)
-        R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(4*np.log(3)*pore_radius)
+        #R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(4*np.log(3)*pore_radius)
+        #R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(4*np.log(3)*pore_radius)
+        R_left = (np.pi - 2*np.arctan(2*l1/pore_radius))/(4*np.pi*pore_radius)
+        R_right = (np.pi - 2*np.arctan(2*(ylayers-l1-wall_thickness)/pore_radius))/(4*np.pi*pore_radius)
     else:
         R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(2*np.pi*pore_radius)
         R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(2*np.pi*pore_radius)
