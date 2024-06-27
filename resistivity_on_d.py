@@ -71,7 +71,7 @@ simulation_empty_pore = pd.DataFrame(
         )
 )
 #%%
-d = np.arange(2, 24, 2)
+d = np.arange(2, 50, 2)
 #d =[8 ,10, 12 ,]
 chi_PS = [0.1, 0.3, 0.5]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
@@ -106,8 +106,8 @@ for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
 results = pd.DataFrame(results)
 
 #%%
-show_contributions = True
-show_CFD = True
+show_contributions = False
+show_CFD = False
 show_analytical = True
 if show_contributions:
     fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 3, sharex = True)
@@ -287,7 +287,8 @@ if show_contributions:
     #axs[1,-1].legend()
 
 plt.tight_layout()
-fig.set_size_inches(7, 7)
+#fig.set_size_inches(7, 7)
+fig.set_size_inches(7, 2.5)
 #fig.savefig("fig/permeability_on_d.svg")
 #fig.savefig("tex/third_report/fig/permeability_on_d_detailed_low_d.svg")
 # %%
