@@ -2,15 +2,21 @@
 from calculate_fields_in_pore import *
 import numpy as np
 
-def make_analytical_resistivity_on_z(pore_radius, wall_thickness, d):
+def make_analytical_resistivity_on_z(pore_radius, wall_thickness, d, func_type = "quad"):
     pore_radius_ = pore_radius - d/2
     def func(z:float)->float:
         if abs(z)<=wall_thickness/2:
             return 1/(np.pi*pore_radius_**2)
         z_ = abs(z) - wall_thickness/2
         #return 1/(2*(pore_radius_+z_)*(pore_radius_+3*z_)*np.log(3))
-        return 1/(4*z_**2 + pore_radius_**2)/np.pi
+        if func_type == "quad":
+            return 1/(4*z_**2 + pore_radius_**2)/np.pi
+        elif func_type == "elliptic":
+            return 1/(2*z_**2 + 2*pore_radius_**2)/np.pi
+        else:
+            raise ValueError("Wrong func type")
     return func
+
 
 from scipy.ndimage import gaussian_filter1d
 
@@ -30,7 +36,7 @@ def smooth_peaks(arr, sigma):
             
 #%%
 d=8
-chi_PC = -1.5
+chi_PC = -1.3
 chi_PS = 0.5
 parameters = dict(
     a0 = 0.70585835,
@@ -58,15 +64,15 @@ parameters = dict(
 
 fields = {}
 fields[chi_PC] = calculate_fields(**parameters)
-chi_PC = -1.25
+chi_PC = -1.2
+parameters["chi_PC"] = chi_PC
+fields[chi_PC] = calculate_fields(**parameters)
+chi_PC = -1.1
 parameters["chi_PC"] = chi_PC
 fields[chi_PC] = calculate_fields(**parameters)
 chi_PC = -1.0
 parameters["chi_PC"] = chi_PC
 fields[chi_PC] = calculate_fields(**parameters)
-# chi_PC = -0.75
-# parameters["chi_PC"] = chi_PC
-# fields[chi_PC] = calculate_fields(**parameters)
 # chi_PC = -0.5
 # parameters["chi_PC"] = chi_PC
 # fields[chi_PC] = calculate_fields(**parameters)
@@ -90,17 +96,32 @@ conduct = {
     chi_PC_:integrate_with_cylindrical_caps(field["conductivity"], l1, wall_thickness, pore_radius, xlayers, ylayers, spheroid_correction=True)
     for chi_PC_, field in fields.items()
     }
-analytical_func = make_analytical_resistivity_on_z(pore_radius=26, wall_thickness=52, d=d)
+analytical_func_quad =\
+    make_analytical_resistivity_on_z(
+        pore_radius=26, 
+        wall_thickness=52, 
+        d=d,
+        func_type="quad"
+        )
+analytical_func_elliptic =\
+    make_analytical_resistivity_on_z(
+        pore_radius=26, 
+        wall_thickness=52, 
+        d=d,
+        func_type="elliptic"
+        )
 # %%
 #einstein_factor = 1/(3*np.pi*d)
 fig, ax = plt.subplots()
 x = np.arange(ylayers) - ylayers/2
-analytical_resistivity = np.array([analytical_func(x_) for x_ in x])
+x_ = np.linspace(0,ylayers, 1000) - ylayers/2
+analytical_resistivity_quad = np.array([analytical_func_quad(x__) for x__ in x_])
+analytical_resistivity_elliptic = np.array([analytical_func_elliptic(x__) for x__ in x_])
 #plt.plot(conduct[:int(292/2-26)])
 norm = np.pi*pore_radius**2
 [ax.plot(
     x, 
-    smooth_peaks(conduct_**-1, 1.5)*norm,
+    smooth_peaks(conduct_**-1, 2)*norm,
     #conduct_**-1, 
     #label = f"$\chi_{{PC}} = {chi_PC_}$"
     label = f"${chi_PC_}$"
@@ -108,10 +129,16 @@ norm = np.pi*pore_radius**2
     for chi_PC_, conduct_ in conduct.items() #if not chi_PC_==-0.5
     ]
 ax.plot(
-    x, 
-    analytical_resistivity*norm, 
+    x_, 
+    analytical_resistivity_quad*norm, 
     #label="analytical", 
     color = "black"
+    )
+ax.plot(
+    x_, 
+    analytical_resistivity_elliptic*norm, 
+    #label="analytical", 
+    color = "darkgrey"
     )
 #ax.plot(x, perm["permeability_z"]**(-1)*einstein_factor)
 ax.axvline(-wall_thickness/2, color = "black", linestyle = "--")
@@ -138,13 +165,13 @@ ax.set_ylabel(r"$\rho D_0 \pi r_{pore}^2$")
 #     transform = ax.transAxes)
 ax.legend(title = "$\chi_{PC}$")
 #ax.set_ylim(0, 3.5/(np.pi*(pore_radius-d/2)**2))
-ax.set_xlim(-100 ,100)
+ax.set_xlim(-100, 100)
 ax.set_ylim(0,5)
-fig.set_size_inches(3,3)
-fig.savefig(f"fig/resistivity_z_on_chi_PC_{chi_PS=}.svg")
+#fig.set_size_inches(2.8,2.8)
+#fig.savefig(f"fig/resistivity_z_on_chi_PC_{chi_PS=}.svg")
 #%%
 d=8
-chi_PC = -1.0
+chi_PC = -1.2
 chi_PS = 0.3
 parameters = dict(
     a0 = 0.70585835,
@@ -244,5 +271,5 @@ ax.legend(title = "$\chi_{PS}$")
 fig.set_size_inches(3,3)
 ax.set_xlim(-100 ,100)
 ax.set_ylim(0,5)
-fig.savefig(f"fig/resistivity_z_on_chi_PS_{chi_PC=}.svg")
+#fig.savefig(f"fig/resistivity_z_on_chi_PS_{chi_PC=}.svg")
 # %%
