@@ -100,7 +100,7 @@ The rest of the paper is organized as follows:
         Schematic illustration of colloid particle interaction and diffusive transport through a pore filled with polymer brush. 
         The brush is formed by linear polymer chains (red strands) with a degree of polymerization $N$, uniformly grafted with grafting density $\sigma$  
         to the inner surface of a cylindrical pore in an impermeable membrane. The pore radius is $r_{\textrm{pore}}$ and the thickness of the membrane is $s$.
-        Polymer chains are flexible with a statistical segment length $a$ and volume $\sim a^3$.
+        Polymer chains are flexible with a statistical segment length $a$ and segment volume $\sim a^3$.
 }
     \label{fig:colloid_transport}
 \end{figure}
@@ -269,23 +269,43 @@ assure reference value $\Delta F_{SF}(z_c \rightarrow \pm infty) = 0$
 %Cylindrical particles with equal diameter $d$ and height were explored for size ranging from 4 to 24 unit lengths.
 
 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width = 4in]{fig/fe_scf_grid2.png}
+%     \caption{ 
+%     The insertion free energy calculated by analytical (SS-SCF) and SF-SCF methods for a cylindrical particles with varied diameter and height $d=[8, 12, 16]$ moving along the main axis of the pore with radius $r_{\textrm{pore}} = 26$ and membrane thickness $s=52$.
+%     Solvent quality is varied near $\theta$-point with $\chi_{\textrm{PS}} = [0.4, 0.5, 0.6]$, ordered from left to right column, respectively.
+%     Polymer volume fractions along the main axis of the pore $\phi(z,r=0)$ at different solvent qualities are shown in the first row.
+%     The results are presented for two particle affinities to polymer chains $\chi_{\textrm{PC}} = -0.5$ in the middle row and $\chi_{\textrm{PC}} = -1.0$, i.e. form less to more attractive particles.
+%     \\
+%     Horizontal axes corresponds to position of the particle's center $z_c$, vertical axes corresponds to polymer volume fraction for the first row or free energy value in the others.
+%     \\
+%     Insertion free energy calculated with SF-SCF scheme $\Delta F_{SF}$ is shown with squares, the results of analytical scheme $\Delta F_{SS}$ are presented with solid line. 
+%     The colors code particle diameter.
+%     The light green hatched area marks values of $z$ that corresponds to the volume inside the pore $z\in [-26, 26]$.
+%     \label{fig:fe_scf_grid}
+%     }
+% \end{figure}
+
 \begin{figure}
-    \centering
-    \includegraphics[width = 4in]{fig/fe_scf_grid2.png}
-    \caption{ 
-    The insertion free energy calculated by analytical (SS-SCF) and SF-SCF methods for a cylindrical particles with varied diameter and height $d=[8, 12, 16]$ moving along the main axis of the pore with radius $r_{\textrm{pore}} = 26$ and membrane thickness $s=52$.
-    Solvent quality is varied near $\theta$-point with $\chi_{\textrm{PS}} = [0.4, 0.5, 0.6]$, ordered from left to right column, respectively.
-    Polymer volume fractions along the main axis of the pore $\phi(z,r=0)$ at different solvent qualities are shown in the first row.
-    The results are presented for two particle affinities to polymer chains $\chi_{\textrm{PC}} = -0.5$ in the middle row and $\chi_{\textrm{PC}} = -1.0$, i.e. form less to more attractive particles.
-    \\
-    Horizontal axes corresponds to position of the particle's center $z_c$, vertical axes corresponds to polymer volume fraction for the first row or free energy value in the others.
-    \\
-    Insertion free energy calculated with SF-SCF scheme $\Delta F_{SF}$ is shown with squares, the results of analytical scheme $\Delta F_{SS}$ are presented with solid line. 
-    The colors code particle diameter.
-    The light green hatched area marks values of $z$ that corresponds to the volume inside the pore $z\in [-26, 26]$.
-    \label{fig:fe_scf_grid}
-    }
+        \centering
+        \includegraphics[width = 4in]{fig/free_energy_hm.png}
+        \caption{ 
+        The insertion free energy calculated by analytical (SS-SCF) and SF-SCF methods for a cylindrical particles with varied diameter and height $d=[8, 12, 16]$ moving along the main axis of the pore with radius $r_{\textrm{pore}} = 26$ and membrane thickness $s=52$.
+        Solvent quality is varied near $\theta$-point with $\chi_{\textrm{PS}} = [0.4, 0.5, 0.6]$, ordered from left to right column, respectively.
+        Polymer volume fractions along the main axis of the pore $\phi(z,r=0)$ at different solvent qualities are shown in the first row.
+        The results are presented for two particle affinities to polymer chains $\chi_{\textrm{PC}} = -0.5$ in the middle row and $\chi_{\textrm{PC}} = -1.0$, i.e. form less to more attractive particles.
+        \\
+        Horizontal axes corresponds to position of the particle's center $z_c$, vertical axes corresponds to polymer volume fraction for the first row or free energy value in the others.
+        \\
+        Insertion free energy calculated with SF-SCF scheme $\Delta F_{SF}$ is shown with squares, the results of analytical scheme $\Delta F_{SS}$ are presented with solid line. 
+        The colors code particle diameter.
+        The light green hatched area marks values of $z$ that corresponds to the volume inside the pore $z\in [-26, 26]$.
+        \label{fig:fe_scf_grid}
+        }
 \end{figure}
+    
+
 
 ......
 \begin{figure}
