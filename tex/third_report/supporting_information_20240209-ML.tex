@@ -1151,9 +1151,9 @@ Where $R_z$ is a resistance of oblate spheroid shell in the exterior region $x_z
 
 The physical meaning of the integrand in eq. \ref{eq:R_z_analyt} is a conductivity of a conductor with a cross-section area $h_r h_{\theta}$, length $h_z$ and the conductor specific conductivity $\rho^{-1}$.
 In the eq. \ref{eq:h_integrand} we write a part of integrand to the interior and exterior region of the pore, using scale factors from eqs. \ref{eq:cyl_transformation_2} and eqs. \ref{eq:oblate_spheroid_transformation_2}, respectively.
-The total 
+The total resistance is a sum of the resistances of all the $x_z$ layers.
 
-Consider an empty pore with a finite thickness, let us apply \todo{eq} to find its resistance to a point-like particle.
+Consider an empty pore with a finite thickness, let us apply eq.\ref{eq:R_z_analyt} to find its resistance to a point-like particle.
 For a pore without a polymer brush, the local resistivity is not modulated $\rho = \textrm{const}$.
 \begin{gather}
     \label{eq:r_z_empty}
@@ -1165,7 +1165,7 @@ For a pore without a polymer brush, the local resistivity is not modulated $\rho
     \end{cases}
 \end{gather}
 
-Finally, when we integrate over $x_z$ domain we get the classic equation of Rayleigh:
+Finally, when we integrate over $x_z$ domain we get the classic equation of Rayleigh []:
 \begin{equation}
     \label{eq:r_empty}
     R_{\textrm{empty}} = \int_{-\infty}^{+\infty} R_{z, \textrm{empty}} dx_z
@@ -1184,7 +1184,7 @@ Finally, when we integrate over $x_z$ domain we get the classic equation of Rayl
 % Similar to inequality in \todo{eq.} the exterior region resistance of a pore with a pore is limited between two boundaries. 
 % Where the lower and upper boundary is found from \todo{eq} differs only in the $x_z$ integration domain,  $x_z \in [-L/2-d/2, L/2+d/2]$ and $x_z \in [-L/2-d/2, L/2+d/2]$, respectively for lower and upper boundary.
 
-The local conductivities we calculated with SCF are discrete values on a regular lattice, in this discrete cylindrical lattice when integrating we treat iso-potential lines as a surface of half-cylinder rather than a surface of an oblate spheroid, as shown in Figure \ref{fig:integration_scheme}.
+The local conductivities we calculated with SF-SCF are discrete values on a regular lattice, in this discrete cylindrical lattice when integrating we treat iso-potential lines as a surface of half-cylinder rather than a surface of an oblate spheroid, as shown in Figure \ref{fig:integration_scheme}.
 
 Finally, a half-cylinder shell have a larger surface area and smaller resistance than an oblate spheroid shell for the same $x_{z}, z$, which is corrected with a prefactor $f$ in the integrand.
 
@@ -1239,7 +1239,7 @@ Straightforward from eq.\ref{eq:r_z_empty}, the numerator in eq.\ref{eq:prefacto
 The eq.\ref{eq:r_z_empty} is a piece-wise discontinuous function with a jump discontinuities at $x_z = \pm L/2$, the result comes from several approximation we have made for an empty cylindrical pore, however, the effective pore shape is filleted (see Figure \ref{fig:excluded_volume}) which enhance conversion of radial flux to axial flux compared to a cylindrical pore with the same effective radius $r_{\textrm{pore}} - d/2$, also protruding brush promotes radial flux to the pore entrance when the insertion free energy $\Delta F$ is sufficiently negative.
 Because of that, when no correction to $f(x_z)$ made, eq.\ref{eq:r_z_num} tends to slightly overestimate the total resistance of the pore when integrated.
 
-A more natural choice for the numerator in eq.\ref{eq:prefactor}  is $4(|x_z|-L/2)^2 + r_{\textrm{pore}}^2$ as it preserves the total resistance of the pore exterior $\frac{\rho}{2r_{\textrm{pore,eff}}}$, scales with squared distance from the pore entrance (same as in eq.\ref{eq:r_z_empty}) and result in discontinuous expression for $R_z$ (contrary to eq.\ref{eq:r_z_empty}) and consequently $f(x_z = \pm L/2) = 1$.
+A more natural choice for the numerator in eq.\ref{eq:prefactor}  is $4(|x_z|-L/2)^2 + r_{\textrm{pore}}^2$ as it preserves the total resistance of the pore exterior $\frac{\rho}{2r_{\textrm{pore,eff}}}$, it scales with squared distance from the pore entrance (same as in eq.\ref{eq:r_z_empty}) and it results in continuous expression for $R_z$ (contrary to eq.\ref{eq:r_z_empty}), consequently $f(x_z = \pm L/2) = 1$.
 The choice of the numerator in eq.\ref{eq:prefactor} is confirmed with CFD results (see Figure \ref{fig:permeability_on_d_detailed}).
 
 To account the resistance of semi-infinite reservoirs outside the integration region on the cylindrical lattice we integrate the analytical eq.\ref{eq:R_z_analyt} from the integration boundary to infinity over $x_z$.
