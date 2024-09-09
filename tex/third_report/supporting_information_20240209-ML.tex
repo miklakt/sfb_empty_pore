@@ -27,6 +27,7 @@ sorting=none
 
 \newcommand\todo[1]{\textcolor{red}{#1}}
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+\newcommand{\sign}{\text{sign}}
 
 \addbibresource{flow.bib}
 \title{Physical principles of the colloid selective permeation through polymer-filled mesopores.\\
@@ -59,7 +60,7 @@ $T$ & temperature \\
 $a$ & Kuhn segment length \\
 $\sigma$ & grafting density, number of polymer chains per unit area \\
 $N$ & number of Kuhn segments in the brush forming chains \\
-$s$ & membrane thickness \\
+$L$ & membrane thickness \\
 $r_{\textrm{pore}}$ & radius of the pore \\
 $r^{\ast}_{\textrm{pore}}$ & radius of the pore with excluded volume \\
 $d$ & spherical particle diameter, cylindrical particle diameter and height \\ 
@@ -347,7 +348,7 @@ The routine loops until the desired accuracy is reached.
 
 \end{multicols}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Integration over cylindrical particle in the discrete cylindrical lattice}
+\subsection*{Extracting surface and volume contribution to colloid insertion free energy from SF-SCF data}
 
 \begin{multicols}{2}
 The analytical approach to calculate insertion free energy $\Delta F$ requires the integration over the particle.
@@ -368,7 +369,7 @@ Let us start with the continuous form, the analytical insertion free energy for 
 
 In the eq.\ref{eq:continuous_surf_int} the second term integrates surface tension coefficient over cylindrical particle base, the first integrates over the element of the cylinder.
 
-The SF-SCF results are defined as discrete values, each continuous property has a counterpart matrix, for example, $\phi(z,r)$ and $\bm{\phi}$ indexed with $i,k$.
+The SF-SCF results in a properties distributions (profiles) that are defined as discrete values, each continuous property has a counterpart matrix, for example, $\phi(z,r)$ and $\bm{\phi}$ indexed with $i,k$.
 
 We follow the next convention for indices: $i$ iterates in the direction of $r$-axis with larger values corresponds to the lattice element in the layer further from $z$-axis, the indices starts with $0$.
 
@@ -442,7 +443,7 @@ Such series of sequential integrations (matrix dot products) is equivalent to th
     \Delta F_{\textrm{cyl}}^{\textrm{sur}} = \bm{\gamma} \ast \mathbf{S}_{\textrm{cyl}}
 \end{eqnarray}
 We remind, that a cylindrical particle is always coaxial to the $z$- axis, thus $\Delta F_{\textrm{cyl}}^{\textrm{osm}}$ and  $\Delta F_{\textrm{cyl}}^{\textrm{sur}}$ are one dimensional arrays.
-It is worth to note, that the convolution is computationally efficient operation, often done via FFT (Fast Fourier Transform).
+It is worth to note, that the convolution is computationally efficient operation, often done via FFT (Fast Fourier Transform), which we also exploited.
 
 
 \end{multicols}
@@ -541,7 +542,7 @@ Notably, when an attractive particle is inserted, the enriched region is followe
 When the particle enters the brush, the enriched region in the vicinity of the particle is followed by a non-local depleted region, as the particle progress in the pore, the overall change in the polymer volume concentration is positive everywhere.
 This particular case is shown in the lower subfigure of Figure \ref{fig:particle_insertion}.
 
-In the main text Figure 3 we present the insertion free energy calculated by the analytical and SF-SCF methods for a cylindrical particles with varied diameter and height $d=[8, 12, 16]$ moving along the main axis of the pore with radius $r_{pore} = 26$ and membrane thickness $s=52$.
+In the main text Figure 3 we present the insertion free energy calculated by the analytical and SF-SCF methods for a cylindrical particles with varied diameter and height $d=[8, 12, 16]$ moving along the main axis of the pore with radius $r_{\textrm{pore}} = 26$ and membrane thickness $L=52$.
 
 Let us look at the results for the larger particles $d = 16$.
 
@@ -887,7 +888,7 @@ The final expression to the rotational average integral over the surface of an a
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Integration over spherical particle}
+\subsection*{Generalizing SF-SCF results to an arbitrary placed homogenous spherical colloids}
 \begin{multicols}{2}
 
 In the previous sections we discuss general general approach to integrate over the volume and surface of an arbitrary particle, and a particular case of a cylindrical particle with a center fixed to $z$-axis of a cylindrical coordinate system.
@@ -984,118 +985,436 @@ Figure \ref{fig:spherical_kernel_2} compliments Figure \ref{fig:spherical_kernel
     
 \end{multicols}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.8\linewidth]{fig/sphere_volume_and_surface_projection.png}
+    \caption{
+        Surface and volume projection for a spherical particle with a diameter $d=8$ in a cylindrical lattice for a set of distances $r_c = {0, 2, 4, 6}$ from the sphere particle center to $z$-axis and an arbitrary particle center coordinate $z_c$.
+        The sphere center is shown with red cross.
+        The heatmaps is drawn with an equal aspect, $z$-axis is omitted in the figure, the color code is shown with the colorbar on top, where the blue color corresponds to zero and yellow color corresponds to the values above 25 units.
+        The units for surface and volume is $a^2$ and $a^3$, respectively, where is $a$ is a lattice unit length.
+        The sphere surface projection $V_{\theta \downarrow}(r, z, r_c, z_c)$ on $rz$-plane is on the upper frame and $S_{\theta \downarrow}(r, z, r_c, z_c)$ in the lower frame.
+    }
+    \label{fig:sphere_volume_and_surface_projection}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Excluded volume effect}
+\subsection*{Effects of volume exclusion due to pore walls}
 
-\begin{figure}
+\begin{multicols}{2}
+Naturally, a colloid particle can not occupy the space near the membrane walls. 
+For a particle of an arbitrary there is a region closer to the walls that does not allow for some orientation of the particle.
+For a spherical particle the excluded volume is a morphological dilation of the membrane body.
+The morphological dilation in this case is the locus of the points covered by a sphere when the center of the sphere moves inside a membrane body.
+The space impermeable for a spherical particle is an imaginary pore with a smaller than the actual pore radius $r_{\textrm{pore}} - \frac{d}{2}$ and thicker walls $L+\frac{d}{2}$ with the filleted corners, as shown in upper frame of Figure \ref{fig:excluded_volume}
+
+Since the space is discretized into regular grid, the impermeable for the brush membrane is defined as a boolean two dimensional array $\bm{W}$, where $W[r,z] = \textrm{True}$ indicates the wall.
+
+Let us introduce another coarse-grained representation for a particle
+\begin{equation}
+    V[i, k] = 
+    \begin{cases}
+            \textrm{1}, (d/2-i-1/2)^2 + (d/2-k-1/2)^2 \le d^2/4
+            \\
+            \textrm{0, otherwise}
+        \end{cases}
+\end{equation}
+The two dimensional boolean array $\bm{V}$ is shown in the right frame of Figure \ref{fig:excluded_volume} as a lattice elements filled with an orange color, the spherical particle is shown in the left frame. 
+
+The space impermeable for a spherical particle includes the membrane and the excluded volume and defined as a two-dimensional boolean array $\bm{W}^{\ast} = \bm{W} \bigoplus \bm{V}$ the result of binary morphological dilation, as shown in the right frame of Figure \ref{fig:excluded_volume}
+
+
+\begin{figure}[H]
     \centering
     \includegraphics[scale = 1.2]{fig/excluded_volume_SI.png}
     \caption{
-        Excluded volume as morphological binary dilation
+        In the left frame the effective pore shape is traced with dashed red line, the excluded volume is created by a spherical particle with diameter $d$ and shown with a red shade.
+        In the right frame the excluded volume is shown on the regular lattice on $rz$-plane.
+        The excluded volume on the regular lattice is a result of a morphological binary dilation $\bm{W}^{\ast} = \bm{W} \bigoplus \bm{V}$.
         }
     \label{fig:excluded_volume}
 \end{figure}
 
-\begin{figure}
+\end{multicols}
+
+\subsection*{Resistance of the pore}
+
+\begin{multicols}{2}
+
+\begin{figure}[H]
     \centering
-    \includegraphics[scale = 0.7]{fig/convolution_scheme.png}
+    \includegraphics[width = 0.9 \linewidth]{fig/empty_pore_contour.png}
     \caption{
-        Excluded volume, local mobility. 
-        Osmotic pressure by Flory, convoluted to get $\Delta F_{osm} = \Pi \ast v$. Surface tension coefficient $\gamma(\phi, b_0, b_1)$ is found using coefficients fitted $b0, b1$, convoluted to get $\Delta F_{sur} = \gamma \ast s$.
+        The steady-state solution of the diffusion equation for a point-like particle diffusing through a finite thickness empty cylindrical pore.
+        The iso-concentration surfaces $c = \textrm{const}$ is shown with a contour plot with a concentration value labeled.
+        For an empty pore $\psi = c$, for a brush filled pore $\psi \approx c\exp(\Delta F / k_B T)\exp(D_0/D)$
         }
-    \label{fig:convolution_scheme}
+    \label{fig:empty_pore_solution}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.9 \linewidth]{fig/coordinate_system.png}
+    \caption{
+        Special orthogonal curvilinear coordinate system for a pore with the radius $r_{\textrm{pore}} = 20$ and thickness $L=20$.
+        \\
+        Solid lines represent surfaces of rotation along the pore axis.
+        Red lines shows the constant $x_{z}$ surfaces, blue lines are the constant $x_{r}$ surfaces.
+        A constant $x_{\theta}$ semi-planes are not shown.
+        \\
+        A local basis of the coordinate system $\hat{e}_r, \hat{e}_z$ shown with arrows.
+        The local basis defines scales coefficients $x_r = |\hat{e}_r|, x_z = |\hat{e}_z|, x_{\theta} = |\hat{e}_{\theta}|$
+        }
+    \label{fig:coordinate_system}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[scale = 0.7]{fig/conductivity_hm.png}
-    \caption{
-        Free energy landscape arise from the combination of $\Delta F = \Delta F_{osm} + \Delta F_{osm}$. Combined with mobility $D/D_0$ we get local conductivity $\rho^{-1} = D \exp (-\Delta F)$.
-        }
-    \label{fig:conductivity_hm}
-\end{figure}
+Consider an orthogonal curvilinear coordinate system $x_{\theta}, x_{r}, x_{z}$ with iso-surfaces defined as follows:
+half-planes with a constant azimuthal angle $x_{\theta}$;
+stream surfaces of diffusing particles constant $x_{r}$ indexed with a radius $r$ of its intersection at $z=0$;
+the level set of the potential function $\psi$ with a constant $x_{z}$ indexed with its intersection with $z$-axis
+\begin{gather}
+    j = \nabla \psi
+    \\
+    x_z = \left\{(r, z) | \psi = \psi(r=0, z=z)\right\}
+    \\
+    x_r = \left\{(r, z) | \nabla f \cdot \nabla \psi = 0, f = f(r=r, z=0) \right\}
+    \\
+    x_{\theta} = \theta
+\end{gather}
 
+For a thin empty pore this curvilinear coordinate system is a variant of oblate spheroidal coordinate system, where surfaces of constant $x_{\theta}$ are half-planes, surfaces of constant $x_{r}$ are confocal hyperboloids of revolution, and surfaces of constant $x_{z}$ are confocal oblate spheroids. The focal circle is a pore circumference.
 
-\begin{figure}
+For an empty pore with a finite thickness the iso-surfaces can be approximated such that the resulting curvilinear coordinate system is a joint of cylindrical and oblate spheroidal coordinate system.
+Where cylindrical coordinates are used inside the pore $z \in [-L/2, L/2]$ and oblate spheroidal otherwise.
+
+We exemplify the curvilinear coordinate system for a pore with a finite thickness $L=20$ and the radius $r_{\textrm{pore}}$ in Figure \ref{fig:coordinate_system}.
+
+The interior cylindrical coordinates transformation and scale factors defined in the next expressions.
+\begin{gather}
+    \label{eq:cyl_transformation_1}
+    x = x_r \cos(x_{\theta}) \quad
+    y = x_r \sin(x_{\theta}) \quad
+    z = x_z
+    \\
+    \label{eq:cyl_transformation_2}
+    h_r = 1 \quad
+    h_z = 1 \quad
+    h_{\theta} = x_r
+\end{gather}
+
+The exterior oblate spheroid coordinate system transformation and scale factors are
+\begin{gather}
+    \begin{aligned}\label{eq:oblate_spheroid_transformation_1}
+        &x = x_r
+        \sqrt{1+\frac{(|x_z|-L/2)^2}{r_{\textrm{pore}}^2}}
+        \cos(x_{\theta})
+        \\
+        &y = x_r
+        \sqrt{1+\frac{(|x_z|-L/2)^2}{r_{\textrm{pore}}^2}}
+        \sin(x_{\theta})
+        \\
+        &z = (|x_z|-L/2) \frac{\sqrt{r_{\textrm{pore}}^2 - x_r^2}}{r_{\textrm{pore}}} + \sign(x_z) L/2 
+    \end{aligned}
+    \\[4pt]
+    \begin{aligned}\label{eq:oblate_spheroid_transformation_2}
+        &h_r = \frac{\sqrt{r_{\textrm{pore}}^2 + (|x_z|-L/2)^2 - x_r^2}}{\sqrt{r_{\textrm{pore}}^2 - x_r^2}}
+        \\
+        &h_z = \frac{\sqrt{r_{\textrm{pore}}^2 + (|x_z|-L/2)^2 - x_r^2}}{\sqrt{r_{\textrm{pore}}^2 + (|x_z|-L/2)^2}}
+        \\
+        &h_{\theta} = \frac{x_r \sqrt{r_{\textrm{pore}}^2 + (|x_z|-L/2)^2}}{r_{\textrm{pore}}}
+    \end{aligned}
+\end{gather}
+
+We assume that in the selected coordinate system the flux is always normal to constant $x_z$ surfaces, which is exact for a point-like particles passage through an infinitely thin empty pore.
+
+Thus, we integrate the local conductivities over constant $x_z$ surface, similar to the resistances connected in parallel, and then we integrate resistances of each layer over $x_z$ coordinate, similar to the resistances connected sequential.
+
+\begin{gather}
+    \label{eq:R_z_analyt}
+    R_z^{-1} = \int_{0}^{r_{\textrm{pore}}} \int_{0}^{2\pi} \rho^{-1} h_r h_{\theta} h_z^{-1} dx_{\theta} dx_r
+    \\
+    \label{eq:h_integrand}
+    \begin{aligned} 
+        &h_r h_{\theta} h_z^{-1} = \\ &=
+        \begin{cases}
+            x_r, \textrm{ if } x_z \in [-L/2,L/2]
+            \\[2pt]
+            \dfrac{x_r}{r_{\textrm{pore}}}\dfrac{r_{\textrm{pore}}^2 + (|x_z|-L/2)^2}{\sqrt{r_{\textrm{pore}}^2 - x_r^2}}, \textrm{ otherwise}
+        \end{cases}
+    \end{aligned}
+    \\
+    \label{eq:R_analyt}
+    R = \int_{-\infty}^{+\infty} R_z dx_z
+\end{gather}
+
+Where $R_z$ is a resistance of oblate spheroid shell in the exterior region $x_z \notin [-L/2, L/2]$ and cylindrical disk in the interior of the pore $x_z \in [-L/2, L/2]$. 
+
+The physical meaning of the integrand in eq. \ref{eq:R_z_analyt} is a conductivity of a conductor with a cross-section area $h_r h_{\theta}$, length $h_z$ and the conductor specific conductivity $\rho^{-1}$.
+In the eq. \ref{eq:h_integrand} we write a part of integrand to the interior and exterior region of the pore, using scale factors from eqs. \ref{eq:cyl_transformation_2} and eqs. \ref{eq:oblate_spheroid_transformation_2}, respectively.
+The total resistance is a sum of the resistances of all the $x_z$ layers.
+
+Consider an empty pore with a finite thickness, let us apply eq.\ref{eq:R_z_analyt} to find its resistance to a point-like particle.
+For a pore without a polymer brush, the local resistivity is not modulated $\rho = \textrm{const}$.
+\begin{gather}
+    \label{eq:r_z_empty}
+    R_{z, \textrm{empty}}^{-1} = 
+    \begin{cases}
+        \rho^{-1} \pi r_{\textrm{pore}}^2 \textrm{, if } |x_z| < L/2
+        \\
+        \rho^{-1} 2 \pi ((|x_z|-L/2)^2 + r_{\textrm{pore}}^2) \textrm{, otherwise} 
+    \end{cases}
+\end{gather}
+
+Finally, when we integrate over $x_z$ domain we get the classic equation of Rayleigh []:
+\begin{equation}
+    \label{eq:r_empty}
+    R_{\textrm{empty}} = \int_{-\infty}^{+\infty} R_{z, \textrm{empty}} dx_z
+    =\frac{L \rho}{\pi r_{\textrm{pore}}^2} + \frac{\rho}{2 r_{\textrm{pore}}}
+\end{equation}
+
+% For a particles of a finite size due to volume exclusion effect we have to consider the effective pore shape, as shown on Figure \ref{fig:excluded_volume}.
+% To our best knowledge an analytical solution does not exist for a pore of variable radius.
+% The \todo{eq} gives us lower and upper boundaries for the exterior region resistance of an empty pore to a finite size particle.
+% \begin{eqnarray}
+%     \frac{(L+d) \rho}{\pi (r_{\textrm{pore}}-d/2)^2} > R_{\textrm{conv, empty}} > \frac{L \rho}{\pi (r_{\textrm{pore}}-d/2)^2}
+% \end{eqnarray}
+% The upper boundary consider a pore with a smaller radius and thicker walls to account for volume exclusion, while the lower boundary account only for the change in the effective radius.
+% As the effective pore shape has rounded corners, the resistance of such pore is limited between these two estimates.
+
+% Similar to inequality in \todo{eq.} the exterior region resistance of a pore with a pore is limited between two boundaries. 
+% Where the lower and upper boundary is found from \todo{eq} differs only in the $x_z$ integration domain,  $x_z \in [-L/2-d/2, L/2+d/2]$ and $x_z \in [-L/2-d/2, L/2+d/2]$, respectively for lower and upper boundary.
+
+The local conductivities we calculated with SF-SCF are discrete values on a regular lattice, in this discrete cylindrical lattice when integrating we treat iso-potential lines as a surface of half-cylinder rather than a surface of an oblate spheroid, as shown in Figure \ref{fig:integration_scheme}.
+
+Finally, a half-cylinder shell have a larger surface area and smaller resistance than an oblate spheroid shell for the same $x_{z}, z$, which is corrected with a prefactor $f$ in the integrand.
+
+\begin{figure}[H]
     \centering
-    \includegraphics[scale = 0.7]{fig/resistance_integration.png}
+    \includegraphics[width = \linewidth]{fig/resistance_integration.png}
     \caption{
-        Numeric integration of local conductivity/resistance on the cylindrical lattice to calculate total resistance of the pore. 
-        Done separately for channel and the regions outside the pore.
-        Outside the pore, ever increasing cylindrical caps.
-        Inside circle cross-sections. $R_{\textrm{convergent}} = R_{in} + R_{out}$.
-        Mimics oblate spheroid iso-concentration profile of analytical solution to an empty pore problem.
-        The area of cylindrical caps (red) is corrected as they underestimate resistance.
+        Numeric integration of local conductivity/resistance on the cylindrical lattice. 
+        For the exterior region conductivities are summed over half-cylinder shells, shown in red.
+        In the interior region the conductivities are summed over the cylindrical disks, shown in blue.
+        Half-cylinder shells mimics oblate spheroid iso-potential profiles of analytical solution to an empty pore problem.
         }
     \label{fig:integration_scheme}
 \end{figure}
 
-\begin{figure}
+The resistance integration on the regular cylindrical lattice:
+\begin{gather}
+    \label{eq:r_z_num}
+    \begin{aligned} 
+        &R_z^{-1} =
+        \\
+        &=\begin{cases}
+             \pi \sum_{r=0}^{r_{\textrm{pore}}} \rho^{-1}_{[r,z]} (2r+1) \textrm{, if } z\in[-L/2,L/2]
+             \\[4pt]
+             \begin{aligned}
+                &\textrm{otherwise}
+                \\
+                &\pi f(z) \left(\sum_{r=0}^{r_{\textrm{base}}} \rho^{-1}_{[r,z]} (2r+1) + 2 r_{\textrm{base}} \sum_{z^{\prime} = z_{a}}^{z_{b}}\rho^{-1}_{[r,z^{\prime}]}\right)
+             \end{aligned}
+        \end{cases}
+    \end{aligned}
+    \\
+    \begin{cases}
+        \textrm{if } z < -L/2, z_{a} = z, z_{b} = -L/2-1
+        \\
+        \textrm{if } z > L/2, z_{a} = L/2, z_{b} = z
+    \end{cases}
+    \\
+    \label{eq:r_base}
+    r_{\textrm{base}} = r_{\textrm{pore}} + |z| - L/2
+    \\
+    \label{eq:prefactor}
+    f(x_z) = \frac{4(|x_z|-L/2)^2 + r_{\textrm{pore}}^2}{(3(|x_z|-L/2)+r_{\textrm{pore}})((|x_z|-L/2)+r_{\textrm{pore}})}
+\end{gather}
+where $f$ has a meaning of the relation of oblate spheroid shell and half-cylinder shell conductivities, for the shells that shares the same cross-section with $z$-axis.
+
+The way we march over cylindrical lattice elements in eq.\ref{eq:r_z_num} is shown in Figure \ref{fig:integration_scheme}. 
+In the interior of the pore $x_z \in [-L/2, L/2]$ the conductors are thin disks with inhomogeneous conductivity, we assume no radial flux in the interior so the conductivity of a disk at with a center at $z$ approximated with $\pi \sum_{r=0}^{r_{\textrm{pore}}} \rho^{-1}_{[r,z]} (2r+1)$.
+In the exterior of the pore $x_z \notin [-L/2, L/2]$ to mimic the oblate spheroid shape the conductors are thin half-cylinder shells with the radius $r_{\textrm{base}}$ and element length $|z| - L/2$ with inhomogeneous conductivity.
+
+Straightforward from eq.\ref{eq:r_z_empty}, the numerator in eq.\ref{eq:prefactor} should be $2(|x_z|-L/2)^2 + 2r_{\textrm{pore}}^2$.
+The eq.\ref{eq:r_z_empty} is a piece-wise discontinuous function with a jump discontinuities at $x_z = \pm L/2$, the result comes from several approximation we have made for an empty cylindrical pore, however, the effective pore shape is filleted (see Figure \ref{fig:excluded_volume}) which enhance conversion of radial flux to axial flux compared to a cylindrical pore with the same effective radius $r_{\textrm{pore}} - d/2$, also protruding brush promotes radial flux to the pore entrance when the insertion free energy $\Delta F$ is sufficiently negative.
+Because of that, when no correction to $f(x_z)$ made, eq.\ref{eq:r_z_num} tends to slightly overestimate the total resistance of the pore when integrated.
+
+A more natural choice for the numerator in eq.\ref{eq:prefactor}  is $4(|x_z|-L/2)^2 + r_{\textrm{pore}}^2$ as it preserves the total resistance of the pore exterior $\frac{\rho}{2r_{\textrm{pore,eff}}}$, it scales with squared distance from the pore entrance (same as in eq.\ref{eq:r_z_empty}) and it results in continuous expression for $R_z$ (contrary to eq.\ref{eq:r_z_empty}), consequently $f(x_z = \pm L/2) = 1$.
+The choice of the numerator in eq.\ref{eq:prefactor} is confirmed with CFD results (see Figure \ref{fig:permeability_on_d_detailed}).
+
+To account the resistance of semi-infinite reservoirs outside the integration region on the cylindrical lattice we integrate the analytical eq.\ref{eq:R_z_analyt} from the integration boundary to infinity over $x_z$.
+\begin{eqnarray}
+    \label{eq:r_reservoir}
+    R_{(z, \pm\infty)} = \pm \int_{z}^{\pm\infty} R_z dx_z= \frac{\pi - 2\arctan\left(\frac{2(|z|-L/2)}{r_{\textrm{pore}}}\right)}{4\pi r_{\textrm{pore}}}
+\end{eqnarray}
+
+Finally, the total resistance of the pore, integrated on the discrete cylindrical lattice
+\begin{eqnarray}
+    R_{\textrm{pore}} = \sum_{z=-L/2}^{L/2} R_z
+    \\
+    R_{\textrm{conv}} = R_{(z_{a}, -\infty)} + \sum\limits_{\mathclap{\substack{z \in [z_{a},-L/2)\\z \in (L/2, z_b]}}} R_z + R_{(z_{b}, +\infty)}
+    \\
+    R = R_{\textrm{conv}} + R_{\textrm{pore}}
+    %R = \sum_{z=z_{a}}^{z_{b}} R_z + R_{(z_{a}, -\infty)} + R_{(z_{b}, +\infty)}
+\end{eqnarray}
+
+\end{multicols}
+
+\pagebreak
+
+\subsection*{Computational fluid dynamics simulation}
+
+\begin{multicols}{2}
+\begin{figure}[H]
     \centering
-    \includegraphics[scale = 0.7]{fig/main_figure.png}
+    \includegraphics[width = \linewidth]{fig/CFD_element.png}
     \caption{
-    OLD TEXT
-    Schematic cutaway diagram of system geometry, space discretization, boundary conditions and polymer brush morphology.
-    The radial axis $r$ (1) and the axis $z$ (2) defines cylindrical coordinates with degenerate angular coordinates.
-    If $z$ is held constant a flat circular plane is traced, $z=0$ traces a plane at the origin (3). 
-    If $r$ is held constant a cylindrical surface is traced.
-    The space is discretized using regular 2D grid (4) with element size $\delta z = \delta r = a$, where $a$ is Kuhn segment length.
-    Each element of the grid has a finite volume equal to a square toroid traced by the cylindrical and circular surfaces (5).
-    \\
-    The studied system is a pore in an infinite solvent reservoir (6).
-    The pore walls (7) are rigid body impermeable for particles and polymer brush. The inner surface of a pore is grafted with homopolymer chains (8) with grafting density $\sigma$ and degree of polymerization $N$, 
-    the grafting surface (9) is pictured as red straight line on the horizontal cross-section plane.
-    \\
-    Spherical particles (10) with diameter $d$ diffuse from the left semi-infinite reservoir. 
-    The ingress of particles shown with green arrows(11) and simulated as a source with constant concentration of particles $c_0$ placed far from the pore.
-    \\
-    The egress of particles shown with red arrows(12) and simulated as a perfect sink with constant concentration of particles $c=0$ placed far from the pore.
-    \\
-    Particles are discretized by grid elements occupancy, e.g. how much of a particle volume occupy grid element volume. The discretization of particle volume is shown as a heatmap (13) under the particle.  
-    \\
-    The polymer volume concentration profile ($\phi$) has axial symmetry the profile is presented as a heatmap on the vertical cross-section plane. 
-    The particle stationary concentration profile normalized by the bulk concentration ($c/c_0$) is a heatmap on the horizontal cross-section plane.
+        Schematic diagram of control volume, domain discretization and labeling convention.
+        The control volume (red square on the left frame) is confined within four neighbors from the west, east, north and south (E, W, N, S), with faces labeled with the minuscule letters.
+        Discretized domain is regular cylindrical lattice with $\delta r = \delta z = a$ identical to the lattice in SF-SCF calculations.
+        The fluxes across the faces are shown in the right frame with the arrows.
+        The dilution effect for of the larger control volumes is accounted with $\lambda_{e,w,n,s}$.
+        %Note that control volumes with $r=0$ has differen
         }
-    \label{fig:cutaway_diagram}
+    \label{fig:CFD_element}
 \end{figure}
 
+The diffusion of nanocolloids in the presence of an effective potential is governed by the Smoluchowsky diffusion equation
+\begin{eqnarray}
+    \frac{\partial c}{\partial t} = \nabla \cdot D(\nabla c + c \nabla \Delta F)
+\end{eqnarray} where $c$ is the concentration of the colloid particles,
+$D$ is the local diffusion coefficient, and $\Delta F$ is the position-dependent insertion free energy which plays the role of the potential of mean force.
+Our interest is a stationary solution to the Smoluchowsky diffusion equation $\frac{\partial c}{\partial t}$.
 
-\begin{figure}
-    \centering
-    \includegraphics[scale = 0.7]{fig/CFD_element.png}
-    \caption{
-        About computation fluid dynamics (CFD) finite volume cell, its divergence and time discretization.
-        }
-    \label{fig:integration_scheme}
-\end{figure}
+A general analytical solution of the stationary equation is not available to our best knowledge. 
+In the previous section we discussed an approximate analytical solution we constructed with a set of assumptions.
+Here we present a numerical results via computational dynamics fluid simulation.
+The method requires no assumptions about concentration profiles and results directly in a flux density field $j$.
 
-\begin{figure}
-    \centering
-    \includegraphics[scale = 0.7]{fig/permeability_on_d_detailed.png}
-    \caption{
-        Same as in the main text, but contributions of convergent flow and the channel are shown separately.
-        }
-    \label{fig:permeability_on_d_detailed}
-\end{figure}
+The mass conservation equation connects the rate of change in the colloid concentration and the flux density field:
+\begin{eqnarray}
+    \frac{\partial c}{\partial t} = \nabla j
+\end{eqnarray}
 
-\begin{figure}
-    \centering
-    \includegraphics[scale = 0.7]{fig/permeability_on_d_low_D.png}
-    \caption{
-        Same as in the main text, but local mobility is lower, as if particle larger.
-        }
-    \label{fig:permeability_ond_low_D}
-\end{figure}
+From the position dependent flux density the total flus through the pore is found by integration over a control cross-section.
+The control cross-section is an arbitrary surface that divides the system with the pore into two separated parts. 
+For the convenience we select a cross-section at the pore center ($z=0$), as there is only axial component $j_z$ to the flux.
+Then the total flux in through the pore is
+\begin{eqnarray}
+    J = \oint\limits_{S} j \cdot dS = \pi \int_0^{r_\textrm{pore}} j_z(r,z=0) r dr
+    \\
+    %\label{eq:flux_discrete}
+    %J = \frac{\pi}{4} j_z[r=0,z=0] + \pi \sum_{r=1}^{r_\textrm{pore}} 2r  j_z(r,z=0)
+\end{eqnarray}
 
-\begin{figure}
-    \centering
-    \includegraphics[scale = 0.7]{fig/resistivity_contourplot_low_D.png}
-    \caption{
-        Same as in the main text, but local mobility is lower, as if particle larger. 
-        }
-    \label{fig:resistivity_contourplot_low_d}
-\end{figure}
+Finally, the resistance of the pore is found from the simple equation $R = \frac{J}{\Delta c}$ similar to the Ohm's law.
+
+We employ the finite volume method to simulate transport of the nanocolloid particles through the pore.
+
+The key step in the finite volume method is the control volume integration using the divergence theorem:
+
+\begin{eqnarray}
+    \label{eq:CFD_integration_1}
+    \left(\frac{\partial c}{\partial t}\right)_{\textrm{CV}}  = -\int\limits_{\textrm{CV}} \nabla \cdot j = \oint\limits_{\textrm{CV}} j \cdot dS
+\end{eqnarray}
+
+To get an updated value for average colloid concentration $c$ in a control volume we use forward Euler method:
+\begin{eqnarray}
+    c_{t+dt} = c_{t} +  \left(\frac{\partial c}{\partial t}\right)_{\textrm{CV}} dt 
+\end{eqnarray}
+
+where $c_{t+dt}$ and $c_{t}$ are the average colloid concentration in a control volume at a given time step.
+We stop updating $c$ when $\left(\frac{\partial c}{\partial t}\right)_{\textrm{CV}}$ becomes negligible, as it means the stationary solution is reached.
+
+For the finite volume method the domain has to be divided into discrete control volumes.
+Identical to the previous section we use discrete cylindrical lattice, we remind that as the system has axial symmetry, the lattice is two dimensional.
+Each control volume has four neighboring control volumes.
+
+The usual convention is to assign letters for each neighboring control volume and shared faces. The properties averaged over some selected control volume are subscripted with $P$ or with $E, W, N, S$ for the neighboring control volumes to the east, west, north and south respectively. The properties defined on the faces of a control volume are subscripted with $e, w, n, s$ depending on the neighbor the face is shared with. See Figure \ref{fig:CFD_element}.
+
+In the cylindrical lattice the control volumes increase with radial coordinate $r$,
+hence a when a quantity of colloid particles transported in the radial direction the colloid particles get diluted.
+The dilution effect is accounted with $\lambda_{e,w,n,s}$ which is ratio between control volumes that shares a face, with a selected control volume in denominator.
+\begin{eqnarray}
+    \lambda_n =\begin{cases}
+        1+\frac{1}{r} \textrm{ if } r \ne 0\\
+        2, \textrm{ otherwise}
+    \end{cases} 
+    \\
+    \lambda_n =\begin{cases}
+        1-\frac{1}{r} \textrm{ if } r \ne 0\\
+        0, \textrm{ otherwise}
+    \end{cases} 
+    \\
+    \lambda_{e} = \lambda_{w} = 1
+\end{eqnarray}
+
+The discrete form of the divergence theorem in eq.\ref{eq:CFD_integration_1} is
+\begin{eqnarray}
+    \label{eq:CFD_integration_2}
+    \left(\frac{\partial c}{\partial t}\right)_{\textrm{CV}} = \lambda_w j_w + \lambda_s j_s - \lambda_e j_e - \lambda_n j_n
+\end{eqnarray}
+where the signs before each term is negative for the outward and positive for the inward to the control volume directions (see Figure \ref{fig:CFD_element}).
+
+The flux of colloid particles as one can see from Smoluchowsky diffusion equation is caused by the gradient in the colloid concentration and the gradient in the insertion free energy. 
+Let us call this contributions diffusion and drift fluxes, $j_{\textrm{diffusion}}, j_{\textrm{diffusion}}$, respectively.
+
+The next equation are written only for the northern direction and are identical to the other direction.
+The diffusion flux and drift terms to the flux intensity are
+\begin{eqnarray}
+    j_n = j_{\textrm{diffusion}, n} + j_{\textrm{drift}, n}\\
+    j_{\textrm{diffusion}, n} = - D_n (c_N - c_P)\\
+    j_{\textrm{drift}, n} = - D_n c_n (\Delta F_N - \Delta F_P)
+\end{eqnarray}
+where the capital letter subscripts denotes the property average values over the control volume, the miniscule letters denotes the property value at the face, as shown in Figure \ref{fig:CFD_element}.
+The diffusion coefficient at the face is found as a simple arithmetic mean:
+\begin{eqnarray}
+    D_n = \frac{D_N+D_P}{2}
+\end{eqnarray}
+
+When the flux is dominated by the insertion free energy gradient, colloid concentration at face $c_n$ can not be found as a simple arithmetic mean. 
+The choice of $c_n$ must reflect the dominant direction of the flux.
+
+Using the exact analytical solution for the one-dimensional equation for diffusion in we can estimate colloid concentration at face $c_n$ which suitable in a wide range of conditions, from diffusion-dominated to drift-dominated transport.
+
+It does so by modifying the weight between the colloid concentration $c_N, c_P$ in the neighboring control volumes based on the local insertion free energy gradient.
+
+The colloid concentration at the face is given by the formula:
+\begin{eqnarray}
+    \label{eq:upwind}
+    c_n = C_N + (C_P - C_N)\frac{\exp((\Delta F_N - \Delta F_P)/2)-1}{\exp(\Delta F_N - \Delta F_P) - 1}
+    %\frac{\exp(\textrm{Pe}/2)-1}{\exp(\textrm{Pe} - 1)}
+    %\frac{\max(0, 1 - 0.1 |\textrm{Pe}|^5)}{1+|\textrm{Pe}|}
+\end{eqnarray}
+At $\Delta F_N = \Delta F_P$ the eq.\ref{eq:upwind} falls back to a simple arithmetic mean, while for $\Delta F_N - \Delta F_P>10$ the neighboring control volume does not contribute to the colloid concentration at face $c_n \approx c_P$, as the dominant drift flux is directed outward, and \emph{vice versa} when $\Delta F_N - \Delta F_P< -10$ the dominant drift flux is directed inward, so the colloid concentration at face $c_n \approx c_N$.
+
+%(xp.exp(Pe/2)-1)/(xp.exp(Pe)-1)
+
+%  $\nabla \cdot (D\nabla c)$
+%$\nabla \cdot (Dc\nabla \Delta F)$.
+
+    
+\end{multicols}
+
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[scale = 0.7]{fig/permeability_on_d_detailed.png}
+%     \caption{
+%         Same as in the main text, but contributions of convergent flow and the channel are shown separately.
+%         }
+%     \label{fig:permeability_on_d_detailed}
+% \end{figure}
+
+% \subsection*{Effect of low diffusion coefficient}
+% \begin{figure}
+%     \centering
+%     \includegraphics[scale = 0.7]{fig/permeability_on_d_low_D.png}
+%     \caption{
+%         Same as in the main text, but local mobility is lower, as if particle larger.
+%         }
+%     \label{fig:permeability_ond_low_D}
+% \end{figure}
 
 
 \end{document}

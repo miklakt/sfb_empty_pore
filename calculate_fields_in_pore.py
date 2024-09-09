@@ -245,8 +245,10 @@ def integrate_with_cylindrical_caps(
             conductivity_ = base_conductivity+element_conductivity
             
             if spheroid_correction:
-                #conductivity_ = conductivity_*(2*np.log(3))/np.pi
-                conductivity_ = conductivity_*(pore_radius**2 + 4*dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
+                #f = (2*np.log(3))/np.pi
+                f = (pore_radius**2 + 4*dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
+                #f = 2*(pore_radius**2 + dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
+                conductivity_ = conductivity_*f
         conductivity[i] = conductivity_
     return conductivity
 
@@ -254,23 +256,42 @@ def integrate_conductivity_cylindrical_caps(
         fields, 
         #extend_to_infinity = True,#make correction for the boundary at inf
         spheroid_correction = True, #make correction for non-spheroid iso-potential surface 
-        first_cap_same_radius = False #first cylindrical outside the pore has no offset
+        first_cap_same_radius = False, #first cylindrical outside the pore has no offset
+        correct_excluded_volume = True #treat pore as if it has thicker walls and smaller diameter
         ):
     l1 = fields["l1"]
     pore_radius = fields["r"]
     wall_thickness = fields["s"]
     xlayers = fields["xlayers"]
     ylayers = fields["ylayers"]
+
+    d = fields["d"]
+
+    if correct_excluded_volume:
+        l1 = int(l1-d/2)
+        wall_thickness = int(wall_thickness+d)
+
     permeability_z = integrate_with_cylindrical_caps(
         fields["conductivity"],
         l1, wall_thickness, pore_radius, xlayers, ylayers,
         spheroid_correction=spheroid_correction
         )
     if spheroid_correction:
+        z_left = l1
+        z_right = ylayers-l1-wall_thickness
+        #if correct_excluded_volume:
+        #    pore_radius = pore_radius-d/2
+
+        #constant correction 
         #R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(4*np.log(3)*pore_radius)
         #R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(4*np.log(3)*pore_radius)
-        R_left = (np.pi - 2*np.arctan(2*l1/pore_radius))/(4*np.pi*pore_radius)
-        R_right = (np.pi - 2*np.arctan(2*(ylayers-l1-wall_thickness)/pore_radius))/(4*np.pi*pore_radius)
+
+        #correction for continuous resistance over z
+        R_left = (np.pi - 2*np.arctan(2*z_left/pore_radius))/(4*np.pi*pore_radius)
+        R_right = (np.pi - 2*np.arctan(2*z_right/pore_radius))/(4*np.pi*pore_radius)
+
+        #R_left = (np.pi - 2*np.arctan(z_left/pore_radius))/(4*np.pi*pore_radius)
+        #R_right = (np.pi - 2*np.arctan(z_right/pore_radius))/(4*np.pi*pore_radius)
     else:
         R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(2*np.pi*pore_radius)
         R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(2*np.pi*pore_radius)
@@ -343,6 +364,7 @@ def calculate_fields(
     calculate_mobility(fields, d, mobility_model, mobility_model_kwargs, phi_arr="corrected_phi")
     calculate_conductivity(fields)
     calculate_partition_coefficient(fields, cutoff_phi)
+    fields["d"] = d
 
     return fields
 

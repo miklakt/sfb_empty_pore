@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sfbox_utils
 #%%
-%matplotlib qt
 def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
     from heatmap_explorer import plot_heatmap_and_profiles
     wall_thickness = fields["s"]
@@ -36,12 +35,14 @@ def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
 
 #%%
 # %%
+%matplotlib qt
+import matplotlib.colors as plt_colors
 a0, a1 = 0.70585835, -0.31406453
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d = 8
-chi_PC = -1.25
-chi = 0.5
+d =8
+chi_PC = -1.0
+chi = 1.1
 sigma = 0.02
 
 fields = calculate_fields(
@@ -76,28 +77,37 @@ perm = calculate_permeability(
     integration_kwargs = dict(spheroid_correction = True)
     )
 
-fields["resistivity"] = np.log10(fields["conductivity"])
+fields["resistivity"] = (fields["conductivity"])**(-1)
 
-#import cmasher as cmr
-#cmap0 = cmr.get_sub_cmap("seismic", 0.0, 0.5)
-#cmap1 = cmr.get_sub_cmap("seismic", 0.5, 1.0)
-#vmin, vmax = -2, 2
-#cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(1-vmin)/(vmax-vmin)])
+import cmasher as cmr
+#cmap = cmr.
+cmap0 = cmr.get_sub_cmap("seismic", 0.0, 0.5)
+cmap1 = cmr.get_sub_cmap("seismic", 0.5, 1.0, )
+vmin, vmax = 0, 3
+cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(1-vmin)/(vmax-vmin)])
 r_cut = 50
-z_cut = 30
+z_cut = 40
 fig = plot_heatmap(fields, r_cut, z_cut, keys = [
-    #"phi", 
+    "phi", 
     #"Pi", 
     #"gamma", 
-    "free_energy", 
+    #"free_energy", 
     #"mobility", 
     #"conductivity", 
+    #"resistivity",
     #"osmotic", 
     #"surface"
     ], 
-    cmap = "seismic",
-    zmin=-4,
-    zmax = 4,
+    #cmap = "seismic",
+    zmin=0,
+    zmax = 0.7,
+    #cmap = cmap_,
+    #zmin=vmin,
+    #zmax = vmax,
+
     )
-fig.savefig(f"fig/free_energy/free_energy__{chi=}_{chi_PC=}_{d=}.svg")
+#fig.savefig(f"fig/free_energy/free_energy_{chi=}_{chi_PC=}_{d=}.svg")
+#fig.savefig(f"fig/free_energy/resistivity_{chi=}_{chi_PC=}_{d=}.svg")
 #%%
+print(1/perm["permeability"]*perm["thick_empty_pore"])
+# %%

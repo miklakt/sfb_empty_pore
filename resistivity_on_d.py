@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import matplotlib.style as style
 from matplotlib import rc
 
-rc('text',usetex=True)
-rc('text.latex', preamble=r'\usepackage{color}')
+#rc('text',usetex=True)
+#rc('text.latex', preamble=r'\usepackage{color}')
 style.use('tableau-colorblind10')
 mpl_markers = ('o', '+', 'x', 's', 'D')
 
@@ -75,7 +75,7 @@ d = np.arange(2, 50, 2)
 #d =[8 ,10, 12 ,]
 chi_PS = [0.1, 0.3, 0.5]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
-chi_PC_color = [-2.0, -1.75, -1.5, -1.25]
+chi_PC_color = [-2.0, -1.75, -1.5, -1.25, -1.0]
 chi_PC = chi_PC_color
 
 # model, mobility_model_kwargs = "none", {}
@@ -107,7 +107,7 @@ results = pd.DataFrame(results)
 
 #%%
 show_contributions = False
-show_CFD = False
+show_CFD = True
 show_analytical = True
 if show_contributions:
     fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 3, sharex = True)
@@ -128,7 +128,8 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
 
         if chi_PC_ in chi_PC_color:
             plot_kwargs = dict(
-                label = fr"$\chi_{{PC}} = {chi_PC_}$",
+                #label = fr"$\chi_{{PC}} = {chi_PC_}$",
+                label = fr"${chi_PC_:.2f}$",
                 #marker = next(markers),
                 #markevery = 0.5,
                 #markersize = 4,
@@ -140,7 +141,11 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
             )
         ax.plot(
             x, y, 
-            **plot_kwargs
+            **plot_kwargs,
+            marker = next(markers),
+            #mfc = "none",
+            ms = 3,
+            linewidth = 0.2
             )
 
         if show_CFD:
@@ -160,29 +165,29 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
             1/result__["thick_empty_pore"], 
             color = "black", 
             linestyle = "-",
-            label = "$P_{empty}$",
+            label = "$R_{empty}$",
             linewidth = 2,
             zorder = -1,
             )
 
-        ax.plot(
-            d, 
-            1/result__["thin_empty_pore"], 
-            color = "black", 
-            linestyle = ":",
-            label = "$P_{thin}$",
-            zorder = -1,
-            )
+        # ax.plot(
+        #     d, 
+        #     1/result__["thin_empty_pore"], 
+        #     color = "black", 
+        #     linestyle = ":",
+        #     label = "$P_{thin}$",
+        #     zorder = -1,
+        #     )
 
-        R_cylinder = wall_thickness/(np.pi*(pore_radius-d/2)**2)/result__["einstein_factor"]
-        ax.plot(
-            d, 
-            R_cylinder, 
-            color = "black", 
-            linestyle = "-.",
-            label = "$P_{thin}$",
-            zorder = -1,
-            )
+        # R_cylinder = wall_thickness/(np.pi*(pore_radius-d/2)**2)/result__["einstein_factor"]
+        # ax.plot(
+        #     d, 
+        #     R_cylinder, 
+        #     color = "black", 
+        #     linestyle = "-.",
+        #     label = "$P_{thin}$",
+        #     zorder = -1,
+        #     )
 
     if show_CFD:
         ax.scatter(
@@ -198,6 +203,7 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
 
     ax.set_title(f"$\chi_{{PS}} = {chi_PS_}$")
     ax.set_ylim(1e-1, 1e3)
+    #ax.set_xlim(4)
     #ax.set_ylim(-5, 20)
     ax.set_yscale("log")
     ax.set_xscale("log")
@@ -211,7 +217,8 @@ if show_contributions:
             y = (result__["R_left"] + result__["R_right"])/R0
             if chi_PC_ in chi_PC_color:
                 plot_kwargs = dict(
-                    label = fr"$\chi_{{PC}} = {chi_PC_}$",
+                    #label = fr"$\chi_{{PC}} = {chi_PC_}$",
+                    label = fr"${chi_PC_:.2f}$",
                     #marker = next(markers),
                     #markevery = 0.5,
                     #markersize = 4,
@@ -286,9 +293,11 @@ if show_contributions:
 
     #axs[1,-1].legend()
 
+ax.legend()
 plt.tight_layout()
 #fig.set_size_inches(7, 7)
 fig.set_size_inches(7, 2.5)
 #fig.savefig("fig/permeability_on_d.svg")
 #fig.savefig("tex/third_report/fig/permeability_on_d_detailed_low_d.svg")
+#fig.savefig("tex/third_report/fig/permeability_on_d.svg")
 # %%
