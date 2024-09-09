@@ -107,7 +107,7 @@ results = pd.DataFrame(results)
 
 #%%
 show_contributions = False
-show_CFD = False
+show_CFD = True
 show_analytical = True
 if show_contributions:
     fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 3, sharex = True)

@@ -60,7 +60,7 @@ $T$ & temperature \\
 $a$ & Kuhn segment length \\
 $\sigma$ & grafting density, number of polymer chains per unit area \\
 $N$ & number of Kuhn segments in the brush forming chains \\
-$s$ & membrane thickness \\
+$L$ & membrane thickness \\
 $r_{\textrm{pore}}$ & radius of the pore \\
 $r^{\ast}_{\textrm{pore}}$ & radius of the pore with excluded volume \\
 $d$ & spherical particle diameter, cylindrical particle diameter and height \\ 
@@ -1262,35 +1262,159 @@ Finally, the total resistance of the pore, integrated on the discrete cylindrica
 
 \pagebreak
 
-\subsection*{Transport computational fluid dynamics simulation}
+\subsection*{Computational fluid dynamics simulation}
 
-\begin{figure}
+\begin{multicols}{2}
+\begin{figure}[H]
     \centering
-    \includegraphics[scale = 0.7]{fig/CFD_element.png}
+    \includegraphics[width = \linewidth]{fig/CFD_element.png}
     \caption{
-        Schematic diagram of a cylindrical lattice finite volume element, flux, flux divergence and temporal discretization.
+        Schematic diagram of control volume, domain discretization and labeling convention.
+        The control volume (red square on the left frame) is confined within four neighbors from the west, east, north and south (E, W, N, S), with faces labeled with the minuscule letters.
+        Discretized domain is regular cylindrical lattice with $\delta r = \delta z = a$ identical to the lattice in SF-SCF calculations.
+        The fluxes across the faces are shown in the right frame with the arrows.
+        The dilution effect for of the larger control volumes is accounted with $\lambda_{e,w,n,s}$.
+        %Note that control volumes with $r=0$ has differen
         }
     \label{fig:CFD_element}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[scale = 0.7]{fig/permeability_on_d_detailed.png}
-    \caption{
-        Same as in the main text, but contributions of convergent flow and the channel are shown separately.
-        }
-    \label{fig:permeability_on_d_detailed}
-\end{figure}
+The diffusion of nanocolloids in the presence of an effective potential is governed by the Smoluchowsky diffusion equation
+\begin{eqnarray}
+    \frac{\partial c}{\partial t} = \nabla \cdot D(\nabla c + c \nabla \Delta F)
+\end{eqnarray} where $c$ is the concentration of the colloid particles,
+$D$ is the local diffusion coefficient, and $\Delta F$ is the position-dependent insertion free energy which plays the role of the potential of mean force.
+Our interest is a stationary solution to the Smoluchowsky diffusion equation $\frac{\partial c}{\partial t}$.
 
-\subsection*{Effect of low diffusion coefficient}
-\begin{figure}
-    \centering
-    \includegraphics[scale = 0.7]{fig/permeability_on_d_low_D.png}
-    \caption{
-        Same as in the main text, but local mobility is lower, as if particle larger.
-        }
-    \label{fig:permeability_ond_low_D}
-\end{figure}
+A general analytical solution of the stationary equation is not available to our best knowledge. 
+In the previous section we discussed an approximate analytical solution we constructed with a set of assumptions.
+Here we present a numerical results via computational dynamics fluid simulation.
+The method requires no assumptions about concentration profiles and results directly in a flux density field $j$.
+
+The mass conservation equation connects the rate of change in the colloid concentration and the flux density field:
+\begin{eqnarray}
+    \frac{\partial c}{\partial t} = \nabla j
+\end{eqnarray}
+
+From the position dependent flux density the total flus through the pore is found by integration over a control cross-section.
+The control cross-section is an arbitrary surface that divides the system with the pore into two separated parts. 
+For the convenience we select a cross-section at the pore center ($z=0$), as there is only axial component $j_z$ to the flux.
+Then the total flux in through the pore is
+\begin{eqnarray}
+    J = \oint\limits_{S} j \cdot dS = \pi \int_0^{r_\textrm{pore}} j_z(r,z=0) r dr
+    \\
+    %\label{eq:flux_discrete}
+    %J = \frac{\pi}{4} j_z[r=0,z=0] + \pi \sum_{r=1}^{r_\textrm{pore}} 2r  j_z(r,z=0)
+\end{eqnarray}
+
+Finally, the resistance of the pore is found from the simple equation $R = \frac{J}{\Delta c}$ similar to the Ohm's law.
+
+We employ the finite volume method to simulate transport of the nanocolloid particles through the pore.
+
+The key step in the finite volume method is the control volume integration using the divergence theorem:
+
+\begin{eqnarray}
+    \label{eq:CFD_integration_1}
+    \left(\frac{\partial c}{\partial t}\right)_{\textrm{CV}}  = -\int\limits_{\textrm{CV}} \nabla \cdot j = \oint\limits_{\textrm{CV}} j \cdot dS
+\end{eqnarray}
+
+To get an updated value for average colloid concentration $c$ in a control volume we use forward Euler method:
+\begin{eqnarray}
+    c_{t+dt} = c_{t} +  \left(\frac{\partial c}{\partial t}\right)_{\textrm{CV}} dt 
+\end{eqnarray}
+
+where $c_{t+dt}$ and $c_{t}$ are the average colloid concentration in a control volume at a given time step.
+We stop updating $c$ when $\left(\frac{\partial c}{\partial t}\right)_{\textrm{CV}}$ becomes negligible, as it means the stationary solution is reached.
+
+For the finite volume method the domain has to be divided into discrete control volumes.
+Identical to the previous section we use discrete cylindrical lattice, we remind that as the system has axial symmetry, the lattice is two dimensional.
+Each control volume has four neighboring control volumes.
+
+The usual convention is to assign letters for each neighboring control volume and shared faces. The properties averaged over some selected control volume are subscripted with $P$ or with $E, W, N, S$ for the neighboring control volumes to the east, west, north and south respectively. The properties defined on the faces of a control volume are subscripted with $e, w, n, s$ depending on the neighbor the face is shared with. See Figure \ref{fig:CFD_element}.
+
+In the cylindrical lattice the control volumes increase with radial coordinate $r$,
+hence a when a quantity of colloid particles transported in the radial direction the colloid particles get diluted.
+The dilution effect is accounted with $\lambda_{e,w,n,s}$ which is ratio between control volumes that shares a face, with a selected control volume in denominator.
+\begin{eqnarray}
+    \lambda_n =\begin{cases}
+        1+\frac{1}{r} \textrm{ if } r \ne 0\\
+        2, \textrm{ otherwise}
+    \end{cases} 
+    \\
+    \lambda_n =\begin{cases}
+        1-\frac{1}{r} \textrm{ if } r \ne 0\\
+        0, \textrm{ otherwise}
+    \end{cases} 
+    \\
+    \lambda_{e} = \lambda_{w} = 1
+\end{eqnarray}
+
+The discrete form of the divergence theorem in eq.\ref{eq:CFD_integration_1} is
+\begin{eqnarray}
+    \label{eq:CFD_integration_2}
+    \left(\frac{\partial c}{\partial t}\right)_{\textrm{CV}} = \lambda_w j_w + \lambda_s j_s - \lambda_e j_e - \lambda_n j_n
+\end{eqnarray}
+where the signs before each term is negative for the outward and positive for the inward to the control volume directions (see Figure \ref{fig:CFD_element}).
+
+The flux of colloid particles as one can see from Smoluchowsky diffusion equation is caused by the gradient in the colloid concentration and the gradient in the insertion free energy. 
+Let us call this contributions diffusion and drift fluxes, $j_{\textrm{diffusion}}, j_{\textrm{diffusion}}$, respectively.
+
+The next equation are written only for the northern direction and are identical to the other direction.
+The diffusion flux and drift terms to the flux intensity are
+\begin{eqnarray}
+    j_n = j_{\textrm{diffusion}, n} + j_{\textrm{drift}, n}\\
+    j_{\textrm{diffusion}, n} = - D_n (c_N - c_P)\\
+    j_{\textrm{drift}, n} = - D_n c_n (\Delta F_N - \Delta F_P)
+\end{eqnarray}
+where the capital letter subscripts denotes the property average values over the control volume, the miniscule letters denotes the property value at the face, as shown in Figure \ref{fig:CFD_element}.
+The diffusion coefficient at the face is found as a simple arithmetic mean:
+\begin{eqnarray}
+    D_n = \frac{D_N+D_P}{2}
+\end{eqnarray}
+
+When the flux is dominated by the insertion free energy gradient, colloid concentration at face $c_n$ can not be found as a simple arithmetic mean. 
+The choice of $c_n$ must reflect the dominant direction of the flux.
+
+Using the exact analytical solution for the one-dimensional equation for diffusion in we can estimate colloid concentration at face $c_n$ which suitable in a wide range of conditions, from diffusion-dominated to drift-dominated transport.
+
+It does so by modifying the weight between the colloid concentration $c_N, c_P$ in the neighboring control volumes based on the local insertion free energy gradient.
+
+The colloid concentration at the face is given by the formula:
+\begin{eqnarray}
+    \label{eq:upwind}
+    c_n = C_N + (C_P - C_N)\frac{\exp((\Delta F_N - \Delta F_P)/2)-1}{\exp(\Delta F_N - \Delta F_P) - 1}
+    %\frac{\exp(\textrm{Pe}/2)-1}{\exp(\textrm{Pe} - 1)}
+    %\frac{\max(0, 1 - 0.1 |\textrm{Pe}|^5)}{1+|\textrm{Pe}|}
+\end{eqnarray}
+At $\Delta F_N = \Delta F_P$ the eq.\ref{eq:upwind} falls back to a simple arithmetic mean, while for $\Delta F_N - \Delta F_P>10$ the neighboring control volume does not contribute to the colloid concentration at face $c_n \approx c_P$, as the dominant drift flux is directed outward, and \emph{vice versa} when $\Delta F_N - \Delta F_P< -10$ the dominant drift flux is directed inward, so the colloid concentration at face $c_n \approx c_N$.
+
+%(xp.exp(Pe/2)-1)/(xp.exp(Pe)-1)
+
+%  $\nabla \cdot (D\nabla c)$
+%$\nabla \cdot (Dc\nabla \Delta F)$.
+
+    
+\end{multicols}
+
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[scale = 0.7]{fig/permeability_on_d_detailed.png}
+%     \caption{
+%         Same as in the main text, but contributions of convergent flow and the channel are shown separately.
+%         }
+%     \label{fig:permeability_on_d_detailed}
+% \end{figure}
+
+% \subsection*{Effect of low diffusion coefficient}
+% \begin{figure}
+%     \centering
+%     \includegraphics[scale = 0.7]{fig/permeability_on_d_low_D.png}
+%     \caption{
+%         Same as in the main text, but local mobility is lower, as if particle larger.
+%         }
+%     \label{fig:permeability_ond_low_D}
+% \end{figure}
 
 
 \end{document}

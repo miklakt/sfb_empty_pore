@@ -10,7 +10,7 @@ import tqdm
 import numpy as np
 import time
 
-__cupy__ = True
+__cupy__ = False
 if __cupy__:
     import cupy as xp
 else:
@@ -419,7 +419,10 @@ class DriftDiffusionKernelFactory:
                 loop()
                 div_J = div_J + self.div_J_arr
             div_J = div_J/smooth_over
-            return float(xp.sum(xp.abs(div_J)).get())
+            if __cupy__:
+                return float(xp.sum(xp.abs(div_J)).get())
+            else:
+                return float(xp.sum(xp.abs(div_J)))
         return get_J_arr
 
     def run_until(
@@ -441,15 +444,22 @@ class DriftDiffusionKernelFactory:
             )
         start_time = time.time()
         loop()
-        div_J_tot = xp.sum(xp.abs(self.div_J_arr)).get()
+        if __cupy__:
+            div_J_tot = xp.sum(xp.abs(self.div_J_arr)).get()
+        else:
+            div_J_tot = xp.sum(xp.abs(self.div_J_arr))
         get_elapsed_time = lambda: time.time() - start_time
         is_target_reached = lambda: (get_elapsed_time()>timeout) or (div_J_tot<target_divJ_tot)
         counter = 0
         div_J_tot_old = div_J_tot
         while True:
             loop()
-            div_J_tot = xp.sum(xp.abs(self.div_J_arr)).get()
-            print(f"sum_divJ = {div_J_tot:.4E}, sum_c = {xp.sum(self.c_z_tot()).get():.4E}")
+            if __cupy__:
+                div_J_tot = xp.sum(xp.abs(self.div_J_arr)).get()
+                print(f"sum_divJ = {div_J_tot:.4E}, sum_c = {xp.sum(self.c_z_tot()).get():.4E}")
+            else:
+                div_J_tot = xp.sum(xp.abs(self.div_J_arr))
+                print(f"sum_divJ = {div_J_tot:.4E}, sum_c = {xp.sum(self.c_z_tot()):.4E}")
             if is_target_reached(): break
             counter = counter+1
             if jump_every is not None:
