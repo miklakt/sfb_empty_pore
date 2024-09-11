@@ -1227,7 +1227,7 @@ The resistance integration on the regular cylindrical lattice:
     r_{\textrm{base}} = r_{\textrm{pore}} + |z| - L/2
     \\
     \label{eq:prefactor}
-    f(x_z) = \frac{4(|x_z|-L/2)^2 + r_{\textrm{pore}}^2}{(3(|x_z|-L/2)+r_{\textrm{pore}})((|x_z|-L/2)+r_{\textrm{pore}})}
+    f(x_z) = \frac{2(|x_z|-L/2)^2 + 2r_{\textrm{pore}}^2}{(3(|x_z|-L/2)+r_{\textrm{pore}})((|x_z|-L/2)+r_{\textrm{pore}})}
 \end{gather}
 where $f$ has a meaning of the relation of oblate spheroid shell and half-cylinder shell conductivities, for the shells that shares the same cross-section with $z$-axis.
 
@@ -1235,17 +1235,17 @@ The way we march over cylindrical lattice elements in eq.\ref{eq:r_z_num} is sho
 In the interior of the pore $x_z \in [-L/2, L/2]$ the conductors are thin disks with inhomogeneous conductivity, we assume no radial flux in the interior so the conductivity of a disk at with a center at $z$ approximated with $\pi \sum_{r=0}^{r_{\textrm{pore}}} \rho^{-1}_{[r,z]} (2r+1)$.
 In the exterior of the pore $x_z \notin [-L/2, L/2]$ to mimic the oblate spheroid shape the conductors are thin half-cylinder shells with the radius $r_{\textrm{base}}$ and element length $|z| - L/2$ with inhomogeneous conductivity.
 
-Straightforward from eq.\ref{eq:r_z_empty}, the numerator in eq.\ref{eq:prefactor} should be $2(|x_z|-L/2)^2 + 2r_{\textrm{pore}}^2$.
-The eq.\ref{eq:r_z_empty} is a piece-wise discontinuous function with a jump discontinuities at $x_z = \pm L/2$, the result comes from several approximation we have made for an empty cylindrical pore, however, the effective pore shape is filleted (see Figure \ref{fig:excluded_volume}) which enhance conversion of radial flux to axial flux compared to a cylindrical pore with the same effective radius $r_{\textrm{pore}} - d/2$, also protruding brush promotes radial flux to the pore entrance when the insertion free energy $\Delta F$ is sufficiently negative.
-Because of that, when no correction to $f(x_z)$ made, eq.\ref{eq:r_z_num} tends to slightly overestimate the total resistance of the pore when integrated.
+% Straightforward from eq.\ref{eq:r_z_empty}, the numerator in eq.\ref{eq:prefactor} should be $2(|x_z|-L/2)^2 + 2r_{\textrm{pore}}^2$.
+% The eq.\ref{eq:r_z_empty} is a piece-wise discontinuous function with a jump discontinuities at $x_z = \pm L/2$, the result comes from several approximation we have made for an empty cylindrical pore, however, the effective pore shape is filleted (see Figure \ref{fig:excluded_volume}) which enhance conversion of radial flux to axial flux compared to a cylindrical pore with the same effective radius $r_{\textrm{pore}} - d/2$, also protruding brush promotes radial flux to the pore entrance when the insertion free energy $\Delta F$ is sufficiently negative.
+% Because of that, when no correction to $f(x_z)$ made, eq.\ref{eq:r_z_num} tends to slightly overestimate the total resistance of the pore when integrated.
 
-A more natural choice for the numerator in eq.\ref{eq:prefactor}  is $4(|x_z|-L/2)^2 + r_{\textrm{pore}}^2$ as it preserves the total resistance of the pore exterior $\frac{\rho}{2r_{\textrm{pore,eff}}}$, it scales with squared distance from the pore entrance (same as in eq.\ref{eq:r_z_empty}) and it results in continuous expression for $R_z$ (contrary to eq.\ref{eq:r_z_empty}), consequently $f(x_z = \pm L/2) = 1$.
-The choice of the numerator in eq.\ref{eq:prefactor} is confirmed with CFD results (see Figure \ref{fig:permeability_on_d_detailed}).
+% A more natural choice for the numerator in eq.\ref{eq:prefactor}  is $4(|x_z|-L/2)^2 + r_{\textrm{pore}}^2$ as it preserves the total resistance of the pore exterior $\frac{\rho}{2r_{\textrm{pore,eff}}}$, it scales with squared distance from the pore entrance (same as in eq.\ref{eq:r_z_empty}) and it results in continuous expression for $R_z$ (contrary to eq.\ref{eq:r_z_empty}), consequently $f(x_z = \pm L/2) = 1$.
+% The choice of the numerator in eq.\ref{eq:prefactor} is confirmed with CFD results (see Figure \ref{fig:permeability_on_d_detailed}).
 
 To account the resistance of semi-infinite reservoirs outside the integration region on the cylindrical lattice we integrate the analytical eq.\ref{eq:R_z_analyt} from the integration boundary to infinity over $x_z$.
 \begin{eqnarray}
     \label{eq:r_reservoir}
-    R_{(z, \pm\infty)} = \pm \int_{z}^{\pm\infty} R_z dx_z= \frac{\pi - 2\arctan\left(\frac{2(|z|-L/2)}{r_{\textrm{pore}}}\right)}{4\pi r_{\textrm{pore}}}
+    R_{(z, \pm\infty)} = \pm \int_{z}^{\pm\infty} R_z dx_z= \frac{\pi - 2\arctan\left(\frac{|z|-L/2}{r_{\textrm{pore}}}\right)}{4\pi r_{\textrm{pore}}}
 \end{eqnarray}
 
 Finally, the total resistance of the pore, integrated on the discrete cylindrical lattice
@@ -1259,8 +1259,6 @@ Finally, the total resistance of the pore, integrated on the discrete cylindrica
 \end{eqnarray}
 
 \end{multicols}
-
-\pagebreak
 
 \subsection*{Computational fluid dynamics simulation}
 
@@ -1301,13 +1299,11 @@ The control cross-section is an arbitrary surface that divides the system with t
 For the convenience we select a cross-section at the pore center ($z=0$), as there is only axial component $j_z$ to the flux.
 Then the total flux in through the pore is
 \begin{eqnarray}
+    \label{eq:total_flux_1}
     J = \oint\limits_{S} j \cdot dS = \pi \int_0^{r_\textrm{pore}} j_z(r,z=0) r dr
-    \\
     %\label{eq:flux_discrete}
     %J = \frac{\pi}{4} j_z[r=0,z=0] + \pi \sum_{r=1}^{r_\textrm{pore}} 2r  j_z(r,z=0)
 \end{eqnarray}
-
-Finally, the resistance of the pore is found from the simple equation $R = \frac{J}{\Delta c}$ similar to the Ohm's law.
 
 We employ the finite volume method to simulate transport of the nanocolloid particles through the pore.
 
@@ -1375,7 +1371,8 @@ The diffusion coefficient at the face is found as a simple arithmetic mean:
 When the flux is dominated by the insertion free energy gradient, colloid concentration at face $c_n$ can not be found as a simple arithmetic mean. 
 The choice of $c_n$ must reflect the dominant direction of the flux.
 
-Using the exact analytical solution for the one-dimensional equation for diffusion in we can estimate colloid concentration at face $c_n$ which suitable in a wide range of conditions, from diffusion-dominated to drift-dominated transport.
+Using the exact analytical solution for the one-dimensional equation for diffusion in potential field we can estimate colloid concentration at face $c_n$. 
+This estimate is suitable in a wide range of conditions, from diffusion-dominated to drift-dominated transport.
 
 It does so by modifying the weight between the colloid concentration $c_N, c_P$ in the neighboring control volumes based on the local insertion free energy gradient.
 
@@ -1383,16 +1380,39 @@ The colloid concentration at the face is given by the formula:
 \begin{eqnarray}
     \label{eq:upwind}
     c_n = C_N + (C_P - C_N)\frac{\exp((\Delta F_N - \Delta F_P)/2)-1}{\exp(\Delta F_N - \Delta F_P) - 1}
-    %\frac{\exp(\textrm{Pe}/2)-1}{\exp(\textrm{Pe} - 1)}
-    %\frac{\max(0, 1 - 0.1 |\textrm{Pe}|^5)}{1+|\textrm{Pe}|}
 \end{eqnarray}
-At $\Delta F_N = \Delta F_P$ the eq.\ref{eq:upwind} falls back to a simple arithmetic mean, while for $\Delta F_N - \Delta F_P>10$ the neighboring control volume does not contribute to the colloid concentration at face $c_n \approx c_P$, as the dominant drift flux is directed outward, and \emph{vice versa} when $\Delta F_N - \Delta F_P< -10$ the dominant drift flux is directed inward, so the colloid concentration at face $c_n \approx c_N$.
 
-%(xp.exp(Pe/2)-1)/(xp.exp(Pe)-1)
+At $\Delta F_N = \Delta F_P$ the eq.\ref{eq:upwind} falls back to a simple arithmetic mean, while for $\Delta F_N - \Delta F_P>10$ the neighboring control volume does not contribute to the colloid concentration at face $c_n \approx c_P$, as the dominant drift flux is directed outwards, and \emph{vice versa} when $\Delta F_N - \Delta F_P< -10$ the dominant drift flux is directed inwards, so the colloid concentration at face $c_n \approx c_N$.
 
-%  $\nabla \cdot (D\nabla c)$
-%$\nabla \cdot (Dc\nabla \Delta F)$.
 
+Finally, when the stationary state is reached we probe the total flux through the pore, with the discrete form of eq.\ref{eq:total_flux_1}:
+\begin{eqnarray}
+    \label{eq:total_flux_2}
+    J = \frac{\pi}{4} j_z[r=0,z=0] + \pi \sum_{r=1}^{r_\textrm{pore}} 2r  j_z[r,z=0]
+\end{eqnarray}
+The resistance of the pore is found from the simple equation $R = \frac{J}{\Delta c}$ similar to the Ohm's law.
+
+Obviously, running CFD simulation to calculate the resistance is more computationally demanding then approximate analytical scheme explained in the previous section.
+Nevertheless, there are major benefit to use it, since it requires no assumption about the shape of the position-dependent colloid concentration $c$.
+We employ CFD as a guide and sanity check to the developed approximate analytical scheme.
+The comparison for a set of parameters is given in the Figure \ref{fig:CFD_comparison}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \linewidth]{fig/resistivity_on_d_SI.png}
+    \caption{
+        Total resistance compared for numerical CFD and approximate analytical approaches.
+        \\
+        The thick dashed line is the resistance of a pore with effective shape (volume exclusion).
+        \\
+        The upper thin horizontal line denoted with $L=0$ is the resistance of an infinitely small pore(orifice).
+        \\
+        The lower thin horizontal line is the doubled resistance of semi-infinite solution to an ideally absorbing sphere, which is an estimate for the case of sufficiently negative insertion free energy in the exterior of the pore.
+        \\
+        The resistance is normalized by the viscosity $\eta_{0}$ of the pure solvent and particle size $d$, which  eliminates colloid particles hydrodynamic viscosity from the consideration.
+        }
+    \label{fig:CFD_comparison}
+\end{figure}
     
 \end{multicols}
 

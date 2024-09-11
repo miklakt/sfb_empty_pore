@@ -246,8 +246,8 @@ def integrate_with_cylindrical_caps(
             
             if spheroid_correction:
                 #f = (2*np.log(3))/np.pi
-                f = (pore_radius**2 + 4*dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
-                #f = 2*(pore_radius**2 + dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
+                #f = (pore_radius**2 + 4*dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
+                f = 2*(pore_radius**2 + dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
                 conductivity_ = conductivity_*f
         conductivity[i] = conductivity_
     return conductivity
@@ -279,6 +279,7 @@ def integrate_conductivity_cylindrical_caps(
     if spheroid_correction:
         z_left = l1
         z_right = ylayers-l1-wall_thickness
+        pore_radius = pore_radius - d/2
         #if correct_excluded_volume:
         #    pore_radius = pore_radius-d/2
 
@@ -287,11 +288,15 @@ def integrate_conductivity_cylindrical_caps(
         #R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(4*np.log(3)*pore_radius)
 
         #correction for continuous resistance over z
-        R_left = (np.pi - 2*np.arctan(2*z_left/pore_radius))/(4*np.pi*pore_radius)
-        R_right = (np.pi - 2*np.arctan(2*z_right/pore_radius))/(4*np.pi*pore_radius)
+        #R_left = (np.pi - 2*np.arctan(2*z_left/pore_radius))/(4*np.pi*pore_radius)
+        #R_right = (np.pi - 2*np.arctan(2*z_right/pore_radius))/(4*np.pi*pore_radius)
 
-        #R_left = (np.pi - 2*np.arctan(z_left/pore_radius))/(4*np.pi*pore_radius)
-        #R_right = (np.pi - 2*np.arctan(z_right/pore_radius))/(4*np.pi*pore_radius)
+        #no correction
+        #R_left = 0
+        #R_right = 0
+
+        R_left = (np.pi - 2*np.arctan(z_left/pore_radius))/(4*np.pi*pore_radius)
+        R_right = (np.pi - 2*np.arctan(z_right/pore_radius))/(4*np.pi*pore_radius)
     else:
         R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(2*np.pi*pore_radius)
         R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(2*np.pi*pore_radius)
@@ -431,7 +436,7 @@ def calculate_permeability(
     result["einstein_factor"] = einstein_factor
 
     result["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
-    result["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness)*einstein_factor
+    result["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
     result["permeability"] = fields["permeability"]*einstein_factor
     result["permeability_z"] = fields["permeability_z"]*einstein_factor
     result["PC"] = fields["PC"]
