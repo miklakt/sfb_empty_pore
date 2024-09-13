@@ -116,7 +116,7 @@ $\lambda_{\textrm{n}}$ & ratio of neighboring control volumes in the given direc
 $j_{\textrm{n}}$ & flux density between neighboring control volumes in the given direction \\
 $j_{\textrm{drift, n}}$ & flux density between neighboring control volumes in the given direction caused by the insertion free energy gradient\\
 $j_{\textrm{diffusion, n}}$ & diffusive flux density between neighboring control volumes in the given direction \\
-$\alpha_{\textrm{n}}$ & neighboring lattice element weights used to calculate the concentration on the face in a given direction \\
+% $\alpha_{\textrm{n}}$ & neighboring lattice element weights used to calculate the concentration on the face in a given direction \\
 %$\textrm{Pe}_{\textrm{n}}$ & the Péclet number for a flux between neighboring control volumes in the given direction \\
 $c_{\textrm{N}}$ & concentration in the neighboring or current lattice element \\
 $c_{\textrm{n}}$ & concentration at the face between the current and a neighboring lattice element \\ 
@@ -172,34 +172,36 @@ The key components to define the Smouluchowsky equation are the local diffusion 
 
 The local diffusion coefficient depends on the polymer volume concentration $\phi$ and particle size. 
 The polymer brush forms a polymer solution with a concentration-dependent correlation length $\xi$. 
-Particles with a size $d>\xi$ experience additional friction of the polymer mesh. 
+Particles with a size $d>\xi$ experience additional friction as they are trapped by the network of the polymer mesh. 
 As a result, the diffusion is slowed down compared to the pure solvent $D_0/D<1$.
-
 The effects were studied and several models were proposed [refs\dots]. 
-In this paper we chose the model proposed by the authors in [\dots].
+
+In this paper we chose the model proposed by the authors in [refs\dots]. 
+The model proposes hopping mechanism for diffusion of large non-sticky nanoparticles subjected to topological constraints.
 The model assumes a non-sticky particles, and might overestimate the diffusion coefficient for particles with high affinity to the polymer, since an adsorbant particle would find itself in a more crowded surroundings, thus lower diffusion coefficient.
 
-As mentioned before, the second component to define the Smouluchowsky equation is the insertion free energy. 
-When a nanocolloid particle is inserted into a brush, the free energy of the system is changed compared with that of the particle in the bulk solution. 
+%As mentioned before, the second component to define the Smouluchowsky equation is the insertion free energy. 
+When a nanocolloid particle is inserted into a brush, the free energy of the system is changed compared with that of the particle in the bulk solution. There is a an energy penalty as the polymer chains may have less conformation because of the inserted particle, short-range interaction of the colloid with the polymer may be thermodynamically favorable or unfavorable and thus have positive or negative effect on the insertion free energy penalty $\Delta F$.
 
-In the analytic approach the insertion free energy can be split into two terms: osmotic $F_{\textrm{osm}}$ and surface $F_{\textrm{sur}}$; that scales with particle volume and surface, respectively.
+In the analytic approach the insertion free energy penalty $\Delta F$ can be split into two terms: osmotic $F_{\textrm{osm}}$ and surface $F_{\textrm{sur}}$; that scales with particle volume and surface, respectively.
 
-To calculate the osmotic term, the Flory osmotic pressure is integrated over the particle volume, which depends on the local polymer volume concentration $\phi$ and polymer-solvent interaction parameter $\chi_{\textrm{PS}}$.
+To calculate the osmotic term, the Flory osmotic pressure $\Pi$ is integrated over the particle volume, which depends on the local polymer volume concentration $\phi$ and polymer-solvent interaction parameter $\chi_{\textrm{PS}}$.
 The surface contribution is proportional to the particle surface, with a surface tension coefficient $\gamma$ and found by integrating over the particle surface.
 
 The surface tension coefficient $\gamma(\phi, \chi_{\textrm{PS}}, \chi_{\textrm{PC}})$ has non-trivial dependency on the local polymer volume concentration, the polymer-solvent interaction parameter $\chi_{\textrm{PS}}$ and the polymer-colloid interaction parameter $\chi_{\textrm{PC}}$.
 The problem becomes even more complex as the polymer volume concentration $\phi^{\textrm{ins}}$ in the vicinity of the inserted particle becomes distorted compared to the empty brush $\phi$, forming a depletion region $\Delta \phi <0$ for inert and slightly attractive particles and a region enriched with polymer $\Delta \phi >0$ for attractive particles ($\Delta \phi = \phi^{\textrm{ins}} - \phi$).
 
 To the best of our knowledge, there is no general exact analytical solution to calculate the surface tension coefficient $\gamma$ for a given particle size and local polymer concentration $\phi$.
-To account for local distortion in the polymer volume concentration $\phi$ we introduce correction to the polymer volume concentration of the empty brush $\phi$ with coefficient $b_0, b_1$, making apparent $\phi^{\ast}$ volume concentration dependent on the polymer-colloid interaction parameter $\chi_{\textrm{PC}}$ to compute the corrected surface tension coefficient $\gamma(\phi^{\ast},\chi_{\textrm{PS}}, \chi_{\textrm{PC}})$.
-
-The correction coefficient $b_0, b_1$ can be found by fitting, given the particle size $d$, polymer concentration profiles $\phi$ and interaction parameters $\chi_{\textrm{PS}}, \chi_{\textrm{PC}}$ and $\Delta F$ are known.
+To account for local distortion to the polymer volume concentration $\phi$ we introduce correction to the polymer volume concentration of the empty brush $\phi$ with coefficient $b_0, b_1$, making apparent $\phi^{\ast}$ volume concentration dependent on the polymer-colloid interaction parameter $\chi_{\textrm{PC}}$ to compute the corrected surface tension coefficient $\gamma(\phi^{\ast},\chi_{\textrm{PS}}, \chi_{\textrm{PC}})$.
 
 \begin{figure}[H]
     \includegraphics[width = 0.8\linewidth]{fig/roadmap.png}
     \caption{Roadmap of the paper and calculation routines}
     \label{fig:paper_roadmap}
 \end{figure}
+
+The correction coefficient $b_0, b_1$ can be found by fitting, given the particle size $d$, polymer concentration profiles $\phi$ and interaction parameters $\chi_{\textrm{PS}}, \chi_{\textrm{PC}}$ and $\Delta F$ are known.
+
 
 However, within the chosen framework, the insertion free energy $\Delta F$ for a spherical particle with an arbitrary diameter $d$ and coordinates of the center $z_c, r_c$ is not accessible, and we still miss the local polymer concentration of the empty undisturbed polymer brush $\phi$ to calculate the osmotic pressure $\Pi$ and surface tension coefficient $\gamma$.
 This motivates us to employ another approach to calculate missing features. 
@@ -237,6 +239,15 @@ The polymer chain modeled as free-joined chain (FJC) with segment length $a$, ev
 The weights of each step direction depend on the boundary condition and the lattice curvature, for example, steps that ends up in the impermeable lattice cells have zero weights; in the cylindrical lattice steps to the cells within the layer with lower curvature (larger radial coordinate) are more preferable.
 The resulting local polymer concentration of the polymer $\phi$ is weighted sum of all possible paths the chain can take.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.8]{fig/sf-scf_scheme.png}
+    \caption{
+    Schematic layout of the lattice and geometrical features of the cylindrical pore model in the SF-SCF method.
+    The modeled objects are in the upper frame, and their representation on a discrete two gradient lattice is on the lower frame.
+    }
+\label{fig:sf-scf_scheme}
+\end{figure}
 
 To minimize excess Helmholtz energy we introduce a Lagrangian with a multipliers $\alpha(r,z)$
 \begin{equation}
@@ -253,16 +264,6 @@ where $\phi_X(x, z)$ is local volume concentration function of segment type $X$ 
 
 
 The first conditions in eq.\ref{eq:energy_min_system} assures system incompressibility.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale = 0.9]{fig/sf-scf_scheme.png}
-    \caption{
-    Schematic layout of the lattice and geometrical features of the cylindrical pore model in the SF-SCF method.
-    The modeled objects are in the upper frame, and their representation on a discrete two gradient lattice is on the lower frame.
-    }
-\label{fig:sf-scf_scheme}
-\end{figure}
 
 
 The second condition result in eq.\ref{eq:energy_min_system} is the segment potential field equation for regular solution:
@@ -655,21 +656,6 @@ As an example, $16 \times 16$ volume projection matrix $V(r_c = 8)[i,k]$ for a s
     
 \end{multicols}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width = 0.8\linewidth]{fig/sphere_volume_and_surface_projection.png}
-    \caption{
-        Surface and volume projection for a spherical particle with a diameter $d=8$ in a cylindrical lattice for a set of distances $r_c = {0, 2, 4, 6}$ from the sphere particle center to $z$-axis and an arbitrary particle center coordinate $z_c$.
-        The sphere center is shown with red cross.
-        The heatmaps is drawn with an equal aspect, $z$-axis is omitted in the figure, the color code is shown with the colorbar on top, where the blue color corresponds to zero and yellow color corresponds to the values above 25 units.
-        The units for surface and volume is $a^2$ and $a^3$, respectively, where is $a$ is a lattice unit length.
-        The sphere surface projection $S_{\theta \downarrow}\{r_c\}$ on $rz$-plane is on the upper set of heatmaps and $S_{\theta \downarrow}\{r_c\}$ is the lower set of heatmaps.
-        \\
-        The discretization result in the surface and volume projection matrices $\bm{S}\{r_c\}, \bm{V}\{r_c\}$, respectively, shown in the right frame.
-    }
-    \label{fig:sphere_volume_and_surface_projection}
-\end{figure}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Effects of volume exclusion due to pore walls}
@@ -709,6 +695,21 @@ The two dimensional boolean array $\bm{V}$ is shown in the right frame of Figure
 The space impermeable for a spherical particle includes the membrane and the excluded volume and defined as a two-dimensional boolean array $\bm{W}^{\ast} = \bm{W} \bigoplus \bm{V}$ the result of binary morphological dilation, as shown in the right frame of Figure \ref{fig:excluded_volume}
 
 \end{multicols}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.8\linewidth]{fig/sphere_volume_and_surface_projection.png}
+    \caption{
+        Surface and volume projection for a spherical particle with a diameter $d=8$ in a cylindrical lattice for a set of distances $r_c = {0, 2, 4, 6}$ from the sphere particle center to $z$-axis and an arbitrary particle center coordinate $z_c$.
+        The sphere center is shown with red cross.
+        The heatmaps is drawn with an equal aspect, $z$-axis is omitted in the figure, the color code is shown with the colorbar on top, where the blue color corresponds to zero and yellow color corresponds to the values above 25 units.
+        The units for surface and volume is $a^2$ and $a^3$, respectively, where is $a$ is a lattice unit length.
+        The sphere surface projection $S_{\theta \downarrow}\{r_c\}$ on $rz$-plane is on the upper set of heatmaps and $S_{\theta \downarrow}\{r_c\}$ is the lower set of heatmaps.
+        \\
+        The discretization result in the surface and volume projection matrices $\bm{S}\{r_c\}, \bm{V}\{r_c\}$, respectively, shown in the right frame.
+    }
+    \label{fig:sphere_volume_and_surface_projection}
+\end{figure}
 
 
 \subsection*{Resistance of the pore}
