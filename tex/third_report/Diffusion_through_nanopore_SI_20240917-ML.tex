@@ -31,6 +31,10 @@
 \usepackage{float}
 \usepackage[utf8]{inputenc}
 
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\fontsize{12pt}{12pt}\selectfont\bfseries}{\thesection}{0.5em}{}
+\titlespacing*{\section}{0pt}{0ex}{0.0ex}
+
 \newcommand\todo[1]{\textcolor{red}{#1}}
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 \newcommand{\sign}{\text{sign}}
@@ -87,7 +91,7 @@ $^{4}$ University of Wageningen, the Netherlands}
 \end{figure*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Brief Summary of the Computational Routines}
+\section{Brief Summary of the Computational Routines}
 \begin{multicols}{2}
 
 The primary focus of this paper is to calculate the resistance $R$ to the diffusion of nanocolloid particles through a cylindrical polymer brush-filled mesopore in a membrane (see Figure~\ref{fig:colloid_transport_SI}).
@@ -151,7 +155,7 @@ Some of these control parameters and their meanings are shown in Figure~\ref{fig
 \end{multicols}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{The SF-SCF Numerical Method}
+\section{The SF-SCF Numerical Method}
 \begin{multicols}{2}
 
 The method is based on the minimization of the excess Helmholtz energy with the constraint that all volume concentrations sum up to unity (incompressibility condition).
@@ -271,7 +275,7 @@ The routine loops until the desired accuracy is reached.
 \end{multicols}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Extracting Surface and Volume Contributions to Colloid Insertion Free Energy from SF-SCF Data}
+\section{Extracting Surface and Volume Contributions to Colloid Insertion Free Energy from SF-SCF Data}
 
 \begin{multicols}{2}
 
@@ -377,7 +381,7 @@ We remind that the cylindrical particle is always coaxial with the $z$-axis; thu
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Mapping between SF-SCF and Analytical Approaches: Correction Coefficients}
+\section{Mapping between SF-SCF and Analytical Approaches: Correction Coefficients}
 \begin{multicols}{2}
 
 In the previous sections, we discussed how the insertion free energy profile for a cylindrical particle coaxial to the $z$-axis ($\Delta F_{\textrm{cyl}}$) can be calculated by discrete integration over the particle volume and surface using only the local polymer concentration of the unperturbed polymer brush, $\phi$.
@@ -429,7 +433,7 @@ We estimate the correction coefficient to be $b_0=0.7$ and $b_1 = -0.3$ as seen 
 
 We remind that the insertion free energy calculated analytically, $\Delta F_{\textrm{cyl}}$, uses the unperturbed polymer concentration profile $\phi$.
 When a larger particle (with size comparable to the pore size or to the distance to the grafting surface) is inserted, it causes significant non-local changes in the polymer concentration.
-Larger particles cause polymer brush compression, which translates to an additional free energy penalty not accounted for by the analytical approach; this effect is also seen in Figure~3 of the main text.
+Larger particles cause polymer brush compression, which translates to an additional free energy penalty not accounted for by the analytical approach; this effect is also seen in Figure~\ref{fig:fe_scf_grid}.
 
 
 An interesting effect can be observed for strongly attractive particles.
@@ -442,19 +446,33 @@ It does not significantly change the total resistance to diffusion transport, be
     \centering
     \includegraphics[width = 0.9\linewidth]{fig/fit_SI.png}
     \caption{
-    Comparison of fitted (solid lines) and non-fitted (dashed lines) analytical results (eqs.~\ref{eq:cyl_fe_osm} and~\ref{eq:cyl_fe_sur}) with numerical SF-SCF results (circles) for $d = 4$.
+    Comparison of fitted (solid lines) and non-fitted (dashed lines) approximate analytical results (eqs.~\ref{eq:cyl_fe_osm} and~\ref{eq:cyl_fe_sur}) for insertion free energy penalty with numerical SF-SCF results (circles) for cylindrical particle with diameter and height $d = 4$.
     The results are presented for a representative pore at $\chi_{\textrm{PS}} = 0.5$ for a set of $\chi_{\textrm{PC}}$ values.
     The $\chi_{\textrm{PC}}$ values are color-coded and marked on the right side of the figure.
     }
     \label{fig:fit_SI}
 \end{figure}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.95\linewidth]{fig/fe_scf_grid2.png}
+    \caption{ 
+    Comparison of the insertion free energy as a function of particle position $z_c$ calculated using an approximate analytical approach and the SF-SCF method for cylindrical particles with diameter and height $d = [8, 12, 16]$ (color coded).
+    The solvent quality is varied near the $\theta$-point with $\chi_{\textrm{PS}} = [0.4, 0.5, 0.6]$, corresponding to columns from left to right, respectively.\\
+    The results are presented for two particle affinities to polymer chains: $\chi_{\textrm{PC}} = -0.5$ in the middle row and $\chi_{\textrm{PC}} = -1.0$ in the bottom row, \emph{i.e.}, from less to more attractive particles.\\
+    The insertion free energy calculated with the SF-SCF scheme, $\Delta F_{\textrm{SF-SCF}}$, is shown with squares, and the results of the approximate analytical scheme, $\Delta F_{\textrm{cyl}}$, are presented with solid lines.\\
+    The light green hatched area marks values of $z$ that correspond to the volume inside the pore $z \in [-26, 26]$.
+    \label{fig:fe_scf_grid}
+    }
+\end{figure}
+
 \end{multicols}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection*{Mapping between SF-SCF and Analytical Approaches: Arbitrarily Placed Homogeneous Spherical Colloid}
+\section{Mapping between SF-SCF and Analytical Approaches: Arbitrarily Placed Homogeneous Spherical Colloid}
 
 \begin{multicols}{2}
 
@@ -598,25 +616,9 @@ As an example, a $16 \times 16$ volume projection matrix $V(r_c = 8)[i, k]$ for 
 
 \end{multicols}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{fig/sphere_volume_and_surface_projection.png}
-    \caption{
-        Surface and volume projections for a spherical particle with diameter $d = 8$ in a cylindrical lattice, shown for a set of distances $r_c = \{0, 2, 4, 6\}$ from the sphere particle center to the $z$-axis, and an arbitrary particle center coordinate $z_c$.
-        The sphere center is indicated with a red cross.
-        The heatmaps are drawn with equal aspect ratio; the $z$-axis is omitted in the figure.
-        The color code is shown with the colorbar on top, where blue corresponds to zero and yellow corresponds to values above 25 units.
-        The units for surface and volume are $a^2$ and $a^3$, respectively, where $a$ is the lattice unit length.
-        The sphere surface projection $S_{\theta \downarrow}\{r_c\}$ on the $rz$-plane is shown in the upper set of heatmaps, and the volume projection $V_{\theta \downarrow}\{r_c\}$ is shown in the lower set of heatmaps.
-        \\
-        The discretization results in the surface and volume projection matrices $\bm{S}\{r_c\}$ and $\bm{V}\{r_c\}$, respectively, which are shown in the right frame.
-    }
-    \label{fig:sphere_volume_and_surface_projection}
-\end{figure}
-
-\pagebreak
+%\pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Effects of Volume Exclusion Due to Pore Walls}
+\section{Effects of Volume Exclusion Due to Pore Walls}
 
 \begin{multicols}{2}
 
@@ -658,6 +660,21 @@ The space impermeable to a spherical particle includes the membrane and the excl
 
 \end{multicols}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/sphere_volume_and_surface_projection.png}
+    \caption{
+        Surface and volume projections for a spherical particle with diameter $d = 8$ in a cylindrical lattice, shown for a set of distances $r_c = \{0, 2, 4, 6\}$ from the sphere particle center to the $z$-axis, and an arbitrary particle center coordinate $z_c$.
+        The sphere center is indicated with a red cross.
+        The heatmaps are drawn with equal aspect ratio; the $z$-axis is omitted in the figure.
+        The color code is shown with the colorbar on top, where blue corresponds to zero and yellow corresponds to values above 25 units.
+        The units for surface and volume are $a^2$ and $a^3$, respectively, where $a$ is the lattice unit length.
+        The sphere surface projection $S_{\theta \downarrow}\{r_c\}$ on the $rz$-plane is shown in the upper set of heatmaps, and the volume projection $V_{\theta \downarrow}\{r_c\}$ is shown in the lower set of heatmaps.
+        \\
+        The discretization results in the surface and volume projection matrices $\bm{S}\{r_c\}$ and $\bm{V}\{r_c\}$, respectively, which are shown in the right frame.
+    }
+    \label{fig:sphere_volume_and_surface_projection}
+\end{figure}
 
 
 \begin{figure*}[h]
@@ -668,6 +685,7 @@ The space impermeable to a spherical particle includes the membrane and the excl
         The steady-state solution of the diffusion equation for a point-like particle diffusing through a finite-thickness empty cylindrical pore.
         The iso-concentration surfaces $c = \textrm{const}$ are shown with a contour plot, with concentration values labeled.
         For an empty pore, $\psi = c$; for a brush-filled pore, $\psi \approx c \exp(\Delta F / k_B T)$.
+        The blue and red axes are radial and radial and axial coordinates, respectively.
     }
     \label{fig:empty_pore_solution}
     \caption{
@@ -685,7 +703,7 @@ The space impermeable to a spherical particle includes the membrane and the excl
 \end{figure*}
 
 \pagebreak
-\subsection*{Analytical Pore Resistance Estimation}
+\section{Analytical Pore Resistance Estimation}
 \begin{multicols}{2}
 
 % \begin{figure}[H]
@@ -697,12 +715,12 @@ The space impermeable to a spherical particle includes the membrane and the excl
 %     \label{fig:empty_pore_solution}
 % \end{figure}
 
-Consider a medium with a constant diffusion coefficient $D$, separated by an impermeable membrane with a cylindrical pore.
+Consider a medium with a constant diffusion coefficient $D_0$, separated by an impermeable membrane with a cylindrical pore.
 The pore is placed at the origin of the cylindrical coordinate system, with the main axis of the pore coaxial with the $z$-axis.
 Let the concentration of the solute in the semi-infinite bulk on one side be $c(z = -\infty) = 1$ and $c(z = +\infty) = 0$ in the bulk on the other side.
 The steady-state solution $\frac{\partial c}{\partial t} = 0$ of the diffusion equation is a concentration profile shown in Figure~\ref{fig:empty_pore_solution}.
 It is known that for a pore in an infinitely thin membrane (an orifice), the iso-concentration lines form oblate spheroids with the pore acting as a focal circle, and even for a membrane with finite thickness, this remains a good approximation.
-The flux intensity field is the gradient of concentration, $\mathbf{j} = -D \nabla c$.
+The flux intensity field is the gradient of concentration, $\mathbf{j} = -D_0 \nabla c$.
 
 A polymer brush grafted in the pore modulates the local diffusion coefficient $D$ and creates a free energy landscape.
 The iso-concentration lines in the steady state are no longer oblate spheroids, although the steady-state solution still shares the structure with an empty pore in a medium with a constant diffusion coefficient.
@@ -845,7 +863,10 @@ The resistance integration on the regular cylindrical lattice:
     r_{\textrm{base}} = r_{\textrm{pore}} + |z| - L/2
     \\
     \label{eq:prefactor}
-    f(x_z) = \frac{2(|x_z|-L/2)^2 + 2r_{\textrm{pore}}^2}{(3(|x_z|-L/2)+r_{\textrm{pore}})((|x_z|-L/2)+r_{\textrm{pore}})}
+    \begin{aligned}
+        &f(x_z) =\\
+        & = \frac{2(|x_z|-L/2)^2 + 2r_{\textrm{pore}}^2}{(3(|x_z|-L/2)+r_{\textrm{pore}})((|x_z|-L/2)+r_{\textrm{pore}})}
+    \end{aligned}
 \end{gather}
 
 where $f$ represents the ratio of the conductivities of an oblate spheroid shell and a half-cylinder shell for shells that share the same cross-section with the $z$-axis.
@@ -889,7 +910,7 @@ The eq.\ref{eq:R_total} concludes the analytical estimation with the total resis
 
 \end{multicols}
 
-\subsection*{Validating Analytical Approaches with CFD Simulations}
+\section{Validating Analytical Approaches with CFD Simulations}
 
 \begin{multicols}{2}
 The diffusion of nanocolloids in the presence of an effective potential is governed by the Smoluchowski diffusion equation:
@@ -996,8 +1017,8 @@ The diffusion coefficient at the face is found as a simple arithmetic mean:
 When the flux is dominated by the insertion free energy gradient, the colloid concentration at face $c_n$ cannot be found as a simple arithmetic mean.
 The choice of $c_n$ must reflect the dominant direction of the flux.
 
-Using the exact analytical solution of a one-dimensional equation for diffusion in a potential field, we can estimate the colloid concentration at face $c_n$.
-This estimate is suitable in a wide range of conditions, from diffusion-dominated to drift-dominated transport \todo{[refs]}.
+So called \emph{exponential scheme} uses the exact analytical solution of a one-dimensional equation for diffusion in a potential field to estimate the colloid concentration at face $c_n$.
+This estimate is suitable in a wide range of conditions, from diffusion-dominated to drift-dominated transport \cite{Patankar1980,Versteeg2007}.
 
 It does so by modifying the weight between the colloid concentrations $c_N$ and $c_P$ in the neighboring control volumes based on the local insertion free energy gradient.
 
@@ -1047,7 +1068,7 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
 
 
 \end{multicols}
-\subsection*{Diffusion Coefficient Impact on the Trends in Pore Resistance}
+\section{Diffusion Coefficient Impact on the Trends in Pore Resistance}
 \begin{multicols}{2}
     
 Locally, the polymer brush resembles a semi-dilute polymer solution with segment concentration $\phi$, characterized by a correlation length $\xi$ that represents the typical mesh size formed by overlapping polymer coils.
