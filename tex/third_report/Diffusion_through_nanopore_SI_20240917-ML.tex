@@ -468,8 +468,6 @@ It does not significantly change the total resistance to diffusion transport, be
 
 \end{multicols}
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Mapping between SF-SCF and Analytical Approaches: Arbitrarily Placed Homogeneous Spherical Colloid}
@@ -564,15 +562,18 @@ The function domain, values and discretization for $V_{\theta \downarrow}$ and $
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{fig/spherical_kernel.png}
+    \includegraphics[width=0.95\linewidth]{fig/sphere_volume_and_surface_projection.png}
     \caption{
-        Spherical particle volume and surface projection matrices in a cylindrical lattice.
-        In the figure, we exemplify the volume projection matrix $\bm{V}\{r_c\}$ for a spherical particle with diameter $d = 12$ and an offset to $z$-axis $r_c= 8$.
-        The colored tiles encode the matrix elements' values, where yellow means larger values and dark blue means lower values.
-        The geometrical meaning of the matrix element is the particle volume (red body) or surface (green small patch) found in the domain $r,z \in [i, i + \delta r] \times [k, k + \delta z]$ (opaque blue toroid).
-        The smaller drawing on the right side complements the main drawing with a $z$-view for clarity.
+        Surface and volume projections for a spherical particle with diameter $d = 8$ in a cylindrical lattice, shown for a set of distances $r_c = \{0, 2, 4, 6\}$ from the sphere particle center to the $z$-axis, and an arbitrary particle center coordinate $z_c$.
+        The sphere center is indicated with a red cross.
+        The heatmaps are drawn with equal aspect ratio; the $z$-axis is omitted in the figure.
+        The color code is shown with the colorbar on top, where blue corresponds to zero and yellow corresponds to values above 25 units.
+        The units for surface and volume are $a^2$ and $a^3$, respectively, where $a$ is the lattice unit length.
+        The sphere surface projection $S_{\theta \downarrow}\{r_c\}$ on the $rz$-plane is shown in the upper set of heatmaps, and the volume projection $V_{\theta \downarrow}\{r_c\}$ is shown in the lower set of heatmaps.
+        \\
+        The discretization results in the surface and volume projection matrices $\bm{S}\{r_c\}$ and $\bm{V}\{r_c\}$, respectively, which are shown in the right frame.
     }
-    \label{fig:spherical_kernel}
+    \label{fig:sphere_volume_and_surface_projection}
 \end{figure}
 
 To find the elements of the projection matrices, we discretize the projections by integrating over a set of domains $r, z \in [i, i + \delta r] \times [k, k + \delta z]$ for possible indices $i, k$:
@@ -597,6 +598,19 @@ The discrete form of eq.~\ref{eq:Delta_F_V} to calculate the osmotic term in the
     \end{split}
 \end{eqnarray}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/spherical_kernel.png}
+    \caption{
+        Spherical particle volume and surface projection matrices in a cylindrical lattice.
+        In the figure, we exemplify the volume projection matrix $\bm{V}\{r_c\}$ for a spherical particle with diameter $d = 12$ and an offset to $z$-axis $r_c= 8$.
+        The colored tiles encode the matrix elements' values, where yellow means larger values and dark blue means lower values.
+        The geometrical meaning of the matrix element is the particle volume (red body) or surface (green small patch) found in the domain $r,z \in [i, i + \delta r] \times [k, k + \delta z]$ (opaque blue toroid).
+        The smaller drawing on the right side complements the main drawing with a $z$-view for clarity.
+    }
+    \label{fig:spherical_kernel}
+\end{figure}
+
 Similarly, the surface term in the insertion free energy is the following matrix multiplication:
 
 \begin{eqnarray}
@@ -616,7 +630,7 @@ As an example, a $16 \times 16$ volume projection matrix $V(r_c = 8)[i, k]$ for 
 
 \end{multicols}
 
-%\pagebreak
+\pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Effects of Volume Exclusion Due to Pore Walls}
 
@@ -660,26 +674,11 @@ The space impermeable to a spherical particle includes the membrane and the excl
 
 \end{multicols}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{fig/sphere_volume_and_surface_projection.png}
-    \caption{
-        Surface and volume projections for a spherical particle with diameter $d = 8$ in a cylindrical lattice, shown for a set of distances $r_c = \{0, 2, 4, 6\}$ from the sphere particle center to the $z$-axis, and an arbitrary particle center coordinate $z_c$.
-        The sphere center is indicated with a red cross.
-        The heatmaps are drawn with equal aspect ratio; the $z$-axis is omitted in the figure.
-        The color code is shown with the colorbar on top, where blue corresponds to zero and yellow corresponds to values above 25 units.
-        The units for surface and volume are $a^2$ and $a^3$, respectively, where $a$ is the lattice unit length.
-        The sphere surface projection $S_{\theta \downarrow}\{r_c\}$ on the $rz$-plane is shown in the upper set of heatmaps, and the volume projection $V_{\theta \downarrow}\{r_c\}$ is shown in the lower set of heatmaps.
-        \\
-        The discretization results in the surface and volume projection matrices $\bm{S}\{r_c\}$ and $\bm{V}\{r_c\}$, respectively, which are shown in the right frame.
-    }
-    \label{fig:sphere_volume_and_surface_projection}
-\end{figure}
 
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=0.8\linewidth]{fig/coordinate_system.png}
+    \includegraphics[width=0.85\linewidth]{fig/coordinate_system.png}
     \caption{
         (Left)
         The steady-state solution of the diffusion equation for a point-like particle diffusing through a finite-thickness empty cylindrical pore.
