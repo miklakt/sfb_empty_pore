@@ -466,7 +466,7 @@ Furthermore, a further decrease in polymer-colloid interaction strength (not sho
 
 An estimate of the required surface tension coefficient $\gamma$ to overcome osmotic pressure and the reduced diffusion due to the polymer mesh is given by
 \begin{equation}
-\gamma^{\ast} < \frac{16}{3 \pi d^2} \left( \ln\frac{D_0}{D} + \ln\left( \frac{r_{\textrm{channel}}}{r_{\textrm{pore}}} \right) \right) - \frac{\Pi d}{6}.
+\gamma < \frac{16}{3 \pi d^2} \left( \ln\frac{D_0}{D} + \ln\left( \frac{r_{\textrm{channel}}}{r_{\textrm{pore}}} \right) \right) - \frac{\Pi d}{6}.
 \end{equation}
 
 In conclusion, polymer brushes can readily enhance the permeability of the pore by one or more orders of magnitude.
@@ -479,6 +479,32 @@ Figure \ref{fig:R_map}A also demonstrates that a rather modest change in $\chi_{
 In this specific case, the pore interior controls the modulation of brush permeability. 
 This is apparent with more detail in \ref{fig:R_map}B where the central channel has a resistivity higher than an empty pore (red colour) for $\chi_{\text{PC}}=-1.0$, 
 but lower (blue colour) for $\chi_{\text{PC}}=-1.1$. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.9\linewidth]{fig/resistivity_on_chi_PC.png}
+    \caption{
+        Total pore resistance $R$ normalized by the viscosity of the medium $\eta_0$ as a function of polymer-colloid interaction strength $\chi_{\text{PC}}$ (black thin lines) for selected particle sizes $d \in \{2,4,6\dots,18\}$, as indicated with inline labels on the black lines and solvent strength $\chi_{\text{PS}}$ as indicated above each panel.
+        \\
+        The blue curve separates parameter space of enhanced permeability $R<R_{\text{empty}}$ (left and below) and hindered permeability $R>R_{\text{empty}}$ (right and above).
+        Each cross-section points of the blue curve with black lines correspond to critical  polymer-colloid interaction strength $\chi_{\text{PC}}^{\text{crit}}$ for a given particle size $d$ when the pore resistance is equal to the resistance of an empty pore $R=R_{\text{empty}}$.
+        \\
+        Conditions: pore and polymer brush as in Figure~\ref{fig:phi_hm_grid}.
+    }
+    \label{fig:R_vs_chi_PC}
+\end{figure}
+
+Figure~\ref{fig:R_vs_chi_PC} demonstrate the change in the total resistance of the pre as a function of particle affinity to the polymer brush $\chi_{\text{PC}}$.
+As expected, higher polymer-colloid interaction strength (lower $\chi_{\text{PC}}$) always decreases the total resistance of the pore, as the interfacial term in the insertion free energy became more negative, which increases local conductivity $\rho^{-1}$.
+Naturally, the effect is minor for small particle for every solvent strength as one can see from Figure~\ref{fig:R_vs_chi_PC} for the particles up to about $d=4$.
+Conversely, a pore with polymer brush can exhibit high selectivity to polymer-colloid interaction strength for a larger particles, which seen as curves with steep slope in Figure~\ref{fig:R_vs_chi_PC}.
+
+As the insertion free energy became more and more negative with the decrease in $\chi_{\text{PC}}$, the resistance of the pore channel $R_{\text{pore}}$ decreases, with the resistance due to the convergent flow in the exterior $R_{\text{conv}}$ became major contribution to the pore resistance $R \approx R_{\text{conv}}$.
+As we already discussed, protruding attractive polymer brush can bring the resistance below the resistance of an empty pore $R<R_{\text{empty}}$, in this case the total resistance is defined by the resistance of the semi-infinite reservoir which is not modulated by the pore.
+Hence, you can see the black curves plateauing at sufficiently negative $\chi_{\text{PC}}$.
+To analyse the pore resistance we trace $\chi_{\text{PC}}^{\text{crit}}$ that bisects each line in Figure~\ref{fig:R_vs_chi_PC} into region were $R<R_{\text{empty}}$ when $\chi_{\text{PC}} < \chi_{\text{PC}}^{\text{crit}}$, and a region
+
+
 
 \textbf{Need to expand on this aspect.}
 
