@@ -8,6 +8,7 @@ style=numeric,
 sorting=none
 ]{biblatex}
 \usepackage{xcolor}
+\usepackage{bm}
 
 \newcommand\todo[1]{\textcolor{red}{#1}}
 
@@ -356,184 +357,114 @@ We approximate the dependence of the mesh size on polymer concentration by the s
 
 %Do we need a figure here that shows illustrative map of D/D0? 
 
-%%%%%%%%%%
-\subsection{Linking local resistivities to global transport}
-%%%%%%%%%%
+\subsection{Linking Local Resistivity to Global Transport}
 
-% We have derived an approximate solution to the stationary diffusion equation, 
-% which effectively amounts to neglecting the radial component of colloid fluxes inside the pore (see SI for details). 
-% This approach is inspired by the fact that the net transport across the membrane is associated only with the axial component of the fluxes. 
-% The solution enables the explicit calculation of the resistance of the pore itself
+We develop an analytical method to estimate the resistance of a cylindrical pore with a grafted polymer brush to the diffusion of colloidal particles. 
+This approach builds upon the classic solution for diffusion through an empty pore and incorporates the effects of the polymer brush by modifying the local diffusion coefficient and introducing a free energy landscape.
 
-% \begin{equation}
-%     R_{pore}=\int_{0}^{L}\left(\int_{0}^{r_{\text{pore}}}2\pi rdrD(r, z')e^{-\Delta F(r,z')}\right)^{-1}dz'
-%     \label{eq:res_with_brush}
-% \end{equation}
-    
-% \noindent The product $D(r,z')e^{-\Delta F(r,z')}$ here has the meaning of local conductivity, 
-% and collects the local effects of the polymer meshwork on diffusivity and insertion free energy. 
-% Integration of the conductivy over the pore cross-section gives the inverse resistance per unit length, as appropriate for resistors connected in parallel.
-% Further integration of this resistance over the axial coordinate simply adds contributions from all the slices, as appropriate for resistors connected in series. 
+In an empty pore, the steady-state concentration profile of diffusing particles features iso-concentration lines that form oblate spheroids, with the pore acting as a focal circle.
+The flux density is given by $\mathbf{j} = -D_0 \nabla c$, where $D_0$ is the constant diffusion coefficient.
+When a polymer brush is grafted inside the pore, the local diffusion coefficient $D$ becomes position-dependent, depending on the local polymer concentration and accounting for slower diffusion through a semidilute polymer mesh~\cite{Cai2011}.
+Particles also experience a mean force, with an insertion free energy $\Delta F$ playing the role of a potential. To account for these effects, we introduce a scalar potential function $\psi = c\exp{\Delta F}$ in the form of a modified Boltzmann distribution, which satisfies $\mathbf{j} = -D \nabla \psi$ and maintains a structure similar to the empty pore solution.
+As we noted in our previous paper, for the solution in the form of a modified Boltzmann distribution, the product $D \exp\left( \frac{-\Delta F}{k_B T} \right) \equiv \rho^{-1}$ has the meaning of local conductivity and encapsulates the local effects of the polymer meshwork on diffusivity and insertion free energy~\cite{Laktionov2023}.
 
-% Provided that the brush is entirely contained in the interior of the pore, 
-% the overall resistance can be presented as $R=R_{\text{convergent}}+ R_{\text{pore}}$ (see Eq. \ref{eq:R_tot_tot}),
-% where the first term represents the contribution of convergent/divergent flows at the entrance/exit ofthe pore, 
-% and the second term accounts for the resistance of the pore itself.
+To simplify the analysis, we utilize an orthogonal curvilinear coordinate system aligned with the iso-surfaces of $\psi$ and stream surfaces of $\bm{j}$.
+Inside the pore, we employ cylindrical coordinates, while outside the pore, we approximate the iso-surfaces using a variant of oblate spheroidal coordinates, as seen in Figure~\ref{fig:R_map}B. The chosen coordinate system has axial, radial, and azimuthal axes.
 
-% Whilst the assumption that the brush is entirely contained in the interior of the pore is well justified under poor solvent conditions, 
-% a brush in good or $\theta$-solvent conditions produces caps outside the pore (Figure \ref{fig:phi_hm_grid}). 
-% In these cases, the flow lines at the entrance to and exit from the pore are modified, 
-% and the Rayleygh resistance specified by Eq. \ref{eq:flux_Ral} does not fairly represent the corresponding contribution. 
-% To calculate the contribution of the brush caps to the overall resistance, we implemented an approximate numerical integration scheme (see SI for details).
+By integrating the local conductivity $\rho^{-1}$ over the radial and azimuthal coordinates at each axial position, we calculate the inverse resistance per unit length $R_z^{-1}$.
+The total resistance $R$ is then obtained by integrating $R_z$ along the axial coordinate $z$:
+\begin{eqnarray}
+    R_z^{-1} = \int_{0}^{r_{\text{pore}}}\int_{0}^{2\pi}\rho^{-1} \, \tilde{h} \, d\theta \, dr\\
+    R_{\text{pore}} = \int_{-L/2}^{+L/2} R_z \, dz\\
+    R_{\text{conv}} = \int_{-\infty}^{-L/2} R_z \, dz + \int_{+L/2}^{+\infty} R_z \, dz\\
+    R = R_{\text{pore}} + R_{\text{conv}}
+\end{eqnarray}
+where $\tilde{h}$ depends on the coordinate system metric. Here, $R_{\textrm{pore}}$ is the resistance of the pore channel, and $R_{\textrm{conv}}$ is the resistance due to convergent flow in the exterior regions.
 
-% To calculate the exterior and interior resistance of the pore generally, we consider an orthogonal curvilinear coordinate system $x_{\theta}, x_{r}, x_{z}$ with iso-surfaces defined as follows:
-%     half-planes with a constant azimuthal angle $x_{\theta}$;
-%     stream surfaces of diffusing particles constant $x_{r}$ indexed with a radius $r$ of its intersection at $z=0$;
-%     the level set of the potential function $\psi$ with a constant $x_{z}$ indexed with its intersection with $z$-axis
-
-% For a thin empty pore this curvilinear coordinate system is a variant of oblate spheroidal coordinate system, where surfaces of constant $x_{\theta}$ are half-planes, surfaces of constant $x_{r}$ are confocal hyperboloids of revolution, and surfaces of constant $x_{z}$ are confocal oblate spheroids. The focal circle is a pore circumference.
-
-% For an empty pore with a finite thickness the iso-surfaces can be approximated such that the resulting curvilinear coordinate system is a joint of cylindrical and oblate spheroidal coordinate system.
-% Where cylindrical coordinates are used inside the pore $z \in [-L/2, L/2]$ and oblate spheroidal otherwise.
-
-% Oblate spheroid coordinate system slice the exterior space into curved layers.
-% Similar to the integration of the resistance of the interior, with the exception that the layers are curved, we first integrate conductivity over the spheroid layers, which gives us the inverse resistance per unit length.
-% Further we integrate the axial coordinate to sum up the contribution of each curved layer.
-
-% The inverse resistance of each layer scales with the square distance to the pore entrance $(z-L/2)^2$.
-% The integral over the axial coordinate for the exterior layers is a $R_{\textrm{convergent}} = 1/2 D_0 r_{\textrm{pore}}$, following Rayleigh's analytical solution.
-% Finally, given the nature of the effective pore shape (rounded corners when excluded volume is accounted) we assume that the resistance of each layer in the exterior and in the interior is a continuous function.
-
-% \begin{eqnarray}
-%     % R_{z} = \rho^{-1}(z) \oint_{\Phi_z} h_{z} dA =\rho^{-1}(z) \int_{0}^{r_{\textrm{pore}}} \int_0^{2\pi} h_{r} h_{\theta} h^{-1}_{z} dx_{r} dx_{\theta}
-%     R_{z, \textrm{empty}}^{-1} = 
-%     \begin{cases}
-%         \pi r_{\textrm{pore}}^2 \textrm{, if } |z| < L/2
-%         \\
-%         \pi (4(z-L/2)^2 + r_{\textrm{pore}}^2) \textrm{, otherwise} 
-%     \end{cases}
-%     \\
-%     R_{\textrm{empty}} = \int_{-\infty}^{+\infty }R_z dz = \frac{L}{D_0\pi r_{\text{pore}}^{2}}+\frac{1}{2D_0r_{\text{pore}}}
-% \end{eqnarray}
-
-% The presence of the polymer brush and the change in the effective pore shape modulate the transport properties of the pore and result in the different flux streamlines and iso-potential surfaces.
-% The coordinate system for a pore with the polymer brush for a finite size particle diverges from the coordinate system for an empty pore for a point-like particle in the interior of the pore and in the exterior proximal to the entrance.
-% One can account for these effects but it is a rather complicated and results only in minor correction to the pore resistance.
-
-% We disregard this effects and consider that there is no change in iso-potential surfaces and flux streamlines.
-% Furthermore, the local conductivities we calculated with SCF are discrete values on a regular lattice, in this discrete cylindrical lattice when integrating we treat iso-potential lines as a surface of half-cylinder rather than a surface of an oblate spheroid.
-% Finally, a half-cylinder have a larger surface area than an oblate spheroid for the same $x_{z}$, which is corrected with a prefactor in the integrand.
-
-% The resistance integration on the regular cylindrical lattice:
-% \begin{gather}
-%     R_z^{-1} =
-%     \begin{cases}
-%          \pi \sum_{r=0}^{r_{\textrm{pore}}} \rho^{-1}_{[r,z]} (2r+1) \textrm{, if } z\in[-L/2,L/2]
-%          \\
-%          \pi \left(\sum_{r=0}^{r_{\textrm{base}}} \rho^{-1}_{[r,z]} (2r+1) + 2 r_{\textrm{base}} \sum_{z^{\prime} = z_{a}}^{z_{b}}\rho^{-1}_{[r,z^{\prime}]}\right) f(z) \textrm{, otherwise }
-%     \end{cases}
-%     \\
-%     \begin{cases}
-%         \textrm{if } z < -L/2, z_{a} = z, z_{b} = -L/2-1
-%         \\
-%         \textrm{if } z > L/2, z_{a} = L/2, z_{b} = z
-%     \end{cases}
-%     \\
-%     r_{\textrm{base}} = r_{\textrm{pore}} + |z| - L/2
-%     \\
-%     f(z) = \frac{r_{\textrm{pore}}^2 + 4(z-L/2)^2}{(\textrm{pore} + 3|z-L/2|)(\textrm{pore} + |z-L/2|)}
-% \end{gather}
-% To account the resistance of semi-infinite reservoirs outside the integration region
-% \begin{eqnarray}
-%     R_{(z, \pm\infty)} = \frac{\pi - 2\arctan\left(\frac{2(|z|-L/2)}{r_{\textrm{pore}}}\right)}{4\pi r_{\textrm{pore}}}
-% \end{eqnarray}
-% Finally, the total resistance of the pore, integrated on the discrete cylindrical lattice
-% \begin{equation}
-%     R = \sum_{z=z_{a}}^{z_{b}} R_z + R_{(z_{a}, -\infty)} + R_{(z_{b}, +\infty)}
-% \end{equation}
-
-% (The details are in SI).
-
-We develop an analytical method to estimate the resistance of a cylindrical pore with a grafted polymer brush to the diffusion of colloidal particles. This approach builds upon the classic solution for diffusion through an empty pore and incorporates the effects of the polymer brush by modifying the local diffusion coefficient and introducing a free energy landscape.
-
-In an empty pore, the steady-state concentration profile of diffusing particles features iso-concentration lines that form oblate spheroids, with the pore acting as a focal circle. The flux density is given by $\mathbf{j} = -D_0 \nabla c$, where $D_0$ is the constant diffusion coefficient. When a polymer brush is grafted inside the pore, the local diffusion coefficient $D$ becomes position-dependent, and particles experience an insertion free energy $\Delta F$. To account for these effects, we introduce a scalar potential function $\psi$, defined such that $\mathbf{j} = -D \nabla \psi$, where $\psi \approx c \exp\left( \frac{\Delta F}{k_B T} \right)$. This modified Boltzmann distribution maintains a structure similar to the empty pore solution.
-
-To simplify the analysis, we utilize an orthogonal curvilinear coordinate system aligned with the iso-surfaces of $\psi$. Inside the pore, we employ cylindrical coordinates, while outside the pore, we approximate the iso-surfaces using oblate spheroidal coordinates. This allows us to assume that the flux is normal to constant $x_z$ surfaces, facilitating the calculation of resistance.
-
-By integrating the local conductivity $\rho^{-1} = D^{-1} \exp\left( \frac{\Delta F}{k_B T} \right)$ over the cross-sectional area at each axial position, we calculate the inverse resistance per unit length $R_z^{-1}$. The total resistance $R$ is then obtained by integrating $R_z$ along the axial coordinate $z$:
-
-\begin{equation} R = \int_{-\infty}^{+\infty} R_z , dz \end{equation}
+For the interior region, the integration is straightforward:
+\begin{eqnarray}
+    R_{\text{pore}} = 2\pi\int_{-L/2}^{+L/2}\left(\int_{0}^{r_{\text{pore}}} r \, dr \, \rho^{-1}(r, z')\right)^{-1} dz'
+    \label{eq:R_pore}
+\end{eqnarray}
+The resistance due to the convergent flow, $R_{\text{conv}}$, in the exterior region requires integration over the surfaces of a series of oblate spheroids. 
+See the details in Section~7 of the Supplementary Information.
 
 For an empty pore without a polymer brush, this method recovers the classic expression for the total resistance:
+\begin{equation} 
+    R_{\textrm{empty}} = R_{\textrm{pore,empty}} + R_{\textrm{conv,empty}} = \frac{L}{D_0 \pi r_{\textrm{pore}}^2} + \frac{1}{2 D_0 r_{\textrm{pore}}}
+\end{equation}
 
-\begin{equation} R_{\textrm{empty}} = \frac{L}{D_0 \pi r_{\textrm{pore}}^2} + \frac{1}{2 D_0 r_{\textrm{pore}}} \end{equation}
+For the brush entirely contained within the interior of the pore -- which is well justified under poor solvent conditions -- the total resistance is found as $R = R_{\textrm{pore}} + R_{\textrm{conv,empty}}$, as the exterior is not modified by the brush.
+Conversely, a brush in good or $\theta$-solvent conditions produces caps outside the pore (Figure~\ref{fig:phi_hm_grid}), requiring a more elaborate calculation of the resistance due to convergent flow, $R_{\textrm{conv}}$.
 
-Here, $L$ is the membrane thickness, and $r_{\textrm{pore}}$ is the pore radius. The first term represents the resistance due to the pore channel, while the second term accounts for the convergent flow in the exterior regions.
+Due to the discrete nature of the numerical data, we perform the integration on a cylindrical lattice, approximating the iso-potential surfaces as disks in the interior of the pore (as in Eq.~\ref{eq:R_pore}) and half-cylinders in the exterior regions.
+We introduce a correction factor to account for differences between this approximation and the actual oblate spheroidal geometry.
+%UPDATE MANUALLY%
+See the details in Section~7 of the Supplementary Information.
 
-In the presence of the polymer brush, we incorporate the position-dependent diffusion coefficient and free energy landscape obtained from self-consistent field calculations. Due to the discrete nature of the numerical data, we perform the integration on a cylindrical lattice, approximating the iso-potential surfaces as half-cylinders in the exterior regions and disks in the interior of the pore. We introduce a correction factor to account for differences between this approximation and the actual oblate spheroidal geometry.
-
-By summing the contributions from the pore interior and exterior regions, we obtain an analytical estimate of the total pore resistance, which includes both the resistance of the pore channel ($R_{\textrm{pore}}$) and the resistance due to convergent flow in the exterior regions ($R_{\textrm{conv}}$):
-
-\begin{equation} R = R_{\textrm{pore}} + R_{\textrm{conv}} \end{equation}
-
-This analytical method provides a computationally efficient means to estimate the pore resistance, accounting for the effects of the polymer brush and particle interactions. It serves as a valuable tool for predicting colloid transport through polymer-grafted pores and complements numerical simulations by offering insights into the underlying physical mechanisms.
-
-
-% \noindent where $h_{z}, h_{\theta}, h_{r}$ are scale factors of the curvilinear coordinates (a ratio of the distance between two iso-surfaces for a given coordinate relative to a unit step along the normal axis) and ${\Phi_z}$ a level set value for $\psi$.
-
-% We further simplify it with few assumptions assumptions. 
-% First, the total area of oblate spheroids $x_z$ iso-surfaces are proportional to the distance the pore entrance $(z-L/2)^2$ coordinate.
-% Second, the distance between two $x_z$ iso-surfaces are constant, so the scale factor $h_z = 1$.
-% Both assumptions are precise relatively far from the entrance, as a focal circle degenerates to a focal point, compared to the oblate spheroid size.
+This analytical method provides a tool to analyze and compare the resistance experienced by particles during axial transport with that of an empty pore.
+The $R_z$ profiles can provide insight into the pore resistance structure in a compact form, as demonstrated in Figure~\ref{fig:R_map}.
 
 
-
-% 
-{\bf Mikhail to add a brief summary}
-%
-
-
-%%%%%%%%%%
-\section{An attractive polymer filling dramatically enhances colloid fluxes through a mesopore}
-%%%%%%%%%%
+\section{An Attractive Polymer Filling Dramatically Enhances Colloid Fluxes Through a Mesopore}
 
 \begin{figure}
     \centering
     %\includegraphics[scale = 0.7]{fig/R.png}
-    \includegraphics[scale = 0.7]{fig/resistivity_on_z_and_hm.png}
+    \includegraphics[scale=0.7]{fig/resistivity_on_z_and_hm.png}
     \caption{
-    (A) Resistivity profiles along the pore axis for selected polymer-colloid interaction strengths $\chi_{\text{PC}}$, as indicated with coloured lines. 
-    The resistivity of a plain pore without polymers (black line) and the location of the membrane (green background) are shown for comparison. 
-    Conditions: pore and polymer brush as in Figure \ref{fig:phi_hm_grid}, $\chi_{\text{PS}}=0.5$, $d=8$. \todo{It is not resistivity along z axis stricly speaking}
-    (C) Maps of normalized resistivity $\rho D_0$ exemplifying a transition between hindered and enhanced permeability upon a subtle increase in the polymer-colloid interaction strength.
-    $\chi_{\text{PC}}$ was varied from $-1.0$ (left) to $-1.1$ (right); resistivities are colour coded as indicated. 
-    Conditions: pore and polymer brush as in Figure \ref{fig:phi_hm_grid}, $\chi_{\text{PS}}=\dots$, $d=\dots$.
+    \textbf{(A)} Resistance per unit length $R_{z}$ along the axial coordinate of the curvilinear coordinate system for selected polymer-colloid interaction strengths $\chi_{\textrm{PC}} \in \{ -0.9, -1.0, -1.1, -1.2, -1.3\}$, as indicated with colored lines.
+    The resistance per unit length of a plain pore without polymers $R_{z, \textrm{empty}}$ (black thick line), a pore with only the diffusion coefficient modulated ($\Delta F = 0$, dashed black line), and the location of the membrane (green background) are shown for comparison. 
+    Conditions: pore and polymer brush as in Figure~\ref{fig:phi_hm_grid}, $\chi_{\textrm{PS}}=0.5$, $d=8$.
+    \\
+    \textbf{(B)} Special orthogonal curvilinear coordinate system aligned with the flux density $\bm{j}$ stream surfaces (radial coordinate) and level sets of the potential function $\psi$ (axial coordinate).
+    Red lines correspond to constant values of the axial coordinate; gray lines are tangential to the flux density field and correspond to constant values of the radial coordinate.
+    The lines define bodies of revolution along the $z$-axis; the angular coordinate is not shown.
+    In the exterior of the pore, constant radial coordinates are confocal hyperboloids of revolution, constant axial coordinates are confocal oblate spheroids, and constant angular coordinates are half-planes.
+    In the interior of the pore, the coordinate system is equivalent to the cylindrical coordinate system.
+    \\
+    \textbf{(C)} Maps of normalized resistivity $\rho D_0$ exemplifying a transition between hindered and enhanced permeability upon a subtle increase in the polymer-colloid interaction strength.
+    $\chi_{\textrm{PC}}$ was varied from $-1.0$ (left) to $-1.1$ (right); resistivities are color-coded as indicated. 
+    Conditions: pore and polymer brush as in Figure~\ref{fig:phi_hm_grid}, $\chi_{\textrm{PS}}=0.5$, $d=8$.
     }
     \label{fig:R_map}
 \end{figure}
 
-Figure \ref{fig:R_map}A provides example resistivity profiles along the pore axis for a few selected polymer-colloid interaction strengths $\chi_{\text{PC}}$, and for an empty pore. 
+Figure~\ref{fig:R_map}A provides example resistance per unit length profiles along the pore axis for a few selected polymer-colloid interaction strengths $\chi_{\textrm{PC}}$ and for an empty pore. 
+For comparison, we also show the case where the polymer brush has an effect only on the diffusion coefficient of the medium, as if the colloid particles have no interactions with the polymer brush but only experience increased viscosity of the medium.
 The area under the curves represents the total resistance of the pore.
 Several features are notable. 
 
-Firstly, an attractive pore interior can enhance the permeability such that diffusive fluxes through the polymer filled pore exceed the limit of the empty pore.
-This can be clearly appreciated for $\chi_{\text{PC}}=-1.2$ and $-1.3$, 
-where the reistivities within the membrane width  ($-28\le z\le 28$) are consistently inferior to the resistivities for the empty pore.
+Firstly, an attractive pore interior can enhance the permeability such that the diffusive fluxes through the polymer-filled pore exceed the limit of the empty pore.
+This can be clearly appreciated for $\chi_{\textrm{PC}} = -1.2$ and $-1.3$, where the resistance per unit length within the membrane width ($-28 \leq z \leq 28$) is consistently lower than the resistance per unit length of the empty pore.
 This result may at first appear surprising, given that the polymer medium is expected to slow down the diffusion of colloids.
-However, this effect is counteracted by the attractive potential of the pore which facilitates a higher colloid flux and thus reduces the pore resistance.
+However, this effect is counteracted by the attractive potential of the pore, which facilitates a higher colloid flux and thus reduces the pore resistance.
 
 Secondly, attractive caps can further enhance permeability.
-This can again be clearly appreciated for $\chi_{\text{PC}}=-1.2$ and $-1.3$ (and to a lesser extent also for $\chi_{\text{PC}}=-1.1$), 
-where the resistivities outside the membrane ($-50 \lesssim z<-28$ and $28<z \lesssim 50$) are consistently inferior to the resistivities for the empty pore. 
-Clearly, this effect stems form the attractive potential of the caps, which in this case reach to $z \approx \pm 50$ and again facilitate higher colloid flux. 
+This can again be clearly appreciated for $\chi_{\textrm{PC}} = -1.2$ and $-1.3$ (and to a lesser extent for $\chi_{\textrm{PC}} = -1.1$), where the resistance per unit length outside the membrane ($-50 \lesssim z < -28$ and $28 < z \lesssim 50$) is consistently lower than the resistance per unit length for the empty pore. 
+Clearly, this effect stems from the attractive potential of the caps, which in this case extend to $z \approx \pm 50$ and again facilitate higher colloid flux. 
 
-As the colloid attraction increases further (not shown here), the resistivities across the $z$ range spanning the pore interior and the caps become negligible, 
-such that the convergent flow outside the polymer-filled volume dominates the resistance against colloid transport.
+As the colloid attraction increases further (not shown here), the resistance per unit length across the $z$ range spanning the pore interior and the caps becomes negligible, such that the convergent flow outside the polymer-filled volume dominates the resistance against colloid transport.
 Without caps, the colloid flux may thus increase by up to approximately 3-fold. 
 Attractive caps can increase the flux substantially further.
-When reaching $z=\pm 50$ an extra 5-fold enhancement is possible, for example, and even larger caps would facilitate further enhancement.
+When reaching $z = \pm 50$, an extra 5-fold enhancement is possible, for example, and even larger caps would facilitate further enhancement.
 
-In conclusion, polymer brushes can readily enhance permeability of the pore by one (and more) orders of magnitude.
+Thirdly, enhanced permeability is not solely determined by the existence of a path with negative insertion free energy but the path with high conductivity $D\exp(\frac{-\Delta F}{k_B T})>D_0$. The criterion for the existence of an effective channel is then
+$
+\frac{\Delta F}{k_B T} < \ln\left( \frac{D}{D_0} \right) + \ln\left( \frac{r_{\textrm{channel}}}{r_{\textrm{pore}}} \right),
+$
+where $r_{\textrm{channel}}$ is the radius of the channel with negative insertion free energy.
+
+For instance, although $\chi_{\textrm{PC}} = -1.0$ at $\chi_{\textrm{PS}} = 0.5$ ensures the presence of a negative insertion free energy channel (see Figure~\ref{fig:phi_hm_grid}), it is insufficient to overcome the reduction in diffusion due to the polymer mesh. When $\chi_{\textrm{PC}} = -0.9$, the insertion free energy becomes only slightly negative, and the negative insertion free energy channel narrows, with a positive insertion free energy penalty near the interior walls. This leads to a resistance per unit length that exceeds even the case when only the increased viscosity of the medium is considered, as shown in Figure~\ref{fig:R_map}.
+
+An estimate of the required surface tension coefficient $\gamma$ to overcome osmotic pressure and the reduced diffusion due to the polymer mesh is given by
+\begin{equation}
+\gamma^{\ast} < \frac{16}{3 \pi d^2} \left( \ln\frac{D_0}{D} + \ln\left( \frac{r_{\textrm{channel}}}{r_{\textrm{pore}}} \right) \right) - \frac{\Pi d}{6}.
+\end{equation}
+
+
+In conclusion, polymer brushes can readily enhance the permeability of the pore by one or more orders of magnitude.
+
 
 
 %%%%%%%%%%
@@ -579,6 +510,13 @@ In this regime, the polymer filled pore thus acts as a gate that sharply selects
 It can be seen that with decreasing solvent strength, the level of attraction required for sharp size selectivity decreases. 
 Moreover, the threshold for impeded permeation (at any given $\chi_{\text{PC}}$) is pushed towards larger sizes.
 
+
+\section{High Colloid Flux Implies Crowding}
+
+\begin{figure}
+    \centering
+    \includegraphics{fig/streamlines.png}
+\end{figure}
 
 %%%%%%%%%%
 \section{DISCUSSION}
