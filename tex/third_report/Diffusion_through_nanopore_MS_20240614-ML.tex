@@ -118,6 +118,8 @@ to maximise the transport rate (including beyond the rate for an open pore) or f
         Polymer chains are flexible with a statistical segment length $a$ and volume $\sim a^3$. 
         Spherical colloids with diameter $d$ are free to diffuse in the surrounding solvent.
         All length scales are normalized by the statistical segment length $a$.
+        \\
+        The pore is permselective to larger particles; larger magenta-colored particles are drawn only on the left side of the membrane to symbolize this effect.
         }
     \label{fig:colloid_transport}
 \end{figure}
@@ -293,13 +295,13 @@ thus adjusting the local polymer concentration in a plain brush to the effective
 Depending on the relative strengths of polymer-colloid ($\chi_{\text{PC}}$) and polymer-solvent ($\chi_{\text{PS}}$) interactions, 
 the sign of $\gamma\sim(\chi_{\text{ads}}-\chi_{\text{crit}})\phi^{\ast}$ may be either positive or negative.
 
-SF-SCF results in a more accurate calculation of the insertion free energy with account of the actual perturbation of the brush structure by the inserted colloid is possible with SF-SCF simulations, but only for colloids cylindrical positioned along the pore axis ($r=0$).
+SF-SCF results in a more accurate calculation of the insertion free energy with account of the actual perturbation of the brush structure by the inserted colloid is possible with SF-SCF simulations, but only for cylindrical colloids positioned along the pore axis ($r=0$).
 
 As the maps of the polymer volume fraction $\phi(r,z)$ in an unperturbed brush (Figure \ref{fig:phi_hm_grid}) were calculated using a lattice based method, a special discretization scheme was employed for the integration of volumes and surfaces for cylindrical particles in
 %UPDATE MANUALLY%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Section 3 of SI, Eqs.~(18,19).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Coefficients $b_0$ and $b_1$ were tuned fit approximate analytical scheme to cylindrical particles with SF-SCF results.
+Coefficients $b_0$ and $b_1$ were tuned to fit approximate analytical scheme to cylindrical particles with SF-SCF results.
 %UPDATEMANUALLY%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 The details on the fitting of $b_0$ and $b_1$ coefficients are disclosed in Section 4 of SI.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -365,7 +367,7 @@ This approach builds upon the classic solution for diffusion through an empty po
 In an empty pore, the steady-state concentration profile of diffusing particles features iso-concentration lines that form oblate spheroids, with the pore acting as a focal circle.
 The flux density is given by $\mathbf{j} = -D_0 \nabla c$, where $D_0$ is the constant diffusion coefficient.
 When a polymer brush is grafted inside the pore, the local diffusion coefficient $D$ becomes position-dependent, depending on the local polymer concentration and accounting for slower diffusion through a semidilute polymer mesh~\cite{Cai2011}.
-Particles also experience a mean force, with an insertion free energy $\Delta F$ playing the role of a potential. To account for these effects, we introduce a scalar potential function $\psi = c\exp{\Delta F}$ in the form of a modified Boltzmann distribution, which satisfies $\mathbf{j} = -D \nabla \psi$ and maintains a structure similar to the empty pore solution.
+Particles also experience a mean force, with an insertion free energy $\Delta F$ playing the role of a potential. To account for these effects, we introduce a scalar potential function $\psi = c\exp(\Delta F / k_B T)$ in the form of a modified Boltzmann distribution, which satisfies $\mathbf{j} = -D \nabla \psi$ and maintains a structure similar to the empty pore solution.
 As we noted in our previous paper, for the solution in the form of a modified Boltzmann distribution, the product $D \exp\left( \frac{-\Delta F}{k_B T} \right) \equiv \rho^{-1}$ has the meaning of local conductivity and encapsulates the local effects of the polymer meshwork on diffusivity and insertion free energy~\cite{Laktionov2023}.
 
 To simplify the analysis, we utilize an orthogonal curvilinear coordinate system aligned with the iso-surfaces of $\psi$ and stream surfaces of $\bm{j}$.
@@ -395,9 +397,9 @@ For an empty pore without a polymer brush, this method recovers the classic expr
 \end{equation}
 
 For the brush entirely contained within the interior of the pore -- which is well justified under poor solvent conditions -- the total resistance is found as $R = R_{\textrm{pore}} + R_{\textrm{conv,empty}}$, as the exterior is not modified by the brush.
-Conversely, a brush in good or $\theta$-solvent conditions produces caps outside the pore (Figure~\ref{fig:phi_hm_grid}), requiring a more elaborate calculation of the resistance due to convergent flow, $R_{\textrm{conv}}$.
+Conversely, a brush in good or $\Theta$-solvent conditions produces caps outside the pore (Figure~\ref{fig:phi_hm_grid}), requiring a more elaborate calculation of the resistance due to modulated convergent flow, $R_{\textrm{conv}}$.
 
-Due to the discrete nature of the numerical data, we perform the integration on a cylindrical lattice, approximating the iso-potential surfaces as disks in the interior of the pore (as in Eq.~\ref{eq:R_pore}) and half-cylinders in the exterior regions.
+Because of the discrete nature of the numerical data, we perform the integration on a cylindrical lattice, approximating the iso-potential surfaces as disks in the interior of the pore (as in Eq.~\ref{eq:R_pore}) and half-cylinders in the exterior regions.
 We introduce a correction factor to account for differences between this approximation and the actual oblate spheroidal geometry.
 %UPDATE MANUALLY%
 See the details in Section~7 of the Supplementary Information.
@@ -449,23 +451,25 @@ Without caps, the colloid flux may thus increase by up to approximately 3-fold.
 Attractive caps can increase the flux substantially further.
 When reaching $z = \pm 50$, an extra 5-fold enhancement is possible, for example, and even larger caps would facilitate further enhancement.
 
-Thirdly, enhanced permeability is not solely determined by the existence of a path with negative insertion free energy but the path with high conductivity $D\exp(\frac{-\Delta F}{k_B T})>D_0$. The criterion for the existence of an effective channel is then
+Thirdly, enhanced permeability is not solely determined by the existence of a path with negative insertion free energy but the path with high conductivity $D\exp(\frac{-\Delta F}{k_B T})>D_0$. 
+The criterion for the enhance permeability is existence of an effective channel with
 $
 \frac{\Delta F}{k_B T} < \ln\left( \frac{D}{D_0} \right) + \ln\left( \frac{r_{\textrm{channel}}}{r_{\textrm{pore}}} \right),
 $
 where $r_{\textrm{channel}}$ is the radius of the channel with negative insertion free energy.
 
-For instance, although $\chi_{\textrm{PC}} = -1.0$ at $\chi_{\textrm{PS}} = 0.5$ ensures the presence of a negative insertion free energy channel (see Figure~\ref{fig:phi_hm_grid}), it is insufficient to overcome the reduction in diffusion due to the polymer mesh. When $\chi_{\textrm{PC}} = -0.9$, the insertion free energy becomes only slightly negative, and the negative insertion free energy channel narrows, with a positive insertion free energy penalty near the interior walls. This leads to a resistance per unit length that exceeds even the case when only the increased viscosity of the medium is considered, as shown in Figure~\ref{fig:R_map}.
+For instance, although $\chi_{\textrm{PC}} = -1.0$ at $\chi_{\textrm{PS}} = 0.5$ ensures the presence of a negative insertion free energy channel (see Figure~\ref{fig:phi_hm_grid}), it is insufficient to overcome the reduction in diffusion due to the polymer mesh. 
+When $\chi_{\textrm{PC}} = -0.9$, the insertion free energy becomes only slightly negative, and the negative insertion free energy channel narrows, with a positive insertion free energy penalty near the interior walls. 
+This leads to a resistance per unit length that exceeds even the case when only the increased viscosity of the medium is considered, as shown in Figure~\ref{fig:R_map}.
+
+Furthermore, a further decrease in polymer-colloid interaction strength (not shown here) may completely inhibit permeation, as every possible path a colloid particle could take would involve encountering a free energy barrier.
 
 An estimate of the required surface tension coefficient $\gamma$ to overcome osmotic pressure and the reduced diffusion due to the polymer mesh is given by
 \begin{equation}
 \gamma^{\ast} < \frac{16}{3 \pi d^2} \left( \ln\frac{D_0}{D} + \ln\left( \frac{r_{\textrm{channel}}}{r_{\textrm{pore}}} \right) \right) - \frac{\Pi d}{6}.
 \end{equation}
 
-
 In conclusion, polymer brushes can readily enhance the permeability of the pore by one or more orders of magnitude.
-
-
 
 %%%%%%%%%%
 \section{Polymer filled mesopores sharply select colloids by their attraction to the polymer}
