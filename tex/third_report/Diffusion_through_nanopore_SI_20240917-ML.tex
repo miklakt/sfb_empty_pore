@@ -163,18 +163,18 @@ The method uses discrete spatial coordinates; as the system exhibits axial symme
 The result is a discrete density profile that corresponds to a minimum excess Helmholtz energy.
 
 There are two coordinate axes: longitudinal $z$ and radial $r$ (Figure \ref{fig:sf-scf_scheme}).
-While the $rz$ coordinate system looks identical to the two-dimensional Cartesian coordinates (Figure \ref{fig:sf-scf_scheme}, lower frame), each element of the lattice is a square toroid.
+While the $rz$ coordinate system looks identical to the two-dimensional Cartesian coordinates (Figure \ref{fig:sf-scf_scheme}, right frame), each element of the lattice is a square toroid.
 The mean-field approximation is applied in the angular direction, meaning properties in the angular direction are uniform.
 (For the two-dimensional Cartesian coordinates, each element is a square box with infinite height.)
 
 In the discrete space, the membrane and an inserted colloid particle are coarse-grained and defined as lattice elements impermeable to the solvent and polymer.
-The impermeable lattice elements are illustrated with crossed-out cells filled with green (membrane) and yellow (colloid particle) in the lower frame of Figure \ref{fig:sf-scf_scheme}.
+The impermeable lattice elements are illustrated with crossed-out cells filled with green (membrane) and yellow (colloid particle) in the right frame of Figure \ref{fig:sf-scf_scheme}.
 In this discrete coarse-grained approach, the membrane is modeled as a rectangular toroid with an inner radius equal to $r_{\textrm{pore}}$ and an outer radius much greater than the inner radius.
 The inserted particle is modeled as a cylinder with height and diameter $d$.
 
 The polymer chain is modeled as a freely jointed chain (FJC) with segment length $a$; every next segment performs a step-weighted random walk on the lattice (red chain in Figure \ref{fig:sf-scf_scheme}).
 The weights of each step direction depend on the boundary conditions and the lattice curvature.
-For example, steps that end up in impermeable lattice cells have zero weights; in the cylindrical lattice, steps to the cells within the layer with lower curvature (larger radial coordinate) are more preferable.
+For example, steps that end up in impermeable lattice cells have zero weights; in the cylindrical lattice, steps to the cells within the layer with right curvature (larger radial coordinate) are more preferable.
 The resulting local polymer concentration $\phi$ is a weighted sum of all possible paths the chain can take, eq.~\ref{eq:sum_to_phi}.
 
 To minimize the excess Helmholtz energy, we introduce a Lagrangian with multipliers $\alpha(r, z)$:
@@ -213,7 +213,7 @@ Minimization with respect to potentials (the third condition in eq.~\ref{eq:ener
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 0.7\linewidth]{fig/sf-scf_scheme.png}
+    \includegraphics[width = 0.95\linewidth]{fig/sf-scf_scheme.png}
     \caption{
     Schematic layout of the lattice and geometrical features of the cylindrical pore model in the SF-SCF method.
     The modeled objects are in the upper frame, and their representation on a discrete two-gradient lattice is on the lower frame.
@@ -267,7 +267,7 @@ The SF-SCF scheme can be summarized as:
     \boldsymbol{u}[\boldsymbol{\phi}] \xleftrightarrow[]{\sum_{X} \phi_X = 1} \boldsymbol{\phi}[\boldsymbol{u}]
 \end{equation}
 
-For the calculations, we use the package \emph{SFbox} kindly provided by F.A.M. Leermakers~\todo{[refs]}.
+For the calculations, we use the package \emph{SFbox} developed in the University of Wageningen, kindly provided by F.A.M. Leermakers.
 The package contains several Newton/Quasi-Newton optimization routines to perform the minimization of the functional eq.~\ref{eq:fe_lagrangian}.
 Each iteration returns a new improved approximation to the segment potential $\mathbf{u}$ and updates the volume concentrations $\mathbf{\phi}$.
 The routine loops until the desired accuracy is reached.
@@ -303,7 +303,7 @@ We follow the following convention for indices: $i$ iterates in the direction of
 
 Let us switch to integration on the discrete cylindrical lattice.
 Consider a particle centered at $r_c = 0$, $z = z_c$.
-The particle occupies $d$ lattice elements along the $z$-axis (from $z_c - d/2$ to $z_c + d/2$) and $d/2$ elements along the $r$-axis (from $r = 0$ to $r = d/2$), as shown by the yellow rectangle in the lower frame of Figure~\ref{fig:sf-scf_scheme}.
+The particle occupies $d$ lattice elements along the $z$-axis (from $z_c - d/2$ to $z_c + d/2$) and $d/2$ elements along the $r$-axis (from $r = 0$ to $r = d/2$), as shown by the yellow rectangle in the right frame of Figure~\ref{fig:sf-scf_scheme}.
 
 We define the particle volume projection matrix $\mathbf{V}_{\textrm{cyl}}[d/2 \times d]$ for a cylindrical particle of size $d$, such that each element of the matrix equals the volume of the particle contained within the corresponding lattice element
 Obviously, the sum of all matrix elements equals the volume of the cylindrical particle.
@@ -560,6 +560,17 @@ The particle volume $V_{\theta \downarrow}$ and surface projection $S_{\theta \d
 where $H$ is the Heaviside function and $\delta$ is the Dirac delta function.
 The function domain, values and discretization for $V_{\theta \downarrow}$ and $S_{\theta \downarrow}$ are exemplified in Figure~\ref{fig:sphere_volume_and_surface_projection} for a set of particle center offset $r_c$.
 
+To find the elements of the projection matrices, we discretize the projections by integrating over a set of domains $r, z \in [i, i + \delta r] \times [k, k + \delta z]$ for possible indices $i, k$:
+
+\begin{eqnarray}
+    V(r_c)_{[i, k]} = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} V_{\theta \downarrow} (r, z, r_c, z_c) dr dz
+    \\
+    S(r_c)_{[i, k]} = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} V_{\theta \downarrow} (r, z, r_c, z_c) dr dz
+\end{eqnarray}
+where $z_c$ has an arbitrary value.
+The size of the projection matrices is $\min(d, r_c + d/2) \times d$.
+Compared to Cartesian projections, cylindrical projections depend on the radial coordinate of the center $r_c$.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{fig/sphere_volume_and_surface_projection.png}
@@ -576,27 +587,6 @@ The function domain, values and discretization for $V_{\theta \downarrow}$ and $
     \label{fig:sphere_volume_and_surface_projection}
 \end{figure}
 
-To find the elements of the projection matrices, we discretize the projections by integrating over a set of domains $r, z \in [i, i + \delta r] \times [k, k + \delta z]$ for possible indices $i, k$:
-
-\begin{eqnarray}
-    V(r_c)_{[i, k]} = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} V_{\theta \downarrow} (r, z, r_c, z_c) dr dz
-    \\
-    S(r_c)_{[i, k]} = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} V_{\theta \downarrow} (r, z, r_c, z_c) dr dz
-\end{eqnarray}
-where $z_c$ has an arbitrary value.
-The size of the projection matrices is $\min(d, r_c + d/2) \times d$.
-Compared to Cartesian projections, cylindrical projections depend on the radial coordinate of the center $r_c$.
-
-The discrete form of eq.~\ref{eq:Delta_F_V} to calculate the osmotic term in the insertion free energy for a spherical particle is:
-
-\begin{eqnarray}
-    \begin{split}
-        \Delta F_{\textrm{osm}}(r_c, z_c) =\\
-        = \mathop{\sum\sum}_{\mathclap{\substack{i \in [0, \min(r_c+d/2,d)-1] \\ k \in [0, d-1]}}} V{r_c}_{[i, k]} \cdot \Pi_{[\max(r_c-d/2,0)+i, z_c-d/2+k]} =\\[-15pt]
-        = \bm{V}\{r_c\} \cdot \bm{\Pi}\{r_c, z_c\} \\[5pt]
-        \text{where } \bm{\Pi}\{r_c,z_c\} =\left(\bm{\Pi}_{i,k}\right) {\substack{\max(r_c-d/2,0) \le i < r_c+d/2 \\ z_c-d/2 \le k < z_c+d/2}}
-    \end{split}
-\end{eqnarray}
 
 \begin{figure}[H]
     \centering
@@ -610,6 +600,17 @@ The discrete form of eq.~\ref{eq:Delta_F_V} to calculate the osmotic term in the
     }
     \label{fig:spherical_kernel}
 \end{figure}
+
+The discrete form of eq.~\ref{eq:Delta_F_V} to calculate the osmotic term in the insertion free energy for a spherical particle is:
+
+\begin{eqnarray}
+    \begin{split}
+        \Delta F_{\textrm{osm}}(r_c, z_c) =\\
+        = \mathop{\sum\sum}_{\mathclap{\substack{i \in [0, \min(r_c+d/2,d)-1] \\ k \in [0, d-1]}}} V{r_c}_{[i, k]} \cdot \Pi_{[\max(r_c-d/2,0)+i, z_c-d/2+k]} =\\[-15pt]
+        = \bm{V}\{r_c\} \cdot \bm{\Pi}\{r_c, z_c\} \\[5pt]
+        \text{where } \bm{\Pi}\{r_c,z_c\} =\left(\bm{\Pi}_{i,k}\right) {\substack{\max(r_c-d/2,0) \le i < r_c+d/2 \\ z_c-d/2 \le k < z_c+d/2}}
+    \end{split}
+\end{eqnarray}
 
 Similarly, the surface term in the insertion free energy is the following matrix multiplication:
 
