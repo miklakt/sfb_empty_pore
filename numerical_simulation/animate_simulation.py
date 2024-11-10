@@ -6,6 +6,9 @@ import tqdm
 import pickle
 import numpy as np
 import h5py
+import sys
+here = os.path.dirname(__file__)
+sys.path.append(os.path.join(here, '..'))
 from heatmap_explorer import plot_heatmap_and_profiles
 
 def get_flux_empty_pore_theory(D, r, c, L):
@@ -25,21 +28,22 @@ def shrink_cbar(ax, shrink=0.9):
 # pore_radius = 26 # pore radius
 # wall_thickness = 52 # wall thickness
 # d = 24
-# chi_PC = -1.25
-# chi = 0.5
+chi_PC = -1.5
+chi = 0.3
 #walls_only = False
-# zlayers = 392+100
-# rlayers = 66+200
+zlayers = 392+100
+rlayers = 66+200
 
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-rlayers = 400
-zlayers = 600
+#rlayers = 400
+#zlayers = 600
 pore_radius = 26
 wall_thickness = 52
-potential = -2.0
+#potential = -1.5
+d=12
 
-dt = 0.1
+dt = 0.2
 differencing = "power_law"
 
 flux_empty_pore_theory = get_flux_empty_pore_theory(
@@ -51,9 +55,9 @@ flux_empty_pore_theory = get_flux_empty_pore_theory(
 #     simulation_name = \
 #     f"simulation_data/{d=}_{zlayers=}_{rlayers=}_{dt=}_{differencing}.h5"
 # else:
-#     simulation_name = \
-#     f"simulation_data/{d=}_{chi=}_{chi_PC=}_{zlayers=}_{rlayers=}_{dt=}_{differencing}.h5"
-simulation_name = f"simulation_data/box_potential_{zlayers}_{rlayers}_{potential}_{pore_radius}_{wall_thickness}_{dt=}_{differencing}.h5"
+simulation_name = \
+    f"simulation_data/{d=}_{zlayers=}_{rlayers=}_{chi=}_{chi_PC=}_{dt=}_{differencing}.h5"
+#simulation_name = f"simulation_data/box_potential_{zlayers}_{rlayers}_{potential}_{pore_radius}_{wall_thickness}_{dt=}_{differencing}.h5"
 #simulation_name = "simulation_data/d=8_chi=0.4_chi_PC=-1_zlayers=492_rlayers=216_every=10000_dt=0.01"
 # %%
 def plot_all(dd_obj):

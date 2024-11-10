@@ -10,7 +10,7 @@ import tqdm
 import numpy as np
 import time
 
-__cupy__ = False
+__cupy__ = True
 if __cupy__:
     import cupy as xp
 else:

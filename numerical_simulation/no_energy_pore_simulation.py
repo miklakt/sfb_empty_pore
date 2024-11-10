@@ -12,9 +12,10 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 
-try:
+__cupy__ = True
+if __cupy__:
     import cupy as xp
-except ModuleNotFoundError:
+else:
     import numpy as xp
 #import numpy as xp
 #%%
@@ -44,12 +45,13 @@ def pad_fields(fields, pad_sides, pad_top):
         ))
     return padded_fields
 #%%
+empty = True
 a0, a1 = [0.70585835, -0.31406453]
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d=2
-chi_PC = 0.0
-chi = 0.5
+d=6
+chi_PC = -1.5
+chi = 0.1
 sigma = 0.02
 
 os.chdir("..")
@@ -72,8 +74,10 @@ fields_ = calculate_fields(
 fields = pad_fields(fields_, pad_sides = 100, pad_top = 200)
 
 W_arr = fields["walls"]
-D_arr = fields["mobility"]
-#D_arr = xp.ones_like(W_arr, dtype = float)
+if empty:
+    D_arr = xp.ones_like(W_arr, dtype = float)
+else:
+    D_arr = fields["mobility"]
 U_arr = xp.zeros_like(W_arr)
 
 zlayers = xp.shape(W_arr)[0]
@@ -92,8 +96,11 @@ def inflow_boundary(dd):
     #dd.c_arr[:,-1]=dd.c_arr[:,-2] + xp.less_equal(dd.c_arr[:,-2] - dd.c_arr[:,-3], 0) # constant deriv 
     dd.c_arr[-1,:]=0 #sink  right
 
-output_filename = f"numerical_simulation/simulation_data/no_free_energy_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}_{chi}.txt"
-#output_filename = f"numerical_simulation/simulation_data/empty_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}.txt"
+if empty:
+    output_filename = f"numerical_simulation/simulation_data/empty_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}.txt"
+else:
+    output_filename = f"numerical_simulation/simulation_data/no_free_energy_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}_{chi}.txt"
+
 try:
     c0 = xp.loadtxt(output_filename)
     drift_diffusion.c_arr = xp.array(c0)
@@ -111,10 +118,12 @@ drift_diffusion.run_until(
 #%%
 c_arr = drift_diffusion.c_arr
 #%%
+#drift_diffusion.c_arr = xp.array(np.loadtxt("temp.txt"))
 np.savetxt("temp.txt", c_arr)
+np.savetxt(output_filename, c_arr)
 # %%
-plot_heatmap_and_profiles(drift_diffusion.c_arr, mask = drift_diffusion.W_arr, contour = True)
-plot_heatmap_and_profiles(drift_diffusion.div_J_arr, mask = drift_diffusion.W_arr)
+plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get(), contour = True)
+plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
 # %%
 plt.plot(drift_diffusion.J_z_tot().get())
 # %%
@@ -173,5 +182,5 @@ ax.set_ylim(-200, 200)
 ax.set_xlabel("$z$")
 ax.set_ylabel("$r$")
 fig.set_size_inches(4,4)
-fig.savefig("fig/empty_pore_contour.svg")
+#fig.savefig("fig/empty_pore_contour.svg")
 # %%
