@@ -194,20 +194,9 @@ def integrate_with_cylindrical_caps(
     field, 
     l1, wall_thickness, pore_radius, 
     xlayers, ylayers,
-    first_cap_same_radius = False, #first cylindrical outside the pore has no offset,
     spheroid_correction = False
     ):
-
-    if first_cap_same_radius:
-        conductivity = integrate_with_cylindrical_caps(
-            field, l1-1, wall_thickness+2,
-            pore_radius, xlayers, ylayers,
-            first_cap_same_radius=False
-            )
-        conductivity[l1-1] =conductivity[l1-1]+2*np.pi*pore_radius*field[l1-1, pore_radius]
-        conductivity[l1+wall_thickness+1] =conductivity[l1+wall_thickness+1]+2*np.pi*pore_radius*field[l1+wall_thickness, pore_radius]
-        return conductivity
-
+    
     lb = 0
     rb = ylayers
     #r = np.arange(0, xlayers)
