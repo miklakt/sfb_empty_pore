@@ -63,7 +63,7 @@ materials by modifying them with covalently (or strongly non-covalently) bound t
 forming a “soft” , solvated physical polymer meshwork that fills the pore volume or only the near-wall regions, 
 depending on molecular mass and conformational state of the polymer chains. 
 The interaction of this polymer meshwork with guest molecules/nanoparticles 
-%and, in particular, the presence or absence of a hollow (polymer-free) channel in the center of the pore, 
+%and, in particular, the presence or absence of a hollow (polymer-free) path in the center of the pore, 
 essentially determine the absorption and separation properties of the polymer-modified mesoporous materials and membranes, respectively. 
 These interactions can be attractive or repulsive, short- or long-range (in the presence of charges on the chains and on guest molecules/particles), 
 and most importantly, they can be controlled by a complex of external stimuli, such as temperature, pH and/or ionic strength of the medium, valence of ions , 
@@ -202,18 +202,7 @@ The conformations adopted by polymer chains grafted to the pore walls are contro
 The solvent quality is quantified by the Flory-Huggins solubility parameter $\chi_{\text{PS}}$. 
 Values of $\chi_{PS}<0.5$ and $\chi_{PS}>0.5$ correspond to good and poor solvent, respectively, whereas $\chi_{PS}=0.5$ represents the ideal (or $\theta-$)solvent.
 
-The polymer density profile $\phi(r,z)$ in the pore was calculated by two-gradient self-consistent field theory according to Scheutens and Fleer 
-%UPDATE MANUALLY%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-(SF-SCF; see Section 2 of SI for details).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In Figure \ref{fig:phi_hm_grid}, one can appreciate the expected increase in polymer concentration with decreasing solvent quality (increasing $\chi_{\text{PS}}$). 
-It is notable that the variations in polymer concentration as a function of solvent strength are substantial, 
-and that the concentration is more or less homogeneous across the polymer-filled space. 
-The polymer brush penetrates the entire pore cross-section across the full range of solvent qualities explored ($0.1\le\chi_{\text{PS}}\le1.1$), 
-implying that colloids need to navigate the polymer medium to reach across the pore.
-
-We remind that swelling of the brush-forming chains with respect to unperturbed Gaussian dimensions occurs under both good ($\chi_{PS} \leq 0.5$) and $\theta$-solvent ($\chi_{PS}= 0.5$) conditions due to binary or ternary monomer-monomer repulsions, respectively.
-In contrast, in poor solvent, the polymer brush is predominantly condensed.
+The polymer density profile $\phi(r,z)$ in the pore was calculated by two-gradScheutjens
 It is worth noting that in the case of sufficiently wide pore and small polymerization degree/grafting density, 
 an open channel free of polymer may appear under poor solvent conditions in the pore center, as discussed in details in~\cite{Laktionov2021}. 
 This scenario would lead to a distinct permeation behaviour as the colloids can move through the pore without traversing the brush, and is not further considered here. 
@@ -599,63 +588,149 @@ It was also reported that imp$\beta$ is seldom found in the pore channel until C
 Presented colloid concentration map was calculated with computational fluid dynamics, see the details in Section 8 of Supplementary Information.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%
-\section{DISCUSSION}
-%%%%%%%%%%
+\section{DISCUSSION AND CONCLUSIONS}
+In the present paper we present a theory to explain physical principals that governs the diffusive transport of colloids through mesopores with a polymer brush grafted to the inner surface of the pore.
+Typically, particles are expelled by the polymer brush because the compression of polymer chains increases the osmotic penalty, leading to a repulsive force that drives the colloid out.
+Moreover, polymer brush creates a dynamic meshwork that obstruct colloid diffusion through the brush. 
+This two effects hinder colloid transport.
+We showed that non-specific adhesive interactions of colloid particles with polymer chains can overcome osmotic expulsion and facilitate colloid transport through the pore.
+Notably, the presence of polymer brush may lead to lower resistance to diffusive transport $R$ than a bare pore with no brush $R_{\text{empty}}$ and even bring resistance of the pore below the resistance of the pore in an infinitely thin membrane $R_{\text{pore, empty}}$ (orifice).
+We showed that polymer brush mesopores are permeation selective to the particle affinity to polymer.
+They also exhibit higher selectivity to particle size compared to a bare pore.
 
-% RR: I have not revised this section in detail.
-% RR: May here add a paragraph that highlights the main finding.
+We explored how parameters such as solvent quality, particle size and its adhesion to polymer determine flux through the pore (or resistance) and pore selectivity.
+We provide an analysis of the pore resistance $R$ as the sum of the resistances of the pore channel $R_{\text{pore}}$ and exterior regions $R_{\text{conv}}$ wich associated with resistance caused by convergent flow.
+We showed that the pore filling modulates the resistance of the pore channel $R_{\text{pore}}$ and the regions outside the pore.
+To better access the results a comparison with resistance of a bare pore $R_{\text{empty}}$ as a reference were made.
+The results may provide a better understanding on the facilitated permeation of biomacromolecules from cytoplasm to nucleoplasm through nucleopores that perforate nuclear envelope.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Validity of the approximations
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-To validate our approximate analytical solution, we have also performed full numerical solution of the Smoluchowsky diffusion equation, which is illustrated by Figure X 
-(details in SI) and corresponding point are presented, together with analytical results in Figure 7. A very good quantitative agreement proves accuracy of our analytical theory
-within the limit of the particle size sufficiently smaller than the pore radius. This is applicable to NPCs where facilitated transport starts from 5 nm while the
-NP diameter is about 40 nm.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Many pores problem
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+In the present paper we studied a scenario where one cylindrical pore perforate finite thickness membrane that separates two semi-infinite reservoirs.
+The pore is with grafted freely-joined polymer chains grafted to the inner surface.
+The colloid fluxes were analyzed for the case when colloid concentration is fixed far away from pore to some finite value on one side and zeroed on the other.
 The question of how several pores in the same membrane interfere affecting their permeability was first posed by Rayleigh himself \cite{Strutt1878}. 
 Fabrikant  proposed a quantitative theory for a negligibly thin membrane with several circular apertures of different radii and arbitrary mutual positions \cite{Fabrikant1985}. 
-The resultant effect of the pore interference is an increase in the pore permeability since the Rayleigh resistance is partially shared by the neighboring pores. 
+The resultant effect of the pore interference is an increase in the pore permeability since the 
+%Rayleigh resistance%
+resistance of the exterior region is partially shared by the neighboring pores. 
 However, the effect is quite small (a few percent) whenever the distance between the pore centers is larger than their diameters by an order of magnitude or more. 
-It is intuitively clear that once the resistance due to a finite pore length and due to the brush is non-negligible, the mutual interference effect 
-becomes even smaller. Hence, we are not concerned with this aspect of the problem.
-%RR: May here elaborate that the NPC density in the nuclear envelope is relatively low compared to the limits presented here. 
-%Hence, selective permeation across NPCs should be well represented by our theory. 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+It is intuitively clear that once the resistance due to a finite pore length and due to the brush is non-negligible, the mutual interference effect becomes even smaller.
+Hence, we are not concerned with this aspect of the problem.
 
-% RR: May here discuss relevance of our findings to the NPC.
+The polymer concentration distribution $\phi$ (concentration of the segments of the brush-forming polymer chains) were studied with Scheutjens-Fleer self-consistent field theory for different solvent qualities.
+The solvent quality were quantified with Flory-Huggins solubility parameter.
+We the upon swelling polymer brush occupies space outside the pore, which modulates the resistance of the exterior regions.
 
-% RR: Should we discuss the question of high colloid concentration? This definitely is relevant to the NPC.
+Particle adhesion to the polymer is control by Flory-Huggins interaction parameter, together with particle size and local polymer concentration it control insertion free energy $\Delta F$.
+A free energy penalty associated with embedding a particle in the brush.
+In the paper we analyze insertion free energy landscape, and showed how, triggered by the solvent strength,particle affinity or particle size it can switch from energy well dominated by favorable adhesive interaction to a energy barrier created by osmotic repulsion.
 
-%%%%%%%%%%
-\section{Conclusion}
-%%%%%%%%%%
+The research employed scaling theory to assess the localized slowdown of particle diffusion
+due to polymer entanglement in the brush. 
+For particles smaller than the polymer mesh’s correlation
+length, diffusion was largely unhindered, while larger particles experienced hopping
+diffusion—temporarily trapped within the mesh and awaiting relaxation of polymer chains before
+moving to the next position.
+This dynamic resulted in a slowed diffusion rate for larger particles $D/D_0 < 1$.
 
-% RR: I have not revised this section in detail.
+Local insertion free energy and local diffusion coefficient is associated with local conductivity $D \exp(\frac{-\Delta F}{k_B T})$, b, we developed an approximate integration scheme to find resistance of the polymer brush filled pore from the local conductivities analytically.
 
-We have explored physical mechanisms for facilitated and selective diffusive transport of colloids through mesopores filled by polymer brushes grafted onto the inner pore wall. 
-To this end, we have applied approximate analytical and numerical solutions of the Smoluchowsky diffusion equation 
-in the external potential field experienced by diffusing colloids interacting with a brush that fills the interior of the pore
-and protrudes outside the pore forming caps. In addition, enhanced resistance of the semidilute polymer solution, to which the brush-filled pore
-interior can be locally assimilated, to the diffusing species was taken into account. 
+To validate our approximate analytical solution, we have also performed full numerical solution of the Smoluchowski diffusion equation, which is illustrated by 
+%%%%%%UPDATE_MANUALLY%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Figure 14 od Supplementary Information
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+and corresponding point are presented, together with analytical results in Figure \ref{fig:R_vs_d}.
+A very good quantitative agreement proves accuracy of our analytical theory
+within the limit of the particle size sufficiently smaller than the pore radius. 
 
-Depending on the strength of the polymer-colloid interaction and/or solvent quality, diffusion of particles of different sizes
-through the pore can be either blocked by the resistance of the brush or enhanced compared to the diffusion through the plain (polymer-free) pore. 
+Here are some key findings:
 
-The maximal size of the particles for which diffusion through the pore is enhanced (gating threshold) increases with polymer-colloid attractiveness and decreasing solvent strength.
+Polymer brush slows down inert or slightly adsorbant colloid particles.
+As it is seen from Figures \ref{fig:R_vs_chi_PC}, \ref{fig:R_vs_d} particles with interaction parameter $\chi_{\text{PC}} \gtrsim -1$ experience higher resistance compared to a bare pore for particle every size.
+For $\chi_{\text{PC}} \gtrsim -0.75$ interfacial term is positive $\gamma \gtrsim 0$ with insertion free energy dominated by osmotic repulsion term $\Delta F > 0$.
+As seen from the Figure \ref{fig:R_vs_d} larger particles are effectively blocked, with resistance on the particle size systematically beyond the case of bare pore and grows exponentially with particle volume $R \approx e^{\Delta F} \approx e^{\Pi V}$.
 
-Moreover, in the case of polymer fringes protruding outside the pore and attractive polymer-particle interaction, the total resistance composed of that of the pore itself 
-and convergent/divergent flow regions can be substantially lower than that of the plain (polymer-free) pore due to reduced resistance of the entrance/exit regions proximal to the pore.
+For the facilitated permeation (resistance lower than the resistance of bare pore) is assured for sufficiently attractive particle, when there is a path with negative insertion free energy in free energy landscape (as seen in Figure \ref{fig:DeltaF_map} for $\chi_{\text{PC}} \le -1.00$).
+\begin{equation*}
+    \forall z \exists r, \Delta F(r,z) < 0
+\end{equation*}
+But the existence of negative insertion free energy itself does not necessarily result in facilitated permeation.
+There are two effects that it has to overcame wich happen at sufficiently high $\chi_{\text{PC}} < \chi^{\text{crit}}_{\text{PC}}$ adhesion: (i) slowdown because of the steric hindrance of polymer meshwork, and (ii) path narrowing either because of volume exclusion or the shape of energy landscape. 
+This was analyzed and exemplified in Figure \ref{fig:R_map}, where while $\chi_{\text{PC}} = -1.00$ at $\theta$-solvent ($\chi_{\text{PS}} = 0.5$) assures negative insertion free energy path (as seen in Figure \ref{fig:DeltaF_map}) while fails to provide facilitated transport (i.e. $R > R_{\text{empty}}$).
+Notably, a slight change in $\chi_{\text{PC}}$ towards more attractive particle is enough to ensure facilitated permeation $R < R_{\text{empty}}$.
 
-Altogether, our findings shed the light onto possible mechanisms of selective transport through NPC and, at the same time, suggest a molecular design strategy for controlling selective
-permeability through artificial mesoporous membranes with the eye on applications in...
+Larger particles requires higher affinity to the polymer $\chi_{\text{PC}} < \chi^{\text{crit}}_{\text{PC}}$, as the positive osmotic term grows with particle volume $\Delta F_{\text{osm}} \sim d^3$, while negative interfacial term grows with the particle surface $\Delta F_{\text{osm}} \sim d^2$ as we demonstrated in the Figure \ref{fig:R_vs_chi_PC} the $\chi^{\text{crit}}_{\text{PC}}$ curve intersections with resistance on particle affinity curves shifts lefts with increasing particle size and in Figure \ref{fig:R_vs_d} where intersection of resistance on particle size curves intersects with the reference curve of a bare pore are shifted to the larger particles for larger $\chi_{\text{PC}}$.
+
+Polymer brush pore permeability is limited by the exterior region, i.e. there is a lower boundary to the total resistance of the pore.
+While this is subject to the choice of boundary condition, it is observed for any system with a pore where diffusing particle has to travel through sufficiently long path through pure solvent by the means of diffusion.
+Which is also the case for nucleopore [\dots].
+Notably, upon change in solvent strength as polymer brush swells it occupies more and more space in the exterior region (as seen in Figure \ref{fig:phi_hm_grid}), the portion of path that particle has to travel passively through the pure solvent decreases, which modulates resistance of the exterior region $R_{\text{conv}}$.
+For the case of a very large negative insertion free energy $\Delta F \ll 0$ up to infinitely negative $\Delta F \to  -\infty$ 
+total resistance is limited by the resistance of the exterior region $R_{\text{pore}} \to 0$, $R_{\text{conv}} \to \frac{1}{D_0 2 \pi r_{\text{ext}}}$ 
+where $\frac{1}{D_0 2 \pi r_{\text{ext}}}$ is twice the resistance to diffusion flow for particle diffusing from a semi-infinite solution to an ideally absorbing sphere of radius $r_{\text{ext}}$ that circumference the exterior to the pore space where polymer brush is still found.
+
+As local conductivity is exponential to local insertion free energy, total resistance is also connected to insertion free energy landscape exponentially. the consequence of the this is large sensitivity of pore resistance to parameters that influence insertion free energy such as particle size and affinity.
+This defines very high selectivity of polymer brush to these parameters as demonstrated in Figures \ref{fig:R_vs_chi_PC}, \ref{fig:R_vs_chi_PC}.
+The dependency of insertion free energy on particle size is cubic, thus for a particles near some critical size $d_{\text{crit}}$ a slight change in particle size translated to drastic change in permeability (resistance).
+The permeation selectivity to particle size increases with $d_{\text{crit}}$ wich increases with particle adsorption strength, decrease in $\chi_{\text{ads}} \sim \chi_{\text{PC}}$ up to a behavior recognized as "gating".
+This demonstrated in Figure \ref{fig:R_vs_d}, with step-like change in resistance for particles with high affinity $\chi_{\text{PC}}$ and large $d_{\text{crit}}$ on a minor change in particle size, with the resistance switching from below bare pore to greatly larger.
+Upon decrease in solvent strength (increase in $\chi_{\text{PS}}$) the size that corresponds this switching move to the larger particles as it increases adsorption strength (decreases $\chi_{\text{ads}}$).
+For the same reasons, larger particles with affinity near $\chi^{\text{crit}}_{\text{PC}}$ experience gating behavior of the pore with respect to particle affinity, as the slight change in $\chi_{\text{PC}}$ brings insertion free energy from largely negative to largely positive.
+Again, decrease in solvent strength (increase in $\chi_{\text{PS}}$) shifts $\chi^{\text{crit}}_{\text{PC}}$ to a larger values, as in poorer solvent increases adsorption strength (decreases $\chi_{\text{ads}}$).
+
+Finally, facilitated permeability implies increased concentration of colloid particles in the polymer brush.
+This is follows straightforward from the fact that facilitated permeation requires negative insertion free energy, that cause colloid partitioning inside the brush.
+The resulting colloid concentration in steady-state $c/c_{text{b}}$ is not the same as for equilibrium state $c/c_{text{b}}$, but come closer as insertion free energy became largely negative.
+We present a selected case of colloid crowding in a steady-state in Figure \ref{fig:colloid_concentration}.
+Interestingly, high partitioning of diffusing specie in the brush does not necessarily mean high permeation rate. 
+For example, in a $\theta$-solvent, interaction parameter $\chi_{\text{PC}} = -1.00$ ensures negative insertion free energy (as seen in Figure \ref{fig:DeltaF_map}) with increased concentration of diffusing species near the entrance $c/c_{text{b}} >1$ to the pore while it does not provide facilitated permeation $R<R_{\text{empty}}$ (as seen in Figure \ref{fig:R_map}).
+In the other words, high partitioning requires negative insertion free energy $\Delta F(r,z) < 0$, while as we mentioned earlier, facilitated permeation requires a path with negative insertion free energy $\forall z \exists r, \Delta F(r,z) < 0$.
+
+% In the case of a nucleopore we can envisage that high partitioning with low permeability can ensure that some macromolecule is guarantied to be found near the pore entrance while not transported. 
+% For example a cargo can be transported through nucleopore only when nucleocytoplasmic transport receptors (NTR) such as importins, exportins and other auxilary molecules are attached.
+
+
+
+% Altogether, our findings shed the light onto possible mechanisms of selective transport through NPC and, at the same time, suggest a molecular design strategy for controlling selective
+% permeability through artificial mesoporous membranes with the eye on applications in...
 
 
 \printbibliography
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %RR: In the following, I have left some pieces of text that could be inserted into the main text where desired
