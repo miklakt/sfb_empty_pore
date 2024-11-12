@@ -282,8 +282,9 @@ with the surface tension $\gamma (r,z)$ approximated as
 Coefficients $b_0$ and $b_1$ are adjustable parameters to account for depletion/accumulation of polymer in the proximity of the colloid surface, 
 thus adjusting the local polymer concentration in a plain brush to the effective concentration $\phi^{\ast}(r,z)$.
 
-Depending on the relative strengths of polymer-colloid ($\chi_{\text{PC}}$) and polymer-solvent ($\chi_{\text{PS}}$) interactions, 
-the sign of $\gamma\sim(\chi_{\text{ads}}-\chi_{\text{crit}})\phi^{\ast}$ may be either positive or negative.
+Depending on the relative strengths of polymer-colloid ($\chi_{\text{PC}}$) and polymer-solvent ($\chi_{\text{PS}}$) interactions, the sign of $\gamma \sim (\chi_{\text{ads}} - \chi_{\text{crit}}) \phi^{\ast}$ can be either positive or negative.
+If the particle surface is repulsive ($\chi_{\text{ads}} \geq 0$) or even weakly attractive for polymers ($\chi_{\text{crit}} \leq \chi_{\text{ads}} < 0$), then, due to steric constraints imposed by the impermeable surface, the available conformations of the polymer are restricted, leading to polymer depletion near the particle surface and resulting in $\gamma \geq 0$.
+Ata critical adsorption value $\chi_{\text{ads}} = \chi_{\text{crit}}$, the losses in conformational entropy caused by the presence of the surface are exactly balanced by the free energy gain from monomer-surface contacts, causing $\gamma$ to vanish \cite{Fleer1993,Birshtein1979,Birshtein1983,Eisenriegler1982}.
 
 SF-SCF results in a more accurate calculation of the insertion free energy with account of the actual perturbation of the brush structure by the inserted colloid is possible with SF-SCF simulations, but only for cylindrical colloids positioned along the pore axis ($r=0$).
 
@@ -555,7 +556,7 @@ Moreover, the threshold for impeded permeation (at any given $\chi_{\text{PC}}$)
     \label{fig:colloid_concentration}
 \end{figure}
 
-It is well-known that high concentrations of biomacromolecules that have affinity for FG motifs - such as importins, exportins, and cargo complexes - are found in the vicinity of nuclear pore complexes (NPCs)~\cite{Beck2007, Gruenwald2010, Tu2011}.% \todo{refs to be checked}.
+It is well-known that high concentrations of biomacromolecules that have affinity for FG motifs (such as importins, exportins, and cargo complexes) are found in the vicinity of nuclear pore complexes (NPCs)~\cite{Beck2007, Gruenwald2010, Tu2011}.% \todo{refs to be checked}.
 Moreover, it is speculated that such high concentrations are required for effective transport through the pore.% [\dots].
 
 In Figure~\ref{fig:colloid_concentration}, we present a map of the steady-state concentration of diffusing colloidal particles for a representative pore, as in Figure~\ref{fig:phi_hm_grid}, in a good solvent ($\chi_{\textrm{PS}} = 0.3$).
@@ -602,9 +603,8 @@ We explore how parameters such as solvent quality, particle size, and particle a
 We provide an analysis of the pore resistance $R$ as the sum of the resistances of the pore channel $R_{\text{pore}}$ and the exterior regions $R_{\text{conv}}$, which is associated with resistance caused by convergent flow.
 We show that pore filling modulates the resistance of both the pore channel $R_{\text{pore}}$ and the regions outside the pore.
 To better assess the results, we compared the resistance of the polymer brush-filled pore with that of a bare pore, $R_{\text{empty}}$, as a reference. 
-We identified critical values $\chi^{\text{crit}}_{\text{PC}}$ and $d_{\text{crit}}$ (polymer-colloid afinity and particle diameter, respectively), which correspond to the conditions 
-at which the resistance of the brush-filled pore equals that of the bare pore, i.e., $R = R_{\text{empty}}$.
-The results may provide insights into the facilitated permeation of biomacromolecules from the cytoplasm to the nucleoplasm through nucleopores in the nuclear envelope.
+% We identified critical values $\chi^{\text{crit}}_{\text{PC}}$ and $d_{\text{crit}}$, which correspond to the points at which the resistance of the brush-filled pore equals that of the bare pore, i.e., $R = R_{\text{empty}}$.
+% The results may provide insights into the facilitated permeation of biomacromolecules from the cytoplasm to the nucleoplasm through nucleopores in the nuclear envelope.
 
 In this paper, we study a scenario where a single cylindrical pore perforates a finite-thickness membrane separating two semi-infinite reservoirs.
 The pore contains freely-jointed polymer chains grafted to the inner surface.
@@ -631,6 +631,15 @@ This dynamic resulted in a slower diffusion rate for larger particles, with $D/D
 
 The local insertion free energy and local diffusion coefficient are associated with local conductivity $D \exp\left(\frac{-\Delta F}{k_B T}\right)$.
 We developed an approximate integration scheme to analytically determine the resistance of the polymer brush-filled pore based on these local conductivities.
+
+In the space defined by the parameters controlling resistance to diffusive flux, one can identify a set of conditions under which the resistance of the brush-filled pore equals that of the bare pore, i.e., $R = R_{\text{empty}}$.
+We identified critical permeation values $\chi^{\text{crit}}_{\text{PC}}$ and $d_{\text{crit}}$, corresponding to the polymer-colloid interaction and particle size, respectively, such that the total resistance matches that of a bare pore.
+These should not be confused with the critical adsorption value of the polymer-colloid interaction, $\chi^{\text{ca}}_{\text{PC}} = \chi^{\text{crit}} + \chi_{\text{PS}}(1 + \phi)$, which corresponds to the vanishing interfacial term in the insertion free energy ($\gamma = 0$, $\Delta F_{\text{sur}} = 0$), nor with the condition of vanishing insertion free energy, where osmotic repulsion is exactly offset by adhesive interactions, $\chi^{\text{cfe}}_{\text{PC}} = \{\Delta F (\chi_{\text{PC}}) = 0\}$.
+
+The order of these critical values, each fulfilling different conditions, is naturally as follows:
+\begin{equation*}
+    \chi^{\text{crit}}_{\text{PC}} \lesssim \chi^{\text{cfe}}_{\text{PC}} \lesssim \chi^{\text{ca}}_{\text{PC}}
+\end{equation*}
  
 To validate our approximate analytical solution, we also performed a full numerical solution of the Smoluchowski diffusion equation, which is illustrated in 
 %%%%%%UPDATE_MANUALLY%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -668,17 +677,19 @@ Here, $\frac{1}{D_0 2 \pi r_{\text{ext}}}$ represents twice the resistance to di
 Since local conductivity depends exponentially on local insertion free energy, total resistance is also exponentially dependent on the insertion free energy landscape.
 As a consequence, \textbf{pore resistance is highly sensitive to parameters that influence insertion free energy, such as particle size and affinity}.
 This results in very high selectivity of the polymer brush with respect to these parameters, as demonstrated in Figures \ref{fig:R_vs_chi_PC} and \ref{fig:R_vs_d}.
-The dependence of insertion free energy on particle size is cubic, so for particles near a critical size $d_{\text{crit}}$, a slight change in particle size 
-translates into a drastic change in permeability (resistance).
-The selectivity of permeation with respect to particle size increases with the critical particle size, $d_{\text{crit}}$, which itself grows as particle adsorption strength increases (indicated by a decrease in $\chi_{\text{ads}} \sim \chi_{\text{PC}}$), eventually leading to a "gating" behavior, so that a minor change in particle size drastically change permeation rate.
-This is demonstrated in Figure \ref{fig:R_vs_d}, where a step-like change in resistance is observed for particles with high affinity ($\chi_{\text{PC}}$) 
-and large $d_{\text{crit}}$, with resistance switching from below that of a bare pore to a much higher level upon a minor change in particle size.
-With decreasing solvent strength (increasing $\chi_{\text{PS}}$), the particle size corresponding to to gating shifts to larger values, 
-as adsorption strength increases (decreased $\chi_{\text{ads}}$).
-For similar reasons, larger particles with affinity close to the critical value $\chi^{\text{crit}}_{\text{PC}}$ exhibit gating behavior 
-in response to particle affinity, as a slight change in $\chi_{\text{PC}}$ can shift the insertion free energy from largely negative to largely positive.
-Again, a decrease in solvent strength (increase in $\chi_{\text{PS}}$) shifts $\chi^{\text{crit}}_{\text{PC}}$ to higher values, 
-as poorer solvents increase adsorption strength (decrease $\chi_{\text{ads}}$).
+The dependence of insertion free energy on particle size is cubic and proportional to polymer-colloid interaction parameter $\chi_{\text{PC}}$, for larger particles, when permeability is not limited by the exterior regions a slight change in particle size $d$ or polymer-colloid interaction parameter $\chi_{\text{PC}}$ translates into a drastic change in permeability (resistance).
+The selectivity of permeation both with respect to particle size and polymer-colloid interaction parameter $\chi_{\text{PC}}$ tends to increase with a particle size and adsorption strength $\chi_{\text{ads}}$.
+
+\textbf{For a pore with a polymer brush to function as a selective transport channel for colloid particles, high permeation selectivity must be coupled with low resistance to diffusive flux.}
+We refer to this combination as "gating" behavior, where a minor change in particle size can dramatically shift the permeation rate from facilitated transport to complete blockage.
+Both conditions can be achieved near the critical permeation values, where the resistance of the brush-filled pore equals that of the bare pore, i.e., $R > R_{\text{empty}}$.
+
+Gating with respect to particle size is illustrated in Figure \ref{fig:R_vs_d}, where a step-like change in resistance is observed for particles with high affinity ($\chi_{\text{PC}}$) near the particle size of critical permeation, $d_{\text{crit}}$.
+Here, resistance shifts from below that of a bare pore to a much higher level with only a minor change in particle size.
+With decreasing solvent strength (increasing $\chi_{\text{PS}}$), the particle size $d_{\text{crit}}$ associated with gating shifts to larger values, as adsorption strength increases (indicated by a decrease in $\chi_{\text{ads}}$).
+
+For similar reasons, larger particles with affinities close to the critical permeation value, $\chi^{\text{crit}}_{\text{PC}}$, also exhibit gating behavior in response to particle affinity as illustrated in Figure \ref{fig:R_vs_chi_PC}: a slight change in $\chi_{\text{PC}}$ can shift the permeation rate from below that of a bare pore to high resistance, with a minor decrease in interaction polymer-colloid strength (increase in $\chi_{\text{PS}}$).
+Again, a decrease in solvent strength (an increase in $\chi_{\text{PS}}$) shifts $\chi^{\text{crit}}_{\text{PC}}$ to higher values, as poorer solvents enhance adsorption strength (further decreasing $\chi_{\text{ads}}$).
 
 Finally, \textbf{facilitated permeability implies an increased concentration of colloid particles within the polymer brush}.
 This follows directly from the requirement for facilitated permeation, which necessitates negative insertion free energy that causes colloid partitioning inside the brush.
@@ -690,6 +701,8 @@ In other words, while high partitioning requires negative insertion free energy 
 
 % In the case of a nucleopore we can envisage that high partitioning with low permeability can ensure that some macromolecule is guarantied to be found near the pore entrance while not transported. 
 % For example a cargo can be transported through nucleopore only when nucleocytoplasmic transport receptors (NTR) such as importins, exportins and other auxilary molecules are attached.
+
+
 
 % Altogether, our findings shed the light onto possible mechanisms of selective transport through NPC and, at the same time, suggest a molecular design strategy for controlling selective
 % permeability through artificial mesoporous membranes with the eye on applications in...
