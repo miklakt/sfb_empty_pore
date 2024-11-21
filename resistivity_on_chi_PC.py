@@ -48,9 +48,9 @@ sigma = 0.02
 d_color= [4, 8, 12, 16, 20]
 d = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30]
 #d =[8 ,10, 12 ,]
-chi_PS = [0.1, 0.3, 0.5]
+chi_PS = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
-chi_PC = np.round(np.arange(0, -2.6, -0.05),3)
+chi_PC = np.round(np.arange(0, -2.6, -1.05),3)
 
 # model, mobility_model_kwargs = "none", {}
 # model, mobility_model_kwargs = "Phillies", dict(beta = 8, nu = 0.76)
@@ -83,12 +83,9 @@ def empty_pore_permeability(D, r, s):
     #einstein_factor = 1/(3*np.pi*d)
     return 2*D*r/(1 + 2*s/(r*np.pi))# / einstein_factor
 #%%
-fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 1, sharex = True)
-results_ = results.loc[(results.mobility_model == model)]
-
 R_empty_dict = {}
 chi_PC_crit_dict = {}
-for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
+for chi_PS_, result_ in  results_.groupby(by = "chi"):
     R_empty = []
     chi_PC_crit = []
     for d_, result__ in result_.groupby(by = "d"):
@@ -101,6 +98,10 @@ for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
         chi_PC_crit.append(X0_)
     R_empty_dict[chi_PS_] = R_empty
     chi_PC_crit_dict[chi_PS_] = chi_PC_crit
+
+#%%
+fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 1, sharex = True)
+results_ = results.loc[(results.mobility_model == model)]
 
 for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
     markers = itertools.cycle(mpl_markers)
@@ -180,6 +181,30 @@ for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
 #plt.tight_layout()
 #fig.set_size_inches(7, 7)
 fig.set_size_inches(7, 2.5)
-fig.savefig("fig/resistivity_on_d.svg")
+#fig.savefig("fig/resistivity_on_d.svg")
 #fig.savefig("tex/third_report/fig/permeability_on_d_detailed_low_d.svg")
+# %%
+fig, ax = plt.subplots()
+
+markers = itertools.cycle(mpl_markers)
+for chi_PS_, result_ in results_.groupby(by = "chi"):
+    marker = next(markers)
+    ax.plot(
+        d,
+        chi_PC_crit_dict[chi_PS_], 
+        #color = "red",
+        #linestyle = "--",
+        label = chi_PS_,
+        linewidth = 2,
+        zorder = 3,
+        marker = "o",
+        mfc = "none",
+        markersize = 4,
+    )
+ax.set_xlabel("$d$")
+ax.set_ylabel(r"$\chi_{\text{PC}}^{\text{crit}}$")
+ax.legend(title= r"$\chi_{\text{PS}}$")
+#ax.set_xscale("log")
+fig.set_size_inches(3, 3)
+fig.savefig("fig/chi_PC_crit_on_d.svg")
 # %%
