@@ -71,7 +71,7 @@ $^{4}$ University of Wageningen, the Netherlands}
         Schematic illustration of diffusive transport of nanocolloids through a polymer brush-filled pore.
         \\
         The brush is formed by linear polymer chains (red strands) with a degree of polymerization $N$, which are uniformly grafted with a grafting density $\sigma$ to the inner surface of a cylindrical pore in an impermeable membrane.
-        The pore radius is $r_\text{pore}$, and the thickness of the membrane is $L_{0}$.
+        The pore radius is $r_{\text{p}}$, and the thickness of the membrane is $L_{0}$.
         The polymer chains are flexible, with statistical segment length $a$, and each segment has a volume $\sim a^3$.
         \\
         The presence of polymer chains impedes colloid transport by decreasing the local diffusion coefficient.
@@ -864,7 +864,7 @@ The resistance integration on the regular cylindrical lattice:
     \label{eq:prefactor}
     \begin{aligned}
         &f(x_z) =\\
-        & = \frac{2(|x_z|-L/2)^2 + 2r_{\text{p}}^{0}^2}{(3(|x_z|-L/2)+r_{\text{p}}^{0})((|x_z|-L/2)+r_{\text{p}}^{0})}
+        & = \frac{2(|x_z|-L/2)^2 + 2(r_{\text{p}}^{0})^2}{(3(|x_z|-L/2)+r_{\text{p}}^{0})((|x_z|-L/2)+r_{\text{p}}^{0})}
     \end{aligned}
 \end{gather}
 
@@ -936,7 +936,7 @@ For convenience, we select a cross-section at the pore center ($z = 0$), as ther
 Then the total flux through the pore is
 \begin{equation}
     \label{eq:total_flux_1}
-    J = \oint\limits_{S} \mathbf{j} \cdot d\mathbf{S} = 2 \pi \int_0^{r_\text{pore}} j_z(r, z = 0) \, r \, dr
+    J = \oint\limits_{S} \mathbf{j} \cdot d\mathbf{S} = 2 \pi \int_0^{r_{\text{p}}} j_z(r, z = 0) \, r \, dr
 \end{equation}
 
 We employ the finite volume method to simulate transport of the nanocolloid particles through the pore.
@@ -1036,7 +1036,7 @@ Conversely, when $\Delta F_N - \Delta F_P < -10$, the dominant drift flux is dir
 Finally, when the stationary state is reached, we calculate the total flux through the pore with the discrete form of eq.~\ref{eq:total_flux_1}:
 \begin{equation}
     \label{eq:total_flux_2}
-    J = \frac{\pi}{4} j_z[ r = 0, z = 0 ] + \pi \sum_{r = 1}^{r_\text{pore}} 2 r \, j_z[ r, z = 0 ]
+    J = \frac{\pi}{4} j_z[ r = 0, z = 0 ] + \pi \sum_{r = 1}^{r_{\text{p}}} 2 r \, j_z[ r, z = 0 ]
 \end{equation}
 
 The resistance of the pore is found from the simple equation $R = \dfrac{\Delta c}{J}$, similar to Ohm's law.

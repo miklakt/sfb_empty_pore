@@ -141,7 +141,7 @@ The interaction strength between a polymer segment and a unit surface area of th
 
 To understand how the polymer brush affects the transport of colloids, we consider the stationary diffusive flux of colloids through the pore 
 and analyze how it is affected by the parameters of the pore, the brush, and the colloid.
-To this end, the colloid concentration is fixed to be zero and $c$ far away from the membrane (at $z\rightarrow\mp\infty$, respectively). 
+To this end, the colloid concentration is fixed to be zero and $c_{\text{b}}$ far away from the membrane (at $z\rightarrow\mp\infty$, respectively). 
 We assume axial (cylindrical) symmetry of the flow in the pore. Together with the stationary conditions, 
 this implies that parameters relevant to colloid transport depend on the axial coordinate $z$ and the radial coordinate $r$, but not on the azimuthal angle.
 
@@ -170,7 +170,7 @@ Diffusion through a pore in a membrane of finite thickness $L_{0}$ allows an app
 
 \noindent To account for the excluded volume of the diffusing colloids, assuming them being spheres of diameter $d$, we here use the effective pore radius $r_{\text{p}}=r_{\text{p}}^{0}-d/2$ and pore thickness $L = L_{0} + d$.
 %UPDATE MANUALLY%
-We illustrate the effect of volume exclusion in Figure~9 of the Supplementary Information.
+We illustrate the effect of volume exclusion in Figure~9a of the Supplementary Information.
 
 Introducing the resistance $R$ to colloid flow as $J=\frac{\Delta c}{R}$ admits a most natural interpretation of Eq. (\ref{eq:flux_finlength}) in terms of the total resistance of the pore
 
@@ -273,7 +273,7 @@ $$
 \noindent is the mean-field Flory expression for the interaction free energy per unit volume of the polymer solution of concentration (volume fraction) $\phi(r,z)$.
 As long as the osmotic pressure inside the brush is positive, $\Delta F_{\text{osm}}$ is positive as well and dominates for sufficiently large colloids. 
 
-The interfacial contribution, $\Delta F_{\text{sur}}(r,z)$, is proportional to the colloid surface, 
+The interfacial (surface) contribution, $\Delta F_{\text{sur}}(r,z)$, is proportional to the colloid surface, 
 with the surface tension $\gamma (r,z)$ approximated as
 
 \begin{eqnarray}
@@ -390,7 +390,7 @@ To simplify the analysis, we utilize an orthogonal curvilinear coordinate system
 Inside the pore, we employ cylindrical coordinates, while outside the pore, we approximate the iso-surfaces using a variant of oblate spheroidal coordinates, as seen in Figure~\ref{fig:R_map}B. The chosen coordinate system has axial, radial, and azimuthal axes.
 This curvilinear coordinate system shares axial coordinate with the axial coordinate $z$ of the cylindrical coordinate system we used to define position-dependent properties.
 
-By integrating the local conductivity $\rho^{-1}(r,z)$ (Eq. (\ref{eq:local_conuctivity})) over the radial and azimuthal coordinates of the curvilinear coordinate system at each axial position $z$, we calculate the conductivity of infinitely thin layer $\varrho_{z}^{-1}$ that intersects .
+By integrating the local conductivity $\rho^{-1}(r,z)$ (Eq. (\ref{eq:local_conuctivity})) over the radial and azimuthal coordinates of the curvilinear coordinate system at each axial position $z$, we calculate the differential conductivity of infinitely thin layer $\varrho_{z}^{-1}$ that intersects .
 The total resistance $R$ is then obtained by integrating $\varrho_{z}$ along the axial coordinate $z$:
 \begin{eqnarray}
     \label{eq:R_z_inv}
@@ -496,7 +496,7 @@ where $\min\{D(r,z)\}$ is the minimal value of the position-dependent diffusion 
 An important conclusion from the equation above is that the decrease in the diffusion coefficient or the narrowing of the path with enhanced conductivity are logarithmic terms.
 This confirms that the exact model used to account for diffusion slowdown will not significantly alter the observed trends.
 
-For the details on the upper bound for the required surface tension coefficient see
+For the details on the upper bound for the required surface tension for facilitated permeation coefficient see
 %UPDATE_MANUALLY% 
 Section 10 of the Supplementary Information.
 
@@ -504,7 +504,7 @@ It is important to note the existence of a path with negative insertion free ene
 As mentioned earlier, the path must also have high conductivity, $\rho^{-1} > D_0$.
 For example, although $\chi_{\text{PC}} = -1.0$ at $\chi_{\text{PS}} = 0.5$ ensures the presence of a negative insertion free energy path (see Figure~\ref{fig:phi_hm_grid}), it is insufficient to overcome the reduction in diffusion caused by the polymer mesh.
 When $\chi_{\text{PC}} = -0.9$, the insertion free energy becomes only slightly negative, and the negative insertion free energy path narrows, with a positive insertion free energy penalty near the interior walls. 
-This leads to a resistance per unit length $\varrho_{z}$ that exceeds even the case when only the increased viscosity of the medium is considered, as shown in Figure~\ref{fig:R_map}.
+This leads to a resistance per unit length $\varrho_{z}$ in the interior region $z \in [-L_{0}/2, L_{0}/2]$ that exceeds even the case when only the increased viscosity of the medium is considered, as shown in Figure~\ref{fig:R_map}.
 
 Furthermore, a further decrease in polymer-colloid interaction strength (not shown here) may completely inhibit permeation, as every possible path a colloid particle could take would involve encountering a free energy barrier.
 
@@ -608,8 +608,8 @@ Moreover, the threshold $d_{\text{crit}}$ for impeded permeation (at any given $
     \includegraphics[width=0.9\linewidth]{fig/streamlines.png}
     \caption{
     Stationary solution of the Smoluchowski diffusion equation for colloidal particles diffusing in a potential field defined by the position-dependent insertion free energy $\Delta F$, with a modulated diffusion coefficient, through a cylindrical pore in an impermeable membrane.
-    The concentration of colloidal particles is defined in the bulk infinitely far from the membrane as $c(z = -\infty) = c_{b}$ on one side and $c(z = +\infty) = 0$ on the other.
-    The normalized colloidal particle concentration $c / c_{b}$ is presented as a colormap, where white corresponds to the absence of colloidal particles, yellow to red indicates concentrations below $c_{b}$, and violet to black indicates concentrations above $c_{b}$.
+    The concentration of colloidal particles is defined in the bulk infinitely far from the membrane as $c(z = -\infty) = c_{\text{b}}$ on one side and $c(z = +\infty) = 0$ on the other.
+    The normalized colloidal particle concentration $c / c_{\text{b}}$ is presented as a colormap, where white corresponds to the absence of colloidal particles, yellow to red indicates concentrations below $c_{\text{b}}$, and violet to black indicates concentrations above $c_{\text{b}}$.
     % \\
     % In the presence of polymer chains, the diffusion coefficient $D$ in and near the pore decreases compared to the diffusion coefficient in the bulk $D_0$.
     % Additionally, short-range polymer-colloid interactions create a positive or negative insertion free energy landscape.
@@ -635,9 +635,9 @@ In Figure~\ref{fig:colloid_concentration}, we present a map of the steady-state 
 The particle size is $d = 12$ with a polymer-colloid interaction parameter $\chi_{\text{PC}} = -1.5$.
 This condition corresponds to facilitated transport with a total resistance to transport about 10-fold lower compared to an empty pore.
 
-The colloid concentration decays rapidly to the respective bulk concentrations of the semi-infinite reservoirs, $c(z = -\infty) = c_{b}$ and $c(z = +\infty) = 0$, as seen from the contour lines.
+The colloid concentration decays rapidly to the respective bulk concentrations of the semi-infinite reservoirs, $c(z = -\infty) = c_{\text{b}}$ and $c(z = +\infty) = 0$, as seen from the contour lines.
 In the absence of a polymer brush, the diffusion coefficient is not modulated, and there is no insertion free energy penalty; thus, the potential function $\psi = c$, and the isoconcentration surfaces become oblate spheroids, as can be seen from Figure~\ref{fig:colloid_concentration}.
-The solution is symmetric in the sense that the isoconcentration surfaces are mirrored with respect to the pore's center, and the mirrored isoconcentration values sum up to $c_{b} = 1$.
+The solution is symmetric in the sense that the isoconcentration surfaces are mirrored with respect to the pore's center, and the mirrored isoconcentration values sum up to $c_{\text{b}} = 1$.
 This is demonstrated in Figure~\ref{fig:colloid_concentration}, where the contour line labels are paired accordingly.
 
 The average colloid trajectories are shown with streamlines (contours with arrows) in Figure~\ref{fig:colloid_concentration}.
@@ -648,7 +648,7 @@ We remind that we disregard any colloid-colloid interactions, so the presented p
 Notably, an increase in polymer-colloid interaction (lower $\chi_{\text{PC}}$) increases the colloid concentration in the polymer brush but also shifts the maximum concentration toward the pore center, as the relative osmotic contribution to the insertion free energy drops.
 At the same time, an increase in particle size with no change in polymer-colloid interaction $\chi_{\text{PC}}$ also increases the colloid concentration near the pore entrance but inhibits colloid transport because of the higher osmotic barrier in the pore interior.
 
-A higher magnitude of the insertion free energy also brings the steady-state solution closer to equilibrium partitioning with no flux, $c = c_{b} \exp\left( \frac{-\Delta F}{k_B T} \right)$, as the drift fluxes caused by the free energy gradient dominate diffusion fluxes driven by the colloid concentration gradient.
+A higher magnitude of the insertion free energy also brings the steady-state solution closer to equilibrium partitioning with no flux, $c = c_{\text{b}} \exp\left( \frac{-\Delta F}{k_B T} \right)$, as the drift fluxes caused by the free energy gradient dominate diffusion fluxes driven by the colloid concentration gradient.
 
 One can imagine a case where a transported species has a sufficiently negative surface tension coefficient, such that in regions with lower polymer concentration in the protruding part of the brush, the insertion free energy is negative and dominated by the interfacial term, while there is an osmotic barrier in the middle (as in the upper right panel in Figure~\ref{fig:DeltaF_map}).
 Such species would still dock to the polymer brush but would not permeate the pore.
@@ -718,7 +718,7 @@ We developed an approximate integration scheme to analytically determine the res
 
 In the space defined by the parameters controlling resistance to diffusive flux, one can identify a set of conditions under which the resistance of the brush-filled pore equals that of the bare pore, i.e., $R = R_{0}$.
 We identified critical permeation values $\chi^{\text{crit}}_{\text{PC}}$ and $d_{\text{crit}}$, corresponding to the polymer-colloid interaction and particle size, respectively, such that the total resistance matches that of a bare pore.
-These should not be confused with the critical adsorption (denoted with ca) value of the polymer-colloid interaction, $\chi^{\text{ca}}_{\text{PC}} = \chi^{\text{crit}} + \chi_{\text{PS}}(1 + \phi)$, which corresponds to the vanishing interfacial term in the insertion free energy ($\gamma = 0$, $\Delta F_{\text{sur}} = 0$), nor with the condition of vanishing insertion free energy (denoted with cfe), where osmotic repulsion is exactly offset by adhesive interactions, $\chi^{\text{cfe}}_{\text{PC}} = \{\Delta F (\chi_{\text{PC}}) = 0\}$.
+These should not be confused with the critical adsorption (denoted with 'ca') value of the polymer-colloid interaction, $\chi^{\text{ca}}_{\text{PC}} = \chi_{\text{ads}}^{\text{crit}} + \chi_{\text{PS}}(1 + \phi)$, which corresponds to the vanishing interfacial term in the insertion free energy ($\gamma = 0$, $\Delta F_{\text{sur}} = 0$ as follows from Eq.~(\ref{eq:chi_ads})), nor with the condition of vanishing insertion free energy (denoted with 'cfe'), where osmotic repulsion is exactly offset by adhesive interactions, $\chi^{\text{cfe}}_{\text{PC}} = \{\Delta F (\chi_{\text{PC}}) = 0\}$.
 
 The order of these critical values, each fulfilling different conditions, is naturally as follows:
 $\chi^{\text{crit}}_{\text{PC}} \lesssim \chi^{\text{cfe}}_{\text{PC}} \lesssim \chi^{\text{ca}}_{\text{PC}}$
