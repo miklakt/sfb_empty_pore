@@ -1,0 +1,353 @@
+Kinetic cooperativity resolves bidirectional clogging within the nuclear pore complex
+@article{Zheng2024,
+   abstract = {As the main gatekeeper of the nucleocytoplasmic transport in eukaryotic cells, the nuclear pore complex (NPC) faces the daunting task of facilitating the bidirectional transport of a high volume of macromolecular cargoes while ensuring the selectivity, speed, and efficiency of this process. The competition between opposing nuclear import and export fluxes passing through the same channel is expected to pose a major challenge to transport efficiency. It has been suggested that phase separation-like radial segregation of import and export fluxes within the assembly of intrinsically disordered proteins that line the NPC pore could be a mechanism for ensuring efficient bidirectional transport. We examine the impact of radial segregation on the efficiency of bidirectional transport through the NPC using a coarse-grained computational model of the NPC. We find little evidence that radial segregation improves transport efficiency. By contrast, surprisingly, we find that NTR crowding may enhance rather than impair the efficiency of bidirectional transport although it decreases the available space in the pore. We identify mechanisms of this novel crowding-induced transport cooperativity through the self-regulation of cargo density and flux in the pore. These findings explain how the functional architecture of the NPC resolves the problem of efficient bidirectional transport, and provide inspiration for the alleviation of clogging in artificial selective nanopores.},
+   author = {Tiantian Zheng and Anton Zilman},
+   doi = {10.1016/J.BPJ.2024.03.027/ASSET/56E260E1-3D69-43DD-8CB2-4AC39E972D50/MAIN.ASSETS/GR8.SML},
+   issn = {15420086},
+   issue = {9},
+   journal = {Biophysical Journal},
+   month = {5},
+   pages = {1085-1097},
+   pmid = {38640928},
+   publisher = {Biophysical Society},
+   title = {Kinetic cooperativity resolves bidirectional clogging within the nuclear pore complex},
+   volume = {123},
+   url = {http://www.cell.com/article/S0006349524002078/fulltext http://www.cell.com/article/S0006349524002078/abstract https://www.cell.com/biophysj/abstract/S0006-3495(24)00207-8},
+   year = {2024},
+}
+
+
+they use numerical simulation and found
+"we find that NTR crowding may enhance rather than impair the efficiency of bidirectional transport although it decreases the available space in the pore"
+we can justify it by sayning the change in adhesive strenghs may have more profound effect compared to decreased available space
+
+Useful references
+Structural nucleoporin proteins stabilize a roughly hourglass-shaped passage of a diameter between 30 and 50 nm (1,8)
+due to their enrichment of FG repeats (8,9).
+The ‘‘nanomaterial’’ formed by the FG assembly acts as a barrier that restricts the diffusion of nonspecific macromolecules between the nucleus and cytoplasm in a size-dependent wa(17–20).
+
+Upon binding to a cargo molecule, the resulting NTR-cargo complex is able to partition into the FG nup material and travel via a diffusion-like mechanism between the nuclear and cytoplasmic sides facilitated by multivalent weak binding interactions with FG nups (1,10,22–25).
+
+To understand the basic principles of species segregation and pathway separation in the NPC channel, we use a minimal coarse-grained model, reported and validated in (29)
+
+Based on previous work by us and others demonstrating that a small num-
+ber of basic principles and variables are sufficient to capture the salient
+properties of the FG nups and their assemblies in the NPC and NPC-
+like in vitro mimics (14,18,25,33,38–42),
+
+________________________________________________________________________________________________________________________
+Cone-shaped HIV-1 capsids are transported through intact nuclear pores
+
+we can ciite this as to evidence that even large HIV capsides are transported (60nm capside, 64nm pore)
+
+references:
+Several
+nucleoporins (NUPs), most notably the FG-repeat containing
+NUP358 and NUP153 were also reported to facilitate nuclear
+entry of HIV-1 (Brass et al., 2008; Di Nunzio et al., 2012; König
+et al., 2008).
+
+________________________________________________________________________________________________________________________
+Visualizing the disordered nuclear transport
+machinery in situ
+
+Consequently, the protein conformational
+state inside the NPC remains elusive, which has led to several partially
+conflicting hypotheses for the morphologies of the FG domains in their
+functional state22–28.
+
+In this study, we developed a method to probe distance distribu-
+tions of FG-NUPs inside the NPCs by combining fluorescence lifetime
+imaging of fluorescence resonance energy transfer (FLIM–FRET)
+The FLIM–FRET experiments assist MD simulations in providing us with
+a 3D view of the organization of FG-NUPs in functional NPCs.
+
+Owing to recent advances in determining the structure of the NPC
+scaffold, the actual grafting points for the FG domains are now known
+with high confidence4–11.
+
+A key finding is that the ensembles of FG-NUPs within functional
+nuclear pores inside cells are distinct from the chain ensembles sam-
+pled in solution, untethered from the pore. The intriguing inference
+presented is that the apparent solvent quality of the nuclear pore is bet-
+ter than that of a bulk, aqueous solvent, with conformational statistics
+measured in the pore resembling what one would observe in at least a
+theta solvent (ν = 0.5) and more closely, a good solvent (ν > 0.5).
+
+________________________________________________________________________________________________________________________
+Nuclear transport surveillance of p53 by nuclear pores in glioblastoma
+
+The nuclear envelope (NE) separates the nucleoplasm and the cytoplasm in eukaryotic cells. Nuclear pore complexes (NPCs) are cylindrical macromolecular apparatus embedded within the NE and consist of 30 proteins called nucleoporins (NUPs).1 NPCs govern biomolecule transport across the NE and operate as the sole gateway between the nucleus and the cytoplasm.2,3,4 Nuclear-cytoplasmic transport of macromolecules larger than ∼40 kDa is a systematic process whereby nuclear transport receptors and GTPase Ran collaboratively aid in the shuttle of these large proteins.5 Importin family members assist the nuclear entry of cargo that contain a nuclear localization signal (NLS), while the nuclear export process requires recognition of a nuclear export signal (NES) in the cargo by Exportin-1 (XPO1). Selective and transient interaction of these complexes with NPCs facilitates the canonical transport process.6,7,8,9,10,11
+
+ Depletion of NUP107 inhibits the growth of GBM cell lines through p53 protein stabilization. Mechanistically, NPCs establish a p53 degradation platform via an export pathway coupled with 26S proteasome tethering. 
+
+________________________________________________________________________________________________________________________
+Bart W. Hoogenboom;Loren E. Hough;Edward A. Lemke;Roderick Y.H. Lim;Patrick R. Onck;Anton Zilman;. (2021). Physics of the nuclear pore complex: Theory, modeling and experiment . Physics Reports, (), –.
+
+This
+13 separation is achieved by a complex barrier of approximately 40 nm thickness, known as the
+14 nuclear envelope [1],
+#[1] Alberts2015 - Molecular Biology of the Cell
+Typical import cargoesinclude transcription factors,seeking
+21 access to the DNA in the nucleus, while typical export cargoes include mRNAs seeking access to
+22 the ribosomes in the cytoplasm [5].
+#[5] Cautain2015 - Components and regulation of nuclear transport processes
+Under normal operating conditions, millions of proteinaceous
+23 and nucleic acid molecules must cross the envelope per second in both directions [6].
+In spite of the high
+16 throughput, molecular transport through the NPC is remarkably specific, rapid and robust with
+17 respect to molecular noise and structural perturbations [5,6,9].
+#[6] Tijana201 - Protein Transport by the Nuclear Pore Complex: Simple Biophysics of a Complex Biomachine
+#[7] Kim2018 - Integrative structure and functional anatomy of a nuclear pore complex
+#[8] Hoelz2011 - The Structure of the Nuclear Pore Complex
+#[9] Rout2000 - The yeast nuclear pore complex: composition, architecture, and transport mechanism
+#[10] Dickmanns2015 - Nuclear Pore Complexes and Nucleocytoplasmic Transport: From Structure to Function to Disease
+#[11] Kim2017 - Lost in Transportation: Nucleocytoplasmic Transport Defects in ALS and Other Neurodegenerative Diseases
+#[12] Labokha2013 - Viruses challenge selectivity barrier of nuclear pores
+#[17] Mor2014 - Nuclear trafficking in health and disease
+#[18] DeGrasse2009 - Evidence for a shared nuclear pore complex architecture that is conserved from the last common eukaryotic ancestor
+#[19] Ori2013 - Cell type-specific nuclear pores: a case in point for context-dependent stoichiometry of molecular machines
+#[20] Hayama2017 - The nuclear pore complex core scaffold and permeability barrier: variations of a common theme
+#[21] Yaron2018 - Yeast and Human Nuclear Pore Complexes: Not So Similar After All
+#[22] Holzer2018 - Nuclear Pore Complexes: Global Conservation and Local Variation
+#[23] Tijana2008 - Artificial nanopores that mimic the transport selectivity of the nuclear pore complex
+#[25] Ananth2018 - Spatial structure of disordered proteins dictates conductance and selectivity in nuclear pore complex mimics
+#[26] Kowalczyk2011 - Single-molecule transport across an individual biomimetic nuclear pore complex
+#[27] Caspi2008 - Synthetic mimic of selective transport through the nuclear pore complex
+#[30] Reichelt1990 - Correlation between structure and mass distribution of the nuclear pore complex and of distinct pore complex components
+#[33] Eibauer2015 - Structure and gating of the nuclear pore complex
+
+The internal structure of the transport channel is equally unique. Its walls are decorated with
+11 multiple nucleoporins that contain highly flexible and dynamic intrinsically disordered regions
+12 (IDRs), which form the transport environment within the NPC passageway (IDRs are also known
+13 as natively unfolded or “unstructured” protein domains) [5,6,9,37–41]. The disordered nature of
+14 the nucleoporins within NPC passageway makes it challenging to experimentally probe their
+15 behavior at the relevant nanometer length and millisecond time scales. A major drawback arises
+16 from the high spatial and temporal mobility of the IDRs making them largely inaccessible to
+17 classical methods, such as X-ray crystallography and (cryo)-electron tomography, as these rely on
+18 ensemble averaging of individual conformations to obtain structural information. Although
+19 alternative techniques, such as atomic force microscopy (AFM), super-resolution microscopy ,
+20 intra-cellular FRET and fluorescence correlation spectroscopy, have started to resolve the
+21 morphology and the dynamics of the transport channel in intact NPCs [42–48], much of our
+22 knowledge about the nuclear pore still derives from in vitro studies of its components and their
+23 assemblies, interpreted via computational and theoretical models. As a result, computational and
+24 theoretical modeling have been a key part in understanding the role of the intrinsically disordered
+25 protein domains in the NPC function
+
+Theoretical models have enabled rigorous investigation of various ideas and concepts of NPC
+28 function, facilitating quantitative interpretations of experimental data and providing predictions to
+29 guide the development of future experiments. To develop an adequate description of the NPC
+30 machinery, ongoing efforts have drawn upon a rich combination of ideas, theoretical concepts and
+31 simulation techniques. These span equilibrium and non-equilibrium statistical mechanics,
+32 stochastic process theory, polymer physics, and simulation techniques ranging from explicit
+33 atomistic molecular dynamics to coarse grained polymer models [49–63]. In combination,
+34 biophysical techniques and theoretical approaches are starting to reveal fundamental insights into
+35 the organization and the dynamics of the NPC at the nanoscale.
+
+Unlike the more familiar structured proteins, the intrinsically disordered regions of the FG nups
+3 do not fold into defined three-dimensional structures. Hence, in many respects they behave as
+4 conventional polymers [37,39,53,56,57,73,74]. 
+
+Each NPC contains about 200-300 FG nups per pore, spread
+6 among 10-15 different types that can differ in their amino acid sequence and localization within
+7 the NPC [9,10,19,22].
+
+##Size hinders transport##
+larger molecules and particles are
+34 progressively hindered from entering and translocating through the NPC with increasing size [75–
+35 77].
+
+##DIFFUSION##
+Inside the NPC passageway, the translocation of transport protein/cargo complexes is primarily a
+38 diffusive process, driven by thermal fluctuations and facilitated by the interactions with the FG
+39 nups [6,78–80]. Each individual translocation of a transport protein/cargo complex occurs without
+40 requiring direct input of energy, e.g., in the form of ATP or GTP hydrolysis, and typically takes
+
+1 on the order of several milliseconds [78,81]. Yet, macroscopically, NPC translocation is a part of
+2 the transport cycle that operates as a thermodynamic pump that concentrates cargoes inside the
+3 nucleus against their chemical potential gradient.
+
+The RanGTP7 bound transport protein is free to translocate back to the cytoplasm, as illustrated in Figure 4 [6,9].
+RanGTP is also known to catalyze the release of some of the transport proteins from
+9 the FG nups located at the nuclear basket, further enhancing the transport efficiency [43,80,83,84]
+
+Notably, in the operational NPC transport cycle, energy input in the form of GTP
+25 hydrolysis is not directly coupled to any molecular rearrangement of the NPC, unlike in many
+26 other familiar molecular motors and pumps (such as processive motors, ion exchangers, and
+27 ATPases) [90].
+28
+
+Overall, each NPC can contain
+22 hundreds of transport proteins at any given time, while transporting hundreds of cargoes persecond
+23 [7,43,83,85].
+
+Faced with this complexity, a number of different models have evolved in the field to address
+35 different aspects of NPC operation, ranging in focus from the general principles of the molecular
+36 transport on the nanoscale as revealed in in vitro NPC mimics, to the emphasis on the particular
+37 molecular mechanisms and structures as central to NPC transport [49,50,84,95–103]. Based on
+38 these ideas, the combined experimental and the theoretical work of the last decade has started to
+39 provide a comprehensive physical picture of NPC organization and function, within which
+40 molecular details and functional principles fall into place
+
+Functionally, FG nups play a twofold role: they form a template for the binding of cargo-carrying
+9 transport proteins in the NPC while simultaneously forming a permeability barrier against
+10 macromolecules that do not specifically bind the FG motifs. The exact nature of this barrier has
+11 been extensively debated, in particular whether it is based mainly on entropic forces
+12 [73,75,102,113] or whether it arises from breaking the attractive FG-FG interactions between the
+13 chains[97,109]. In general, the balance between the role of the chain entropy versus chain cohesion
+14 in the barrier has been unclear; and more recent studies emphasize that both are likely to play an
+15 important role [56,57,108,114].
+
+Flory theory predictions, in many cases
+13 it serves as a very good approximation, and has been the staple of the analysis of polymer chain
+14 behavior, and more recently protein IDRs [131,132].
+
+Investigated through computer simulations using Brownian and Langevin dynamics, as well as
+18 through various mean field and self-consistent field theories, simple homopolymer models have
+19 been a staple of the computational studies of the NPC and its components, and provided important
+20 insights into FG nup behavior [54,56,57,60,61,75]
+
+At the opposite limit to simple homopolymer models, atomistic molecular dynamics (MD)
+25 simulations have the potential to give atomically resolved interaction profiles and conformational
+26 ensembles of FG nups [53,55,133–136]
+
+A meta-analysis of a wider set of FG nups shows that on average,
+24 the FG nup dimensions agree with predictions for “ideal” Gaussian chains with 𝜈𝜈 = 0.5, where
+25 repulsive and attractive interactions are balanced [74]. 
+
+[155]. These experiments yielded a mean persistence length of 0.39 ± 0.14 nm for this FG nup,
+12 comparable to the size of an individual amino acid (~0.4 nm). At length scales beyond the
+13 persistence length, angular correlations become negligible and the polymer behaves as a flexible
+14 chain.
+
+How interacting particles diffuse within the interior of such a complex
+2 polymeric material still remains an open problem [52,257–270].
+Figure 23. Illustration of the “slide and exchange” mechanism; see text for details. Adapted from [134], permission pending.
+Although still not fully understood, multivalency likely helps to reconcile strong thermodynamic
+15 binding with the fast mobility of transport proteins in an FG nup milieu. At higher FG nup
+16 densities, single particles start to interact with multiple FG nups, allowing the transport proteins to
+17 slide in a “millipede-type” motion from one chain to another while breaking only a small number
+18 of bonds and remaining tightly bound to the FG nup assembly. Molecular dynamics simulations
+19 have provided insights and visualizations of this “slide-and-exchange” mechanism for transport
+20 protein motion within an FG nup assembly. In this model, only one binding site is released at each
+21 step, enabling the transport protein to progress forward due to the thermal fluctuations of the FG
+22 nups, finishing the step with the rebinding at the next available binding site [134]. This way, the
+23 transport proteins can have high thermodynamic affinity for the FG nups while maintaining fast
+24 kinetics [134]
+
+Figure 12. FG nups grafted in a nanopore. (A) Ionic conductance as a function of nanopore diameter for the bare pore (red), for
+17 a pore covered with the yeast FG nup Nsp1 (blue), and for a pore covered with the less cohesive mutant Nsp1-S (green). See text
+18 for discussion. Open symbols: experimental data. Closed symbols and lines: theoretical predictions. (B) Snapshot of simulations
+19 of the Nsp1 pore. (C) Time-averaged protein density distributions in Nsp1 and Nsp1-S pores; note that qualitatively similar
+20 dependencies of the polymer morphologies on the parameters are present in Figure 11. Adapted from [25], permission pending
+
+Figure 27. Effective potential (potential of mean force, (pmf)) calculated for different cargo types translocating through
+6 nanopores functionalized with FG nups. Inert particles (tCherry protein) experience a high free energy barrier in FG-nup (Nsp1)
+7 coated pores (blue line), whereas the transport proteins (Kap95) experience a lower barrier (black line). No such contrast is
+8 observed when the pore is coated with a less cohesive mutant (Nsp1-S) (red and green). Reproduced from [25], permission
+9 pending.
+
+4.1.4.4. Transport protein crowding inside the channel
+15 Given that the NPC transports multiple molecules simultaneously [88,303,304] and is
+16 continuously occupied by multiple transport proteins [43,83,305], the single-molecule analyses in
+17 the previous section may not adequately account for the crowded conditions that apply in the NPC.
+On the other hand, there are many other proteins in the dense
+21 environment of the cell, present at concentrations that may be several orders of magnitude higher
+22 than those of transport proteins, and that can interact with the NPC non-specifically [103,206,222].
+23 Yet these are efficiently filtered out, without clogging the NPC. In the more general context, the
+24 question of specificity and throughput in the presence of non-specific competition is important for
+25 the design of artificial nano-channels and biosensors that are capable of molecular sorting and
+26 detection under realistic conditions without fouling [193,306,307].
+Figure 32. Surface properties are responsible for the efficient translocation of cargoes through the NPC; see text. Reproduced
+9 from [96], permission pending.
+computational predictions [63] shown in Figure 33, which indicate that transport probability may
+21 be tuned through the balance between hydrophobic and charged residues on the cargo surface.
+22 Taken together, these experimental data and their theoretical analysis indicate that the specificity
+23 of the transport protein/FG nup interaction relies on the balance of hydrophobic and charged
+24 interactio
+Figure 33. Single molecule studies of NPC transport. Top left: trajectories of fluorescently labeled transport protein in the
+3 vicinity of the nuclear envelope. Red: successful translocations. Blue: abortive translocation. Right top: snapshots of a movie of a
+4 successful and an abortive translocation. Bottom panel: distributions of successful (left) and abortive (right) transport events.
+5 Adapted from [78], permission pending
+
+First characterization of the dynamics of translocation of individual transport proteins originated
+8 from single molecule tracking in [78,324], and [81,91] (Figure 33) and established two important
+9 points. First, they directly confirmed that the translocation of transport proteins is a stochastic
+10 process, consistent with the model of thermally activated diffusion. In particular, it was observed
+11 that the translocations can be abortive whereby the transport protein returns to the cytoplasm rather
+12 than translocating into the nucleus. Second, the observed translocation times obeyed a distribution
+13 with an exponential tail, with a characteristic decay time ofseveral millisecondsfor both successful
+14 and abortive events. Notably, NPC mimics have been able to recapitulate these the durations of
+15 translocation events (Section 4.1.2), indicating that they capture the most salient features of NPC
+16 transport dynamics
+
+Musser and coworkers [220] used a large tetrameric protein complex with a total molecular weight
+24 465 kDa, or approximately 10 nm in diameter. Each subunit carried one NLS, which allowed to
+25 load different numbers of transport proteins onto the construct and thus tune the strength of its
+26 interaction with the NPC. Using single molecule fluorescent microscopy, translocating complexes
+27 could then be tracked individually in permeabilized cell assays. This provided information about
+28 spatial densities and distributions of the accumulated cargoes in the NPC under different
+
+1 experimental conditions, such as the presence or absence of RanGTP, including statistics of
+2 successful and abortive transport events and their translocation times. The results were analyzed
+3 in terms of diffusion in the effective potential model described in Section 4.1.4. The inferred
+4 effective potential showed a barrier in the middle of the pore along the transport axis, and two
+5 potential wells at the nuclear and the cytoplasmic “vestibules” of the NPC. When the number of
+6 transport proteins attached to the cargo was increased, the barrier became lower due to stronger
+7 interaction of the construct with the FG nups, in accord with the expectations. Addition of RanGTP
+8 to the system increased the transport, likely caused by the reduction of the potential at the nuclear
+9 vestibule. This observation is consistent with RanGTP function of catalyzing the release of the
+10 cargoes from the NPC.
+
+In a complementary approach, Weis, Liphardt and co-workers used quantum dot nanoparticles,
+13 conjugated with up to ~40 transport proteins, resulting in a construct of 30-40 nm in size [325].
+14 The transport and translocation of the nanoparticle through the NPC was tracked using optical
+15 (fluorescence) microscopy. The quantum dot experiments are in good agreement with previous
+16 experiment and also support the existence of the permeability barrier/bottleneck at the center of
+17 the pore flanked by “docking” areas on the nuclear and cytoplasmic sides (see also Figure 20).
+
+More recently, [326] used very large cargoes based on viral capsids that can reach up to 30 nm in
+19 diameter and carry up to 100 NLS attached transport proteins. These studies support the previously
+20 identified general trends - import efficiency increased with the number of transport proteins, and
+21 larger cargoes required more attached proteins for efficient transport than the smaller ones.
+22 Analysis of these results in terms of transport in an effective potential similar to [220] was also
+23 consistent with the existence of a central free energy barrier and a cytoplasmic
+24 “docking”/“vestibule” regions.
+
+Unlike the case of many other protein transporters, protein translocation through the NPC does not
+22 occur one-by-one. Due to their affinity to the NPC interior, transport proteins tend to accumulate
+23 within the pore, as illustrated in Figure 35, which shows enrichment of the fluorescently labeled
+24 transport protein NTF2 within the nuclear envelope [23]. Similar accumulation can also be
+25 observed for other transport proteins, such as Importin-β, with tens and possibly hundreds present
+26 simultaneously in the NPC (e.g., [43]). Furthermore, NPC contains many different types of
+27 transport proteins, and is engaged in bi-directional processes, including cargo-carrying import
+28 proteins translocating into the nucleus, RanGTP-bound import proteins returning to the cytoplasm,
+29 export proteins, and mRNA export particles [6,9].
+30
+31 While the presence of multiple transport proteins increases the NPC throughput on the one hand,
+32 it also has a potential to block the pore. It remains to be fully understood how the NPC is able to
+33 maintain high throughput and selective bi-directional transport under such conditions, and
+34 different investigations provide somewhat contradictory evidence. One of the proposed solutions
+35 has been a separation of transport pathways either through differential usage of different FG nups
+36 types by different transport protein types, or by spatial segregation on the nanoscale
+37 [43,44,83,100,101,173,252,253,324,334]; other mechanisms, such as dynamical switching
+38 between export and import, have been proposed as well [281]. However, a consensus picture is
+39 still lacking, with a number of controversies and discrepancies arising from different experiments.
+40 We briefly summarize the current state of the art.
+
+Figure 35. Accumulation of transport protein NTF2 in the nuclear envelope. Top: cell nucleus (white) surrounded by fluorescently
+3 labeled transport protein NTF2 in the cytoplasm. Bottom: after 30 minutes, significant fraction of the transport proteins
+4 accumulates in the NPCs at the nuclear envelope, as indicated by the bright red rim. Adapted from [23], permission pending.
+
+Overall, the directionality of the transport cycle relies on the consumption of GTP and on the
+27 asymmetry in the nucleo-cytoplasmic partitioning of the protein Ran, with its RanGDP form being
+28 abundant in the cytoplasm and its RanGTP form being abundant in the nucleus. This asymmetric
+29 distribution of Ran relies on the asymmetric distribution of RanGAP and RanGEF, two factors
+30 responsible for GTP hydrolysis in the cytoplasm and GDP-to-GTP exchange in the nucleus,
+31 respectively [5,339]. The complete nucleo-cytoplasmic exchange cycle comprises three inter32 linked loops, shown Figure 36. These loops are the import cycle, the export cycle, and the
+33 NTF2/Ran cycle that is responsible for recycling of RanGDP into the nucleus and for the
+34 maintenance of the RanGTP/GTP gradient.
+
+Figure 37. Energy dependence of Nuclear Import. In the absence of GTP and Ran, the cargo reaches the nuclear envelope but
+24 does not accumulate inside the nucleus. For comparison with normal import see Figure 31. Adapted from [78], permission
+25 pending.

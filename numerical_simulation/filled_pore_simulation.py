@@ -52,9 +52,9 @@ pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
 #d_ = np.arange(6, 22, 2)
 #d_ = [10]
-d = 16
-chi_PC = -1.5
-chi = 0.3
+d = 8
+chi_PC = -1.0
+chi = 0.5
 sigma = 0.02
 
 #for d in d_:
@@ -119,14 +119,14 @@ def inflow_boundary(dd):
 # c_arr = np.loadtxt("tmp.txt")
 # drift_diffusion.c_arr = xp.array(c_arr)
 #%%
-dt = 0.2
+dt = 0.1
 drift_diffusion.run_until(
     inflow_boundary, dt=dt,
     target_divJ_tot=1e-6,
-    jump_every=10,
+    #jump_every=10,
     timeout=6000,
-    max_jump=1e-3,
-    sigmoid_steepness=0.01
+    #max_jump=1e-3,
+    #sigmoid_steepness=0.01
     )
 #%%
 c_arr = drift_diffusion.c_arr.get()
