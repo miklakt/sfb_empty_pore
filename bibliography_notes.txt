@@ -83,11 +83,28 @@ The nuclear envelope (NE) separates the nucleoplasm and the cytoplasm in eukaryo
 
 ________________________________________________________________________________________________________________________
 Bart W. Hoogenboom;Loren E. Hough;Edward A. Lemke;Roderick Y.H. Lim;Patrick R. Onck;Anton Zilman;. (2021). Physics of the nuclear pore complex: Theory, modeling and experiment . Physics Reports, (), –.
+@article{Hoogenboom2021,
+   abstract = {The hallmark of eukaryotic cells is the nucleus that contains the genome, enclosed by a physical barrier known as the nuclear envelope (NE). On the one hand, this compartmentalization endows the eukaryotic cells with high regulatory complexity and flexibility. On the other hand, it poses a tremendous logistic and energetic problem of transporting millions of molecules per second across the nuclear envelope, to facilitate their biological function in all compartments of the cell. Therefore, eukaryotes have evolved a molecular “nanomachine” known as the Nuclear Pore Complex (NPC). Embedded in the nuclear envelope, NPCs control and regulate all the bi-directional transport between the cell nucleus and the cytoplasm. NPCs combine high molecular specificity of transport with high throughput and speed, and are highly robust with respect to molecular noise and structural perturbations. Remarkably, the functional mechanisms of NPC transport are highly conserved among eukaryotes, from yeast to humans, despite significant differences in the molecular components among various species. The NPC is the largest macromolecular complex in the cell. Yet, despite its significant complexity, it has become clear that its principles of operation can be largely understood based on fundamental physical concepts, as have emerged from a combination of experimental methods of molecular cell biology, biophysics, nanoscience and theoretical and computational modeling. Indeed, many aspects of NPC function can be recapitulated in artificial mimics with a drastically reduced complexity compared to biological pores. We review the current physical understanding of the NPC architecture and function, with the focus on the critical analysis of experimental studies in cells and artificial NPC mimics through the lens of theoretical and computational models. We also discuss the connections between the emerging concepts of NPC operation and other areas of biophysics and bionanotechnology.},
+   author = {Bart W. Hoogenboom and Loren E. Hough and Edward A. Lemke and Roderick Y.H. Lim and Patrick R. Onck and Anton Zilman},
+   doi = {10.1016/J.PHYSREP.2021.03.003},
+   issn = {0370-1573},
+   journal = {Physics reports},
+   keywords = {Anton Zilman,Bart W Hoogenboom,Loren E Hough,MEDLINE,NCBI,NIH,NLM,National Center for Biotechnology Information,National Institutes of Health,National Library of Medicine,PMC9306291,PubMed Abstract,doi:10.1016/j.physrep.2021.03.003,pmid:35892075},
+   month = {7},
+   pages = {1-53},
+   pmid = {35892075},
+   publisher = {Phys Rep},
+   title = {Physics of the Nuclear Pore Complex: Theory, Modeling and Experiment},
+   volume = {921},
+   url = {https://pubmed.ncbi.nlm.nih.gov/35892075/},
+   year = {2021},
+}
+
 
 This
 13 separation is achieved by a complex barrier of approximately 40 nm thickness, known as the
 14 nuclear envelope [1],
-#[1] Alberts2015 - Molecular Biology of the Cell
+#[1] Alberts2015 - Molecular Biology of the Cell ------------------------------
 Typical import cargoesinclude transcription factors,seeking
 21 access to the DNA in the nucleus, while typical export cargoes include mRNAs seeking access to
 22 the ribosomes in the cytoplasm [5].
@@ -97,7 +114,7 @@ Under normal operating conditions, millions of proteinaceous
 In spite of the high
 16 throughput, molecular transport through the NPC is remarkably specific, rapid and robust with
 17 respect to molecular noise and structural perturbations [5,6,9].
-#[6] Tijana201 - Protein Transport by the Nuclear Pore Complex: Simple Biophysics of a Complex Biomachine
+#[6] Tijana2017 - Protein Transport by the Nuclear Pore Complex: Simple Biophysics of a Complex Biomachine
 #[7] Kim2018 - Integrative structure and functional anatomy of a nuclear pore complex
 #[8] Hoelz2011 - The Structure of the Nuclear Pore Complex
 #[9] Rout2000 - The yeast nuclear pore complex: composition, architecture, and transport mechanism
@@ -209,10 +226,10 @@ Investigated through computer simulations using Brownian and Langevin dynamics, 
 
 At the opposite limit to simple homopolymer models, atomistic molecular dynamics (MD)
 25 simulations have the potential to give atomically resolved interaction profiles and conformational
-26 ensembles of FG nups [53,55,133–136]
+26 ensembles of FG nups [53,55,133-136]
 
 A meta-analysis of a wider set of FG nups shows that on average,
-24 the FG nup dimensions agree with predictions for “ideal” Gaussian chains with 𝜈𝜈 = 0.5, where
+24 the FG nup dimensions agree with predictions for "ideal" Gaussian chains with 𝜈𝜈 = 0.5, where
 25 repulsive and attractive interactions are balanced [74]. 
 
 [155]. These experiments yielded a mean persistence length of 0.39 ± 0.14 nm for this FG nup,
@@ -221,14 +238,14 @@ A meta-analysis of a wider set of FG nups shows that on average,
 14 chain.
 
 How interacting particles diffuse within the interior of such a complex
-2 polymeric material still remains an open problem [52,257–270].
-Figure 23. Illustration of the “slide and exchange” mechanism; see text for details. Adapted from [134], permission pending.
+2 polymeric material still remains an open problem [52,257-270].
+Figure 23. Illustration of the "slide and exchange" mechanism; see text for details. Adapted from [134], permission pending.
 Although still not fully understood, multivalency likely helps to reconcile strong thermodynamic
 15 binding with the fast mobility of transport proteins in an FG nup milieu. At higher FG nup
 16 densities, single particles start to interact with multiple FG nups, allowing the transport proteins to
-17 slide in a “millipede-type” motion from one chain to another while breaking only a small number
+17 slide in a "millipede-type" motion from one chain to another while breaking only a small number
 18 of bonds and remaining tightly bound to the FG nup assembly. Molecular dynamics simulations
-19 have provided insights and visualizations of this “slide-and-exchange” mechanism for transport
+19 have provided insights and visualizations of this "slide-and-exchange" mechanism for transport
 20 protein motion within an FG nup assembly. In this model, only one binding site is released at each
 21 step, enabling the transport protein to progress forward due to the thermal fluctuations of the FG
 22 nups, finishing the step with the rebinding at the next available binding site [134]. This way, the
@@ -264,7 +281,7 @@ computational predictions [63] shown in Figure 33, which indicate that transport
 21 be tuned through the balance between hydrophobic and charged residues on the cargo surface.
 22 Taken together, these experimental data and their theoretical analysis indicate that the specificity
 23 of the transport protein/FG nup interaction relies on the balance of hydrophobic and charged
-24 interactio
+24 interactions
 Figure 33. Single molecule studies of NPC transport. Top left: trajectories of fluorescently labeled transport protein in the
 3 vicinity of the nuclear envelope. Red: successful translocations. Blue: abortive translocation. Right top: snapshots of a movie of a
 4 successful and an abortive translocation. Bottom panel: distributions of successful (left) and abortive (right) transport events.
@@ -351,3 +368,79 @@ Overall, the directionality of the transport cycle relies on the consumption of 
 Figure 37. Energy dependence of Nuclear Import. In the absence of GTP and Ran, the cargo reaches the nuclear envelope but
 24 does not accumulate inside the nucleus. For comparison with normal import see Figure 31. Adapted from [78], permission
 25 pending.
+
+#_______________________________________________________________________________________________________________________
+Sent by OB
+
+@article{Uredat2024,
+   abstract = {The formation and properties of smart (stimuli-responsive) membranes are reviewed, with a special focus on temperature and pH triggering of gating to water, ions, polymers, nanoparticles, or other molecules of interest. The review is organized in two parts, starting with all-smart membranes based on intrinsically smart materials, in particular of the poly(N-isopropylacrylamide) family and similar polymers. The key steps of membrane fabrication are discussed, namely the deposition into thin films, functionalization of pores, and the secondary crosslinking of pre-existing microgel particles into membranes. The latter may be free-standing and do not necessitate the presence of a porous support layer. The temperature-dependent swelling properties of polymers provide a means of controlling the size of pores, and thus size-sensitive gating. Throughout the review, we highlight “positive” (gates open) or “negative” (closed) gating effects with respect to increasing temperature. In the second part, the functionalization of porous organic or inorganic membranes of various origins by either microgel particles or linear polymer brushes is discussed. In this case, the key steps are the adsorption or grafting mechanisms. Finally, whenever provided by the authors, the suitability of smart gating membranes for specific applications is highlighted.},
+   author = {Stefanie Uredat and Aditi Gujare and Jonas Runge and Domenico Truzzolillo and Julian Oberdisse and Thomas Hellweg},
+   doi = {10.1039/D3CP05143A},
+   issn = {1463-9084},
+   issue = {4},
+   journal = {Physical Chemistry Chemical Physics},
+   month = {1},
+   pages = {2732-2744},
+   pmid = {38193196},
+   publisher = {The Royal Society of Chemistry},
+   title = {A review of stimuli-responsive polymer-based gating membranes},
+   volume = {26},
+   url = {https://pubs.rsc.org/en/content/articlehtml/2024/cp/d3cp05143a https://pubs.rsc.org/en/content/articlelanding/2024/cp/d3cp05143a},
+   year = {2024},
+}
+
+[^\x00-\x7f]
+
+#----------------------------------------------------------------------------------
+Rout2003
+Before their import, NLS-cargo-kap complexes constantly form in the cytoplasm. When transported into
+the nucleus, the high concentration of RanGTP then favors
+the release of cargos. This is an exothermic reaction that
+results in a lower final energy state (Figure 4c). The
+resulting concentration gradient of cargo-kap drives
+the complexes into the nucleus. Cargos accumulate in
+the nucleus because they become 'trapped' there (Box 2)
+[2,7,38]. In addition, the nuclear kap-RanGTP complexes,
+which are produced during import, form a concentration
+gradient decreasing towards the cytoplasm; these complexes probably diffuse into the cytoplasm (through NPC
+binding), where RanGAP facilitates the hydrolysis of
+RanGTP to RanGDP and the dissociation of Ran from
+kap (Figure 1). Similarly, export kaps form complexes with
+RanGTP and their NES-cargos in the nucleus and diffuse
+down a concentration gradient into the cytoplasm where
+RanGAP dissociates the complexes and releases their
+cargos. This increases the cytoplasmic concentrations
+of RanGDP and free kaps. It seems that free kaps, still
+competent for NPC binding, can rapidly diffuse across the
+NPC [39]. This would allow them to pass between the
+nucleus and cytoplasm and scour each compartment for
+new cargos [2]. Thus, the hydrolysis of GTP maintains
+the diffusion gradients that ultimately force cargos to
+concentrate on one or other side of the NE.
+Were nucleocytoplasmic transport this simple - just a
+matter of entropic barriers, NPC binding and GTPrenewed concentration gradients – then it should be
+possible (in accordance with Le Chatelier's principle) to
+reverse the normal direction of transport through the
+NPC. Indeed, in agreement with these simple tenets, such
+reversal has been demonstrated [40].
+
+are also the binding sites for transport factors. Interestingly, the predicted multitude of low-affinity binding sites
+for transport factors corresponds to what is observed, as
+the ,200 FG nups at the NPC are themselves made of
+multiple repeats of FG-binding sites, each with a relatively
+low affinity and a high exchange rate [2,8,33-35]. This
+provides hundreds of potential stepping stones across
+which transport factors can pass. The multiplicity of
+binding sites could also provide the NPC with the
+necessary capacity to bind to many transport factors
+simultaneously, allowing high transport flux.
+Given the close proximity of so many FG repeats at the
+NPC, transport factors might interact with several FG
+repeats simultaneously. The potential even exists for a
+transport factor to travel 'hand-over-fist' between repeats
+across the NPC, always holding on to at least one FG
+repeat. Thus, it is not so much affinities, but avidities - the
+functional affinity resulting from the interaction between
+two molecules through multiple binding sites - that we
+might have to consider when attempting to derive a
+molecular kinetic description of the NPC [2].
