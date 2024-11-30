@@ -34,13 +34,16 @@ def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
     return fig
 
 #%%
+pore_radius = 26 # pore radius
+wall_thickness = 52 # wall thickness
+
 # %%
 %matplotlib qt
 import matplotlib.colors as plt_colors
 a0, a1 = 0.70585835, -0.31406453
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d =8
+d =16
 chi_PC = -1.0
 chi = 1.1
 sigma = 0.02
@@ -56,7 +59,8 @@ fields = calculate_fields(
     method= "convolve", 
     mobility_correction= "vol_average",
     mobility_model = "Rubinstein",
-    mobility_model_kwargs = {"prefactor":1.0}
+    mobility_model_kwargs = {"prefactor":1.0},
+    Haberman_correction = True
     #**method
     )
 
@@ -74,11 +78,12 @@ perm = calculate_permeability(
     mobility_model = "Rubinstein",
     mobility_model_kwargs = {"prefactor":1.0},         
     integration= "cylindrical_caps",
-    integration_kwargs = dict(spheroid_correction = True)
+    integration_kwargs = dict(spheroid_correction = True),
+    Haberman_correction = True
     )
 
 fields["resistivity"] = (fields["conductivity"])**(-1)
-
+#%%
 import cmasher as cmr
 #cmap = cmr.
 cmap0 = cmr.get_sub_cmap("seismic", 0.0, 0.5)
@@ -88,12 +93,12 @@ cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(1-vmin)/(vmax-vmin)])
 r_cut = 50
 z_cut = 40
 fig = plot_heatmap(fields, r_cut, z_cut, keys = [
-    "phi", 
+    #"phi", 
     #"Pi", 
     #"gamma", 
     #"free_energy", 
     #"mobility", 
-    #"conductivity", 
+    "conductivity", 
     #"resistivity",
     #"osmotic", 
     #"surface"

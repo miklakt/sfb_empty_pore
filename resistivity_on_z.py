@@ -42,6 +42,7 @@ chi_PCs = [-1.2, -1.1, -1.0, -0.9]
 chi_PS = 0.5
 pore_radius = 26
 wall_thickness = 52
+Haberman_correction_ = True
 parameters = dict(
     a0 = 0.70585835,
     a1 = -0.31406453,
@@ -63,7 +64,8 @@ parameters = dict(
     # mobility_model_kwargs = {},
     #mobility_model = "Hoyst",
     #mobility_model_kwargs = {'alpha': 1.63, 'delta': 0.89, 'N':300},
-    #mobility_model_kwargs = dict(beta = 8, nu = 0.76)
+    #mobility_model_kwargs = dict(beta = 8, nu = 0.76),
+    Haberman_correction=Haberman_correction_
 )
 
 fields = {}
@@ -78,14 +80,19 @@ xlayers = fields[chi_PC]["xlayers"]
 ylayers = fields[chi_PC]["ylayers"]
 conduct = {
     chi_PC_:integrate_with_cylindrical_caps(field["conductivity"], 
-        l1, wall_thickness, pore_radius, 
-        xlayers, ylayers, 
+        l1, wall_thickness, pore_radius,
+        xlayers, ylayers,
         spheroid_correction=True
         )
     for chi_PC_, field in fields.items()
     }
 
 empty_pore_arr = np.array(~fields[-1.0]["walls"], dtype="float")
+if Haberman_correction_:
+    wall_drag_correction = Haberman_correction_approximant(d, pore_radius)
+    empty_pore_arr[l1:l1+wall_thickness, 0:pore_radius] = empty_pore_arr[l1:l1+wall_thickness, 0:pore_radius]/wall_drag_correction
+
+#%%
 conduct_empty = integrate_with_cylindrical_caps(
     empty_pore_arr,
     int(l1-d/2), int(wall_thickness+d), pore_radius,
@@ -157,5 +164,5 @@ ax.set_ylabel(r"$\rho D_0 \pi r_{pore}^2$")
 ax.set_xlim(-100, 100)
 ax.set_ylim(0,5.5)
 fig.set_size_inches(2.8,2.8)
-fig.savefig(f"fig/resistivity_z_on_chi_PC_{chi_PS=}.svg")
+#fig.savefig(f"fig/resistivity_z_on_chi_PC_{chi_PS=}.svg")
 #%%

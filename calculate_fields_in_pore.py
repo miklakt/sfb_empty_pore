@@ -79,8 +79,19 @@ def mobility_Hoyst(phi, d, N, alpha, delta, nu = 0.76):
 # def mobility_FoxFlory(phi, N):
 #     eta = 1 + 0.425*np.sqrt(N)*phi
 #     return 1/eta
-    
 
+def Haberman_correction_approximant(d, pore_radius):
+    #wall drag correction
+    if d/2>0.95*pore_radius:
+        print("Particle is to big for Haberman correction")
+        return None
+    Pade_approximant = lambda x: (-2.6211*x**3 + 1.0626*x**2 + 1.9006*x**1 + 0.0089111)/(1-x)
+    x_ = d/2 / pore_radius
+    return np.exp(Pade_approximant(x_))
+
+
+    
+#%%
 @lru_cache()
 def generate_circle_kernel(d):
     radius = d/2
@@ -154,7 +165,7 @@ def calculate_corrected_phi(fields, a0, a1, chi_PC, correction = "vol_average", 
     phi_err = 1e-10
     fields["corrected_phi"][(fields["corrected_phi"] > -phi_err)&(fields["corrected_phi"] < 0)] = 0.0
 
-def calculate_mobility(fields, d, model, model_kwargs = {}, phi_arr = "phi"):
+def calculate_mobility(fields, d, model, model_kwargs = {}, phi_arr = "phi", Haberman_correction = False):
     if model=="Rubinstein":
         if "prefactor" in model_kwargs:
             prefactor = model_kwargs["prefactor"]
@@ -183,6 +194,13 @@ def calculate_mobility(fields, d, model, model_kwargs = {}, phi_arr = "phi"):
         xlayers = fields["xlayers"]
         ylayers = fields["ylayers"]
         mobility = np.ones((ylayers, xlayers))
+
+    if Haberman_correction:
+        l1 = fields["l1"]
+        wall_thickness = fields["s"]
+        pore_radius = fields["r"]
+        wall_drag_correction = Haberman_correction_approximant(d, pore_radius)
+        mobility[l1:l1+wall_thickness, 0:pore_radius] = mobility[l1:l1+wall_thickness, 0:pore_radius]/wall_drag_correction
     
     mobility[fields["walls"]==True] = 0
     fields["mobility"] = mobility
@@ -343,6 +361,7 @@ def calculate_fields(
         mobility_model = "Rubinstein",
         mobility_model_kwargs = {},
         cutoff_phi = 1e-5,
+        Haberman_correction = False
         ):
     fields = utils.get_by_kwargs(master_empty, chi_PS = chi, s = wall_thickness, r = pore_radius, sigma = sigma).squeeze()
     fields["phi"] = fields.dataset["phi"].squeeze().T
@@ -355,7 +374,7 @@ def calculate_fields(
 
     calculate_energy(fields, d, method, convolve_mode)
     calculate_corrected_phi(fields, a0=a0, a1=a1, chi_PC = chi_PC, correction=mobility_correction, d=d, convolve_mode=convolve_mode)
-    calculate_mobility(fields, d, mobility_model, mobility_model_kwargs, phi_arr="corrected_phi")
+    calculate_mobility(fields, d, mobility_model, mobility_model_kwargs, phi_arr="corrected_phi", Haberman_correction = Haberman_correction)
     calculate_conductivity(fields)
     calculate_partition_coefficient(fields, cutoff_phi)
     fields["d"] = d
@@ -365,6 +384,10 @@ def calculate_fields(
 
 def empty_pore_permeability(D, r, s):
     return 2*D*r/(1 + 2*s/(r*np.pi))
+
+def empty_pore_permeability_corrected(D, r, s, d):
+    K = Haberman_correction_approximant(d, r)
+    return 2*D*(r-d/2)/(1 + 2*K*(s+d)/((r-d/2)*np.pi))
 
 
 def calculate_permeability(
@@ -381,6 +404,7 @@ def calculate_permeability(
         integration= "cylindrical_caps", #="Rayleigh"|"Caps",
         integration_kwargs = {},
         cutoff_phi = 1e-5,
+        Haberman_correction = False
         ):
     
     fields = calculate_fields(
@@ -396,6 +420,7 @@ def calculate_permeability(
         convolve_mode = convolve_mode,
         mobility_model_kwargs = mobility_model_kwargs,
         cutoff_phi = cutoff_phi,
+        Haberman_correction = Haberman_correction
         )
 
     result = dict(
@@ -412,6 +437,7 @@ def calculate_permeability(
         mobility_model_kwargs = mobility_model_kwargs,
         integration_kwargs = integration_kwargs,
         cutoff_phi = cutoff_phi,
+        Haberman_correction = Haberman_correction
     )
     
     if integration=="cylindrical_caps":
@@ -426,6 +452,8 @@ def calculate_permeability(
 
     result["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
     result["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
+    result["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(1, pore_radius, wall_thickness, d)*einstein_factor
+
     result["permeability"] = fields["permeability"]*einstein_factor
     result["permeability_z"] = fields["permeability_z"]*einstein_factor
     result["PC"] = fields["PC"]

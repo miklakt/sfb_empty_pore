@@ -106,9 +106,10 @@ chi_PC = chi_PC_color
 # model, mobility_model_kwargs = "none", {}
 # model, mobility_model_kwargs = "Phillies", dict(beta = 8, nu = 0.76)
 # model = "Fox-Flory", dict(N = 300)
-model, mobility_model_kwargs = "Rubinstein", {"prefactor":0}
+model, mobility_model_kwargs = "Rubinstein", {"prefactor":1}
 #model, mobility_model_kwargs = "Hoyst", {"alpha" : 1.63, "delta": 0.89, "N" : 300}
 
+Haberman_correction_ = True
 results = []
 for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
     print(d_, chi_PS_, chi_PC_)
@@ -123,7 +124,8 @@ for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
         mobility_correction= "vol_average",
         mobility_model = model,
         mobility_model_kwargs = mobility_model_kwargs,
-        integration="cylindrical_caps"
+        integration="cylindrical_caps",
+        Haberman_correction=Haberman_correction_
         )
         
     #result["limited_permeability"] = (result["permeability"]**(-1) + result["thin_empty_pore"]**(-1))**(-1)
@@ -185,15 +187,26 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
                 )
 
     if show_analytical:
-        ax.plot(
-            d, 
-            1/result__["thick_empty_pore"]/d, 
-            color = "black", 
-            linestyle = "--",
-            label = "$R_{empty}$",
-            linewidth = 2,
-            zorder = -1,
-            )
+        if Haberman_correction_:
+            ax.plot(
+                d, 
+                1/result__["thick_empty_pore_Haberman"]/d, 
+                color = "black", 
+                linestyle = "--",
+                label = "$R_{empty}$",
+                linewidth = 2,
+                zorder = -1,
+                )
+        else:
+            ax.plot(
+                d, 
+                1/result__["thick_empty_pore"]/d, 
+                color = "black", 
+                linestyle = "--",
+                label = "$R_{empty}$",
+                linewidth = 2,
+                zorder = -1,
+                )
 
         ax.plot(
             d, 
