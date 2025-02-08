@@ -1,9 +1,11 @@
+#%%
 import os, sys
+import drift_diffusion_stencil as drift_diffusion_stencil
+from drift_diffusion_stencil import DriftDiffusionKernelFactory
+#%%
 here = os.path.dirname(__file__)
 sys.path.append(os.path.join(here, '..'))
 os.chdir("..")
-import drift_diffusion_stencil as drift_diffusion_stencil
-from drift_diffusion_stencil import DriftDiffusionKernelFactory
 from calculate_fields_in_pore import *
 from heatmap_explorer import plot_heatmap_and_profiles
 import tqdm
@@ -126,15 +128,10 @@ else:
     f"numerical_simulation/simulation_data/{d=}_{zlayers=}_{rlayers=}_{chi=}_{chi_PC=}_{dt=}_{differencing}.h5"
 s = SimulationManager(drift_diffusion, inflow_boundary, simulation_name)
 #%%
-c0 = xp.tile(xp.linspace(1,0, zlayers), (rlayers,1)).T
-c0 = c0*np.exp(-drift_diffusion.U_arr)/2
-drift_diffusion.c_arr = c0
+# c0 = xp.tile(xp.linspace(1,0, zlayers), (rlayers,1)).T
+# c0 = c0*np.exp(-drift_diffusion.U_arr)/2
+# drift_diffusion.c_arr = c0
 #%%
-drift_diffusion.c_arr = xp.array(results["c_arr"][-23])
-#%%
-# drift_diffusion.c_arr = np.exp(-drift_diffusion.U_arr)/4
-# drift_diffusion.c_arr[drift_diffusion.c_arr==1.0] = 0
-
 s.run(1, 100)
 #%%
 s.run(10, 100)
@@ -151,6 +148,8 @@ s.run(20, 1000000)
 # %%
 plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get())
 plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
+#%%
+plot_heatmap_and_profiles(drift_diffusion.c_arr.get()*np.exp(drift_diffusion.U_arr.get()), mask = drift_diffusion.W_arr.get())
 # %%
 plt.plot(drift_diffusion.J_z_tot().get())
 # %%
@@ -160,7 +159,7 @@ print(
     chi,
     chi_PC,
     np.round(np.mean(drift_diffusion.J_z_tot().get()), 4),
-    np.round(np.std(drift_diffusion.J_z_tot().get()), 4),
+    np.round(np.std(drift_diffusion.J_z_tot().get()), 6),
     sep = ", "
     )
 
@@ -189,5 +188,5 @@ ax.set_xlabel("$z$")
 ax.set_ylabel("$c/c_0$")
 ax.legend(loc = "lower left")
 fig.set_size_inches(4,3)
-fig.savefig("fig/streamlines/total_flux_z.svg", transparent = True)
+#fig.savefig("fig/streamlines/total_flux_z.svg", transparent = True)
 # %%

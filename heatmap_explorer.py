@@ -1,4 +1,4 @@
-
+#%%
 def plot_heatmap_and_profiles(array,
     vline_x:int=0, hline_y:int=0, 
     xlabel="X", ylabel="Y", zlabel="Z",
@@ -8,7 +8,6 @@ def plot_heatmap_and_profiles(array,
     zmax = None,
     mask = None,
     cmap = "seismic",
-    contour = False,
     ):
     import numpy as np
     import matplotlib.pyplot as plt
@@ -120,18 +119,6 @@ def plot_heatmap_and_profiles(array,
                         )
     cbar.set_label(zlabel, labelpad = -40)
 
-    if contour:
-        cs = ax.contour(
-            array.T,
-            cmap=cmap_.reversed(),
-            extent = extent, 
-            origin = "lower",
-            linewidths = 0.3,
-            vmin = zmin,
-            vmax = zmax
-            )
-        cbar.add_lines(cs)
-
     vline_profile, = ax_y.plot(vline_data, y_arr, color = "black")
     vline_scatter, = ax_y.plot(x_arr[vline_x], zvalue, color = "black", marker = 's', markerfacecolor="none")
     
@@ -175,14 +162,14 @@ def plot_heatmap_and_profiles(array,
         vline_profile.set_xdata(vline_data)
         hline_profile.set_ydata(hline_data)
 
-        hline_mark.set_ydata(y_arr[hline_y])
-        vline_mark.set_xdata(x_arr[vline_x])
+        hline_mark.set_ydata([y_arr[hline_y]])
+        vline_mark.set_xdata([x_arr[vline_x]])
 
-        vline_scatter.set_ydata(y_arr[hline_y])
-        vline_scatter.set_xdata(zvalue)
+        vline_scatter.set_ydata([y_arr[hline_y]])
+        vline_scatter.set_xdata([zvalue])
 
-        hline_scatter.set_ydata(zvalue)
-        hline_scatter.set_xdata(x_arr[vline_x])
+        hline_scatter.set_ydata([zvalue])
+        hline_scatter.set_xdata([x_arr[vline_x]])
 
         text.set_text(f"{xlabel}={x_arr[vline_x]}\n{ylabel}={y_arr[hline_y]}\n{zlabel}={zvalue:.3f}")
 
@@ -233,3 +220,11 @@ def plot_heatmap_and_profiles(array,
     return fig
 
 
+#%%
+if __name__ == "__main__":
+    import numpy as np
+    row_values = np.linspace(0, 1, 100)  # shape (100,)
+    arr = row_values[:, None] + np.zeros((1, 100))
+    #%matplotlib qt
+    plot_heatmap_and_profiles(arr, vline_x=50, hline_y=50)
+# %%

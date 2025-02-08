@@ -38,14 +38,13 @@ pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
 
 # %%
-%matplotlib qt
 import matplotlib.colors as plt_colors
 a0, a1 = 0.70585835, -0.31406453
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d =16
-chi_PC = -1.0
-chi = 1.1
+d =6
+chi_PC = 0.0
+chi = 0.5
 sigma = 0.02
 
 fields = calculate_fields(
@@ -83,7 +82,9 @@ perm = calculate_permeability(
     )
 
 fields["resistivity"] = (fields["conductivity"])**(-1)
+fields["pc"] = np.exp(-fields["free_energy"])
 #%%
+%matplotlib qt
 import cmasher as cmr
 #cmap = cmr.
 cmap0 = cmr.get_sub_cmap("seismic", 0.0, 0.5)
@@ -93,19 +94,20 @@ cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(1-vmin)/(vmax-vmin)])
 r_cut = 50
 z_cut = 40
 fig = plot_heatmap(fields, r_cut, z_cut, keys = [
-    #"phi", 
+    "phi", 
     #"Pi", 
     #"gamma", 
     #"free_energy", 
     #"mobility", 
-    "conductivity", 
+    #"conductivity", 
     #"resistivity",
     #"osmotic", 
     #"surface"
+    "pc"
     ], 
     #cmap = "seismic",
-    zmin=0,
-    zmax = 0.7,
+    #zmin=0,
+    #zmax = 0.7,
     #cmap = cmap_,
     #zmin=vmin,
     #zmax = vmax,
@@ -113,6 +115,4 @@ fig = plot_heatmap(fields, r_cut, z_cut, keys = [
     )
 #fig.savefig(f"fig/free_energy/free_energy_{chi=}_{chi_PC=}_{d=}.svg")
 #fig.savefig(f"fig/free_energy/resistivity_{chi=}_{chi_PC=}_{d=}.svg")
-#%%
-print(1/perm["permeability"]*perm["thick_empty_pore"])
 # %%
