@@ -13,6 +13,7 @@ style.use('tableau-colorblind10')
 
 
 from calculate_fields_in_pore import *
+import scf_pb
 
 a0 = 0.70585835
 a1 = -0.31406453
@@ -20,9 +21,21 @@ wall_thickness=52
 pore_radius=26
 sigma = 0.02
 
+def free_energy_gel(phi, chi_PS, chi_PC, d):
+    V = volume(d)
+    S = surface(d)
+    Pi_ = Pi(phi, chi_PS, trunc=False)
+    gamma_ = gamma(chi_PS, chi_PC, phi, a0, a1)
+    free_energy = Pi_*V + gamma_*S
+    return free_energy
+
+def PC_gel(phi, chi_PS, chi_PC, d):
+    FE = free_energy_gel(phi, chi_PS, chi_PC, d)
+    PC = np.exp(-FE)
+    return PC
 #%%
 #d = np.arange(6, 24, 2)
-d_color = [6, 8]
+d_color = [4, 6, 8]
 d = d_color
 chi_PS = [0.3, 0.5]
 chi_PC = np.round(np.arange(-3, 0.2, 0.05),3)
@@ -32,7 +45,7 @@ chi_PC = np.round(np.arange(-3, 0.2, 0.05),3)
 # model = "Fox-Flory", dict(N = 300)
 model, mobility_model_kwargs = "Rubinstein", {"prefactor":1}
 #model, mobility_model_kwargs = "Hoyst", {"alpha" : 1.63, "delta": 0.89, "N" : 300}
-Haberman_correction_ = True
+Haberman_correction_ = False
 results = []
 for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
     print(d_, chi_PS_, chi_PC_)
@@ -91,6 +104,30 @@ def create_interp_func(X, Y, domain=None):
     return interp_func
 
 #%%
+reference_chi_PC = -0.0
+Kuhn_segment = 0.8
+chi_gel = 0.5
+
+phi_gel = 0.2
+results["PC_gel"]=results.apply(lambda _:PC_gel(phi_gel, chi_gel, _["chi_PC"], _["d"]), axis = 1)
+#%%
+def get_permeability_different_bc(boundary_z, permeability):
+    R_reservoir = (-np.log(pore_radius/3 + boundary_z) + np.log(pore_radius + boundary_z))/(2*np.pi*pore_radius)
+    return (permeability**(-1)-R_reservoir)**(-1)
+
+def get_permeability_longer_pore(add_length, permeability_z, permeability):
+    R_added  = (permeability_z[int(len(permeability_z)/2)])**(-1)*add_length
+    return (permeability**(-1)+R_added)**(-1)
+
+
+add_length=150
+results["permeability_longer"]=results.apply(lambda _:get_permeability_longer_pore(add_length, _.permeability_z, _.permeability), axis = 1)
+
+results["permeability_channel"] = results["R_pore"]**(-1)
+# boundary_z = 0
+# results["permeability_bc"]=results.apply(lambda _:get_permeability_different_bc(boundary_z, _.permeability), axis = 1)
+#%%
+
 ################################################################################
 ################################################################################
 fig, axs = plt.subplots(ncols = len(chi_PS), dpi = 600, sharey=True, sharex= True)
@@ -100,14 +137,12 @@ else:
     axs_ = axs
 results_ = results.loc[(results.mobility_model == model)]
 
-reference_chi_PC = -0.5
-
-Kuhn_segment = 0.8
 for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
     x = experimental_data["Passage_Rate"]
     mpl_markers = ('o', 's', 'D')
     markers = itertools.cycle(mpl_markers)
     for nup in ["Mac98A","Nup116","Nsp1"]:
+    #for nup in ["Nup116"]:
         y = experimental_data[nup]
         ax.scatter(x,y, marker = next(markers), s=10, label = nup, color = "black", fc = "none")
 
@@ -118,36 +153,38 @@ for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
         ax.scatter(x,y, color = "red", marker = next(markers), s =10)
 
     for d_, result__ in result_.groupby(by = "d"):
-        reference_permeability = result__.loc[result__.chi_PC==reference_chi_PC,"permeability"].squeeze()
-        x = result__["permeability"].squeeze()#*d_
-        y = result__["PC"].squeeze()
+        permeability_key = "permeability_channel"
+        reference_permeability = result__.loc[result__.chi_PC==reference_chi_PC,permeability_key].squeeze()
+        x = result__[permeability_key].squeeze()#*d_
+        #y = result__["PC"].squeeze()
+        y = result__["PC_gel"].squeeze()
         x=x/reference_permeability
-        if d_ in d_color:
-            plot_kwargs = dict(
-                label = fr"$d = {d_}({d_*Kuhn_segment:.1f}"+r"\text{nm})$",
-                #marker = next(markers),
-                #markevery = 0.5,
-                #markersize = 4,
-            )
-        else:
-            plot_kwargs = dict(
-                linewidth = 0.1,
-                color ="black"
-            )
+        #x=reference_permeability/x
         ax.plot(
             x, y, 
-            **plot_kwargs
-            )
-        # if d_ in d_color:
-        #     ax.scatter(
-        #         1, 
-        #         result__["thick_empty_pore"].iloc[1],#*d_, 
-        #         marker = "*"
-        #         )
-            #ax.plot(x, result__["thick_empty_pore"], linestyle = "--", color = ax.lines[-1].get_color())
+            label = fr"$d = {d_}({d_*Kuhn_segment:.1f}"+r"\text{nm})$",
+            #marker = next(markers),
+            #markevery = 0.5,
+            #markersize = 4,
+        )
+        permeability_key = "permeability"
+        reference_permeability = result__.loc[result__.chi_PC==reference_chi_PC,permeability_key].squeeze()
+        x = result__[permeability_key].squeeze()#*d_
+        #y = result__["PC"].squeeze()
+        y = result__["PC_gel"].squeeze()
+        x=x/reference_permeability
+        ax.plot(x, y, linestyle = "--", color = ax.lines[-1].get_color(), linewidth= 0.5)
+
+        permeability_key = "permeability_longer"
+        reference_permeability = result__.loc[result__.chi_PC==reference_chi_PC,permeability_key].squeeze()
+        x = result__[permeability_key].squeeze()#*d_
+        #y = result__["PC"].squeeze()
+        y = result__["PC_gel"].squeeze()
+        x=x/reference_permeability
+        ax.plot(x, y, linestyle = "--", color = ax.lines[-1].get_color())
 
     ax.set_title(r"$\chi_{{PS}} = "+f"{chi_PS_}$")
-    ax.set_xlim(1e-1, 1e3)
+    ax.set_xlim(1e-1, 1e4)
     ax.set_ylim(1e-2,1e4)
     ax.set_xlabel(r"$R_{\text{reference}} / R$")
     ax.set_yscale("log")
