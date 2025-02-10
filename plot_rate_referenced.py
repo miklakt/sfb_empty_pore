@@ -161,7 +161,7 @@ experimental_data=pd.DataFrame(
 
 reference_particle_radius = 1.97#nm
 
-Kuhn_segment = 0.8
+Kuhn_segment = 0.76
 experimental_data["d"] = experimental_data["stokes_r_nm"]*2#/Kuhn_segment*2
 #%%
 def create_interp_func(X, Y, domain=None):

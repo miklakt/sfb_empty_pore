@@ -35,9 +35,8 @@ def PC_gel(phi, chi_PS, chi_PC, d):
     return PC
 #%%
 #d = np.arange(6, 24, 2)
-d_color = [4, 6, 8]
-d = d_color
-chi_PS = [0.3, 0.5]
+d = [4, 6, 8]
+chi_PS = [0.3, 0.5, 0.6]
 chi_PC = np.round(np.arange(-3, 0.2, 0.05),3)
 
 # model, mobility_model_kwargs = "none", {}
@@ -70,7 +69,7 @@ for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
     results.append(result)
 results = pd.DataFrame(results)
 #%%
-experimental_data = pd.read_csv("npc_permeation_probes.csv")
+experimental_data = pd.read_csv("perm_rates_experimental_data.csv")
 #%%
 def create_interp_func(X, Y, domain=None):
     from scipy.interpolate import CubicSpline
@@ -103,14 +102,50 @@ def create_interp_func(X, Y, domain=None):
 
     return interp_func
 
-#%%
-reference_chi_PC = -0.0
-Kuhn_segment = 0.8
-chi_gel = 0.5
+def chi_from_phi_min_spinodal(N, phi_min):
+    """
+    Given degree of polymerization N and the polymer volume fraction phi_min
+    (on the spinodal), return the exact Flory-Huggins chi parameter.
+    """
+    return 0.5 * (1.0/(N * phi_min) + 1.0/(1.0 - phi_min))
 
-phi_gel = 0.2
-results["PC_gel"]=results.apply(lambda _:PC_gel(phi_gel, chi_gel, _["chi_PC"], _["d"]), axis = 1)
+def estimate_protein_diameter(MW_kDa, density=1.35):
+    NA = 6.022e23
+    MW_g_per_mol = MW_kDa * 1000.0
+    mass_per_molecule_g = MW_g_per_mol / NA
+    volume_cm3 = mass_per_molecule_g / density
+    diameter_nm = ((3.0 * volume_cm3) / (2.0 * np.pi)) ** (1.0 / 3.0) * 1e7
+    return diameter_nm
+
+def protein_mass_fraction(
+    conc_mg_per_ml: float,
+    protein_density: float = 1.35,
+    water_density: float = 1.0
+) -> float:
+
+    mass_protein_g = conc_mg_per_ml / 1000.0  # g of protein in 1 mL of final solution
+    volume_protein_ml = mass_protein_g / protein_density  # (g) / (g/mL) = mL
+    volume_water_ml = 1.0 - volume_protein_ml  # 1 mL total solution minus protein volume
+    mass_water_g = volume_water_ml * water_density
+    mass_total_g = mass_protein_g + mass_water_g
+    return mass_protein_g / mass_total_g if mass_total_g > 0 else float('nan')
+
 #%%
+reference_chi_PC = 0.0
+#reference_d = 6
+Kuhn_segment = 0.76
+#phi_gel = 0.2
+#chi_gel = 0.65
+phi_gel = protein_mass_fraction(
+    conc_mg_per_ml=250, 
+    protein_density=1.2
+    ) #0.24
+chi_gel = chi_from_phi_min_spinodal(
+    N=300, phi_min=phi_gel
+    )#0.664
+
+results["PC_gel"]=results.apply(lambda _:PC_gel(phi_gel, chi_gel, _["chi_PC"], _["d"]), axis = 1)
+
 def get_permeability_different_bc(boundary_z, permeability):
     R_reservoir = (-np.log(pore_radius/3 + boundary_z) + np.log(pore_radius + boundary_z))/(2*np.pi*pore_radius)
     return (permeability**(-1)-R_reservoir)**(-1)
@@ -124,10 +159,15 @@ add_length=150
 results["permeability_longer"]=results.apply(lambda _:get_permeability_longer_pore(add_length, _.permeability_z, _.permeability), axis = 1)
 
 results["permeability_channel"] = results["R_pore"]**(-1)
+
+globular_protein_density = 1.2#g/ml
+experimental_data["d"] = experimental_data.apply(lambda _:estimate_protein_diameter(_.MW, globular_protein_density), axis = 1)
 # boundary_z = 0
 # results["permeability_bc"]=results.apply(lambda _:get_permeability_different_bc(boundary_z, _.permeability), axis = 1)
 #%%
 
+experimental_data_=experimental_data.loc[experimental_data.Oligomer == 1]
+#experimental_data_ = experimental_data
 ################################################################################
 ################################################################################
 fig, axs = plt.subplots(ncols = len(chi_PS), dpi = 600, sharey=True, sharex= True)
@@ -138,23 +178,50 @@ else:
 results_ = results.loc[(results.mobility_model == model)]
 
 for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
-    x = experimental_data["Passage_Rate"]
+    x = experimental_data_["Passage_Rate"]
     mpl_markers = ('o', 's', 'D')
     markers = itertools.cycle(mpl_markers)
     for nup in ["Mac98A","Nup116","Nsp1"]:
     #for nup in ["Nup116"]:
-        y = experimental_data[nup]
-        ax.scatter(x,y, marker = next(markers), s=10, label = nup, color = "black", fc = "none")
+        y = experimental_data_[nup]
+        s = experimental_data_["d"]
+        ax.scatter(x,y, marker = next(markers), s=s*3, label = nup, color = "black", fc = "none")
 
     markers = itertools.cycle(mpl_markers)
+
+    first_it =True
     for nup in ["Mac98A","Nup116","Nsp1"]:
-        x = experimental_data.loc[experimental_data.Protein == "mCherry","Passage_Rate"]
-        y = experimental_data.loc[experimental_data.Protein == "mCherry",nup]
-        ax.scatter(x,y, color = "red", marker = next(markers), s =10)
+        mark_protein = "mCherry"
+        color = "red"
+        x = experimental_data_.loc[experimental_data_.Protein == mark_protein,"Passage_Rate"]
+        y = experimental_data_.loc[experimental_data_.Protein == mark_protein,nup]
+        s = experimental_data_.loc[experimental_data_.Protein == mark_protein,"d"]
+        if first_it: 
+            label = mark_protein
+            first_it = False
+        else:
+            label = None
+        ax.scatter(x,y, color = color, marker = next(markers), s = s*3, label=label)
+    
+    markers = itertools.cycle(mpl_markers)
+    first_it =True
+    for nup in ["Mac98A","Nup116","Nsp1"]:
+        mark_protein = "EGFP"
+        color = "green"
+        x = experimental_data_.loc[experimental_data_.Protein == mark_protein,"Passage_Rate"]
+        y = experimental_data_.loc[experimental_data_.Protein == mark_protein,nup]
+        s = experimental_data_.loc[experimental_data_.Protein == mark_protein,"d"]
+        if first_it: 
+            label = mark_protein
+            first_it = False
+        else:
+            label = None
+        ax.scatter(x,y, color = color, marker = next(markers), s = s*3, label=label)
 
     for d_, result__ in result_.groupby(by = "d"):
         permeability_key = "permeability_channel"
-        reference_permeability = result__.loc[result__.chi_PC==reference_chi_PC,permeability_key].squeeze()
+        #reference_permeability = result_.loc[(result_.chi_PC==reference_chi_PC) & (result__.d==reference_d),permeability_key].squeeze()
+        reference_permeability = result__.loc[(result__.chi_PC==reference_chi_PC),permeability_key].squeeze()
         x = result__[permeability_key].squeeze()#*d_
         #y = result__["PC"].squeeze()
         y = result__["PC_gel"].squeeze()
@@ -182,6 +249,23 @@ for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
         y = result__["PC_gel"].squeeze()
         x=x/reference_permeability
         ax.plot(x, y, linestyle = "--", color = ax.lines[-1].get_color())
+
+    # Loop over each row in the DataFrame to add text
+    for i, row in experimental_data_.iterrows():
+        x = row["Passage_Rate"]
+        for nup in ["Mac98A","Nup116","Nsp1"]:
+        #for nup in ["Nup116"]:
+            text_key = "MW"
+            y = row[nup]
+            s = f"{row[text_key]:.1f}"
+            ax.text(
+                x*1.5,
+                y*0.5,     # small offset in y
+                s,
+                ha='center',
+                va='bottom',
+                fontsize=5
+            )
 
     ax.set_title(r"$\chi_{{PS}} = "+f"{chi_PS_}$")
     ax.set_xlim(1e-1, 1e4)
