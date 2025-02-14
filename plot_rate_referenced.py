@@ -50,7 +50,7 @@ simulation_empty_pore["R_corrected"] = 1/(simulation_empty_pore["J_corrected"]/s
 #%%
 d = np.arange(2, 20, 2)
 #d =[8 ,10, 12 ,]
-chi_PS = [0.3, 0.5]
+chi_PS = [0.3, 0.5, 0.6]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
 chi_PC_color = [-1.0,-0.5, 0]
 chi_PC = chi_PC_color
@@ -150,7 +150,7 @@ experimental_data=pd.DataFrame(
         0.40,
         0.28,
         0.28,
-        np.nan,   # "—" replaced with NaN
+        np.nan,
         0.012,
         0.0140,
         0.0071,
@@ -270,5 +270,5 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
 
 axs[0].set_ylabel(rf"$R(d = {reference_particle_radius*2}"+r"\text{nm}) / R$")
 ax.legend(title = r"$\chi_{\text{PC}}$")
-
+fig.set_size_inches(2.5*len(chi_PS) +1, 3)
 # %%
