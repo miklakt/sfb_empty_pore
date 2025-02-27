@@ -441,26 +441,25 @@ Hence, the problem of finding the total resistance of two semi-infinite solution
 
 %COMMENT RR: In the below sentence, can we calrify what we mean with 'equipotential'?
 
-To this end, we consider a set of approximate equipotential surfaces $\psi(r,z)=const$ foliating the space available for colloid flow: inside the pore, the surfaces are discs of radius $r_{\text{p}}$ normal to the pore axis; outside the pore, we use oblate half-spheroids taken from the Rayleigh solution \cite{Strutt1878} (Figure~\ref{fig:R_map}B).
+To this end, we consider a set of approximate equipotential surfaces $\psi(r,z)=\text{const}$ foliating the space available for colloid flow: inside the pore, the surfaces are discs of radius $r_{\text{p}}$ normal to the pore axis; outside the pore, we use oblate half-spheroids taken from the Rayleigh solution \cite{Strutt1878} (Figure~\ref{fig:R_map}B).
 Analogously to a set of resistors connected in parallel, the total conductivity of any layer between two adjacent equipotential surfaces is obtained by integration of local conductivities over the layer. Within the pore, $|z|\leq L/2$,the result is given by
 \begin{equation}
 \varrho_{\text{int}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} \rho^{-1}(r,z) r \, dr
-\label{varrho1}
+\label{eq:varrho1}
 \end{equation}
 
-In the exterior region $z >L/2$, the expression is modified to incorporate the curved geometry:
+In the exterior region $|z| >L/2$, the expression is modified to incorporate integrate over aforementioned half-spheroids:
 \begin{equation}
     \begin{gathered}
         \varrho_{\text{ext}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} \rho^{-1}\left( r'(r,z), z'(r,z) \right)  \tilde{h} (r,z) dr\\
-        r'(r,z) = r\sqrt{1 + \frac{(|z| - L/2)^2}{r_{\text{p}}^2}}\\
+        r'(r,z) = r\sqrt{1 + \frac{(z - L/2)^2}{r_{\text{p}}^2}}\\
+        r'(r,z) \in [0, \sqrt{r_{\text{p}}^2 + (z-L/2)^2}]\\
         z'(r,z) = (|z| - L/2) \frac{\sqrt{r_{\text{p}}^2 - r^2}}{r_{\text{p}}} +  \text{sign}(z) \frac{L}{2}\\
         \tilde{h} (r,z) = h_r h_{\theta} h_z^{-1} = \dfrac{r}{r_{\text{p}}}\dfrac{r_{\text{p}}^2 + (|z|-L/2)^2}{\sqrt{r_{\text{p}}^2 - r^2}}
-         %2\pi\int_{0}^{r_{\text{p}}^{}} \rho^{-1}\left(r\sqrt{1 + \frac{(z - L/2)^2}{r_{\text{p}}^2}},(z - L/2) \frac{\sqrt{r_{\text{p}}^2 - r^2}}{r_{\text{p}}} +  \frac{L}{2}\right) h_r h_{\theta} h_z^{-1} \, dr
     \end{gathered}
-\label{varrho2}
+\label{eq:varrho2}
 \end{equation}
-where $h_r$, $h_{\theta}$ and $h_z$ are the corresponding Lam\'e coefficients (see Supporting Information, Section 7). In the case of a homogeneous brush considered here, the function $\varrho_{\text{ext}}^{-1}(z)$ is even, which defines it for $z<-L/2$.
-
+where the equipotential surface defined parametrically with $r'(r,z) , z'(r,z)$; and $h_r$, $h_{\theta}$ and $h_z$ are the corresponding Lam\'e coefficients (see Supporting Information, Section 7). In the case of a homogeneous brush considered here, the function $\varrho_{\text{ext}}^{-1}(z)$ is even.%, which defines it for $z<-L/2$.
 
 On the other hand, since the consecutive layers are connected in series, their total resistance can be found by appropriate integration:
 \begin{equation}
