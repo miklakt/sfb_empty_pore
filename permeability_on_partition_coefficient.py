@@ -37,8 +37,8 @@ def PC_gel(phi, chi_PS, chi_PC, d):
     return PC
 #%%
 #d = np.arange(6, 24, 2)
-#d = [4,6]
 d = [6]
+#d = [6,4]
 chi_PS = [0.6]
 chi_PC = np.round(np.arange(-5, 0.2, 0.05),3)
 
@@ -170,7 +170,7 @@ def get_PC_in_gel(phi_gel, chi_PC, d):
 def get_thin_pore_permeability(d, r_pore = 26):
     return empty_pore_permeability(1.0,r_pore-d/2, 0)/(3*np.pi*d)
 
-def get_dome_permeability(d, r_dome = 26*1.5):
+def get_dome_permeability(d, r_dome = 26*1.1):
     return np.pi*r_dome/(3*np.pi*d)
 #%%
 nups = ["Mac98A","Nup116"]
@@ -187,15 +187,22 @@ results_ = results.loc[(results.mobility_model == model)].sort_values(by = "chi_
 
 for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
     y = experimental_data_["Passage_Rate"]
-    mpl_markers = ('o', 's', 'D')
+    mpl_markers = ('*', 'D')
     markers = itertools.cycle(mpl_markers)
     for nup in nups:
         x = experimental_data_[nup]
-        s = experimental_data_["d"]
-        ax.scatter(x,y, marker = next(markers), s=s*3, label = nup, color = "black", fc = "none")
+        #s = experimental_data_["d"]
+        ax.scatter(
+            x,y, 
+        marker = next(markers), 
+        #s=s*3,
+        s=15,
+        label = nup, 
+        color = "black", 
+        #fc = "none"
+        )
 
     markers = itertools.cycle(mpl_markers)
-
     first_it =True
     for nup in nups:
         mark_protein = "mCherry"
@@ -210,25 +217,25 @@ for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
             label = None
         ax.scatter(x,y, color = color, marker = next(markers), s = s*3, label=label)
     
-    # markers = itertools.cycle(mpl_markers)
-    # first_it =True
-    # for nup in nups:
-    #     mark_protein = "EGFP"
-    #     color = "green"
-    #     y = experimental_data_.loc[experimental_data_.Protein == mark_protein,"Passage_Rate"]
-    #     x = experimental_data_.loc[experimental_data_.Protein == mark_protein,nup]
-    #     s = experimental_data_.loc[experimental_data_.Protein == mark_protein,"d"]
-    #     if first_it: 
-    #         label = mark_protein
-    #         first_it = False
-    #     else:
-    #         label = None
-    #     ax.scatter(x,y, color = color, marker = next(markers), s = s*3, label=label)
+    markers = itertools.cycle(mpl_markers)
+    first_it =True
+    for nup in nups:
+        mark_protein = "EGFP"
+        color = "green"
+        y = experimental_data_.loc[experimental_data_.Protein == mark_protein,"Passage_Rate"]
+        x = experimental_data_.loc[experimental_data_.Protein == mark_protein,nup]
+        s = experimental_data_.loc[experimental_data_.Protein == mark_protein,"d"]
+        if first_it: 
+            label = mark_protein
+            first_it = False
+        else:
+            label = None
+        ax.scatter(x,y, color = color, marker = next(markers), s = s*3, label=label)
 
     for d_, result__ in result_.groupby(by = "d"):
         permeability_key = "permeability"
-        #reference_permeability = result_.loc[(result_.chi_PC==reference_chi_PC) & (result__.d==reference_d),permeability_key].squeeze()
-        reference_permeability = result__.loc[(result__.chi_PC==reference_chi_PC),permeability_key].squeeze()
+        reference_permeability = result_.loc[(result_.chi_PC==reference_chi_PC) & (result_.d==reference_d),permeability_key].squeeze()
+        #reference_permeability = result__.loc[(result__.chi_PC==reference_chi_PC),permeability_key].squeeze()
         y = result__[permeability_key].squeeze()#*d_
         y = y/reference_permeability
         #x = result__["PC_gel"].squeeze()
@@ -240,42 +247,44 @@ for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
             x, y, 
             label = fr"$d = {d_}({d_*Kuhn_segment:.1f}"+r"\text{nm})$",
             alpha = 1,
+            color = "tab:blue"
             #marker = next(markers),
             #markevery = 0.5,
             #markersize = 4,
         )
         color_ = ax.lines[-1].get_color()
 
-        for phi_gel_ in np.linspace(phi_gel_min, phi_gel_max,50):
-            x = get_PC_in_gel(phi_gel_, result__["chi_PC"], d_)
-            ax.plot(
-                x, y, 
-                alpha = 0.1,
-                color = color_
-            )
-        # for phi_gel_ in np.linspace(phi_gel_min, phi_gel_max,50):
-        #     chi_gel_eq = chi_from_phi_binodal(phi_gel_)
-        #     for chi_gel_ in np.linspace(chi_gel_eq-0.05, chi_gel_eq+0.05, 20):
-        #         x = PC_gel(phi_gel_,chi_gel_, result__["chi_PC"], d_)
-        #         ax.plot(
-        #             x, y, 
-        #             alpha = 0.1,
-        #             color = color_
-        #         )
-        
-        
-        normalized_thin_pore_permeability = get_thin_pore_permeability(d_)/reference_permeability
-        ax.axhline(normalized_thin_pore_permeability, color =  ax.lines[-1].get_color(), linestyle = "--", label = "thin pore")
+        if d_==reference_d:
+            for phi_gel_ in np.linspace(phi_gel_min, phi_gel_max,50):
+                x = get_PC_in_gel(phi_gel_, result__["chi_PC"], d_)
+                ax.plot(
+                    x, y, 
+                    alpha = 0.1,
+                    color = color_
+                )
+            # for phi_gel_ in np.linspace(phi_gel_min, phi_gel_max,50):
+            #     chi_gel_eq = chi_from_phi_binodal(phi_gel_)
+            #     for chi_gel_ in np.linspace(chi_gel_eq-0.05, chi_gel_eq+0.05, 20):
+            #         x = PC_gel(phi_gel_,chi_gel_, result__["chi_PC"], d_)
+            #         ax.plot(
+            #             x, y, 
+            #             alpha = 0.1,
+            #             color = color_
+            #         )
+            
+            
+            normalized_thin_pore_permeability = get_thin_pore_permeability(d_)/reference_permeability
+            ax.axhline(normalized_thin_pore_permeability, color =  ax.lines[-1].get_color(), linestyle = "--", label = "thin pore")
 
-        normalized_dome_permeability = get_dome_permeability(d_)/reference_permeability
-        ax.axhline(normalized_dome_permeability, color =  ax.lines[-1].get_color(), linestyle = "--", linewidth = 0.3, label = "conductive sphere")
+            normalized_dome_permeability = get_dome_permeability(d_)/reference_permeability
+            ax.axhline(normalized_dome_permeability, color =  ax.lines[-1].get_color(), linestyle = "--", linewidth = 0.3, label = "conductive sphere")
 
 
-        ax.plot(x.iloc[::10], [10**5]*len(x.to_numpy()[::10]), marker = "|", linewidth = 0, color = "black")
-        
-        for xx, ss in zip(x.iloc[::10].squeeze(), result__["chi_PC"].iloc[::10].squeeze()):
-            if ss<=-3.0: continue
-            ax.text(xx*0.4, 10**5*1.1, s = f"{ss:.1f}")
+            ax.plot(x.iloc[::10], [10**3]*len(x.to_numpy()[::10]), marker = "|", linewidth = 0, color = "black")
+            
+            for xx, ss in zip(x.iloc[::10].squeeze(), result__["chi_PC"].iloc[::10].squeeze()):
+                if ss<=-2.0: continue
+                ax.text(xx*0.4, 10**3*1.1, s = f"{ss:.1f}")
 
         # x = result__["chi_PC"].squeeze()
         # ax2 = ax.twiny()
@@ -299,26 +308,29 @@ for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
         # y = y/reference_permeability
         # ax.plot(x, y, linestyle = "--", color = ax.lines[-1].get_color())
 
-    # # Loop over each row in the DataFrame to add text
-    # for i, row in experimental_data_.iterrows():
-    #     y = row["Passage_Rate"]
-    #     for nup in nups:
-    #     #for nup in ["Nup116"]:
-    #         text_key = "MW"
-    #         x = row[nup]
-    #         s = f"{row[text_key]:.1f}"
-    #         ax.text(
-    #             x*1.5,
-    #             y*0.5,     # small offset in y
-    #             s,
-    #             ha='center',
-    #             va='bottom',
-    #             fontsize=5
-    #         )
+    # Loop over each row in the DataFrame to add text
+
+        # for i, row in experimental_data_.iterrows():
+        #     y = row["Passage_Rate"]
+        #     if y<7e-1:continue
+        #     for nup in nups:
+        #     #for nup in ["Nup116"]:
+        #         text_key = "Protein"
+        #         x = row[nup]
+        #         #s = f"{row[text_key]:.1f}"
+        #         s = row[text_key]
+        #         ax.text(
+        #             x*1.0,
+        #             y*1.0,     # small offset in y
+        #             s,
+        #             ha='center',
+        #             va='bottom',
+        #             fontsize=5
+        #         )
 
     ax.set_title(r"$\chi_{\text{PC}}$", pad = 18)
-    ax.set_ylim(1e-1, 1e5 )
-    ax.set_xlim(1e-2,1e8)
+    ax.set_ylim(1e-1, 1e3)
+    ax.set_xlim(1e-2,2e4)
     ax.set_xlabel(r"$c_{\text{eq}}/c_0$")
     ax.set_yscale("log")
     ax.set_xscale("log")
@@ -340,6 +352,8 @@ fig.text(1,0.8, r"$\chi_{\text{PS}}^{\text{pore}} = "+f"{chi_PS_}$")
 fig.text(1,0.7, r"$\chi_{\text{PS}}^{\text{gel}} = \{\Pi(\phi_{\text{gel}}) = 0\}$")
 
 #plt.tight_layout()
-fig.set_size_inches(2.5*len(axs_)+0.5, 3)
-#fig.savefig()
+#fig.set_size_inches(2.5*len(axs_)+0.5, 3)
+#plt.tight_layout()
+fig.set_size_inches(2.5, 2.5)
+fig.savefig("fig/experimental_partitioning.svg")
 #%%

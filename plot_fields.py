@@ -44,8 +44,8 @@ pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
 d =6
 chi_PC = 0.0
-chi = 0.5
-sigma = 0.02
+chi = 0.6
+sigma = 0.025
 
 fields = calculate_fields(
     a0, a1, d=d,
@@ -84,7 +84,7 @@ perm = calculate_permeability(
 fields["resistivity"] = (fields["conductivity"])**(-1)
 fields["pc"] = np.exp(-fields["free_energy"])
 #%%
-%matplotlib qt
+#%matplotlib qt
 import cmasher as cmr
 #cmap = cmr.
 cmap0 = cmr.get_sub_cmap("seismic", 0.0, 0.5)
@@ -94,16 +94,16 @@ cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(1-vmin)/(vmax-vmin)])
 r_cut = 50
 z_cut = 40
 fig = plot_heatmap(fields, r_cut, z_cut, keys = [
-    "phi", 
+    #"phi", 
     #"Pi", 
     #"gamma", 
-    #"free_energy", 
+    "free_energy", 
     #"mobility", 
     #"conductivity", 
     #"resistivity",
     #"osmotic", 
     #"surface"
-    "pc"
+    #"pc"
     ], 
     #cmap = "seismic",
     #zmin=0,

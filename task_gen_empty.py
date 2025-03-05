@@ -187,12 +187,12 @@ init_args = dict(
     h = 40,
     l1 = 120,
     l2 = 120,
-    chi_PS = 0.5,
+    chi_PS = 0.60,
     chi_PW = 0,
     N=300,
-    sigma = 0.03
+    sigma = 0.02
 )
-working_dir = path = pathlib.Path("temp2603")
+working_dir = path = pathlib.Path("temp0303")
 continue_unfinished = True
 try:
     working_dir.mkdir(parents=True, exist_ok=False)
@@ -200,10 +200,10 @@ except FileExistsError:
     print("Folder is already there")
 ##%%
 #ifile_data = continuously_change_chi_PS(init_args, 1.1, 1.2, 0.01)
-#ifile_data = continuously_change_sigma(init_args, 0.004, 0.03, 0.002)
+#ifile_data = continuously_change_sigma(init_args, 0.02, 0.04, 0.005)
 ifile_data = [{}]
 ifile_data[0].update(init_args)
-
+##%%
 translated = translate_to_sfbox(ifile_data)
 translated = sort_keys(translated)
 ##%%
