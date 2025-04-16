@@ -50,12 +50,12 @@ d = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30]
 #d =[8 ,10, 12 ,]
 chi_PS = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
-chi_PC = np.round(np.arange(0, -2.6, -1.05),3)
+chi_PC = np.round(np.arange(0, -2.6, -0.05),3)
 
 # model, mobility_model_kwargs = "none", {}
 # model, mobility_model_kwargs = "Phillies", dict(beta = 8, nu = 0.76)
 # model = "Fox-Flory", dict(N = 300)
-model, mobility_model_kwargs = "Rubinstein", {"prefactor":1}
+model, mobility_model_kwargs = "Rubinstein", {"prefactor":30}
 #model, mobility_model_kwargs = "Hoyst", {"alpha" : 1.63, "delta": 0.89, "N" : 300}
 
 results = []
