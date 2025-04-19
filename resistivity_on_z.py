@@ -2,6 +2,7 @@
 from calculate_fields_in_pore import *
 import numpy as np
 import matplotlib
+import matplotlib.pyplot as plt
 matplotlib.rc('hatch', color='darkgreen', linewidth=9)
 
 def make_analytical_resistivity_on_z(pore_radius, wall_thickness, func_type = "elliptic"):
@@ -37,12 +38,13 @@ def smooth_peaks(arr, sigma):
             
 #%%
 d=8
-chi_PCs = [-1.2, -1.1, -1.0, -0.9]
+#chi_PCs = [-1.2, -1.1, -1.0, -0.9]
+chi_PCs = [-1.6, -1.5, -1.4, -1.3]
 # c chi_PCs = [-1.0]
 chi_PS = 0.5
 pore_radius = 26
 wall_thickness = 52
-Haberman_correction_ = True
+Haberman_correction_ = False
 parameters = dict(
     a0 = 0.70585835,
     a1 = -0.31406453,
@@ -59,7 +61,7 @@ parameters = dict(
     convolve_mode = "same",
     mobility_correction = "vol_average",
     mobility_model = "Rubinstein",
-    mobility_model_kwargs = dict(prefactor = 1),
+    mobility_model_kwargs = dict(prefactor = 30),
     # mobility_model = "none",
     # mobility_model_kwargs = {},
     #mobility_model = "Hoyst",
@@ -87,7 +89,7 @@ conduct = {
     for chi_PC_, field in fields.items()
     }
 
-empty_pore_arr = np.array(~fields[-1.0]["walls"], dtype="float")
+empty_pore_arr = np.array(~fields[chi_PCs[0]]["walls"], dtype="float")
 if Haberman_correction_:
     wall_drag_correction = Haberman_correction_approximant(d, pore_radius)
     empty_pore_arr[l1:l1+wall_thickness, 0:pore_radius] = empty_pore_arr[l1:l1+wall_thickness, 0:pore_radius]/wall_drag_correction
@@ -119,7 +121,7 @@ for chi_PC_, conduct_ in conduct.items():
         x, 
         smooth_peaks(conduct_**-1, 1)*norm,
         #conduct_**-1*norm, 
-        label = f"$\chi_{{PC}} = {chi_PC_}$",
+        label = fr"$\chi_{{PC}} = {chi_PC_}$",
         #label = f"${chi_PC_}$"
     ) 
 
@@ -160,9 +162,9 @@ ax.axvline(wall_thickness/2, color = "black", linestyle = "--")
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$\rho D_0 \pi r_{pore}^2$")
 
-#ax.legend(title = "$\chi_{PC}$")
+ax.legend(title = "$\chi_{PC}$", bbox_to_anchor = [1,0.1])
 ax.set_xlim(-100, 100)
-ax.set_ylim(0,5.5)
+ax.set_ylim(0, 5.5)
 fig.set_size_inches(2.8,2.8)
 #fig.savefig(f"fig/resistivity_z_on_chi_PC_{chi_PS=}.svg")
 #%%

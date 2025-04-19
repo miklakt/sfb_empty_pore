@@ -1,0 +1,133 @@
+from Mukhopadhyay2017 . https://doi.org/10.1063/1.5016062
+
+Polyethylene oxide (PEO) with a molecular weight of
+Mw ¼ 600 kg/mol was purchased in the form of powder from
+Polymer Sources, Inc. Fluoresbrite carboxylate microspheres
+with a radius of 25 nm were purchased from Polysciences,
+Inc. PEO was dissolved in deionized water to prepare two
+different volume fractions, phi=0.0069 and phi=0.02, and
+then, nanoparticles were added in the solution. The mixture
+was then heated and stirred at 30°C. 
+
+Ve calculated some of the important length-scales of the
+System. Vater is a good solvent for PEO, and it assumes a
+Swollen random walk conformation. The radius of gyration, Rg,
+is related to the molecular weight (MO according to
+Rg 589m. The radius of gyration Rg for 600K
+PEO in water is found to be —45 nm. This is for dilute solution.
+As the polymer concentration increases, R g decreases as d)
+Where d) is the polymer volume fraction. The overlap concen-
+tration denotes the transition from the dilute to semidilute
+gegime, where the chains begin to interact. 
+
+We determined the overlap volume fraction to be phi*=0.0024
+eps = 20nm and 9nm for phi=0.0069, 0.02
+
+#water
+phi, d, D, D_err
+0.0, 100, 4.60, 0.68
+0.0, 200, 2.15, 0.21
+0.0, 1000, 0.472, 0.001
+
+0.0069, 25, 0.19, 0.005
+0.02, 25, 0.029, 0.002
+
+From Winey2024 https://doi.org/10.1021/acs.macromol.4c00808
+
+P2VP of weightaveraged molecular weights 14.0, 41.0, 158, 219, 310, 474,
+and 1220 kDa (narrow distribution, PDI < 1.10) was
+purchased from Scientific Polymer Products Inc. and used as
+received
+The Nissan
+SiO2 NPs fit to a hard sphere resulted in RNP = 26.1 nm, PDI
+1.19, and the Ludox SiO2 NPs measured RNP = 8.3 nm and
+PDI = 1.15. Aluminum oxide (Al2O3) NPs measured RNP = 6.5
+± 2.5 nm and PDI = 1.14, with DLS measuring hydrodynamic
+diameter consistent with ∼RNP + Rg
+
+
+Crowding and Confinement Effects on Protein Diffusion In Vivo
+the mean diffusion coefficient, <D>, in cytoplasm (6.1 ± 2.4 μm2 s−1) is only 0.07 of the in vitro value (87 μm2 s−1); the relative dispersion among cells, σ D /<D> (standard deviation, σ D , relative to the mean), is 0.39. 
+
+
+from Ralf
+GFPNTR diffuses with D =
+1.6 ± 0.2 μm2
+/s at the point where the FG domain films just
+overlap (film thickness ≈ 30 nm; FGNsp1 concentration ≈ 100
+mg/mL) and that the diffusion constant decreased only
+moderately with increasing film compression and concentration. From analogous measurements with GFPStd (Supporting Figure S5) we estimate D = 6.5 ± 1.9 μm2
+/s for the
+unperturbed FG domain film. For comparison, the diffusion
+coefficient of GFP in aqueous solution has been determined by
+fluorescence correlation spectroscopy to be D = 90 ± 3 μm2
+/
+s.38 Thus, the FGNsp1 film reduces the diffusion of GFPStd (and
+likely also GFPInert) by about an order of magnitude, while
+GFPNTR experiences a further reduction by a moderate few
+fold.
+For comparison, the diffusion
+coefficient of GFP in aqueous solution has been determined by
+fluorescence correlation spectroscopy to be D = 90 ± 3 μm2
+/
+s.38
+
+1 for gfpntr in 500 mg/ml
+
+from Mun2013
+Nanoparticles         | Nanoparticle Size (DLS) nm | Medium | Medium Viscosity (cP) | Diffusion Coefficient (Stokes−Einstein) ×10⁴ nm²/s | Diffusion Coefficient (NanoSight) ×10⁴ nm²/s
+----------------------|--------------------------|--------|-----------------------|---------------------------------------------------|----------------------------------------------
+Thiolated            | 44                        | Water  | 0.89                  | 1115                                              | 731
+Thiolated            | 44                        | HEC    | 5.10                  | 195                                               | 593
+Thiolated            | 44                        | PAA    | 5.10                  | 195                                               | 461
+Thiolated            | 44                        | PVP    | 5.10                  | 238                                               | 238
+Thiolated            | 44                        | PEO    | 5.10                  | 172                                               | 172
+PEGylated (750 Da)   | 52                        | Water  | 0.89                  | 943                                               | 906
+PEGylated (750 Da)   | 52                        | HEC    | 5.10                  | 165                                               | 614
+PEGylated (750 Da)   | 52                        | PAA    | 5.10                  | 165                                               | 553
+PEGylated (750 Da)   | 52                        | PVP    | 5.10                  | 626                                               | 626
+PEGylated (750 Da)   | 52                        | PEO    | 5.10                  | 721                                               | 721
+PEGylated (5000 Da)  | 68                        | Water  | 0.89                  | 721                                               | 834
+PEGylated (5000 Da)  | 68                        | HEC    | 5.10                  | 126                                               | 534
+PEGylated (5000 Da)  | 68                        | PAA    | 5.10                  | 126                                               | 487
+PEGylated (5000 Da)  | 68                        | PVP    | 5.10                  | 547                                               | 547
+PEGylated (5000 Da)  | 68                        | PEO    | 5.10                  | 614                                               | 614
+
+The polymer solutions were prepared at five different
+concentrations (0.5, 0.6, 0.7, 0.8, and 1 mg/mL)
+
+from Mukhopadhyay2019 : 10.1021/acs.langmuir.9b01029
+
+d, conc_ppm, D/D_0
+
+Concentration (ppm)      D/D₀
+          116.727273  0.913412
+           78.000000  1.054588
+           78.000000  0.121412
+           64.909091  0.338824
+           61.090909  1.163294
+          224.181818  0.770824
+          116.727273  0.000000
+          159.818182  0.807529
+           69.272727  0.288000
+          309.818182  0.727059
+          241.090909  1.315765
+          159.818182 -0.040941
+           94.909091  1.010824
+           94.909091  0.011294
+          310.363636 -0.072000
+           69.272727  1.112471
+          138.000000 -0.016941
+          244.363636  1.129412
+           52.363636  0.475765
+           52.363636  1.243765
+          224.181818 -0.049412
+          106.363636  1.272000
+           80.181818  1.269176
+          277.090909  0.484235
+          174.000000 -0.235765
+          236.181818  0.485647
+           61.090909  0.365647
+          284.727273  1.211294
+           -4.909091  0.231529
+           -4.909091  1.119529

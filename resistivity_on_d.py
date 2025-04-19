@@ -96,20 +96,20 @@ simulation_empty_pore["R"] = 1/(simulation_empty_pore["J_tot"]/simulation_empty_
 simulation_empty_pore["R_corrected"] = 1/(simulation_empty_pore["J_corrected"]/simulation_empty_pore["d"]/3)
 
 #%%
-d = np.arange(2, 50, 2)
+d = np.arange(2, 32, 2)
 #d =[8 ,10, 12 ,]
-chi_PS = [0.1, 0.3, 0.5]
+chi_PS = [0.4, 0.5, 0.6]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
-chi_PC_color = [-2.0, -1.75, -1.5, -1.25, -1.0]
+chi_PC_color = [-1.5, -1.25, -1.0, -0.5, 0]
 chi_PC = chi_PC_color
 
 # model, mobility_model_kwargs = "none", {}
 # model, mobility_model_kwargs = "Phillies", dict(beta = 8, nu = 0.76)
 # model = "Fox-Flory", dict(N = 300)
-model, mobility_model_kwargs = "Rubinstein", {"prefactor":1}
+model, mobility_model_kwargs = "Rubinstein", {"prefactor":30}
 #model, mobility_model_kwargs = "Hoyst", {"alpha" : 1.63, "delta": 0.89, "N" : 300}
 
-Haberman_correction_ = True
+Haberman_correction_ = False
 results = []
 for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
     print(d_, chi_PS_, chi_PC_)
@@ -118,14 +118,15 @@ for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
         d_, chi_PS_, chi_PC_,
         sigma = sigma,
         exclude_volume=True,
-        truncate_pressure=False,
+        truncate_pressure=True,
         method= "convolve",
         convolve_mode="same",
         mobility_correction= "vol_average",
         mobility_model = model,
         mobility_model_kwargs = mobility_model_kwargs,
         integration="cylindrical_caps",
-        Haberman_correction=Haberman_correction_
+        Haberman_correction=Haberman_correction_,
+        stickiness=False,
         )
         
     #result["limited_permeability"] = (result["permeability"]**(-1) + result["thin_empty_pore"]**(-1))**(-1)
@@ -148,10 +149,9 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
     markers = itertools.cycle(mpl_markers)
     for chi_PC_, result__ in result_.groupby(by = "chi_PC"):
         x = result__["d"].squeeze()
-        y = 1/result__["permeability"]/x
+        #y = 1/result__["permeability"]/x
+        y = 1/result__["permeability"]
 
-        # y = np.gradient(np.log(y))/np.gradient(np.log(x))
-        # y = np.gradient(y)/np.gradient(np.log(x))
 
         if chi_PC_ in chi_PC_color:
             plot_kwargs = dict(
@@ -178,7 +178,9 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
         if show_CFD:
             R = simulation_results.query(f"(chi_PS=={chi_PS_})&(chi_PC=={chi_PC_})")
             ax.scatter(
-                R["d"], R["R_corrected"]/R["d"], 
+                R["d"], 
+                #R["R_corrected"]/R["d"],
+                R["R_corrected"],
                 color = ax.lines[-1].get_color(),
                 marker = "s",
                 facecolor = "none",
@@ -190,9 +192,10 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
         if Haberman_correction_:
             ax.plot(
                 d, 
-                1/result__["thick_empty_pore_Haberman"]/d, 
+                #1/result__["thick_empty_pore_Haberman"]/d, 
+                1/result__["thick_empty_pore_Haberman"],
                 color = "black", 
-                linestyle = "--",
+                linestyle = "-",
                 label = "$R_{empty}$",
                 linewidth = 2,
                 zorder = -1,
@@ -200,33 +203,34 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
         else:
             ax.plot(
                 d, 
-                1/result__["thick_empty_pore"]/d, 
+                #1/result__["thick_empty_pore"]/d,
+                1/result__["thick_empty_pore"],
                 color = "black", 
-                linestyle = "--",
+                linestyle = "-",
                 label = "$R_{empty}$",
                 linewidth = 2,
                 zorder = -1,
                 )
 
-        ax.plot(
-            d, 
-            1/(2*(pore_radius))*3*np.pi*d/d,
-            color = "black", 
-            linestyle = "-",
-            linewidth = 0.5,
-            #label = "$P_{thin}$",
-            zorder = -1,
-            )
+        # ax.plot(
+        #     d, 
+        #     1/(2*(pore_radius))*3*np.pi*d/d,
+        #     color = "black", 
+        #     linestyle = "-",
+        #     linewidth = 0.5,
+        #     #label = "$P_{thin}$",
+        #     zorder = -1,
+        #     )
 
-        ax.plot(
-            d, 
-            1/(2*np.pi*(pore_radius))*3*np.pi*d/d,
-            color = "black", 
-            linestyle = "-",
-            #label = "$P_{thin}$",
-            linewidth = 0.5,
-            zorder = -1,
-            )
+        # ax.plot(
+        #     d, 
+        #     1/(2*np.pi*(pore_radius))*3*np.pi*d/d,
+        #     color = "black", 
+        #     linestyle = "-",
+        #     #label = "$P_{thin}$",
+        #     linewidth = 0.5,
+        #     zorder = -1,
+        #     )
         
         # ax.plot(
         #     d, 
@@ -262,7 +266,8 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
     if show_CFD:
         ax.scatter(
             simulation_empty_pore["d"], 
-            simulation_empty_pore["R_corrected"]/simulation_empty_pore["d"],
+            #simulation_empty_pore["R_corrected"]/simulation_empty_pore["d"],
+            simulation_empty_pore["R_corrected"],
             color = "black",
             facecolor = "none",
             marker = "s",
@@ -272,9 +277,9 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
             )
 
     ax.set_title(f"$\chi_{{PS}} = {chi_PS_}$")
-    ax.set_ylim(5e-2, 1e4)
+    #ax.set_ylim(5e-2, 1e4)
+    ax.set_ylim(5e-1, 1e4)
     #ax.set_xlim(4)
-    #ax.set_ylim(-5, 20)
     ax.set_yscale("log")
     ax.set_xscale("log")
 
@@ -341,7 +346,6 @@ if show_contributions:
     #     ax.set_yscale("log")
     #     ax.set_xscale("log")
 
-    axs[0,0].set_ylabel(r"$R \cdot \frac{k_B T}{\eta_0}$")
     axs[1,0].set_ylabel(r"$R_{conv}/R_{thin}(d)$")
     axs[2,0].set_ylabel(r"$\frac{R_{cylinder}}{\pi(r-d/2)^2} \frac{k_B T}{3 \pi \eta_0 d}$")
     # axs[1,-1].legend( 
@@ -362,9 +366,9 @@ if show_contributions:
                     )
 
     #axs[1,-1].legend()
-
-ax.legend()
-plt.tight_layout()
+axs[0].set_ylabel(r"$R \cdot \frac{k_B T}{\eta_0 b}$")
+ax.legend(bbox_to_anchor = [1,1])
+#plt.tight_layout()
 #fig.set_size_inches(7, 7)
 fig.set_size_inches(7, 2.5)
 #fig.savefig("fig/permeability_on_d.svg")

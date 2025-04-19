@@ -6,7 +6,6 @@ from functools import lru_cache
 import utils
 from particle_convolution import convolve_particle_surface, convolve_particle_volume
 from joblib import Memory
-import sfbox_utils
 np.seterr(divide='ignore')
 
 memory = Memory("__func_cache__", verbose=1)
@@ -58,28 +57,6 @@ def mobility_Phillies(phi, beta, nu):
     m = np.where(phi==0, 1.0, np.exp(-beta*np.power(phi, nu)))
     return m
 
-def mobility_Hoyst(phi, d, N, alpha, delta, nu = 0.76):
-    R_g = np.sqrt(N/6)
-    phi_entangled = (9/(2*np.pi))/R_g
-    xi = R_g*(phi/phi_entangled)**(-nu)
-    # if d>R_g:
-    #     b = R_g/xi
-    # else:
-    b = d/xi
-    D0_D =  np.exp(alpha*b**delta)
-    return 1/D0_D
-
-# def mobility_Hoyst(phi, d, alpha, delta):
-#     # R_g = np.sqrt(N/6)
-#     # b = phi/R_g)
-#     b = phi/d
-#     D0_D = np.exp(alpha*b**delta)
-#     return 1/D0_D
-
-# def mobility_FoxFlory(phi, N):
-#     eta = 1 + 0.425*np.sqrt(N)*phi
-#     return 1/eta
-
 def Haberman_correction_approximant(d, pore_radius):
     #wall drag correction
     if d/2>0.95*pore_radius:
@@ -128,7 +105,6 @@ def calculate_pressure(fields, truncate = False):
 def calculate_gamma(fields, a0, a1, chi_PC):
     phi = fields["phi"]
     chi = fields["chi_PS"]
-    #chi_PC = fields["chi_PC"]
     fields["gamma"] = gamma(chi, chi_PC, phi, a0, a1)
     fields["a0"] = a0
     fields["a1"] = a1
@@ -165,7 +141,14 @@ def calculate_corrected_phi(fields, a0, a1, chi_PC, correction = "vol_average", 
     phi_err = 1e-10
     fields["corrected_phi"][(fields["corrected_phi"] > -phi_err)&(fields["corrected_phi"] < 0)] = 0.0
 
-def calculate_mobility(fields, d, model, model_kwargs = {}, phi_arr = "phi", Haberman_correction = False):
+def calculate_mobility(
+        fields, d,
+        model, model_kwargs = {}, 
+        phi_arr = "phi", 
+        Haberman_correction = False,
+        stickiness = False,
+        stickiness_model_kwargs = {}
+        ):
     if model=="Rubinstein":
         if "prefactor" in model_kwargs:
             prefactor = model_kwargs["prefactor"]
@@ -179,21 +162,13 @@ def calculate_mobility(fields, d, model, model_kwargs = {}, phi_arr = "phi", Hab
         nu = model_kwargs["nu"]
         mobility = mobility_Phillies(fields[phi_arr], beta, nu)
 
-    elif model=="Hoyst":
-        N = model_kwargs["N"]
-        alpha = model_kwargs["alpha"]
-        delta = model_kwargs["delta"]
-        #mobility = mobility_Hoyst_old(fields[phi_arr], d, N, alpha, delta)
-        mobility = mobility_Hoyst(fields[phi_arr], d, N, alpha, delta)
-    
-    elif model=="Fox-Flory":
-        N = model_kwargs["N"]
-        mobility = mobility_FoxFlory(fields[phi_arr], N)
-
     elif model == "none":
         xlayers = fields["xlayers"]
         ylayers = fields["ylayers"]
         mobility = np.ones((ylayers, xlayers))
+
+    else:
+        raise ValueError("No diffusion model provided")
 
     if Haberman_correction:
         l1 = fields["l1"]
@@ -203,6 +178,15 @@ def calculate_mobility(fields, d, model, model_kwargs = {}, phi_arr = "phi", Hab
         mobility[l1:l1+wall_thickness, 0:pore_radius] = mobility[l1:l1+wall_thickness, 0:pore_radius]/wall_drag_correction
     
     mobility[fields["walls"]==True] = 0
+
+    if stickiness:
+        try:
+            n_sites = stickiness_model_kwargs.pop("n_sites")
+        except KeyError:
+            n_sites = 1
+        binding_enery = fields["surface"]/n_sites
+        mobility = np.where(fields["surface"]<0,mobility*np.exp(binding_enery/2),mobility)
+
     fields["mobility"] = mobility
 
 def calculate_conductivity(fields):
@@ -217,7 +201,6 @@ def integrate_with_cylindrical_caps(
     
     lb = 0
     rb = ylayers
-    #r = np.arange(0, xlayers)
     conductivity = np.zeros(rb-lb)
     for i, z_ in enumerate(range(lb, rb)):
         #inside the pore
@@ -261,9 +244,7 @@ def integrate_with_cylindrical_caps(
 
 def integrate_conductivity_cylindrical_caps(
         fields, 
-        #extend_to_infinity = True,#make correction for the boundary at inf
-        spheroid_correction = True, #make correction for non-spheroid iso-potential surface 
-        first_cap_same_radius = False, #first cylindrical outside the pore has no offset
+        spheroid_correction = True, #make correction for iso-potential surface approximated with cylinders
         correct_excluded_volume = True #treat pore as if it has thicker walls and smaller diameter
         ):
     l1 = fields["l1"]
@@ -283,25 +264,13 @@ def integrate_conductivity_cylindrical_caps(
         l1, wall_thickness, pore_radius, xlayers, ylayers,
         spheroid_correction=spheroid_correction
         )
+    
     if spheroid_correction:
         z_left = l1
         z_right = ylayers-l1-wall_thickness
         pore_radius = pore_radius - d/2
-        #if correct_excluded_volume:
-        #    pore_radius = pore_radius-d/2
 
-        #constant correction 
-        #R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(4*np.log(3)*pore_radius)
-        #R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(4*np.log(3)*pore_radius)
-
-        #correction for continuous resistance over z
-        #R_left = (np.pi - 2*np.arctan(2*z_left/pore_radius))/(4*np.pi*pore_radius)
-        #R_right = (np.pi - 2*np.arctan(2*z_right/pore_radius))/(4*np.pi*pore_radius)
-
-        #no correction
-        #R_left = 0
-        #R_right = 0
-
+        #resistance of the pure solvent outside the integration domain
         R_left = (np.pi - 2*np.arctan(z_left/pore_radius))/(4*np.pi*pore_radius)
         R_right = (np.pi - 2*np.arctan(z_right/pore_radius))/(4*np.pi*pore_radius)
     else:
@@ -323,21 +292,21 @@ def integrate_conductivity_cylindrical_caps(
         * wall_thickness/(wall_thickness+1) #correct that it was integrated one extra layer
 
 
-def integrate_conductivity_Rayleigh(fields, L):
-    #====total permeability over region L====
-    l1 = fields["l1"]
-    l2 = fields["l2"]
-    pore_radius = fields["r"]
-    wall_thickness = fields["s"]
-    lb = l1-L
-    rb = l1+wall_thickness+L+1 #+1 because of the offset after convolution
+# def integrate_conductivity_Rayleigh(fields, L):
+#     #====total permeability over region L====
+#     l1 = fields["l1"]
+#     l2 = fields["l2"]
+#     pore_radius = fields["r"]
+#     wall_thickness = fields["s"]
+#     lb = l1-L
+#     rb = l1+wall_thickness+L+1 #+1 because of the offset after convolution
     
-    r = np.arange(0, pore_radius)
-    get_permeability_z = lambda x: np.sum(x[:, 0:pore_radius]*(2*r+1), axis = 1)*np.pi
-    get_permeability_total = lambda x: np.sum(x[lb:rb]**(-1))**(-1)
+#     r = np.arange(0, pore_radius)
+#     get_permeability_z = lambda x: np.sum(x[:, 0:pore_radius]*(2*r+1), axis = 1)*np.pi
+#     get_permeability_total = lambda x: np.sum(x[lb:rb]**(-1))**(-1)
     
-    fields["permeability_z"] = get_permeability_z(fields["conductivity"])
-    fields["permeability"] = get_permeability_total(fields["permeability_z"])
+#     fields["permeability_z"] = get_permeability_z(fields["conductivity"])
+#     fields["permeability"] = get_permeability_total(fields["permeability_z"])
 
 
 def calculate_partition_coefficient(fields, cutoff_phi = 1e-5):
@@ -361,7 +330,9 @@ def calculate_fields(
         mobility_model = "Rubinstein",
         mobility_model_kwargs = {},
         cutoff_phi = 1e-5,
-        Haberman_correction = False
+        Haberman_correction = False,
+        stickiness = False,
+        stickiness_model_kwargs = {}
         ):
     fields = utils.get_by_kwargs(master_empty, chi_PS = chi, s = wall_thickness, r = pore_radius, sigma = sigma).squeeze()
     fields["phi"] = fields.dataset["phi"].squeeze().T
@@ -374,7 +345,9 @@ def calculate_fields(
 
     calculate_energy(fields, d, method, convolve_mode)
     calculate_corrected_phi(fields, a0=a0, a1=a1, chi_PC = chi_PC, correction=mobility_correction, d=d, convolve_mode=convolve_mode)
-    calculate_mobility(fields, d, mobility_model, mobility_model_kwargs, phi_arr="corrected_phi", Haberman_correction = Haberman_correction)
+    calculate_mobility(fields, d, mobility_model, mobility_model_kwargs, 
+                       phi_arr="corrected_phi", Haberman_correction = Haberman_correction, 
+                       stickiness=stickiness, stickiness_model_kwargs=stickiness_model_kwargs)
     calculate_conductivity(fields)
     calculate_partition_coefficient(fields, cutoff_phi)
     fields["d"] = d
@@ -404,7 +377,9 @@ def calculate_permeability(
         integration= "cylindrical_caps", #="Rayleigh"|"Caps",
         integration_kwargs = {},
         cutoff_phi = 1e-5,
-        Haberman_correction = False
+        Haberman_correction = False,
+        stickiness = False,
+        stickiness_model_kwargs = {}
         ):
     
     fields = calculate_fields(
@@ -420,7 +395,9 @@ def calculate_permeability(
         convolve_mode = convolve_mode,
         mobility_model_kwargs = mobility_model_kwargs,
         cutoff_phi = cutoff_phi,
-        Haberman_correction = Haberman_correction
+        Haberman_correction = Haberman_correction,
+        stickiness = stickiness,
+        stickiness_model_kwargs = stickiness_model_kwargs
         )
 
     result = dict(
@@ -437,13 +414,15 @@ def calculate_permeability(
         mobility_model_kwargs = mobility_model_kwargs,
         integration_kwargs = integration_kwargs,
         cutoff_phi = cutoff_phi,
-        Haberman_correction = Haberman_correction
+        Haberman_correction = Haberman_correction,
+        stickiness = stickiness,
+        stickiness_model_kwargs = stickiness_model_kwargs
     )
     
     if integration=="cylindrical_caps":
         integrate_conductivity_cylindrical_caps(fields, **integration_kwargs)#, extend_to_infinity=True)
-    elif integration=="Rayleigh":
-        integrate_conductivity_Rayleigh(fields, **integration_kwargs)
+    # elif integration=="Rayleigh":
+    #     integrate_conductivity_Rayleigh(fields, **integration_kwargs)
     else:
         raise ValueError("Wrong integration type")
 
@@ -464,31 +443,3 @@ def calculate_permeability(
         result["R_pore"] = fields["R_pore"]/einstein_factor
 
     return result
-
-#%%
-def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
-    from heatmap_explorer import plot_heatmap_and_profiles
-    wall_thickness = fields["s"]
-    l1 = fields["l1"]
-    def cut_and_mirror(arr):
-        cut = arr.T[0:r_cut, l1-z_cut:l1+wall_thickness+z_cut]
-        return np.vstack((np.flip(cut), cut[:,::-1]))
-    extent = [-z_cut-wall_thickness/2, z_cut+wall_thickness/2, -r_cut, r_cut]
-    for key in keys:
-        mask = cut_and_mirror(fields["walls"])
-        fig = plot_heatmap_and_profiles(
-            cut_and_mirror(fields[key]).T,
-            y0=-r_cut,
-            x0=-z_cut-wall_thickness/2,
-            ylabel="$r$",
-            xlabel = "$z$",
-            zlabel=key,
-            update_zlim=False,
-            hline_y=int(z_cut+wall_thickness/2),
-            vline_x=r_cut,
-            mask = mask.T,
-            **kwargs
-            )
-        fig.show()
-    return fig
-# %%

@@ -24,8 +24,8 @@ def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
             xlabel = "$z$",
             zlabel=key,
             update_zlim=False,
-            hline_y=int(z_cut+wall_thickness/2),
-            vline_x=r_cut,
+            hline_y=r_cut,
+            vline_x=int(z_cut+wall_thickness/2),
             mask = mask.T,
             **kwargs
             )
@@ -42,13 +42,13 @@ import matplotlib.colors as plt_colors
 a0, a1 = 0.70585835, -0.31406453
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d =6
-chi_PC = 0.0
-chi = 0.6
-sigma = 0.025
+d = 12
+chi_PC = -1.2
+chi = 0.3
+sigma = 0.02
 
-fields = calculate_fields(
-    a0, a1, d=d,
+kwargs = dict(
+    a0=a0, a1=a1, d=d,
     chi_PC=chi_PC, chi=chi,
     sigma = sigma,
     wall_thickness=wall_thickness,
@@ -58,39 +58,30 @@ fields = calculate_fields(
     method= "convolve", 
     mobility_correction= "vol_average",
     mobility_model = "Rubinstein",
-    mobility_model_kwargs = {"prefactor":1.0},
-    Haberman_correction = True
-    #**method
+    mobility_model_kwargs = {"prefactor":30.0},
+    Haberman_correction = False,
+    stickiness=False
+)
+fields = calculate_fields(
+    **kwargs
     )
-
+kwargs["chi_PS"] = kwargs.pop("chi")
+kwargs["convolve_mode"] = "same"
 perm = calculate_permeability(    
-    a0=a0, a1=a1, d=d,
-    chi_PC=chi_PC, chi_PS=chi,
-    sigma = sigma,
-    wall_thickness=wall_thickness,
-    pore_radius=pore_radius,
-    exclude_volume=True,
-    truncate_pressure=False,
-    method= "convolve",
-    convolve_mode="same",
-    mobility_correction= "vol_average",
-    mobility_model = "Rubinstein",
-    mobility_model_kwargs = {"prefactor":1.0},         
-    integration= "cylindrical_caps",
+    **kwargs,
     integration_kwargs = dict(spheroid_correction = True),
-    Haberman_correction = True
     )
 
 fields["resistivity"] = (fields["conductivity"])**(-1)
 fields["pc"] = np.exp(-fields["free_energy"])
 #%%
-#%matplotlib qt
+%matplotlib TkAgg
 import cmasher as cmr
 #cmap = cmr.
 cmap0 = cmr.get_sub_cmap("seismic", 0.0, 0.5)
-cmap1 = cmr.get_sub_cmap("seismic", 0.5, 1.0, )
-vmin, vmax = 0, 3
-cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(1-vmin)/(vmax-vmin)])
+cmap1 = cmr.get_sub_cmap("seismic", 0.5, 1.0)
+vmin, vmax = -2, 2
+#cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(1-vmin)/(vmax-vmin)])
 r_cut = 50
 z_cut = 40
 fig = plot_heatmap(fields, r_cut, z_cut, keys = [
@@ -105,12 +96,13 @@ fig = plot_heatmap(fields, r_cut, z_cut, keys = [
     #"surface"
     #"pc"
     ], 
-    #cmap = "seismic",
+    #cmap = "cividis",
     #zmin=0,
     #zmax = 0.7,
-    #cmap = cmap_,
-    #zmin=vmin,
-    #zmax = vmax,
+    #cmap = cmap_.reversed(),
+    cmap = cmap_,
+    zmin=vmin,
+    zmax = vmax,
 
     )
 #fig.savefig(f"fig/free_energy/free_energy_{chi=}_{chi_PC=}_{d=}.svg")
