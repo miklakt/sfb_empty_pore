@@ -292,19 +292,23 @@ Depending on the magnitude of the polymer-colloid interaction strength $\chi_{\t
 In Eq. (7), the effective polymer volume fraction (concentration) near the colloid was approximated as $\phi^{\ast} = (b_0 + b_1 \chi_{\text{PC}}) \phi$.
 Here, we justify this approximation based on SF-SCF data and quantify the coefficients $b_0$ and $b_1$, which capture the local perturbation to the polymer volume fraction profile.
 
-We performed a series of SF-SCF calculations to determine the insertion free energy profiles $\Delta F_{\text{SF-SCF}}(z_{\text{c}})$ for a range of $d$, $\chi_{\text{PS}}$ and $\chi_{\text{PC}}$ values with a pore geometry and polymer brush parameters as set in Figure 1.
-For each condition, we performed a ground state free energy correction, subtracting the total free energy for a colloid far away from the pore, to ensure the reference value $\Delta F_{\text{SF-SCF}}(z_{\text{c}} \to \pm \infty) = 0$.
+As illustrated in Figure~\ref{fig:sf-scf_scheme}, a cylindrical particle is positioned coaxially along the $z$‑axis explicitly as impermeable lattice elements.
+Consequently, the polymer‑brush chains adjust to the available space and the polymer-colloid interaction strength, producing a change in the system's total free energy, $F_{\text{cyl}}(z_{\text{c}})$.
 
-%COMMENT RR: Mikhail, can you here add a sentence to explain how the Delta F is obtained from SF-SCF? I could not see this explained anywhere.
-The insertion free energies thus computed were compared to $\Delta F_{\text{Cyl}}(z_{\text{c}})$, obtained as described in the previous section with $\gamma_{i,k}$ parametrized according to Eq. (7).
-The optimal coefficients $b_0$ and $b_1$ were found using the least-squares method, i.e, minimizing $\sum [\Delta F_{\text{SF-SCF}} - \Delta F_{\text{cyl}}(b_0,b_1)]^2$.
+We performed a series of SF-SCF calculations to determine the insertion free energy profiles $\Delta F_{\text{SF-SCF}}(z_{\text{c}})$ for a range of $d$, $\chi_{\text{PS}}$ and $\chi_{\text{PC}}$ values with a pore geometry and polymer brush parameters as set in Figure~1.
+For each condition, we performed a ground state free energy correction, subtracting the total free energy for a colloid far away from the pore $F_{\text{cyl}}(z_{\text{c}} \to \pm \infty)$, to ensure the reference value $\Delta F_{\text{SF-SCF}}(z_{\text{c}} \to \pm \infty) = 0$.
+
+The insertion free energies thus computed were compared to $\Delta F_{\text{cyl}}(z_{\text{c}})$, obtained as described in the previous section with $\gamma_{i,k}$ parametrized according to Eq. (7).
+The optimal coefficients $b_0$ and $b_1$ were found using the least-squares method, i.e, minimizing $\sum [\Delta F_{\text{SF-SCF}} - \Delta F_{\text{cyl}}(b_0,b_1)]^2$ across a range of $\chi_{\text{PS}} \in [0,1]$  and $\chi_{\text{PC}} \in [-2,0]$ for a relevant particle positions $-60 \leq z_{\text{c}} \leq 0$.
 Fits were performed with small colloids ($d=4$), to focus on local effects and avoid added effects that may arise due to global perturbations of the polymer distribution in the pore.
-The sum covered the relevant range of the profiles ($-60 \leq z_{\text{c}} \leq 0$) and $\chi_{\text{PC}}$ values of 0.00, -0.75 and -1.50 in $\theta$-solvent ($\chi_{\text{PS}} = 0.5$).
-%COMMENT a set is chosen for illustration
+
+% The sum covered the relevant range of the profiles ($-60 \leq z_{\text{c}} \leq 0$) and $\chi_{\text{PC}}$ values of 0.00, -0.75 and -1.50 in $\theta$-solvent ($\chi_{\text{PS}} = 0.5$).
 %COMMENT RR: Mikhail, please can you check if the above is correct and revise as necessary. We here need to provide a clear 'recipe' how the b parameters were quantified. Your text was a bit confusing in this regard as the natrue of the some was not clearly spelled out. Also, can we justify wht the selected chi_PC and chi_PS values were selected? This was also not entirely clear.
 
-Figure~\ref{fig:fit_SI} demonstrates that a satisfactory fit (thick solid line) to the $\Delta F_{\text{SF-SCF}}$ profiles (circles) could be obtained across all three datasets with $b_0 = 0.7$ and $b_1 = -0.3$.
-That the insertion free energies are consistently close to zero for $\chi_{\text{PC}} = -0.75$ illustrates that this value is close to $\chi_{\text{PC}}^{\text{crit}} = \chi_{\text{crit}} + \chi_{\text{PS}} (1 - \phi)$, where polymer attraction and osmotic repulsion just cancel each other.
+In a $\theta$‑solvent (chosen here as a representative case) and for fixed pore geometry and brush parameters, the three interaction parameters
+$\chi_{\text{PC}} = 0.00,; -0.75,; \text{and}; -1.50$ span the regimes of net repulsion, near‑critical adsorption, and net attraction, respectively.
+Figure~\ref{fig:fit_SI} demonstrates that a satisfactory fit (thick solid line) to the $\Delta F_{\text{SF-SCF}}$ profiles (circles) could be obtained across all three representative datasets with a single parameter set $b_0 = 0.7$ and $b_1 = -0.3$.
+The insertion free energies are consistently close to zero for $\chi_{\text{PC}} = -0.75$ illustrates that this value is close to $\chi_{\text{PC}}^{\text{crit}} = \chi_{\text{crit}} + \chi_{\text{PS}} (1 - \phi)$, where polymer attraction and osmotic repulsion just cancel each other.
 Consequently, the least-squares fits considered the regimes of net repulsion and net attraction approximately equally through $\chi_{\text{PC}} = 0.00$ and $\chi_{\text{PC}} = -1.50$, respectively.
 In contrast, neglect of local perturbations to the polymer concentration ($b_0 = 1.0$ and $b_1 = 0.0$) reproduces $\Delta F_{\text{SF-SCF}}$ rather poorly for repulsive and attractive colloids (Figure~\ref{fig:fit_SI}, thin dashed line), thus demonstrating the importance of the correction.
 
@@ -312,34 +316,35 @@ In contrast, neglect of local perturbations to the polymer concentration ($b_0 =
     \centering
     \includegraphics[width = 0.9\linewidth]{fig/fit_SI.png}
     \caption{
-    Comparison of $\Delta F_{\text{SF-SCF}}$ profiles (circles) with $\Delta F_{\text{Cyl}}(b_0,b_1)$, for the best-fit values of $b_0 = 0.7$ and $b_1 = -0.3$ (optimally accounting for local perturbations in the polymer concentration; thick solid lines) and for $b_0 = 1.0$ and $b_1 = 0.0$ (neglecting any local perturbations in polymer concentration; thin dashed lines).
+    Comparison of $\Delta F_{\text{SF-SCF}}$ profiles (circles) with $\Delta F_{\text{cyl}}(b_0,b_1)$, for the best-fit values of $b_0 = 0.7$ and $b_1 = -0.3$ (optimally accounting for local perturbations in the polymer concentration; thick solid lines) and for $b_0 = 1.0$ and $b_1 = 0.0$ (neglecting any local perturbations in polymer concentration; thin dashed lines).
     Pore and brush parameters are as given in Figure 1; $d = 4$, $\chi_{\text{PS}} = 0.5$, and $\chi_{\text{PC}}$ values are color-coded and indicated on the right side of the figure.
     The light green hatched area marks values of $z_{\text{c}}$ that are located inside the pore lumen ($|z| \leq 26$).
     }
     \label{fig:fit_SI}
 \end{figure}
 
-Although the fit was performed only for small colloids, the resulting $b_0$ and $b_1$ values also describe the local perturbations to the polymer concentration well for larger colloids.
-This is illustrated in Figure~\ref{fig:fe_scf_grid} for two selected $\chi_{\text{PC}}$ values (-0.5 and -1.0) and three selected $\chi_{\text{PS}}$ values (0.4, 0.5 and 0.6):
-For colloids with $d \leq 12$, $\Delta F_{\text{Cyl}}$ (solid lines) reproduces the full $\Delta F_{\text{SF-SCF}}$ profiles well.
+Although the fit was performed only for small colloids, the resulting parameters $b_{0}$ and $b_{1}$ still successfully account for the local perturbations to the polymer concentration when calculating the insertion free energy of larger colloids.
+This is illustrated in Figure~\ref{fig:fe_scf_grid} for two selected $\chi_{\text{PC}}$ values (-0.5 and -1.0) and three selected $\chi_{\text{PS}}$ values (0.4, 0.5 and 0.6).
+% We vary the solvent strength $\chi_{\text{PS}}$ around the $\theta$‑condition, thereby shifting an attractive particle from repulsion in a moderately good solvent to attraction in a moderately poor solvent.
+% Changing $\chi_{\text{PS}}$ in either direction affects only the magnitude of the profile, not its overall trend.
+% For colloids with $d \leq 12$, $\Delta F_{\text{cyl}}$ (solid lines) reproduces the full $\Delta F_{\text{SF-SCF}}$ profiles well.
 Deviations become notable, however, for $d = 16$ under conditions of strong repulsion or attraction.
 This size regime thus marks the limit of validity of the local perturbation approximation.
 Instead, attractive or repulsive interactions entail non-local changes that impact the polymer concentration across the entire pore cross-section.
 As a consequence, the pore walls also influence colloid insertion. 
-%#### Add ref or remove ####
-A similar profiles to Figure~\ref{fig:fe_scf_grid} for position-dependent insertion were obtained by Molecular Dynamics in ref ...
 
+A similar profiles to Figure~\ref{fig:fe_scf_grid} for position-dependent insertion were obtained by Molecular Dynamics in ref \cite{Ananth2018, Tagliazucchi2018}.
 Another interesting effect can also observed for strongly attractive particles, even when small.
 The SF-SCF results predict that, to reach the minimum of the insertion free energy $\Delta F_{\text{SF-SCF}}$, the polymer brush changes conformation to reach the particle at a greater distance $|z_{\text{c}}|$ from the pore.
 In Figure~\ref{fig:fit_SI}, this effect is apparent for $\chi_{\text{PC}} = -1.5$, where the SF-SCF results (blue circles) predict systematically lower insertion free energies than the analytical approach (blue solid line) outside the pore ($|z_{\text{c}}| > 26$).
 This effect is mild and only slightly increases the region with negative insertion free energy.
-It may entail a slight reduction in the total resistance to diffusive transport: for pores with regions of negative insertion free energy the total resistance is defined by the resistance of the bulk solution (Figure 4), and the capture of colloids by the poolymers at a larger distance from the pore reduces the bulk resistivity.
+It may entail a slight reduction in the total resistance to diffusive transport: for pores with regions of negative insertion free energy the total resistance is defined by the resistance of the bulk solution (Figure 4), and the capture of colloids by the polymers at a larger distance from the pore reduces the bulk resistivity.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 0.95\linewidth]{fig/fe_scf_grid2.png}
     \caption{ 
-    Comparison of $\Delta F_{\text{SF-SCF}}$ profiles (squares) with $\Delta F_{\text{Cyl}}(b_0,b_1)$ for the best-fit values $b_0 = 0.7$ and $b_1 = -0.3$ (solid lines), for $d = [8, 12, 16]$ (color coded).
+    Comparison of $\Delta F_{\text{SF-SCF}}$ profiles (squares) with $\Delta F_{\text{cyl}}(b_0,b_1)$ for the best-fit values $b_0 = 0.7$ and $b_1 = -0.3$ (solid lines), for $d = [8, 12, 16]$ (color coded).
     Pore and brush parameters are as given in Figure 1. $\chi_{\text{PC}} = -1.0$ (top row) and -0.5 (bottom row); the solvent quality was varied near the $\theta$-point with $\chi_{\text{PS}} = [0.4, 0.5, 0.6]$, as indicated.
     The light green hatched area marks values of $z_{\text{c}}$ that are located inside the pore lumen ($|z| \leq 26$).
     \label{fig:fe_scf_grid}
