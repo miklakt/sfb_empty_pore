@@ -57,10 +57,10 @@ wall_thickness = 52 # wall thickness
 #d_ = np.arange(6, 22, 2)
 #d_ = [10]
 d = 12
-chi_PC = -1.5
-chi = 0.3
+chi_PC = -1.0
+chi = 0.5
 sigma = 0.02
-
+prefactor = 30.0
 #for d in d_:
 fields_ = calculate_fields(
     a0, a1, d=d,
@@ -73,7 +73,7 @@ fields_ = calculate_fields(
     method= "convolve", 
     mobility_correction= "vol_average",
     mobility_model = "Rubinstein",
-    mobility_model_kwargs = {"prefactor":1.0}
+    mobility_model_kwargs = {"prefactor":prefactor}
     )
 #%%
 fields = pad_fields(fields_, pad_sides = 100, pad_top = 200)
@@ -83,6 +83,12 @@ if half: get_half(fields)
 W_arr = fields["walls"]
 D_arr = fields["mobility"]
 U_arr = fields["free_energy"]
+
+empty = True
+if empty:
+    D_arr = xp.ones_like(W_arr, dtype = float)
+    U_arr = xp.zeros_like(W_arr)
+
 
 zlayers = xp.shape(W_arr)[0]
 rlayers = xp.shape(W_arr)[1]
@@ -123,6 +129,9 @@ from drift_diffusion_stencil import SimulationManager
 if half:
     simulation_name = \
     f"numerical_simulation/simulation_data/{d=}_{zlayers=}_{rlayers=}_{chi=}_{chi_PC=}_{dt=}_{differencing}_half.h5"
+elif empty:
+    simulation_name = \
+    f"numerical_simulation/simulation_data/{d=}_{zlayers=}_{rlayers=}_{chi=}_{chi_PC=}_{dt=}_{differencing}_empty.h5"
 else:
     simulation_name = \
     f"numerical_simulation/simulation_data/{d=}_{zlayers=}_{rlayers=}_{chi=}_{chi_PC=}_{dt=}_{differencing}.h5"
@@ -142,12 +151,12 @@ s.run(10, 10000)
 #%%
 s.run(10, 100000)
 #%%
-s.run(20, 1000000)
+s.run(5, 1000000)
 #%%
 #s.run(10, 10000000)
 # %%
 plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get())
-plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
+#plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
 #%%
 plot_heatmap_and_profiles(drift_diffusion.c_arr.get()*np.exp(drift_diffusion.U_arr.get()), mask = drift_diffusion.W_arr.get())
 # %%
@@ -189,4 +198,22 @@ ax.set_ylabel("$c/c_0$")
 ax.legend(loc = "lower left")
 fig.set_size_inches(4,3)
 #fig.savefig("fig/streamlines/total_flux_z.svg", transparent = True)
+# %%
+simulation_results = h5py.File(simulation_name, "r")
+# %%
+nsteps = len(simulation_results["timestep"])
+J_tot_in = np.array([simulation_results["J_z_tot"][i][1] for i in range(nsteps)])
+J_tot_out = np.array([simulation_results["J_z_tot"][i][-1] for i in range(nsteps)])
+
+
+fig, ax = plt.subplots()
+ax.plot(simulation_results["timestep"][1:], J_tot_in[1:], label = "$J_{in}$")
+ax.plot(simulation_results["timestep"][1:], J_tot_out[1:], label = "$J_{out}$")
+#ax.plot(simulation_results["timestep"][1:], J_tot_in[1:]/J_tot_out[1:], label = "$J_{in}/J_{out}$")
+ax.legend()
+ax.set_xlabel("t")
+ax.set_ylabel("$\int^{r_{pore}} j(r,z) dr$")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_ylim(1e-4,1e4)
 # %%

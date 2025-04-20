@@ -76,7 +76,7 @@ def flux_to_an_adsorbing_dome(r_dome):
 #     ]
 # )
 
-simulation_results = pd.read_csv("numeric_simulation_results.csv")
+simulation_results = pd.read_csv("numeric_simulation_results_.csv")
 
 simulation_results["J_corrected"] = correct_flux(simulation_results["J_tot"],simulation_results["d"])
 simulation_results["R"] = 1/(simulation_results["J_tot"]/simulation_results["d"]/3)
@@ -135,7 +135,7 @@ results = pd.DataFrame(results)
 
 #%%
 show_contributions = False
-show_CFD = False
+show_CFD = True
 show_analytical = True
 if show_contributions:
     fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 3, sharex = True)
