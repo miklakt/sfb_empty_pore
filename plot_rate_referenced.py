@@ -404,6 +404,38 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
                     eta=eta,
                     )
         
+        ax.plot(
+            x2, y2, 
+            label = "empty",
+            #marker = next(markers),
+            #mfc = "none",
+            #ms = 3,
+            linewidth = 1,
+            linestyle = "--",
+            color = "black"
+            )
+        
+        y2 = [get_k_empty_pore(
+                    pore_radius*Kuhn_segment,
+                    wall_thickness*Kuhn_segment,
+                    x2_,
+                    NPC_per_nucleus,
+                    nucleus_volume,
+                    eta=eta,
+                    Haberman_correction=True
+                    ) for x2_ in x2]
+        
+        ax.plot(
+            x2, y2, 
+            label = "empty",
+            #marker = next(markers),
+            #mfc = "none",
+            #ms = 3,
+            linewidth = 0.5,
+            linestyle = "--",
+            color = "black"
+            )
+        
 
         if chi_PC_ in chi_PC_color:
             plot_kwargs = dict(
@@ -427,17 +459,6 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
             ms = 3,
             linewidth = 0.5,
             color = "tab:blue"
-            )
-        
-        ax.plot(
-            x2, y2, 
-            label = "empty",
-            #marker = next(markers),
-            #mfc = "none",
-            #ms = 3,
-            linewidth = 1,
-            linestyle = "--",
-            color = "black"
             )
 
         ax.scatter(

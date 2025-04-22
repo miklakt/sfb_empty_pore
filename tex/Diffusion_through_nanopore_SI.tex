@@ -985,22 +985,74 @@ Since the local diffusion coefficient depends not only on the local polymer conc
 
 \end{multicols}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width = 0.9\linewidth]{fig/permeability_on_d_low_D.png}
-    \caption{
-        Comparison of pore resistance as a function of particle size using different position-dependent diffusion coefficients.
-        Thin lines represent calculations using Eq.~\ref{eq:D_interp}, while thick lines with markers represent calculations using Eq.~\ref{eq:D_interp_2} with $f = 10$.
-        Results are shown for a set of $\chi_{\text{PS}}$ typed in the titles and various values of the particle-polymer interaction parameter $\chi_{\text{PC}}$ listed in legend,.
-        The figure illustrates that even when the local diffusion coefficient is significantly reduced (larger $f$), the qualitative trends in pore resistance remain consistent.
-        Lower diffusion coefficients correspond to higher pore resistance, shifting the resistance–particle size curves upward for smaller particles.
-        }
-    \label{fig:permeability_ond_low_D}
-\end{figure}
+
 
 %####################################################
 %There should be one more chapter about experimental data
 %####################################################
+
+\section{Kinetics of pore mediated equilibration. Comparison to experimental data}
+
+\begin{multicols}{2}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.9\linewidth]{fig/experiment_description.png}
+    \caption{\dots}
+    \label{fig:experiments_overview}
+\end{figure}
+
+Let us consider a different system where porous membrane separates a semi-infinite solution from a  well-mixed reservoir of finite volume as shown in Figure~\ref{fig:experiments_overview} (left).
+The pores are far apart and  the convergent fluxes do not overlap.
+If the volume of the pores is negligible $V_{\text{pore}} \ll V$ the equilibration kinetics is the first order
+\begin{eqnarray}
+    \frac{\partial c}{\partial t} = k (c_{\text{bulk}} - c(t))\\
+    \frac{c(t)}{c_{\text{bulk}}} = k (1 - e^{-kt}) \\
+    k = \frac{N_{\text{pores}}}{V R}
+\end{eqnarray}
+where $N_{\text{pore}}$ is number of pores that perforate the membrane and $V$ is the volume of the finite volume reservoir, $k$ rate constant ($\tau^{-1} = k$ is characteristic time).
+The initial flux in the finite volume reservoir is $J(t=0) = k c_{\text{bulk}}$
+Pore resistance $R$ is found from the Eq~\ref{eq:R_total}.
+
+%For an empty pore the influx rate of small colloids can be estimated as:
+
+
+In the realm of nucleopores, the finite reservoir is the cell nucleus, for the HeLa cells the next estimates are available:
+$V_{\text{nucleus}} \approx 1200$,
+$N_{\text{pores}} \approx 3000 \text{fL}$,
+and the viscosity of the medium at 20$^\circ$ is $\eta_{\text{S}} = 0.00145 \text{Pa}\cdot \text{s}$.
+
+This allow us to compare our theoretical results with available experimental data on passage rate in ref \cite{Ribbeck2001} where the influx rate of inert particles through nucleopores was examined.
+
+
+As we discussed for attractive particles with low $\chi_{\text{PC}}$ we could expect to see enhanced compared to inert particles permeability, with the absolute value potentially above that of a bare pore.
+
+In the ref \cite{Frey2018} authors studied permeability of similarly sized colloid particles with different surface feature, exhibiting behaviour from colloid inert to FG-domains of the nucleoporins to attraction to them.
+To extract surface feature of these colloids FG-domain hydrogels were prepared to study colloid partitioning.
+
+Following procedure from ref \cite{Schmidt2015} small droplets of Nup98 FG-domains were prepared by phase separation by rapid dilution of FG-domain solution in aqueous solution. The estimated protein concentration is $\approx 200 \, \text{mg}/\text{mL}$ which translates to the volume concentration of $\phi_{\text{gel}} \approx 0.2$ assuming typical 'dry' protein density $1.25 \, \text{mg}/\text{mL}$.
+The FG-domains was expressed bacterially to resemble the ones found in nucleoporins. A short overview is in Figure~\label{fig:experiments_overview}.
+Similarly, drops of Nup116 FG-domains were prepared with estimated protein concentration is $\approx 400 \, \text{mg}/\text{mL}$ which translates to the volume concentration of $\phi_{\text{gel}} \approx 0.4$.
+
+When diluted, FG-domains phase separate from aqueous solution, the author reported \cite{Schmidt2015} the critical concentration for phase separation $\approx 200 \, \text{nM}$, given the concentration after dilution were about 200-fold higher and very fast process of particle assembly, we believe this was spinodal decomposition. 
+
+
+
+
+
+% Assume a uniform insertion free energy in the pores with particles well-mixed in the pore compartments.
+% The equilibration is described as three-compartment model.
+% Particles will distribute to the pores according to Boltzmann equilibrium $c_{\text{pore}} = c_{\text{bulk}} e^{\Delta F / k_{\text{B}} T}$.
+% The equilibration kinetics is a system two ODE
+% \begin{eqnarray}
+%     \begin{cases}
+%         \frac{\partial c}{\partial t} =  \frac{N_{\text{pore}}}{V_{\text{pore}}} \left(c_{\text{bulk}} - \frac{c_{\text{pore}(t)}}{e^{\Delta F / k_{\text{B}} T}}\right)
+%     \end{cases}
+% \end{eqnarray}
+
+
+% The passive flux of a mobile species into nucleus (insertion free energy $\Delta F \ge 0$) follows 
+\end{multicols}
 
 \pagebreak
 \subsection*{List of variables and abbreviations}
