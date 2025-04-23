@@ -1009,6 +1009,7 @@ If the volume of the pores is negligible $V_{\text{pore}} \ll V$ the equilibrati
     \frac{\partial c}{\partial t} = k (c_{\text{bulk}} - c(t))\\
     \frac{c(t)}{c_{\text{bulk}}} = k (1 - e^{-kt}) \\
     k = \frac{N_{\text{pores}}}{V R}
+    \label{eq:rate_constant}
 \end{eqnarray}
 where $N_{\text{pore}}$ is number of pores that perforate the membrane and $V$ is the volume of the finite volume reservoir, $k$ rate constant ($\tau^{-1} = k$ is characteristic time).
 The initial flux in the finite volume reservoir is $J(t=0) = k c_{\text{bulk}}$
@@ -1016,42 +1017,88 @@ Pore resistance $R$ is found from the Eq~\ref{eq:R_total}.
 
 %For an empty pore the influx rate of small colloids can be estimated as:
 
+In the realm of nucleopores, the finite reservoir is the cell nucleus.
 
-In the realm of nucleopores, the finite reservoir is the cell nucleus, for the HeLa cells the next estimates are available:
+\textbf{Inert particles}
+
+This allow us to compare our theoretical results with available experimental data on passage rate in ref \cite{Ribbeck2001} where the influx rate of inert particles through nucleopores was examined as a function of particle size $d$.
+A natural reference is a passage through a membrane perforated with bare (aqueous) pores.
+Using available for the digitonized HeLa cells the estimates are available:
 $V_{\text{nucleus}} \approx 1200$,
 $N_{\text{pores}} \approx 3000 \text{fL}$,
-and the viscosity of the medium at 20$^\circ$ is $\eta_{\text{S}} = 0.00145 \text{Pa}\cdot \text{s}$.
+and the viscosity of the medium at 20$^\circ$ is $\eta_{\text{S}} = 0.00145 \text{Pa}\cdot \text{s}$. \cite{Mohr2009, Ribbeck2001} we arrive to the next approximate expression for the rate constant $k[\text{s}^{-1}]$ from the colloid size $d[\text{nm}]$ for small particles.
 
-This allow us to compare our theoretical results with available experimental data on passage rate in ref \cite{Ribbeck2001} where the influx rate of inert particles through nucleopores was examined.
+\begin{eqnarray}
+\begin{split}
+    &k =\\
+    &\frac{7.848 \mathrm{d}^{3} - 9.304 \cdot 10^{2} \mathrm{d}^{2}  + 3.677 \cdot 10^{4} \mathrm{d}- 4.844 \cdot 10^{5}}{2.793 \mathrm{d}^{3} + 8.079 \cdot 10^{2} \mathrm{d}^{2}  - 3.629 \cdot 10^{4} \mathrm{d}}
+\end{split}
+\end{eqnarray}
 
+Theoretical results in the case of the polymer modified pores is found from Eq.~\ref{eq:rate_constant}.
+This requires calculation of pore resistance $R$.
+First, position-dependent diffusion coefficient is found from Eq.~(\todo{EQ}) with diffusion coefficient in pure solvent $D_{0} = \frac{k_{\text{B}} T}{3\pi\eta_{\text{S}}
+}$.
+Second, position-dependent conductivity $\rho^{-1}$ is found from Eq.~(\todo{EQ}).
+Finally, we find resistance $R$ by integrating position-dependent conductivity $\rho^{-1}$, as in Eq.~(\todo{EQ}).
 
-As we discussed for attractive particles with low $\chi_{\text{PC}}$ we could expect to see enhanced compared to inert particles permeability, with the absolute value potentially above that of a bare pore.
+\textbf{Attractive particles}
+
+For attractive particles with low $\chi_{\text{PC}}$ we could expect to see enhanced compared to inert particles permeability, with the absolute value potentially above that of a bare pore.
 
 In the ref \cite{Frey2018} authors studied permeability of similarly sized colloid particles with different surface feature, exhibiting behaviour from colloid inert to FG-domains of the nucleoporins to attraction to them.
 To extract surface feature of these colloids FG-domain hydrogels were prepared to study colloid partitioning.
 
-Following procedure from ref \cite{Schmidt2015} small droplets of Nup98 FG-domains were prepared by phase separation by rapid dilution of FG-domain solution in aqueous solution. The estimated protein concentration is $\approx 200 \, \text{mg}/\text{mL}$ which translates to the volume concentration of $\phi_{\text{gel}} \approx 0.2$ assuming typical 'dry' protein density $1.25 \, \text{mg}/\text{mL}$.
+Following procedure from ref \cite{Schmidt2015} small droplets of Mac98A FG-domains were prepared by phase separation by rapid dilution of FG-domain solution in aqueous solution.
+The estimated protein concentration is $\approx 275 \, \text{mg}/\text{mL}$ which translates to the volume concentration of $\phi_{\text{gel}} \approx 0.2$ assuming typical 'dry' protein density $1.35 \, \text{mg}/\text{mL}$.
+
 The FG-domains was expressed bacterially to resemble the ones found in nucleoporins. A short overview is in Figure~\label{fig:experiments_overview}.
-Similarly, drops of Nup116 FG-domains were prepared with estimated protein concentration is $\approx 400 \, \text{mg}/\text{mL}$ which translates to the volume concentration of $\phi_{\text{gel}} \approx 0.4$.
+Similarly, drops of Nup116 FG-domains were prepared with estimated intra-particle protein concentration is $\approx 400 \, \text{mg}/\text{mL}$ which translates to the volume concentration of $\phi_{\text{gel}} \approx 0.4$.
 
-When diluted, FG-domains phase separate from aqueous solution, the author reported \cite{Schmidt2015} the critical concentration for phase separation $\approx 200 \, \text{nM}$, given the concentration after dilution were about 200-fold higher and very fast process of particle assembly, we believe this was spinodal decomposition. 
+We chose compromise value $\phi_{\text{gel}} = 0.3$ in Figure~\todo{Main text figure}, in the given estimates of $0.2 < \phi_{\text{gel}} < 0.4$ the results is not sensitive to change in $\phi_{\text{gel}}$.
 
-
-
-
-
-% Assume a uniform insertion free energy in the pores with particles well-mixed in the pore compartments.
-% The equilibration is described as three-compartment model.
-% Particles will distribute to the pores according to Boltzmann equilibrium $c_{\text{pore}} = c_{\text{bulk}} e^{\Delta F / k_{\text{B}} T}$.
-% The equilibration kinetics is a system two ODE
-% \begin{eqnarray}
-%     \begin{cases}
-%         \frac{\partial c}{\partial t} =  \frac{N_{\text{pore}}}{V_{\text{pore}}} \left(c_{\text{bulk}} - \frac{c_{\text{pore}(t)}}{e^{\Delta F / k_{\text{B}} T}}\right)
-%     \end{cases}
-% \end{eqnarray}
+When diluted, FG-domains phase separate from aqueous solution due to chain cohesiveness, forming phase poor o FG-domains and rich FG-domain gel-particles. 
+The polymer infra-particle concentration $\phi_{\text{bulk}}^{\text{gel}}$ is approximately equal to that of critical concentration for phase separation in the buffer.
 
 
-% The passive flux of a mobile species into nucleus (insertion free energy $\Delta F \ge 0$) follows 
+In the system of two components FG-domain and buffer phase separation occur at $\chi_{PS}^{\text{gel}} > 1/2 + N^{-1/2} \gtrsim  0.5$ according to mean-field approximation $N \gg 1$.
+The chemical potentials and osmotic pressure in the both poor and rich phases are equal for each components following binodal curves \cite{Vovk2016, Zilman2018}.
+
+The estimated critical concentration for Nup116 and Nup98A are $1 \mu\text{g}/\text{mL}$ ($\phi_{\text{bulk}}^{\text{gel}} \approx 10^{-6}$) \cite{Schmidt2015}.
+This extremely low values means the osmotic pressure is almost zero in both phases.
+
+\begin{eqnarray}
+    \Pi(\phi_{\text{gel}}) = \Pi(\phi_{\text{bulk}}^{\text{gel}}) \approx 0
+\end{eqnarray}
+
+From the FG-domain intra-particle concentration we can estimate the solvent strength of the buffer $\chi_{\text{PS}}^{\text{gel}}$ from the vanishing osmotic pressure conditions Eq~(\todo{EQ}).
+
+\begin{eqnarray}
+    \chi_{\text{PS}}^{\text{gel}}=(-\ln(1-\phi_{\text{gel}}) - \phi_{\text{gel}})/(\phi_{\text{gel}}^{2})
+\end{eqnarray}
+
+As the Nup98 and Nup116 FG-domains and similar disordered protein chains are found in nucleopores, we assume the polymer-colloid interaction parameter remain largely unchanged $\chi_{\text{PC}}^{\text{gel}} \approx \chi_{\text{PC}}$.
+
+All this together allow to theoretically estimate insertion free energy of particle with different surface feature (varying $\chi_{\text{PC}}$) to FG-domain gel of a given concentration $\phi_{\text{gel}}$ and partitioning with a buffer, interestingly as the osmotic pressure vanishes, only surface term contributes to the insertion free energy:
+
+\begin{eqnarray}
+    % \begin{split}
+    %     &\Delta F_{\text{gel}}(\phi_{\text{gel}}, d, \chi_{\text{PC}}) 
+    %     =
+    %     \\
+    %     &=\frac{\pi d^3}{6} \cdot \gamma\left(
+    %     \phi_{\text{gel}}, \chi_{\text{PC}},
+    %     \chi_{\text{PS}}^{\text{gel}}\{ \phi_{\text{gel}} \}
+    %     \right)  
+    % \end{split}
+    \Delta F_{\text{gel}}
+    =\frac{\pi d^3}{6} \cdot \gamma\left(
+    \phi_{\text{gel}}, \chi_{\text{PC}},
+    \chi_{\text{PS}}^{\text{gel}}\{ \phi_{\text{gel}} \}
+    \right)
+    \\
+    \left(\frac{c_{\text{eq}}}{c_{\text{bulk}}}\right)_{\text{gel}} = e^{-\Delta F_{\text{gel}}}
+\end{eqnarray}
 \end{multicols}
 
 \pagebreak
