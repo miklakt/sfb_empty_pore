@@ -935,171 +935,177 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
 \end{figure}
 
 
+\end{multicols}
 %#########This chapter is to be rewritten to include sticky particles and fix prefactor###############
-\end{multicols}
-\section{Diffusion Coefficient Impact on the Trends in Pore Resistance}
-\begin{multicols}{2}
+% \section{Diffusion Coefficient Impact on the Trends in Pore Resistance}
+% \begin{multicols}{2}
     
-Locally, the polymer brush resembles a semi-dilute polymer solution with segment concentration $\phi$, characterized by a correlation length $\xi$ that represents the typical mesh size formed by overlapping polymer coils.
+% Locally, the polymer brush resembles a semi-dilute polymer solution with segment concentration $\phi$, characterized by a correlation length $\xi$ that represents the typical mesh size formed by overlapping polymer coils.
 
-According to the scaling theory developed by Cai et al.\cite{Cai2011}, for colloids smaller than the correlation length $\xi$, diffusion is unhindered and follows the Stokes--Einstein equation:
-\begin{equation}
-D_0 \approx \frac{k_B T}{3 \pi \eta_0 d}
-\label{eq:D_0}
-\end{equation}
-where $\eta_0$ is the solvent viscosity.
+% According to the scaling theory developed by Cai et al.\cite{Cai2011}, for colloids smaller than the correlation length $\xi$, diffusion is unhindered and follows the Stokes--Einstein equation:
+% \begin{equation}
+% D_0 \approx \frac{k_B T}{3 \pi \eta_0 d}
+% \label{eq:D_0}
+% \end{equation}
+% where $\eta_0$ is the solvent viscosity.
 
-For colloids larger than $\xi$, diffusion is hindered and occurs via hopping between mesh cages, requiring polymer chain relaxation. The diffusion coefficient in this regime is given by \cite{Cai2011}:
-\begin{equation}
-D \approx D_0 \frac{\xi^2}{d^2}
-\label{eq:D_m}
-\end{equation}
+% For colloids larger than $\xi$, diffusion is hindered and occurs via hopping between mesh cages, requiring polymer chain relaxation. The diffusion coefficient in this regime is given by \cite{Cai2011}:
+% \begin{equation}
+% D \approx D_0 \frac{\xi^2}{d^2}
+% \label{eq:D_m}
+% \end{equation}
 
-To interpolate between Eqs.~\ref{eq:D_0} and \ref{eq:D_m}, we assume that the retarding effects due to solvent friction and mesh relaxation are additive:
-\begin{equation}
-D^{-1} = D_0^{-1} \left( 1 + \frac{d^2}{\xi^2} \right)
-\label{eq:D_interp}
-\end{equation}
+% To interpolate between Eqs.~\ref{eq:D_0} and \ref{eq:D_m}, we assume that the retarding effects due to solvent friction and mesh relaxation are additive:
+% \begin{equation}
+% D^{-1} = D_0^{-1} \left( 1 + \frac{d^2}{\xi^2} \right)
+% \label{eq:D_interp}
+% \end{equation}
 
-To account for possible deviations, we introduce a prefactor $f$:
-\begin{equation}
-D^{-1} = D_0^{-1} \left( 1 + \frac{f^2 d^2}{\xi^2} \right)
-\label{eq:D_interp_2}
-\end{equation}
-where larger values of $f$ decrease the local diffusion coefficient, effectively representing a larger particle size.
+% To account for possible deviations, we introduce a prefactor $f$:
+% \begin{equation}
+% D^{-1} = D_0^{-1} \left( 1 + \frac{f^2 d^2}{\xi^2} \right)
+% \label{eq:D_interp_2}
+% \end{equation}
+% where larger values of $f$ decrease the local diffusion coefficient, effectively representing a larger particle size.
 
-The prefactor $f$ is introduced to demonstrate the limited impact of variations in the local diffusion coefficient on the overall trends in pore resistance.
+% The prefactor $f$ is introduced to demonstrate the limited impact of variations in the local diffusion coefficient on the overall trends in pore resistance.
 
-Figure~\ref{fig:permeability_ond_low_D} compares the pore resistance calculated using the position-dependent diffusion coefficient from Eq.~\ref{eq:D_interp} (thin lines) and Eq.~\ref{eq:D_interp_2} (thick lines with markers) with $f = 10$.
+% Figure~\ref{fig:permeability_ond_low_D} compares the pore resistance calculated using the position-dependent diffusion coefficient from Eq.~\ref{eq:D_interp} (thin lines) and Eq.~\ref{eq:D_interp_2} (thick lines with markers) with $f = 10$.
 
-This comparison shows that even if the position-dependent diffusion coefficient is underestimated, the qualitative trends remain the same.
+% This comparison shows that even if the position-dependent diffusion coefficient is underestimated, the qualitative trends remain the same.
 
-Lower diffusion coefficients correspond to higher pore resistance, shifting the resistance–particle size curves upward for smaller particles.
+% Lower diffusion coefficients correspond to higher pore resistance, shifting the resistance–particle size curves upward for smaller particles.
 
-When the pore channel resistance $R_{\text{int}}$ is negligible due to large negative insertion free energy, and the total resistance is mainly determined by the convergent flow resistance $R \approx R_{\text{ext}}$, changes in the position-dependent diffusion coefficient $D$ have little impact on the total resistance. This effect is observed in Figure~\ref{fig:permeability_ond_low_D} for highly attractive ($\chi_{\text{PC}} = -2.0$) particles with larger sizes in a $\theta$-solvent and moderately good ($\chi_{\text{PS}} = 0.3$) solvent.
+% When the pore channel resistance $R_{\text{int}}$ is negligible due to large negative insertion free energy, and the total resistance is mainly determined by the convergent flow resistance $R \approx R_{\text{ext}}$, changes in the position-dependent diffusion coefficient $D$ have little impact on the total resistance. This effect is observed in Figure~\ref{fig:permeability_ond_low_D} for highly attractive ($\chi_{\text{PC}} = -2.0$) particles with larger sizes in a $\theta$-solvent and moderately good ($\chi_{\text{PS}} = 0.3$) solvent.
 
-Furthermore, a lower position-dependent diffusion coefficient exaggerates the portion of the trend with negative slope in the resistance–particle size dependency.
+% Furthermore, a lower position-dependent diffusion coefficient exaggerates the portion of the trend with negative slope in the resistance–particle size dependency.
 
-Since the local diffusion coefficient depends not only on the local polymer concentration and particle size but also on the molecular-level interactions between the polymer brush and the particle, which are not captured by our coarse-grained approach, incorporating more complex models or empirical data into the calculation of $D$ will not drastically change the trends and structure of the pore resistance.
+% Since the local diffusion coefficient depends not only on the local polymer concentration and particle size but also on the molecular-level interactions between the polymer brush and the particle, which are not captured by our coarse-grained approach, incorporating more complex models or empirical data into the calculation of $D$ will not drastically change the trends and structure of the pore resistance.
 
 
-\end{multicols}
+% \end{multicols}
 
 
 
 %####################################################
 %There should be one more chapter about experimental data
 %####################################################
-
-\section{Kinetics of pore mediated equilibration. Comparison to experimental data}
+\pagebreak
+\section{Kinetics of Pore-Mediated Equilibration: Comparison to Experimental Data}
 
 \begin{multicols}{2}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width = 0.9\linewidth]{fig/experiment_description.png}
-    \caption{\dots}
-    \label{fig:experiments_overview}
-\end{figure}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{fig/experiment_description.png}
+        \caption{Overview of relevant pore-mediated equilibration experiments from Refs.~\cite{Ribbeck2001, Frey2018}.\\
+        \textbf{Left:} A finite volume $V$ is separated from a semi-infinite reservoir by an impermeable membrane (green contour) permeated by $N_{\text{pores}}$ polymer-filled pores (red squiggles representing the polymer inside gaps in the membrane). 
+        Nanocolloids (yellow circles) are mobile particles, present at a concentration $c_{\text{out}}$ in the semi-infinite reservoir, and influx into the finite volume where the time-dependent concentration is $c_{\text{in}}(t)$.\\
+        \textbf{Top right:} Isolated polymers phase-separate in a poor solvent with solvent strength $\chi_{\text{PS}}^{\text{FG}}$, forming polymer gel droplets (red irregular shapes) with polymer volume fraction $\phi_{\text{gel}}$.\\
+        \textbf{Bottom right:} Nanocolloids equilibrate between the solvent and the polymer gel, characterized by the partition coefficient $\left(c_{\text{in}}/c_{\text{out}}\right)_{\text{gel}}$.\\
+        In the relevant experiments, the finite volume corresponds to the cell nucleus, permeated by nucleopores filled with FG-domains of nucleoporins. In Ref.~\cite{Frey2018}, FG-domains were bacterially expressed, purified, and dissolved; rapid dilution led to phase separation and formation of FG-domain particles. 
+        % In Ref.~\cite{Ribbeck2001}, the influx rate into the nucleus was measured as a function of colloid size $d$ for particles that do not interact with FG-domains in the nucleopores.
+        }
+        \label{fig:experiments_overview}
+    \end{figure}
+    
 
-Let us consider a different system where porous membrane separates a semi-infinite solution from a  well-mixed reservoir of finite volume as shown in Figure~\ref{fig:experiments_overview} (left).
-The pores are far apart and  the convergent fluxes do not overlap.
-If the volume of the pores is negligible $V_{\text{pore}} \ll V$ the equilibration kinetics is the first order
+Let us consider a system in which a porous membrane separates a semi-infinite solution from a well-mixed reservoir of finite volume, as illustrated in Figure~\ref{fig:experiments_overview} (left).
+The pores are spaced far apart such that the convergent fluxes do not overlap. If the pore volume is negligible, i.e., $V_{\text{pore}} \ll V$, the equilibration kinetics follow a first-order rate law:
+
 \begin{eqnarray}
-    \frac{\partial c}{\partial t} = k (c_{\text{bulk}} - c(t))\\
-    \frac{c(t)}{c_{\text{bulk}}} = k (1 - e^{-kt}) \\
-    k = \frac{N_{\text{pores}}}{V R}
+    \frac{\partial c}{\partial t} &=& k (c_{\text{out}} - c_{\text{in}}(t)) \\
+    \frac{c_{\text{in}}(t)}{c_{\text{out}}} &=& 1 - e^{-kt} \\
+    k &=& \frac{N_{\text{pores}}}{V R}
     \label{eq:rate_constant}
 \end{eqnarray}
-where $N_{\text{pore}}$ is number of pores that perforate the membrane and $V$ is the volume of the finite volume reservoir, $k$ rate constant ($\tau^{-1} = k$ is characteristic time).
-The initial flux in the finite volume reservoir is $J(t=0) = k c_{\text{bulk}}$
-Pore resistance $R$ is found from the Eq~\ref{eq:R_total}.
 
-%For an empty pore the influx rate of small colloids can be estimated as:
+Here, $N_{\text{pores}}$ is the number of pores perforating the membrane, $V$ is the volume of the finite reservoir, and $k$ is the rate constant (with characteristic time $\tau = 1/k$). 
+The initial influx into the reservoir is $J(t=0) = k c_{\text{out}}$.
+The pore resistance $R$ is defined by Eq.~\ref{eq:R_total}.
 
-In the realm of nucleopores, the finite reservoir is the cell nucleus.
+In the context of nuclear pores, the finite reservoir corresponds to the cell nucleus.
 
-\textbf{Inert particles}
+\textbf{Influx rate versus particle size for inert particles.}
 
-This allow us to compare our theoretical results with available experimental data on passage rate in ref \cite{Ribbeck2001} where the influx rate of inert particles through nucleopores was examined as a function of particle size $d$.
-A natural reference is a passage through a membrane perforated with bare (aqueous) pores.
-Using available for the digitonized HeLa cells the estimates are available:
-$V_{\text{nucleus}} \approx 1200$,
-$N_{\text{pores}} \approx 3000 \text{fL}$,
-and the viscosity of the medium at 20$^\circ$ is $\eta_{\text{S}} = 0.00145 \text{Pa}\cdot \text{s}$. \cite{Mohr2009, Ribbeck2001} we arrive to the next approximate expression for the rate constant $k[\text{s}^{-1}]$ from the colloid size $d[\text{nm}]$ for small particles.
+We compare theoretical results with experimental data on particle influx rates (rate constants), such as those reported in Ref.~\cite{Ribbeck2001}, where the rate of entry of inert particles through nuclear pores was measured as a function of particle diameter $d$.
+A natural reference is transport through a membrane perforated by bare aqueous pores.
+For the theoretical dependencies of rate constants $k$ on particle size $d$ of inert particles (see Figure~{\todo{Main text fig}}) we used available estimates for digitonin-permeabilized HeLa cells:
+nuclear volume $V_{\text{nucleus}} \approx 1200 \, \text{fl}$;
+number of pores $N_{\text{pores}} \approx 3000$;
+solvent viscosity $\eta_{\text{S}} = 0.00145 \, \text{Pa} \cdot \text{s}$ at 20$^\circ$C.
+We assumed nuclear pore operates in moderately poor solvent $\chi_{\text{PS}} = 0.6$ with pore parameters as in (see Figure~{\todo{Main text fig}}).
+% we obtain the following approximate expression for the rate constant $k$ [s$^{-1}$] as a function of particle diameter $d$ [nm]:
+
+% \begin{eqnarray}
+% \begin{split}
+%     k = \frac{
+%     7.848 \text{d}^{3} - 9.304 \cdot 10^{2} \text{d}^{2} + 3.677 \cdot 10^{4} \text{d} - 4.844 \cdot 10^{5}
+%     }{
+%     2.793 \text{d}^{3} + 8.079 \cdot 10^{2} \text{d}^{2} - 3.629 \cdot 10^{4} \text{d}
+%     }
+% \end{split}
+% \end{eqnarray}
+
+For polymer-filled pores, theoretical predictions are obtained from Eq.~\ref{eq:rate_constant} by calculating the corresponding pore resistance $R$. This involves:
+
+1) Computing the position-dependent diffusion coefficient using Eq.~(\todo{EQ}), with $D_0 = \frac{k_{\text{B}} T}{3\pi d \eta_{\text{S}}}$ for the diffusion in pure solvent.
+2) Determining the position-dependent conductivity $\rho^{-1}$ via Eq.~(\todo{EQ}).
+3) Integrating the conductivity to obtain $R$ using Eq.~(\todo{EQ}).
+
+\textbf{Influx rate versus partition coefficient correlation.}
+
+For particles with low $\chi_{\text{PC}}$, we expect enhanced permeability compared to inert particles, possibly even surpassing that of a bare pore.
+
+Ref.~\cite{Frey2018} examined permeability of similarly sized colloidal particles with varying surface properties, ranging from inert to FG-domain-affine.
+To characterize these surfaces, FG-domain hydrogels were prepared to study colloid partitioning.
+
+The authors of Ref.~\cite{Frey2018} prepared droplets of Mac98A FG-domains via rapid dilution, inducing phase separation, following the protocol of Ref.~\cite{Schmidt2015}.
+The estimated protein concentration in the gel phase is $\approx 275 \, \text{mg}/\text{ml}$, which corresponds to a volume fraction $\phi_{\text{gel}} \approx 0.2$, assuming a typical dry protein density of $1.35 \, \text{g}/\text{ml}$.
+
+Similarly, droplets of Nup116 FG-domains were prepared with an estimated intra-particle protein concentration of $\approx 400 \, \text{mg}/\text{ml}$, corresponding to $\phi_{\text{gel}} \approx 0.4$. A compromise value $\phi_{\text{gel}} = 0.3$ was used in Figure~\todo{Main text figure}.
+Within the range $0.2 < \phi_{\text{gel}} < 0.4$, the results are not sensitive to the exact value of $\phi_{\text{gel}}$.
+
+Upon dilution, FG-domains undergo phase separation due to chain cohesiveness, demixing into a dilute FG-poor phase and a condensed FG-rich gel.
+The polymer concentration in the bulk phase, $\phi_{\text{gel}}^{\text{out}}$, approximately equals the critical concentration for phase separation.
+
+For a two-component system (FG-domain + buffer), phase separation occurs at:
+$
+\chi_{\text{PS}}^{\text{FG}} > \frac{1}{2} + \frac{1}{\sqrt{N}} \gtrsim 0.5
+$
+according to mean-field theory (assuming $N \gg 1$). 
+Both chemical potentials and osmotic pressures are equal in the rich and poor phases \cite{Vovk2016, Zilman2018}.
+
+The estimated critical concentration for Nup116 and Nup98A FG-domains is $1 \, \mu\text{g}/\text{ml}$, corresponding to $\phi_{\text{gel}}^{\text{out}} \approx 10^{-6}$ \cite{Schmidt2015}.
+This extremely low value implies the osmotic pressure is effectively zero in both phases:
 
 \begin{eqnarray}
-\begin{split}
-    &k =\\
-    &\frac{7.848 \mathrm{d}^{3} - 9.304 \cdot 10^{2} \mathrm{d}^{2}  + 3.677 \cdot 10^{4} \mathrm{d}- 4.844 \cdot 10^{5}}{2.793 \mathrm{d}^{3} + 8.079 \cdot 10^{2} \mathrm{d}^{2}  - 3.629 \cdot 10^{4} \mathrm{d}}
-\end{split}
+    \Pi(\phi_{\text{gel}}) = \Pi(\phi_{\text{gel}}^{\text{out}}) \approx 0
 \end{eqnarray}
 
-Theoretical results in the case of the polymer modified pores is found from Eq.~\ref{eq:rate_constant}.
-This requires calculation of pore resistance $R$.
-First, position-dependent diffusion coefficient is found from Eq.~(\todo{EQ}) with diffusion coefficient in pure solvent $D_{0} = \frac{k_{\text{B}} T}{3\pi\eta_{\text{S}}
-}$.
-Second, position-dependent conductivity $\rho^{-1}$ is found from Eq.~(\todo{EQ}).
-Finally, we find resistance $R$ by integrating position-dependent conductivity $\rho^{-1}$, as in Eq.~(\todo{EQ}).
-
-\textbf{Attractive particles}
-
-For attractive particles with low $\chi_{\text{PC}}$ we could expect to see enhanced compared to inert particles permeability, with the absolute value potentially above that of a bare pore.
-
-In the ref \cite{Frey2018} authors studied permeability of similarly sized colloid particles with different surface feature, exhibiting behaviour from colloid inert to FG-domains of the nucleoporins to attraction to them.
-To extract surface feature of these colloids FG-domain hydrogels were prepared to study colloid partitioning.
-
-Following procedure from ref \cite{Schmidt2015} small droplets of Mac98A FG-domains were prepared by phase separation by rapid dilution of FG-domain solution in aqueous solution.
-The estimated protein concentration is $\approx 275 \, \text{mg}/\text{mL}$ which translates to the volume concentration of $\phi_{\text{gel}} \approx 0.2$ assuming typical 'dry' protein density $1.35 \, \text{mg}/\text{mL}$.
-
-The FG-domains was expressed bacterially to resemble the ones found in nucleoporins. A short overview is in Figure~\label{fig:experiments_overview}.
-Similarly, drops of Nup116 FG-domains were prepared with estimated intra-particle protein concentration is $\approx 400 \, \text{mg}/\text{mL}$ which translates to the volume concentration of $\phi_{\text{gel}} \approx 0.4$.
-
-We chose compromise value $\phi_{\text{gel}} = 0.3$ in Figure~\todo{Main text figure}, in the given estimates of $0.2 < \phi_{\text{gel}} < 0.4$ the results is not sensitive to change in $\phi_{\text{gel}}$.
-
-When diluted, FG-domains phase separate from aqueous solution due to chain cohesiveness, forming phase poor o FG-domains and rich FG-domain gel-particles. 
-The polymer infra-particle concentration $\phi_{\text{bulk}}^{\text{gel}}$ is approximately equal to that of critical concentration for phase separation in the buffer.
-
-
-In the system of two components FG-domain and buffer phase separation occur at $\chi_{PS}^{\text{gel}} > 1/2 + N^{-1/2} \gtrsim  0.5$ according to mean-field approximation $N \gg 1$.
-The chemical potentials and osmotic pressure in the both poor and rich phases are equal for each components following binodal curves \cite{Vovk2016, Zilman2018}.
-
-The estimated critical concentration for Nup116 and Nup98A are $1 \mu\text{g}/\text{mL}$ ($\phi_{\text{bulk}}^{\text{gel}} \approx 10^{-6}$) \cite{Schmidt2015}.
-This extremely low values means the osmotic pressure is almost zero in both phases.
+This allows us to estimate the solvent quality $\chi_{\text{PS}}^{\text{FG}}$ using the condition for vanishing osmotic pressure Eq.~(\todo{EQ}):
 
 \begin{eqnarray}
-    \Pi(\phi_{\text{gel}}) = \Pi(\phi_{\text{bulk}}^{\text{gel}}) \approx 0
+    \chi_{\text{PS}}^{\text{FG}} = \frac{-\ln(1-\phi_{\text{gel}}) - \phi_{\text{gel}}}{\phi_{\text{gel}}^2}
 \end{eqnarray}
 
-From the FG-domain intra-particle concentration we can estimate the solvent strength of the buffer $\chi_{\text{PS}}^{\text{gel}}$ from the vanishing osmotic pressure conditions Eq~(\todo{EQ}).
+Assuming that FG-domains in the gel are chemically similar to those in nuclear pores, we take the polymer-colloid interaction to be unchanged: $\chi_{\text{PC}}^{\text{gel}} \approx \chi_{\text{PC}}$.
+
+Combining this information, we estimate the insertion free energy $\Delta F_{\text{gel}}$ for particles with different surface properties (i.e., varying $\chi_{\text{PC}}$) into an FG-domain gel of volume fraction $\phi_{\text{gel}}$.
+Since the osmotic pressure is negligible, only the surface interaction contributes:
 
 \begin{eqnarray}
-    \chi_{\text{PS}}^{\text{gel}}=(-\ln(1-\phi_{\text{gel}}) - \phi_{\text{gel}})/(\phi_{\text{gel}}^{2})
-\end{eqnarray}
-
-As the Nup98 and Nup116 FG-domains and similar disordered protein chains are found in nucleopores, we assume the polymer-colloid interaction parameter remain largely unchanged $\chi_{\text{PC}}^{\text{gel}} \approx \chi_{\text{PC}}$.
-
-All this together allow to theoretically estimate insertion free energy of particle with different surface feature (varying $\chi_{\text{PC}}$) to FG-domain gel of a given concentration $\phi_{\text{gel}}$ and partitioning with a buffer, interestingly as the osmotic pressure vanishes, only surface term contributes to the insertion free energy:
-
-\begin{eqnarray}
-    % \begin{split}
-    %     &\Delta F_{\text{gel}}(\phi_{\text{gel}}, d, \chi_{\text{PC}}) 
-    %     =
-    %     \\
-    %     &=\frac{\pi d^3}{6} \cdot \gamma\left(
-    %     \phi_{\text{gel}}, \chi_{\text{PC}},
-    %     \chi_{\text{PS}}^{\text{gel}}\{ \phi_{\text{gel}} \}
-    %     \right)  
-    % \end{split}
-    \Delta F_{\text{gel}}
-    =\frac{\pi d^3}{6} \cdot \gamma\left(
+    \Delta F_{\text{gel}} =
+    \frac{\pi d^3}{6} \cdot \gamma\left(
     \phi_{\text{gel}}, \chi_{\text{PC}},
-    \chi_{\text{PS}}^{\text{gel}}\{ \phi_{\text{gel}} \}
-    \right)
-    \\
-    \left(\frac{c_{\text{eq}}}{c_{\text{bulk}}}\right)_{\text{gel}} = e^{-\Delta F_{\text{gel}}}
+    \chi_{\text{PS}}^{\text{FG}}\{ \phi_{\text{gel}} \}
+    \right) \\
+    \left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}} = e^{-\Delta F_{\text{gel}}}
 \end{eqnarray}
+
 \end{multicols}
+
+
 
 \pagebreak
 \subsection*{List of variables and abbreviations}
