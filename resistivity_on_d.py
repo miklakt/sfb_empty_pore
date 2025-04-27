@@ -33,51 +33,7 @@ def correct_flux(J, d, pore_radius=26, wall_thickness=52, ylayers=492, l1=220):
 def flux_to_an_adsorbing_dome(r_dome):
     return 4*np.pi*r_dome
 
-# simulation_results = pd.DataFrame(
-#     columns =    [   "d",   "chi_PS",    "chi_PC",   "J_tot",    "J_tot_err"],
-# data = [
-#         (4, 0.5, -1.25, 7.7173, 0.0177),
-#         (10, 0.5, -1.25, 23.4871, 0.0568),
-#         (16, 0.5, -1.25, 37.8336, 0.247),
-#         (10, 0.3, -1.5, 16.0219, 0.0384),
-#         (12, 0.3, -1.5, 14.3025, 0.0358),
-#         (14, 0.3, -1.5, 7.9092, 0.0212),
-#         (16, 0.3, -1.5, 1.8923, 0.0057),
-#         (8, 0.3, -1.5, 14.0949, 0.033),
-#         (6, 0.3, -1.5, 10.9856, 0.0018),
-#         (4, 0.3, -1.5, 8.5315, 0.0012),
-#         (8, 0.1, -2.0, 35.146, 0.0812),
-#         (12, 0.1, -2.0, 54.8079, 0.1392),
-#         (16, 0.1, -2.0, 56.6125, 1.7755),
-#         (20, 0.1, -2.0, 1.84, 5),
-#         (18, 0.1, -2.0, 40.3837, 2.1726),
-#         (14, 0.1, -2.0, 58.1557, 0.5443),
-#         (4, 0.1, -1.5, 6.5787, 0.0063),
-#         (4, 0.1, -2.0, 12.5677, 0.0287),
-#         (6, 0.1, -2.0, 21.755, 0.0028),
-#         (10, 0.3, -1.75, 46.8653, 0.1363),
-#         (4, 0.1, -1.75, 9.0709, 0.0208),
-#         (6, 0.1, -1.5, 5.7728, 0.0034),
-#         (6, 0.1, -1.75, 11.6507, 0.0269),
-#         (8, 0.1, -1.75, 14.1156, 0.033),
-#         (10, 0.1, -1.75, 14.2061, 0.034),
-#         (12, 0.1, -1.75, 9.8666, 0.0245),
-#         (14, 0.1, -1.75, 3.3862, 0.0089),
-#         (16, 0.1, -1.75, 0.4119, 0.0011),
-#         (18, 0.1, -1.75, 0.0144, 0.0005),
-#         (4, 0.3, -1.75, 12.31, 0.0281),
-#         (6, 0.3, -1.75, 21.8729, 0.0501),
-#         (8, 0.3, -1.75, 35.5921, 0.082),
-#         (10, 0.3, -1.75, 46.8666, 0.1091),
-#         (12, 0.3, -1.75, 53.1488, 0.8342),
-#         (14, 0.3, -1.75, 56.2245, 0.3548),
-#         (20, 0.3, -1.75, 56.7624, 1.5648),
-#         (8, 0.5, -1.5, 35.3318, 0.0054),
-#     ]
-# )
-
 simulation_results = pd.read_csv("numeric_simulation_results_.csv")
-
 simulation_results["J_corrected"] = correct_flux(simulation_results["J_tot"],simulation_results["d"])
 simulation_results["R"] = 1/(simulation_results["J_tot"]/simulation_results["d"]/3)
 simulation_results["R_corrected"] = 1/(simulation_results["J_corrected"]/simulation_results["d"]/3)
@@ -135,7 +91,7 @@ results = pd.DataFrame(results)
 
 #%%
 show_contributions = False
-show_CFD = True
+show_CFD = False
 show_analytical = True
 if show_contributions:
     fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 3, sharex = True)
@@ -370,8 +326,8 @@ axs[0].set_ylabel(r"$R \cdot \frac{k_B T}{\eta_0 b}$")
 ax.legend(bbox_to_anchor = [1,1])
 #plt.tight_layout()
 #fig.set_size_inches(7, 7)
-fig.set_size_inches(7, 2.5)
-#fig.savefig("fig/permeability_on_d.svg")
+fig.set_size_inches(6, 2)
+fig.savefig("fig/permeability_on_d.svg")
 #fig.savefig("tex/third_report/fig/permeability_on_d_detailed_low_d.svg")
 #fig.savefig("tex/third_report/fig/permeability_on_d.svg")
 # %%
