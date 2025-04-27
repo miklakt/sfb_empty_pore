@@ -17,86 +17,86 @@ import seaborn as sns
 
 matplotlib.rc('hatch', color='darkgreen', linewidth=9)
 #%%
-def cylynder_r0_kernel(radius:int, height:int = None):
-    if height is None:
-        height = radius*2
-    r = np.arange(radius)
-    volume_r = np.pi*(2*r+1)
-    volume = np.tile(volume_r, (height,1)).T
-    surface = np.zeros_like(volume)
+# def cylynder_r0_kernel(radius:int, height:int = None):
+#     if height is None:
+#         height = radius*2
+#     r = np.arange(radius)
+#     volume_r = np.pi*(2*r+1)
+#     volume = np.tile(volume_r, (height,1)).T
+#     surface = np.zeros_like(volume)
 
-    surface[:, 0] = surface[:,-1] = volume_r
-    surface[-1,:] =surface[-1,:] + 2*np.pi*radius
-    return volume, surface
+#     surface[:, 0] = surface[:,-1] = volume_r
+#     surface[-1,:] =surface[-1,:] + 2*np.pi*radius
+#     return volume, surface
 
-def cylinder_volume_surface(radius:int, height:int = None):
-    if height is None:
-        height = radius*2
-    V = np.pi*radius**2*height
-    S = 2*np.pi*radius**2 + 2*np.pi*radius*height
-    return V, S
+# def cylinder_volume_surface(radius:int, height:int = None):
+#     if height is None:
+#         height = radius*2
+#     V = np.pi*radius**2*height
+#     S = 2*np.pi*radius**2 + 2*np.pi*radius*height
+#     return V, S
 
-def Pi(phi, chi_PS, trunc = False):
-    Pi_=-np.log(1-phi) - phi - chi_PS*phi**2
-    if trunc:
-        Pi_[Pi_<1e-16]=0
-    return Pi_
+# def Pi(phi, chi_PS, trunc = False):
+#     Pi_=-np.log(1-phi) - phi - chi_PS*phi**2
+#     if trunc:
+#         Pi_[Pi_<1e-16]=0
+#     return Pi_
 
-def gamma(chi_PS, chi_PC, phi, X):
-    a0, a1 = X
-    chi_crit = 6*np.log(5/6)
-    phi_corrected = (a0 + a1*chi_PC)*phi
-    chi_ads = chi_PC - chi_PS*(1-phi_corrected)
-    gamma = (chi_ads - chi_crit)*phi_corrected/6
-    return gamma
+# def gamma(chi_PS, chi_PC, phi, X):
+#     a0, a1 = X
+#     chi_crit = 6*np.log(5/6)
+#     phi_corrected = (a0 + a1*chi_PC)*phi
+#     chi_ads = chi_PC - chi_PS*(1-phi_corrected)
+#     gamma = (chi_ads - chi_crit)*phi_corrected/6
+#     return gamma
 
-def gamma2(chi_PS, chi_PC, phi, X):
-    a0, a1, a2 = X
-    chi_crit = 6*np.log(5/6)
-    phi_corrected = (a0 + a1*chi_PC + a2*chi_PS)*phi
-    chi_ads = chi_PC - chi_PS*(1-phi_corrected)
-    gamma = (chi_ads - chi_crit)*phi_corrected/6
-    return gamma
+# def gamma2(chi_PS, chi_PC, phi, X):
+#     a0, a1, a2 = X
+#     chi_crit = 6*np.log(5/6)
+#     phi_corrected = (a0 + a1*chi_PC + a2*chi_PS)*phi
+#     chi_ads = chi_PC - chi_PS*(1-phi_corrected)
+#     gamma = (chi_ads - chi_crit)*phi_corrected/6
+#     return gamma
 
-def free_energy_cylinder(radius, data, chi_PS, chi_PC, gamma_func, X_args, trunc = False):
-    volume, surface = cylynder_r0_kernel(radius)
-    phi = data.dataset["phi"].squeeze()
-    if np.shape(phi)[0] == 1:
-        phi = np.tile(phi, (radius, 1))
-    phi = np.pad(phi[0:radius], ((0, 0),(radius,radius-1)))
-    Pi_arr = Pi(phi, chi_PS, trunc)
-    gamma_arr = gamma_func(chi_PS, chi_PC, phi, X_args)
-    osmotic = convolve(Pi_arr, volume, 'valid')[0]
-    surface = convolve(gamma_arr, surface, 'valid')[0]
-    #extra = X_args[2]*radius**2
-    return osmotic, surface#, extra
+# def free_energy_cylinder(radius, data, chi_PS, chi_PC, gamma_func, X_args, trunc = False):
+#     volume, surface = cylynder_r0_kernel(radius)
+#     phi = data.dataset["phi"].squeeze()
+#     if np.shape(phi)[0] == 1:
+#         phi = np.tile(phi, (radius, 1))
+#     phi = np.pad(phi[0:radius], ((0, 0),(radius,radius-1)))
+#     Pi_arr = Pi(phi, chi_PS, trunc)
+#     gamma_arr = gamma_func(chi_PS, chi_PC, phi, X_args)
+#     osmotic = convolve(Pi_arr, volume, 'valid')[0]
+#     surface = convolve(gamma_arr, surface, 'valid')[0]
+#     #extra = X_args[2]*radius**2
+#     return osmotic, surface#, extra
 
-def free_energy_approx(radius, data, chi_PS, chi_PC, gamma_func, X_args, trunc = False):
-    volume, surface =cylinder_volume_surface(radius)
-    phi = data.dataset["phi"].squeeze()[0, :]
-    Pi_arr = Pi(phi, chi_PS, trunc)
-    gamma_arr = gamma_func(chi_PS, chi_PC, phi, X_args)
-    osmotic = Pi_arr*volume
-    surface = gamma_arr*surface
-    return osmotic, surface
+# def free_energy_approx(radius, data, chi_PS, chi_PC, gamma_func, X_args, trunc = False):
+#     volume, surface =cylinder_volume_surface(radius)
+#     phi = data.dataset["phi"].squeeze()[0, :]
+#     Pi_arr = Pi(phi, chi_PS, trunc)
+#     gamma_arr = gamma_func(chi_PS, chi_PC, phi, X_args)
+#     osmotic = Pi_arr*volume
+#     surface = gamma_arr*surface
+#     return osmotic, surface
 
-def create_cost_function(df, df_empty, gamma_func):
-    def cost_function(X):
-        cost = np.array([])
-        for (chi_PS, chi_PC, pw), group in df.groupby(by = ["chi_PS", "chi_PC", "pw"]):
-            empty_pore_data = utils.get_by_kwargs(df_empty, chi_PS = chi_PS)
-            if empty_pore_data.empty:
-                continue
-            osm, sur = free_energy_cylinder(
-                int(pw/2), empty_pore_data, 
-                chi_PS, chi_PC, gamma_func, X,
-                )
-            tot = osm+sur
-            delta_fe = group.apply(lambda _: _.free_energy - tot[int(_.pc+len(tot)//2)], axis = 1)
-            delta_fe = np.cbrt(delta_fe)
-            cost = np.concatenate([cost, delta_fe.to_numpy()])
-        return cost
-    return cost_function
+# def create_cost_function(df, df_empty, gamma_func):
+#     def cost_function(X):
+#         cost = np.array([])
+#         for (chi_PS, chi_PC, pw), group in df.groupby(by = ["chi_PS", "chi_PC", "pw"]):
+#             empty_pore_data = utils.get_by_kwargs(df_empty, chi_PS = chi_PS)
+#             if empty_pore_data.empty:
+#                 continue
+#             osm, sur = free_energy_cylinder(
+#                 int(pw/2), empty_pore_data, 
+#                 chi_PS, chi_PC, gamma_func, X,
+#                 )
+#             tot = osm+sur
+#             delta_fe = group.apply(lambda _: _.free_energy - tot[int(_.pc+len(tot)//2)], axis = 1)
+#             delta_fe = np.cbrt(delta_fe)
+#             cost = np.concatenate([cost, delta_fe.to_numpy()])
+#         return cost
+#     return cost_function
 
 def mask_field(field, key ="phi", r_cut = None, z_cut = None, mirror = True):
     try:
@@ -137,7 +137,6 @@ def mask_field(field, key ="phi", r_cut = None, z_cut = None, mirror = True):
 
 def plot_frame_imshow(df, pc, key, 
             ax = None, cax = None,
-            cax_label = None,
             imshow_kwargs = {}, contour_kwargs = {},
             cmap = "viridis", bad_color = "green",
             r_cut = None, z_cut = None, mirror = True,
@@ -170,18 +169,12 @@ def plot_frame_imshow(df, pc, key,
     if cax is not None:
         cbar = plt.colorbar(im, cax = cax, 
             #orientation='horizontal',
-            shrink = 0.8,
+            #shrink = 0.8,
             )
-        if cax_label is None:
-            cax_label = key
-        cbar.ax.yaxis.set_label_position("right")
-        cbar.ax.set_ylabel(
-            cax_label, rotation = "horizontal", #labelpad=15,
-            ha = "left", va = "center",
-            )
-
         if contour_kwargs is not None:
             cbar.add_lines(contour)
+    else:
+        cbar = None
         
     if contour_kwargs is not None:
         if (not "cmap" in contour_kwargs):
@@ -215,7 +208,7 @@ def plot_frame_imshow(df, pc, key,
         yticks_labels.append((text))
     ax.set_yticklabels(yticks_labels)
 
-    return ax
+    return ax, cbar
 
 def add_to_profile(x_arr, y_arr, x, y):
     itemindex = np.argmax(x_arr>x)
@@ -230,7 +223,7 @@ ph =d
 pw =d
 sigma = 0.02
 chi_PS = 0.5
-chi_PC = -0.5
+chi_PC = -0.75
 X = None
 
 master = pd.read_pickle("reference_table.pkl")
@@ -256,17 +249,15 @@ r_cut = 60
 z_cut = 60
 
 fig  = plt.figure(
-        figsize = (6.7,4),
-        dpi=600)
+        figsize = (8,4),
+        dpi=600
+        )
 
 gs = GridSpec(
-    6, 6, 
+    3, 5, 
     figure=fig, 
     height_ratios=[
-        0.05,  # cax0
-        0.05,  # spacer
-        0.05,  # cax1
-        0.05,  # spacer
+        0.4,
         1.0,   # phi & delta_phi
         0.05,  # spacer
         # 0.05,  # spacer
@@ -275,15 +266,14 @@ gs = GridSpec(
         # 0.05   # delta_phi_x part 3
     ], 
     width_ratios=[
-        0.1,  # colorbar spacer
-        0.7,  # col 0: phi & colorbars
-        0.2,  # col 1: spacer or labels
-        0.8,  # col 2: delta_phi & delta_phi_x
-        0.2,  # col 3: spacer
+        1,  # col 0: phi & colorbars
+        0.4,
+        0.1,
+        1,
         0.4   # col 4: delta_phi_y
     ],
-    hspace=0.3,
-    wspace=0.2
+    hspace=0.1,
+    wspace=0.1
 )
 
 pc_list = np.array(master.pc.squeeze())
@@ -304,14 +294,21 @@ def update_figure(i):
     #     #"dummy" : fig.add_subplot(gs[1:6,4])
     # }
 
-    ax_0 = fig.add_subplot(gs[4, 0:3])  # phi
-    ax_1 = fig.add_subplot(gs[4, 3:5], sharex=ax_0, sharey=ax_0)
+    ax_0 = fig.add_subplot(gs[1, 0])  # phi
+    ax_1 = fig.add_subplot(gs[1, 3], sharex=ax_0, sharey=ax_0)
 
+
+    pcax0 = mpatches.Rectangle(
+        (-60, -60), 120, 60, 
+        facecolor = "white", 
+        edgecolor = "none",
+        alpha = 0.95,
+        )
     # Inset colorbars
     cax0 = inset_axes(
         ax_0,
         width="5%",  # width = 5% of parent_bbox width
-        height="50%",  # height = 50% of parent_bbox height
+        height="80%",  # height = 50% of parent_bbox height
         loc='lower left',
         bbox_to_anchor=(0.95, 0.1, 1, 1),
         bbox_transform=ax_0.transAxes,
@@ -320,22 +317,28 @@ def update_figure(i):
 
     cax1 = inset_axes(
         ax_1,
-        width="5%",
-        height="50%",
+        width="5%",  # width = 5% of parent_bbox width
+        height="80%",  # height = 50% of parent_bbox height
         loc='lower left',
         bbox_to_anchor=(0.95, 0.1, 1, 1),
         bbox_transform=ax_1.transAxes,
         borderpad=0,
     )
 
+    cax1.set_xticks([-0.01, 0, 0.01])
+    #cax1.set_yticklabels(["Min", "Mid", "Max"])
+    
     axd = {
         "phi": ax_0,
         #"cax0": fig.add_subplot(gs[0, 1]),
         "cax0": cax0,
-        "cax1": fig.add_subplot(gs[2, 1]),
+        #"cax1": fig.add_subplot(gs[2, 1]),
+        "cax1": cax1,
         "delta_phi": ax_1,
-        "delta_phi_x": fig.add_subplot(gs[0:4, 3:5], sharex=ax_0),
-        "delta_phi_y": fig.add_subplot(gs[4, 5:], sharey=ax_0),
+        "delta_phi_x": fig.add_subplot(gs[0, 3], sharex=ax_0),
+        "delta_phi_y": fig.add_subplot(gs[1, 4], sharey=ax_0),
+        "phi_x": fig.add_subplot(gs[0, 0], sharex=ax_0),
+        "phi_y": fig.add_subplot(gs[1, 1], sharey=ax_0),
     }
 
 
@@ -353,10 +356,9 @@ def update_figure(i):
     axd["phi"].set_xlabel("z")
     axd["delta_phi"].set_xlabel("z")
     axd["phi"].set_ylabel("r")
-    plot_frame_imshow(master, pc, 
+    _, cbar = plot_frame_imshow(master, pc, 
                     ax = axd["phi"],
                     cax = axd["cax0"],
-                    cax_label="$\phi$",
                     key = "phi", 
                     imshow_kwargs=dict(vmin = 0, vmax = 0.35),
                     cmap = "gnuplot2_r", 
@@ -368,6 +370,12 @@ def update_figure(i):
                     bad_color ="darkgreen", 
                     r_cut=r_cut, z_cut = z_cut
                     )
+    cbar.ax.yaxis.set_label_position("left")
+    cbar.ax.yaxis.set_ticks_position('left')
+    # cbar.ax.set_ylabel(
+    #     cax_label, rotation = "horizontal", #labelpad=15,
+    #     ha = "left", va = "center",
+    #     )
 
     #axd["delta_phi"].set_xlabel("z")
     #axd["delta_phi"].set_xticklabels([])
@@ -380,10 +388,10 @@ def update_figure(i):
     levels = np.arange(vmin, vmax+0.025, 0.025)
     cmap_ = cmr.combine_cmaps(cmap0, cmap1, nodes=[(0-vmin)/(vmax-vmin)])
 
-    plot_frame_imshow(master, pc, 
+    _, cbar = plot_frame_imshow(master, pc, 
                     ax = axd["delta_phi"],
                     cax = axd["cax1"],
-                    cax_label="$\Delta\phi$",
+                    #cax_label="$\Delta\phi$",
                     key = "delta_phi", 
                     imshow_kwargs=dict(vmin = vmin, vmax = vmax),
                     cmap = cmap_, 
@@ -396,14 +404,23 @@ def update_figure(i):
                     bad_color ="darkgreen", 
                     r_cut=r_cut, z_cut = z_cut
                     )
+    cbar.ax.yaxis.set_label_position("left")
+    cbar.ax.yaxis.set_ticks_position('left')
+    cbar.set_ticks([-0.01, 0, 0.01])
+
+    axd["phi_x"].yaxis.tick_right()
+    axd["phi_x"].set_ylabel("$\phi$", rotation = "horizontal", labelpad = 5)
+    axd["phi_x"].yaxis.set_label_position("right")
+    #axd["delta_phi_x"].set_ylim(0.35, 0)
+    #axd["delta_phi_x"].set_ylim(0, 0.35)
+    axd["phi_x"].set_ylim(0, 0.35)
+    axd["phi_x"].set_yticks([0.1, 0.2, 0.3])
 
 
     axd["delta_phi_x"].yaxis.tick_right()
-    axd["delta_phi_x"].set_ylabel("$\phi$", rotation = "horizontal", labelpad = 5)
+    axd["delta_phi_x"].set_ylabel("$\Delta\phi$", rotation = "horizontal", labelpad = 5)
     axd["delta_phi_x"].yaxis.set_label_position("right")
-    #axd["delta_phi_x"].set_ylim(0.35, 0)
-    axd["delta_phi_x"].set_ylim(0, 0.35)
-    axd["delta_phi_x"].set_yticks([0.1, 0.2, 0.3])
+    axd["delta_phi_x"].set_ylim(-0.15, 0.15)
 
     x_arr = np.arange(int(-z_cut), int(+z_cut))+0.5
     delta_phi_x=phi[0, int(z_center-z_cut):int(z_center+z_cut)]
@@ -412,10 +429,18 @@ def update_figure(i):
     x_arr_, delta_phi_x_ = add_to_profile(x_arr, delta_phi_x, pc-ph/2-0.5, 0)
     x_arr_, delta_phi_x_ = add_to_profile(x_arr_, delta_phi_x_, pc+ph/2, 0)
 
-    axd["delta_phi_x"].plot(x_arr_, delta_phi_x_)
-    axd["delta_phi_x"].plot(x_arr, phi_0_x, 
+    x_arr_, phi_0_x_ = add_to_profile(x_arr, phi_0_x, pc-ph/2-0.5, 0)
+    x_arr_, phi_0_x_ = add_to_profile(x_arr_, phi_0_x_, pc+ph/2, 0)
+
+    axd["phi_x"].plot(x_arr_, delta_phi_x_)
+    axd["phi_x"].plot(x_arr, phi_0_x, 
                             color = "black", linewidth = 0.5,
                             )
+        
+    axd["delta_phi_x"].plot(x_arr, delta_phi_x - phi_0_x)
+    # axd["delta_phi_x"].plot(x_arr, phi_0_x, 
+    #                         color = "black", linewidth = 0.5,
+    #                         )
 
 
     delta_phi_y = phi[:r_cut, int(z_center+pc)][::-1]
@@ -427,17 +452,27 @@ def update_figure(i):
     y_arr = np.arange(int(-r_cut), int(+r_cut), 1) + 0.5
     y_arr_, delta_phi_y_ = add_to_profile(y_arr, delta_phi_y, -pw/2-0.5, 0)
     y_arr_, delta_phi_y_ = add_to_profile(y_arr_, delta_phi_y_,  pw/2, 0)
+
+    y_arr_, phi_0_y_ = add_to_profile(y_arr, phi_0_y, -pw/2-0.5, 0)
+    y_arr_, phi_0_y_ = add_to_profile(y_arr_, phi_0_y_,  pw/2, 0)
     #x_arr_, delta_phi_x_ = add_to_profile(x_arr_, delta_phi_x_, pc+ph/2, 0)
 
-    axd["delta_phi_y"].plot(delta_phi_y_,y_arr_)
-    axd["delta_phi_y"].plot(phi_0_y,y_arr, 
+    axd["phi_y"].plot(delta_phi_y_,y_arr_)
+    axd["phi_y"].plot(phi_0_y,y_arr, 
                         color = "black", linewidth = 0.5)
+    
+    axd["delta_phi_y"].plot(delta_phi_y-phi_0_y,y_arr)
 
 
-    axd["delta_phi_y"].set_xlim(0, 0.35)
-    axd["delta_phi_y"].set_xticks([0, 0.1, 0.2, 0.3])
+    axd["delta_phi_y"].set_xlim(-0.15, 0.15)
+    #axd["delta_phi_y"].set_xticks([0, 0.1, 0.2, 0.3])
     axd["delta_phi_y"].xaxis.set_tick_params(rotation=-90)
-    axd["delta_phi_y"].set_xlabel("$\phi$",labelpad = 0)
+    axd["delta_phi_y"].set_xlabel("$\Delta\phi$",labelpad = 0)
+
+    axd["phi_y"].set_xlim(0, 0.35)
+    axd["phi_y"].set_xticks([0, 0.1, 0.2, 0.3])
+    axd["phi_y"].xaxis.set_tick_params(rotation=-90)
+    axd["phi_y"].set_xlabel("$\phi$",labelpad = 0)
 
 
     #cross
@@ -445,23 +480,84 @@ def update_figure(i):
     axd["delta_phi_x"].axvline(pc, linewidth = 0.3, linestyle = "--", color = "black")
     axd["delta_phi"].axhline(0, linewidth = 0.3, linestyle = "--", color = "black")
     axd["delta_phi_y"].axhline(0, linewidth = 0.3, linestyle = "--", color = "black")
+    #axd["delta_phi"].axvline(pc, linewidth = 0.3, linestyle = "--", color = "black")
+    axd["phi_x"].axvline(pc, linewidth = 0.3, linestyle = "--", color = "black")
+    #axd["phi"].axhline(0, linewidth = 0.3, linestyle = "--", color = "black")
+    axd["phi_y"].axhline(0, linewidth = 0.3, linestyle = "--", color = "black")
 
     plt.setp(axd["delta_phi"].get_yticklabels(), visible=False)
     plt.setp(axd["delta_phi_y"].get_yticklabels(), visible=False)
+    plt.setp(axd["phi_y"].get_yticklabels(), visible=False)
     #plt.setp(axd["delta_phi"].get_xticklabels(), visible=False)
     plt.setp(axd["delta_phi_x"].get_xticklabels(), visible=False)
+    plt.setp(axd["phi_x"].get_xticklabels(), visible=False)
 
     print(i)
 
     fe_str = fr"$\Delta F / k_B T = {fe:.2f}$" if fe < 0 else f"$\Delta F / k_B T = +{fe:.2f}$"
-    axd["delta_phi"].text(-56, -54, s = fe_str, ha = "left", 
+    axd["delta_phi"].text(-55, -54, s = fe_str, ha = "left", 
                     #bbox=dict(facecolor='white', edgecolor='black')
                     )
     
-    p = mpatches.Rectangle((-58, -59), 72, 15, facecolor = "white", edgecolor = "k")
+    p = mpatches.Rectangle((-58, -59), 71, 15, facecolor = "white", edgecolor = "k")
     axd["delta_phi"].add_patch(p)
+
+    axd["phi"].text(-56, 48, s = "$\phi$", ha = "left", 
+                    fontsize = 14,
+                    #bbox=dict(facecolor='white', edgecolor='black')
+                    )
+    axd["delta_phi"].text(-56, 48, s = "$\Delta \phi$", ha = "left", 
+                    fontsize = 14,
+                    #bbox=dict(facecolor='white', edgecolor='black')
+                    )
     
-update_figure(80)
+    axd["delta_phi_y"].text(0.1, 0.96, s = "$\Delta\phi_{z=z_c}$", ha = "left",va="top", 
+                fontsize = 14,
+                transform = axd["delta_phi_y"].transAxes,
+                bbox=dict(boxstyle="round,pad=0.2",
+                          facecolor='white', edgecolor='none', 
+                          alpha= 0.9
+                          )
+                )
+    
+    axd["delta_phi_x"].text(0.95, 0.9, s = "$\Delta\phi_{r=0}$", 
+            ha = "right",va="top", 
+            fontsize = 14,
+            transform = axd["delta_phi_x"].transAxes,
+            bbox=dict(boxstyle="round,pad=0.2",
+                        facecolor='white', edgecolor='none', 
+                        alpha= 0.9)
+            )
+    
+    axd["phi_y"].text(0.1, 0.96, s = "$\phi_{z=z_c}$", ha = "left",va="top", 
+                fontsize = 14,
+                transform = axd["phi_y"].transAxes,
+                bbox=dict(boxstyle="round,pad=0.2",
+                          facecolor='white', edgecolor='none', 
+                          alpha= 0.9
+                          )
+                )
+    
+    axd["phi_x"].text(0.95, 0.9, s = "$\phi_{r=0}$", 
+            ha = "right",va="top", 
+            fontsize = 14,
+            transform = axd["phi_x"].transAxes,
+            bbox=dict(boxstyle="round,pad=0.2",
+                        facecolor='white', edgecolor='none', 
+                        alpha= 0.9)
+            )
+    
+    fig.text(
+        0.05, 0.01,
+"""Supplementary Movie. Scheutjens-Fleer self-consistent field. Explicit cylindrical particle insertion""",
+fontsize = 6,
+fontdict={"family":"monospace"}
+    )
+
+
+    #ax_0.add_patch(pcax0)
+    
+update_figure(35)
 fig
  # %%
 import matplotlib.animation as animation
