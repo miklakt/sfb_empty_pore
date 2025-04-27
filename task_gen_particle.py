@@ -222,7 +222,7 @@ init_args = dict(
         pw = 4,
         chi_PS = 0.5
 )
-working_dir = path = pathlib.Path("temp160624")
+working_dir = path = pathlib.Path("temp270425")
 continue_unfinished = True
 try:
     working_dir.mkdir(parents=True, exist_ok=False)
@@ -277,7 +277,7 @@ init_args = dict(
         #chi_PS = 0.3,
         #pc = -126
 )
-working_dir = path = pathlib.Path("temp10")
+working_dir = path = pathlib.Path("temp270425")
 continue_unfinished = True
 try:
     working_dir.mkdir(parents=True, exist_ok=False)
@@ -286,12 +286,14 @@ except FileExistsError:
 #%%
 import itertools
 for chi_PS, chi_PC, pc in itertools.product(
-    [0.3, 0.4, 0.5, 0.6, 0.7],
-    [0, -0.5, -1.0, -1.5],
+    #[0.3, 0.4, 0.5, 0.6, 0.7],
+    [0.5],
+    #[0, -0.5, -1.0, -1.5],
+    [-0.75],
     [0, -126, -26, -39, -52, -65, -78]
     ):
     init_args.update(dict(chi_PS = chi_PS, chi_PC = chi_PC, pc = pc))
-    ifile_data = grow_particle(init_args, 4, 32)
+    ifile_data = grow_particle(init_args, 4, 10)
     if not(ifile_data):
         continue
     translated = translate_to_sfbox(ifile_data)
@@ -327,4 +329,7 @@ for chi_PS, chi_PC, pc in itertools.product(
 
     print(f"Number of calculations: {len(translated)}")
 
+# %%
+sfbox_utils.set_cpu_count(4)
+sfbox_utils.sfbox_calls(dir = "temp270425")
 # %%
