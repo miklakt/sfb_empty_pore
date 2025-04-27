@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.transforms as transforms
 import matplotlib.patches as mpatches
 from matplotlib.gridspec import GridSpec
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import itertools
 
 import numpy as np
@@ -168,7 +169,7 @@ def plot_frame_imshow(df, pc, key,
 
     if cax is not None:
         cbar = plt.colorbar(im, cax = cax, 
-            orientation='horizontal',
+            #orientation='horizontal',
             shrink = 0.8,
             )
         if cax_label is None:
@@ -229,7 +230,7 @@ ph =d
 pw =d
 sigma = 0.02
 chi_PS = 0.5
-chi_PC = -0.75
+chi_PC = -0.5
 X = None
 
 master = pd.read_pickle("reference_table.pkl")
@@ -238,7 +239,7 @@ master_empty = pd.read_pickle("reference_table_empty_brush.pkl")
 master_empty = master_empty.loc[
     (master_empty.s == s) \
     & (master_empty.r== r) \
-    & (master_empty.sigma == sigma) \
+    & (master_empty.sigma == sigma) #\
     & (master_empty.chi_PS == chi_PS)
     ]
 master = master.loc[master.chi_PC==chi_PC]
@@ -253,33 +254,37 @@ master["delta_phi"] = master.apply(lambda _: _["phi"] - phi0, axis = 1)
 # %%
 r_cut = 60
 z_cut = 60
-#fig, ax  = plt.subplots(ncols = 2, sharex="row")
+
 fig  = plt.figure(
-        figsize = (6.5,4),
+        figsize = (6.7,4),
         dpi=600)
 
-#pc = -10
-
 gs = GridSpec(
-    #4, 2,
-    7, 5, 
-    figure = fig, 
+    6, 6, 
+    figure=fig, 
     height_ratios=[
-        1,  
-        0.05, 0.05, 0.05, 0.05,
-        0.05, 0.05,
-        ], 
-    width_ratios =[
-        0.8,
-        0.2,
-        0.8,
-        0.2,
-        0.4
-        ],
-    hspace = 0.3,
-    wspace = 0.3
-    )
-gs.tight_layout(fig)
+        0.05,  # cax0
+        0.05,  # spacer
+        0.05,  # cax1
+        0.05,  # spacer
+        1.0,   # phi & delta_phi
+        0.05,  # spacer
+        # 0.05,  # spacer
+        # 0.05,  # delta_phi_x part 1
+        # 0.05,  # delta_phi_x part 2
+        # 0.05   # delta_phi_x part 3
+    ], 
+    width_ratios=[
+        0.1,  # colorbar spacer
+        0.7,  # col 0: phi & colorbars
+        0.2,  # col 1: spacer or labels
+        0.8,  # col 2: delta_phi & delta_phi_x
+        0.2,  # col 3: spacer
+        0.4   # col 4: delta_phi_y
+    ],
+    hspace=0.3,
+    wspace=0.2
+)
 
 pc_list = np.array(master.pc.squeeze())
 pc_list = pc_list[abs(pc_list)<z_cut]
@@ -288,15 +293,49 @@ def update_figure(i):
     pc = pc_list[i]
 
 
-    ax_0 = fig.add_subplot(gs[0,0:2])
+    # ax_0 = fig.add_subplot(gs[0,0:3])
+    # axd = {
+    #     "phi" : ax_0,
+    #     "cax0" : fig.add_subplot(gs[3,0]),
+    #     "cax1" : fig.add_subplot(gs[5,0]),
+    #     "delta_phi" : fig.add_subplot(gs[0,2:4], sharex = ax_0, sharey = ax_0),
+    #     "delta_phi_y" : fig.add_subplot(gs[0,4], sharey = ax_0),
+    #     "delta_phi_x" : fig.add_subplot(gs[2:6,2:4], sharex = ax_0),
+    #     #"dummy" : fig.add_subplot(gs[1:6,4])
+    # }
+
+    ax_0 = fig.add_subplot(gs[4, 0:3])  # phi
+    ax_1 = fig.add_subplot(gs[4, 3:5], sharex=ax_0, sharey=ax_0)
+
+    # Inset colorbars
+    cax0 = inset_axes(
+        ax_0,
+        width="5%",  # width = 5% of parent_bbox width
+        height="50%",  # height = 50% of parent_bbox height
+        loc='lower left',
+        bbox_to_anchor=(0.95, 0.1, 1, 1),
+        bbox_transform=ax_0.transAxes,
+        borderpad=0,
+    )
+
+    cax1 = inset_axes(
+        ax_1,
+        width="5%",
+        height="50%",
+        loc='lower left',
+        bbox_to_anchor=(0.95, 0.1, 1, 1),
+        bbox_transform=ax_1.transAxes,
+        borderpad=0,
+    )
+
     axd = {
-        "phi" : ax_0,
-        "cax0" : fig.add_subplot(gs[3,0]),
-        "cax1" : fig.add_subplot(gs[5,0]),
-        "delta_phi" : fig.add_subplot(gs[0,2:4], sharex = ax_0, sharey = ax_0),
-        "delta_phi_y" : fig.add_subplot(gs[0,4], sharey = ax_0),
-        "delta_phi_x" : fig.add_subplot(gs[2:6,2:4], sharex = ax_0),
-        #"dummy" : fig.add_subplot(gs[1:6,4])
+        "phi": ax_0,
+        #"cax0": fig.add_subplot(gs[0, 1]),
+        "cax0": cax0,
+        "cax1": fig.add_subplot(gs[2, 1]),
+        "delta_phi": ax_1,
+        "delta_phi_x": fig.add_subplot(gs[0:4, 3:5], sharex=ax_0),
+        "delta_phi_y": fig.add_subplot(gs[4, 5:], sharey=ax_0),
     }
 
 
@@ -312,6 +351,7 @@ def update_figure(i):
 
 
     axd["phi"].set_xlabel("z")
+    axd["delta_phi"].set_xlabel("z")
     axd["phi"].set_ylabel("r")
     plot_frame_imshow(master, pc, 
                     ax = axd["phi"],
@@ -361,7 +401,8 @@ def update_figure(i):
     axd["delta_phi_x"].yaxis.tick_right()
     axd["delta_phi_x"].set_ylabel("$\phi$", rotation = "horizontal", labelpad = 5)
     axd["delta_phi_x"].yaxis.set_label_position("right")
-    axd["delta_phi_x"].set_ylim(0.35, 0)
+    #axd["delta_phi_x"].set_ylim(0.35, 0)
+    axd["delta_phi_x"].set_ylim(0, 0.35)
     axd["delta_phi_x"].set_yticks([0.1, 0.2, 0.3])
 
     x_arr = np.arange(int(-z_cut), int(+z_cut))+0.5
@@ -398,6 +439,7 @@ def update_figure(i):
     axd["delta_phi_y"].xaxis.set_tick_params(rotation=-90)
     axd["delta_phi_y"].set_xlabel("$\phi$",labelpad = 0)
 
+
     #cross
     axd["delta_phi"].axvline(pc, linewidth = 0.3, linestyle = "--", color = "black")
     axd["delta_phi_x"].axvline(pc, linewidth = 0.3, linestyle = "--", color = "black")
@@ -406,16 +448,20 @@ def update_figure(i):
 
     plt.setp(axd["delta_phi"].get_yticklabels(), visible=False)
     plt.setp(axd["delta_phi_y"].get_yticklabels(), visible=False)
-    plt.setp(axd["delta_phi"].get_xticklabels(), visible=False)
+    #plt.setp(axd["delta_phi"].get_xticklabels(), visible=False)
+    plt.setp(axd["delta_phi_x"].get_xticklabels(), visible=False)
 
     print(i)
 
-    fe_str = f"$\Delta F / k_B T = {fe:.2f}$" if fe < 0 else f"$\Delta F / k_B T = +{fe:.2f}$"
+    fe_str = fr"$\Delta F / k_B T = {fe:.2f}$" if fe < 0 else f"$\Delta F / k_B T = +{fe:.2f}$"
     axd["delta_phi"].text(-56, -54, s = fe_str, ha = "left", 
-                    bbox=dict(facecolor='white', edgecolor='black')
+                    #bbox=dict(facecolor='white', edgecolor='black')
                     )
-#%%
-update_figure(42)
+    
+    p = mpatches.Rectangle((-58, -59), 72, 15, facecolor = "white", edgecolor = "k")
+    axd["delta_phi"].add_patch(p)
+    
+update_figure(80)
 fig
  # %%
 import matplotlib.animation as animation
