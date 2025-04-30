@@ -69,7 +69,7 @@ fields_ = calculate_fields(
     method= "convolve", 
     mobility_correction= "vol_average",
     mobility_model = "Rubinstein",
-    mobility_model_kwargs = {"prefactor":1.0}
+    mobility_model_kwargs = {"prefactor":30.0}
     )
 #%%
 fields = pad_fields(fields_, pad_sides = 100, pad_top = 200)
@@ -124,7 +124,7 @@ drift_diffusion.run_until(
     inflow_boundary, dt=dt,
     target_divJ_tot=1e-6,
     #jump_every=10,
-    timeout=6000,
+    timeout=600,
     #max_jump=1e-3,
     #sigmoid_steepness=0.01
     )

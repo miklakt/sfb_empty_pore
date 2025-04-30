@@ -33,6 +33,9 @@ def correct_flux(J, d, pore_radius=26, wall_thickness=52, ylayers=492, l1=220):
 def flux_to_an_adsorbing_dome(r_dome):
     return 4*np.pi*r_dome
 
+def get_dome_permeability(d, r_dome = 26*1.1):
+    return np.pi*r_dome/(3*np.pi*d)
+
 simulation_results = pd.read_csv("numeric_simulation_results_.csv")
 simulation_results["J_corrected"] = correct_flux(simulation_results["J_tot"],simulation_results["d"])
 simulation_results["R"] = 1/(simulation_results["J_tot"]/simulation_results["d"]/3)
@@ -54,7 +57,7 @@ simulation_empty_pore["R_corrected"] = 1/(simulation_empty_pore["J_corrected"]/s
 #%%
 d = np.arange(2, 32, 2)
 #d =[8 ,10, 12 ,]
-chi_PS = [0.4, 0.5, 0.6]
+chi_PS = [0.3, 0.4, 0.5, 0.6]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
 chi_PC_color = [-1.5, -1.25, -1.0, -0.5, 0]
 chi_PC = chi_PC_color
@@ -62,7 +65,7 @@ chi_PC = chi_PC_color
 # model, mobility_model_kwargs = "none", {}
 # model, mobility_model_kwargs = "Phillies", dict(beta = 8, nu = 0.76)
 # model = "Fox-Flory", dict(N = 300)
-model, mobility_model_kwargs = "Rubinstein", {"prefactor":30}
+model, mobility_model_kwargs = "Rubinstein", {"prefactor":10}
 #model, mobility_model_kwargs = "Hoyst", {"alpha" : 1.63, "delta": 0.89, "N" : 300}
 
 Haberman_correction_ = False
@@ -101,6 +104,7 @@ else:
     first_row_axes = axs
 results_ = results.loc[(results.mobility_model == model)]
 
+mpl_markers = ('o', '+', 'x', 's', 'D')
 for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
     markers = itertools.cycle(mpl_markers)
     for chi_PC_, result__ in result_.groupby(by = "chi_PC"):
@@ -152,7 +156,7 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
                 1/result__["thick_empty_pore_Haberman"],
                 color = "black", 
                 linestyle = "-",
-                label = "$R_{empty}$",
+                label = r"$R^{\ast}_{0}$",
                 linewidth = 2,
                 zorder = -1,
                 )
@@ -163,10 +167,30 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
                 1/result__["thick_empty_pore"],
                 color = "black", 
                 linestyle = "-",
-                label = "$R_{empty}$",
+                label = "$R_{0}$",
                 linewidth = 2,
                 zorder = -1,
                 )
+        # ax.plot(
+        #     d, 
+        #     1/result__["thin_empty_pore"],
+        #     color = "black", 
+        #     linestyle = "-",
+        #     label = r"$R_{\text{ext}}^{0}$",
+        #     linewidth = 1,
+        #     zorder = -1,
+        # )
+        # ax.plot(
+        #     d, 
+        #     #1/result__["thick_empty_pore"]/d,
+        #     1/get_dome_permeability(d, 30),
+        #     color = "black", 
+        #     linestyle = "-",
+        #     label = r"$R_{\text{ext}}^{0}$",
+        #     linewidth = 1,
+        #     zorder = -1,
+        #     )
+        
 
         # ax.plot(
         #     d, 
@@ -327,7 +351,94 @@ ax.legend(bbox_to_anchor = [1,1])
 #plt.tight_layout()
 #fig.set_size_inches(7, 7)
 fig.set_size_inches(6, 2)
-fig.savefig("fig/permeability_on_d.svg")
+#fig.savefig("fig/permeability_on_d.svg")
 #fig.savefig("tex/third_report/fig/permeability_on_d_detailed_low_d.svg")
 #fig.savefig("tex/third_report/fig/permeability_on_d.svg")
+# %%
+show_contributions = False
+show_CFD = False
+show_analytical = True
+
+fig, axs = plt.subplots(ncols = 3, sharey="row", nrows = 1, sharex = True)
+first_row_axes = axs
+results_ = results.loc[(results.mobility_model == model)]
+
+mpl_markers = ("^",'o', 's', 'D')
+for ax, (chi_PC_, result_) in zip(first_row_axes, results_.groupby(by = "chi_PC")):
+    if chi_PC_ not in [-1.0, -1.25, -1.5]: continue
+    markers = itertools.cycle(mpl_markers)
+    for chi_PS_, result__ in result_.groupby(by = "chi"):
+        x = result__["d"].squeeze()
+        #y = 1/result__["permeability"]/x
+        y = 1/result__["permeability"]
+
+        plot_kwargs = dict(
+            label = fr"${chi_PS_:.2f}$",
+        )
+
+        ax.plot(
+            x, y, 
+            **plot_kwargs,
+            marker = next(markers),
+            mfc = "none",
+            ms = 3,
+            linewidth = 0.2
+            )
+
+        if show_CFD:
+            R = simulation_results.query(f"(chi_PS=={chi_PS_})&(chi_PC=={chi_PC_})")
+            ax.scatter(
+                R["d"], 
+                #R["R_corrected"]/R["d"],
+                R["R_corrected"],
+                color = ax.lines[-1].get_color(),
+                marker = "s",
+                facecolor = "none",
+                s=20,
+                linewidth = 0.5
+                )
+
+    if show_analytical:
+        if Haberman_correction_:
+            ax.plot(
+                d, 
+                #1/result__["thick_empty_pore_Haberman"]/d, 
+                1/result__["thick_empty_pore_Haberman"],
+                color = "black", 
+                linestyle = "-",
+                label = r"$R^{\ast}_{0}$",
+                linewidth = 2,
+                zorder = -1,
+                )
+        else:
+            ax.plot(
+                d, 
+                #1/result__["thick_empty_pore"]/d,
+                1/result__["thick_empty_pore"],
+                color = "black", 
+                linestyle = "-",
+                label = "$R_{0}$",
+                linewidth = 2,
+                zorder = -1,
+                )
+        # ax.plot(
+        #     d, 
+        #     1/result__["thin_empty_pore"],
+        #     color = "black", 
+        #     linestyle = "-",
+        #     label = r"$R_{\text{ext}}^{0}$",
+        #     linewidth = 1,
+        #     zorder = -1,
+        # )
+
+
+    ax.set_title(f"$\chi_{{PC}} = {chi_PC_}$")
+    ax.set_ylim(5e-1, 1e4)
+    ax.set_yscale("log")
+    ax.set_xscale("log")
+
+axs[0].set_ylabel(r"$R \cdot \frac{k_B T}{\eta_0 b}$")
+ax.legend(bbox_to_anchor = [1,1])
+fig.set_size_inches(6, 2)
+fig.savefig("fig/permeability_on_d.svg")
 # %%

@@ -53,13 +53,15 @@ for chi_PS_, result in results.groupby(by = "chi"):
     R_ext= result.R_left+result.R_right
 
     R_thin = 1/result.thin_empty_pore
+    R_thick = 1/result.thick_empty_pore
 
     ax.plot(chi_PC, R_int, linestyle = "-.")
     color = ax.get_lines()[-1].get_color()
     ax.plot(chi_PC, R_ext, linestyle = "--", color = color)
     ax.plot(chi_PC, R_ext+R_int, label = chi_PS_,  color = color, linewidth =2)
 
-ax.plot(chi_PC, R_thin, label = r"$R_{\text{int}}^{0}$", color = "black", linewidth = 0.6)
+ax.plot(chi_PC, R_thin, label = r"$R_{\text{ext}}^{0}$", color = "black", linewidth = 0.6)
+ax.plot(chi_PC, R_thick, label = r"$R_{0}$", color = "black", linewidth = 0.6)
 # ax.plot(chi_PC, R_int,  label = r"$R_{\text{int}}$")
 # ax.plot(chi_PC, R_ext,  label = r"$R_{\text{ext}}$")
 # ax.plot(chi_PC, R_ext+R_int, linestyle = "--", color = "k", label = r"$R_{\text{ext}}$")

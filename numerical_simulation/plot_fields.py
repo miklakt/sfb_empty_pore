@@ -73,7 +73,7 @@ ax.set_ylim(0, 75)
 
 #c_arr[W_arr == True] = np.nan
 
-chi_PC = 0
+chi_PC = -1.5
 c_arr = c_arr_d[chi_PC]
 W_arr = W_arr_d[chi_PC]
 
