@@ -1,3 +1,4 @@
+#%%
 import itertools
 import numpy as np
 import pandas as pd
@@ -50,7 +51,7 @@ simulation_empty_pore["R_corrected"] = 1/(simulation_empty_pore["J_corrected"]/s
 #%%
 d = np.arange(2, 20, 2)
 #d =[8 ,10, 12 ,]
-chi_PS = [0.4, 0.5, 0.6]
+chi_PS = [0.6]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
 chi_PC_color = [0, -0.5]
 chi_PC = chi_PC_color
@@ -170,6 +171,18 @@ reference_particle_radius = 1.97#nm
 
 Kuhn_segment = 0.76
 experimental_data["d"] = experimental_data["stokes_r_nm"]*2#/Kuhn_segment*2
+
+#%%
+experimental_data_2 = pd.DataFrame(
+    {
+    "Probe":["GFP-HIS", "GFP-1PrA", "GFP-2PrA", "GFP-3PrA","GFP-4PrA", "GFP-6PrA", "GFP-1PrG", "GFP-2PrG"],
+    "MM":[ 26.8, 34.2, 40.7,  46.8,  53.6,   66.8,  34.7,  42.3],
+    "Rg":[ 2.5,  3.1,  3.3,   3.7,   3.9,    4.3,   3.2,   3.5],
+    "tau":[15,   62,   114,   180,   252,    413,   20,    66],
+    "tau_err":[1.4, np.nan, np.nan, np.nan, np.nan, 92, np.nan, np.nan],
+    "D":[  9.33, 8.42, 7.1,   6.59,  6.17,   5.67, np.nan, np.nan]
+    }
+)
 #%%
 def create_interp_func(X, Y, domain=None):
     from scipy.interpolate import CubicSpline
@@ -261,6 +274,34 @@ def expression(d):
         )
     )
     return numerator / denominator
+
+def eta_from_d(
+        D, #cm2/s
+        d, #nm
+        T = 293 #K
+        ):#Pa*s
+    k_B = 1.380649*1e-23
+    d_ = d*1e-9
+    D_ = D*1e-4
+    eta = k_B*T/(3*np.pi*d_*D_)
+    return eta
+#%%
+#yeast NPC
+nucleus_volume_ = 4.8 #fl
+cytoplasm_volume_ = 60 #fl
+NPC_per_nucleus_ = 161
+
+NPC_per_nucleus = 2770
+nucleus_volume = 1130#fL
+
+experimental_data_2["tau_renormalized"] = \
+    nucleus_volume/NPC_per_nucleus * \
+    (nucleus_volume_+cytoplasm_volume_)/(nucleus_volume_*cytoplasm_volume_) *\
+    NPC_per_nucleus_*experimental_data_2["tau"] 
+
+experimental_data_2["d"] = experimental_data_2["Rg"]*2
+
+experimental_data_2["eta"] = experimental_data_2.apply(lambda _: eta_from_d(_["D"], _["d"]), axis =1)
 # %%
 fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 1, sharex = True)
 if len(chi_PS) == 1:
@@ -356,6 +397,14 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
             linewidth = 0.1, 
             marker = "*", 
             )
+        
+        ax.scatter(
+            experimental_data_2["d"], 
+            experimental_data_2["tau_renormalized"]**(-1), 
+            color = "black", 
+            linewidth = 0.1, 
+            marker = "s", 
+            )
 
     ax.scatter(
         [], 
@@ -407,6 +456,19 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
         #label =reference_probe
     )
 
+    reference_probe = "GFP-HIS"
+    ref_record = experimental_data_2.loc[experimental_data_2["Probe"] == reference_probe]
+    x = ref_record["d"].squeeze()
+    y = ref_record["tau_renormalized"].squeeze()**(-1)
+    ax.scatter(
+        [x], 
+        [y], 
+        color = "green", 
+        linewidth = 0.1, 
+        marker = "s", 
+        #label =reference_probe
+    )
+
     reference_probe = "mCherry"
     ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
     x = ref_record["d"].squeeze()
@@ -425,7 +487,7 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
     ax.set_title(r"$\chi_{\text{PS}}="+f"{chi_PS_}$")
     ax.set_xlabel("d, nm")
     ax.set_ylim(1e-4,5e1)
-    ax.set_xlim(1.2,6.2) 
+    ax.set_xlim(1.2,10) 
 
 axs_[0].set_ylabel(r"$k \, [s^{-1}]$")
 # ax.legend(
@@ -433,6 +495,6 @@ axs_[0].set_ylabel(r"$k \, [s^{-1}]$")
 #     )
 #fig.set_size_inches(2.5*len(chi_PS)+1, 3)
 plt.tight_layout()
-fig.set_size_inches(2.5*3, 2.5)
+fig.set_size_inches(2.5, 2.5)
 #fig.savefig("fig/experimental_inert.svg")
 # %%
