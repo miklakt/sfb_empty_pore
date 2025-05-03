@@ -141,6 +141,10 @@ def estimate_protein_diameter(MW_kDa, density=1.35):
     diameter_nm = 2.0 * radius_nm
     return diameter_nm
 
+def estimate_protein_diameter_2(MW_kDa, density=1):
+    diameter_nm = 0.066*(MW_kDa*1000)**(0.37)*2
+    return diameter_nm
+
 def protein_mass_fraction(
     conc_mg_per_ml: float,
     protein_density: float = 1.35,
@@ -156,7 +160,7 @@ def protein_mass_fraction(
 experimental_data = pd.read_csv("perm_rates_experimental_data.csv")
 globular_protein_density = 1.35#g/ml
 Kuhn_segment = 0.76
-experimental_data["d"] = experimental_data.apply(lambda _:estimate_protein_diameter(_.MW, globular_protein_density), axis = 1)
+experimental_data["d"] = experimental_data.apply(lambda _:estimate_protein_diameter_2(_.MW, globular_protein_density), axis = 1)
 experimental_data["d_a"] = experimental_data["d"]/Kuhn_segment
 mCherry_influx_rate = 5.7*1e-4
 experimental_data["influx_rate"] = experimental_data["Passage_Rate"]*mCherry_influx_rate
@@ -230,6 +234,7 @@ results = pd.DataFrame(results)
 #%%
 nups = ["Mac98A","Nup116"]
 experimental_data_mono=experimental_data.loc[experimental_data.Oligomer == 1]
+experimental_data_mono=experimental_data.loc[experimental_data.d < 7]
 experimental_data_oligo=experimental_data.loc[experimental_data.Oligomer != 1]
 ################################################################################
 ################################################################################
@@ -270,19 +275,19 @@ for ax, (chi_PS_, result_) in zip(axs_, results_.groupby(by = "chi")):
         color = "black", 
         #fc = "none"
         )
-    for nup in nups:
-        x = experimental_data_oligo[nup]
-        y = experimental_data_oligo["influx_rate"]
-        #s = experimental_data_mono["d"]
-        ax.scatter(
-            x,y, 
-        marker = next(markers), 
-        #s=s*3,
-        s=15,
-        #label = nup, 
-        color = "k", 
-        #fc = "none"
-        )
+    # for nup in nups:
+    #     x = experimental_data_oligo[nup]
+    #     y = experimental_data_oligo["influx_rate"]
+    #     #s = experimental_data_mono["d"]
+    #     ax.scatter(
+    #         x,y, 
+    #     marker = next(markers), 
+    #     #s=s*3,
+    #     s=15,
+    #     #label = nup, 
+    #     color = "k", 
+    #     #fc = "none"
+    #     )
     
 
 
@@ -406,5 +411,5 @@ fig.text(1,0.0, r"$\chi_{\text{PS}}^{\text{gel}} = \{\Pi(\phi_{\text{gel}}) = 0\
 #fig.set_size_inches(2.5*len(axs_)+0.5, 3)
 #plt.tight_layout()
 fig.set_size_inches(2.5, 2.5)
-fig.savefig("fig/experimental_permeability_on_partitioning.svg")
+#fig.savefig("fig/experimental_permeability_on_partitioning.svg")
 #%%

@@ -53,7 +53,7 @@ d = np.arange(2, 20, 2)
 #d =[8 ,10, 12 ,]
 chi_PS = [0.6]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
-chi_PC_color = [0, -0.5]
+chi_PC_color = [0, -0.5, -0.75]
 chi_PC = chi_PC_color
 
 # model, mobility_model_kwargs = "none", {}
@@ -173,6 +173,7 @@ Kuhn_segment = 0.76
 experimental_data["d"] = experimental_data["stokes_r_nm"]*2#/Kuhn_segment*2
 
 #%%
+#https://doi.org/10.1083/jcb.201601004
 experimental_data_2 = pd.DataFrame(
     {
     "Probe":["GFP-HIS", "GFP-1PrA", "GFP-2PrA", "GFP-3PrA","GFP-4PrA", "GFP-6PrA", "GFP-1PrG", "GFP-2PrG"],
@@ -183,6 +184,15 @@ experimental_data_2 = pd.DataFrame(
     "D":[  9.33, 8.42, 7.1,   6.59,  6.17,   5.67, np.nan, np.nan]
     }
 )
+#http://www.molbiolcell.org/cgi/doi/10.1091/mbc.E14-07-1175
+experimental_data_3 = pd.DataFrame(
+    {
+    "Probe":["MG",   "MGM",   "MGM2",   "MGM4",   "MG2",   "MG3",   "MG4",   "MG5"],
+    "MM": [   68,     109,     149,      230,      95,       122,     150,     177],
+    "NC" :[np.nan,    0.85,    0.4,      0.21,     np.nan,   0.66,    0.53,    0.33]
+    }
+)
+
 #%%
 def create_interp_func(X, Y, domain=None):
     from scipy.interpolate import CubicSpline
@@ -285,6 +295,24 @@ def eta_from_d(
     D_ = D*1e-4
     eta = k_B*T/(3*np.pi*d_*D_)
     return eta
+
+def tau_from_nc_ratio(conc_ratio, volume_ratio, time):
+    r = (conc_ratio*volume_ratio+1)/(1-conc_ratio)
+    tau = time/np.log(r)
+    return tau
+
+def estimate_protein_diameter(MW_kDa, density=1):
+    # NA = 6.022e23
+    # # Partial specific volume (cm^3/g)
+    # v_bar = 1/density
+    # mw_g_per_mol = MW_kDa * 1000.0
+    # mass_one_molecule = mw_g_per_mol / NA
+    # volume_cm3 = mass_one_molecule * v_bar
+    # volume_nm3 = volume_cm3 * 1.0e21
+    # radius_nm = ((3.0 * volume_nm3) / (4.0 * np.pi)) ** (1.0 / 3.0)
+    # diameter_nm = 2.0 * radius_nm
+    diameter_nm = 0.066*(MW_kDa*1000)**(0.37)*2
+    return diameter_nm
 #%%
 #yeast NPC
 nucleus_volume_ = 4.8 #fl
@@ -302,6 +330,32 @@ experimental_data_2["tau_renormalized"] = \
 experimental_data_2["d"] = experimental_data_2["Rg"]*2
 
 experimental_data_2["eta"] = experimental_data_2.apply(lambda _: eta_from_d(_["D"], _["d"]), axis =1)
+
+experimental_data_2["d_est"] = estimate_protein_diameter(experimental_data_2["MM"])
+#%%
+experimental_data_3["tau"] =  experimental_data_3.apply(lambda _: tau_from_nc_ratio(_["NC"], nucleus_volume_/cytoplasm_volume_, 1*60*60), axis =1)
+experimental_data_3["d"] = estimate_protein_diameter(experimental_data_3["MM"])
+
+experimental_data_3["tau_renormalized"] = \
+    nucleus_volume/NPC_per_nucleus *\
+    (nucleus_volume_+cytoplasm_volume_)/(nucleus_volume_*cytoplasm_volume_) *\
+    NPC_per_nucleus_*experimental_data_3["tau"] 
+#%%
+plt.scatter(experimental_data_2["MM"], experimental_data_2["tau"])
+plt.scatter(experimental_data_3["MM"], experimental_data_3["tau"])
+plt.xscale("log")
+plt.yscale("log")
+x = np.arange(20, 300)
+y = x**3.2/1700
+plt.plot(x,y)
+#%%
+plt.scatter(experimental_data_2["d"], experimental_data_2["tau"])
+plt.scatter(experimental_data_3["d"], experimental_data_3["tau"])
+plt.xscale("log")
+plt.yscale("log")
+# x = np.arange(20, 300)
+# y = x**3.2/1700
+# plt.plot(x,y)
 # %%
 fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 1, sharex = True)
 if len(chi_PS) == 1:
@@ -330,7 +384,7 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
                         ), axis = 1)
 
         #y=y/10
-        x2 = np.linspace(1,6)
+        x2 = np.linspace(1,12)
         y2 = get_k_empty_pore(
                     pore_radius*Kuhn_segment,
                     wall_thickness*Kuhn_segment,
@@ -350,6 +404,29 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
             linestyle = "--",
             color = "black"
             )
+
+        #Rigid pore
+        # x3 = np.linspace(1,9.5)
+        # y3 = [get_k_empty_pore(
+        #             5,
+        #             wall_thickness*Kuhn_segment,
+        #             x3_,
+        #             NPC_per_nucleus,
+        #             nucleus_volume,
+        #             eta=eta,
+        #             Haberman_correction=True
+        #             ) for x3_ in x3]
+
+        # ax.plot(
+        #     x3, y3, 
+        #     label = "empty",
+        #     #marker = next(markers),
+        #     #mfc = "none",
+        #     #ms = 3,
+        #     linewidth = 1,
+        #     linestyle = "--",
+        #     color = "grey"
+        #     )
         
         # y2 = [expression(x2_,
         #             ) for x2_ in x2]
@@ -406,6 +483,14 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
             marker = "s", 
             )
 
+        ax.scatter(
+            experimental_data_3["d"], 
+            experimental_data_3["tau_renormalized"]**(-1), 
+            color = "black", 
+            linewidth = 0.1, 
+            marker = "^", 
+            )
+
     ax.scatter(
         [], 
         [], 
@@ -431,17 +516,17 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
     #         color = color
     #     )
     
-    ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
-    x = ref_record["d"].squeeze()
-    y = ref_record["Influx_rate"].squeeze()
-    ax.scatter(
-        [x], 
-        [y], 
-        color = "red", 
-        linewidth = 0.1, 
-        marker = "*", 
-        #label =reference_probe
-    )
+    # ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
+    # x = ref_record["d"].squeeze()
+    # y = ref_record["Influx_rate"].squeeze()
+    # ax.scatter(
+    #     [x], 
+    #     [y], 
+    #     color = "red", 
+    #     linewidth = 0.1, 
+    #     marker = "*", 
+    #     #label =reference_probe
+    # )
 
     reference_probe = "GFP"
     ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
@@ -476,7 +561,20 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
     ax.scatter(
         [x], 
         [y], 
-        color = "green", 
+        color = "red", 
+        linewidth = 0.1, 
+        marker = "*", 
+        #label =reference_probe
+    )
+
+    reference_probe = "MBP"
+    ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
+    x = ref_record["d"].squeeze()
+    y = ref_record["Influx_rate"].squeeze()
+    ax.scatter(
+        [x], 
+        [y], 
+        color = "magenta", 
         linewidth = 0.1, 
         marker = "*", 
         #label =reference_probe
@@ -486,8 +584,10 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
     ax.set_yscale("log")
     ax.set_title(r"$\chi_{\text{PS}}="+f"{chi_PS_}$")
     ax.set_xlabel("d, nm")
-    ax.set_ylim(1e-4,5e1)
-    ax.set_xlim(1.2,10) 
+    ax.set_ylim(1e-6,5e1)
+    ax.set_xlim(1.2,12) 
+
+    ax.grid()
 
 axs_[0].set_ylabel(r"$k \, [s^{-1}]$")
 # ax.legend(
@@ -495,6 +595,6 @@ axs_[0].set_ylabel(r"$k \, [s^{-1}]$")
 #     )
 #fig.set_size_inches(2.5*len(chi_PS)+1, 3)
 plt.tight_layout()
-fig.set_size_inches(2.5, 2.5)
+fig.set_size_inches(3, 3)
 #fig.savefig("fig/experimental_inert.svg")
 # %%
