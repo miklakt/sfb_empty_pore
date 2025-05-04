@@ -532,10 +532,9 @@ When this crowding is accounted for, the steady-state colloid concentration will
     \includegraphics[width = 0.5\linewidth]{fig/permeability_on_d.png}
     \caption{
     \textbf{(a)} 
-    Total pore resistance $R$, normalized by the viscosity of the solvent $\eta_\text{S}$, as a function of colloid size $d$ for selected polymer-colloid interaction strengths ($\chi_{\text{PC}}$, as indicated with colored lines) at fixed solvent strength $\chi_{\text{PS}} =0.5$.
-    \\
+    Total pore resistance $R$, normalized by the viscosity of the solvent $\eta_\text{S}$, as a function of colloid size $d$ for selected polymer-colloid interaction strengths ($\chi_{\text{PC}}$, as indicated with colored lines) at a fixed solvent strength $\chi_{\text{PS}} =0.5$.
     \textbf{(b)}
-    Total pore resistance $R$, normalized by the viscosity of the solvent $\eta_\text{S}$, as a function of colloid size $d$ for selected polymer-colloid interaction strengths ($\chi_{\text{PC}}$, as indicated with colored lines) at fixed solvent strength $\chi_{\text{PS}} =0.5$. 
+    Total pore resistance $R$, normalized by the viscosity of the solvent $\eta_\text{S}$, as a function of colloid size $d$ for selected solvent strength parameters ($\chi_{\text{PS}}$, as indicated with colored lines) at a fixed polymer-colloid interaction strengths $\chi_{\text{PC}} = -1.25$. 
     \\
     The resistance of a bare pore $R_{0}$ without polymers (black thick line) serves as a reference value.
     Pore and brush parameters are as given in Figure~\ref{fig:colloid_transport}. 
@@ -543,7 +542,58 @@ When this crowding is accounted for, the steady-state colloid concentration will
     \label{fig:R_vs_d}
 \end{figure}
 
-Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with the colloid size.
+Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with the colloid size at a fixed solvent strength $\chi_{\text{PS}}$ or at a fixed polymer-colloid interaction strengths $\chi_{\text{PC}}$.
+
+There are trivial effect of total resistance increasing with particle size: first, following Stokes-Einstein relation $\frac{\partial \ln D_0^{-1}}{\partial \ln d} = 1$; second interference constrains between the impermeable membrane and spherical particle decrease effective radius and increase effective membrane thickness.
+\todo{Maybe we do need write as equation to refer to}
+The effect is seen for the resistance of a bare pore $R_0(d)$ curve as a suplinear dependency.
+The dependency has asymptotic behaviour, obviously, as $d \to 2r_{\text{pore}}$ the pore became impermeable to the particles $R_0 \to \infty$.
+As we mentioned additional drag of the pore walls is neglected, which would make the dependency steeper, with a significant divergence in the region of large particles $d > r_{\text{pore}}$.
+
+Other than the effects above, the parameters that influence the total resistance are the same as in Eq.~(\ref{eq:rho}).
+
+First, polymer filling decrease diffusion coefficient $D$, as in Eq~.(\ref{eq:Rubinstein}) increasing total resistance of the pore.
+Imposing stricter then Stokesian barrier as particle size particle size $\frac{\partial \ln D^{-1}}{\partial \ln d} \approx 3$
+
+Second, osmotic repulsion of polymer filling $\frac{\partial \Delta F_{\text{osm}}}{\partial \ln d} = 3$, scaling with particle volume.
+
+Finally, depending on the sign of $\gamma$ surface interactions can either further increase resistance when $\gamma>0$, or starts to improve it when $\gamma>0$.
+Given a chance, when $\gamma$ is sufficiently low, this could lead to improved compared to even a bare pore permeability.
+
+Consider a case when $\gamma$ and $\chi_{\text{ads}}$ is not extremely low.
+Then the total resistance is mostly defined by the interior region $R \approx R_{\text{int}}$ (see Figure~\ref{fig:resistivity_profile}b).
+Then the resistance can be approximated as 
+\begin{equation}
+    \begin{aligned}
+        &\ln \left(R \frac{k_{\text{B}} T}{\eta_{\text{S}}}\right) = 
+        \\
+        &
+        =\underset{\text{(a)}}{- \ln\left(\alpha\tilde{\phi}d^3+d\right)}
+        \underset{\text{(b)}}{- \frac{\pi \Pi\{\tilde{\phi}\}}{6} d^3}
+        \underset{\text{(c)}}{\vphantom{\dfrac{dummy}{dummy}}- \pi \gamma\{\tilde{\phi}\} d^2}
+        +  \log\left(3(L_0+d)(r_{\text{p}}^0 - d/2)\right)
+    \end{aligned}
+    \label{eq:R_contrib}
+\end{equation}
+where $\tilde{\phi}$ is some average concentration in the pore lumen, (a) is a effect of slowed-down diffusion, (b) is a osmotic penalty and (c) is the surface contribution to the total resistance, the last contribution includes the effects of particle-membrane interference.
+
+\begin{equation}
+    \begin{aligned}
+        &\frac{\partial \ln \left(R \frac{k_{\text{B}} T}{\eta_{\text{S}}}\right)}{\partial d} = 
+        \\
+        &
+        =\underset{\text{(a)}}{- \frac{2 \alpha \phi^{2} d}{\alpha \phi^{2} d^{2} + 1}}
+        \underset{\text{(b)}}{- \frac{\pi \Pi\{\tilde{\phi}\} d^{2}}{2}}
+        \underset{\text{(c)}}{\vphantom{\dfrac{dummy}{dummy}}- 2 \pi \gamma d}
+        +  \log\left(3(L_0+d)(r_{\text{p}}^0 - d/2)\right)
+    \end{aligned}
+    \label{eq:R_contrib_deriv}
+\end{equation}
+
+\paragraph{Inert particles}
+For the inert particles, and even moderately attractive particles, the dependency is steep and monotonic.
+The term (a) and (b) in Eq.~(\ref{eq:R_contrib}) are positive 
+
 
 
 
