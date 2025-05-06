@@ -449,7 +449,6 @@ Conversely, a brush under good or $\theta$-solvent conditions produces swollen f
     The lines define bodies of revolution along the $z$-axis; the angular coordinate is not shown.
     In the exterior of the pore, constant radial coordinates are confocal hyperboloids of revolution, constant axial coordinates are confocal oblate spheroids, and constant angular coordinates are half-planes.
     In the interior of the pore (green non-hatched fill), the coordinate system is equivalent to the cylindrical coordinate system.
-    \textbf{(b)}
     Inside the pore lumen (green shading) the system reduces to standard cylindrical coordinates; the angular coordinate is not shown.  
     \textbf{(b)} Interior resistance $R_{\text{int}}$ (dot-dashed) and exterior resistance $R_{\text{ext}}$ (dashed) versus polymer-colloid interaction strength $\chi_{\text{PC}}$ for a good solvent ($\chi_{\text{PS}} = 0.3$) and a poor solvent ($\chi_{\text{PS}} = 0.7$).  
     The total resistance $R = R_{\text{int}} + R_{\text{ext}}$ appears as solid lines.  
@@ -542,60 +541,104 @@ When this crowding is accounted for, the steady-state colloid concentration will
     \label{fig:R_vs_d}
 \end{figure}
 
-Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with the colloid size at a fixed solvent strength $\chi_{\text{PS}}$ or at a fixed polymer-colloid interaction strengths $\chi_{\text{PC}}$.
+Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with colloid size at a fixed solvent strength, $\chi_{\text{PS}}$, or at a fixed polymer-colloid interaction strength, $\chi_{\text{PC}}$.
 
-There are trivial effect of total resistance increasing with particle size: first, following Stokes-Einstein relation $\frac{\partial \ln D_0^{-1}}{\partial \ln d} = 1$; second interference constrains between the impermeable membrane and spherical particle decrease effective radius and increase effective membrane thickness.
-\todo{Maybe we do need write as equation to refer to}
-The effect is seen for the resistance of a bare pore $R_0(d)$ curve as a suplinear dependency.
-The dependency has asymptotic behaviour, obviously, as $d \to 2r_{\text{pore}}$ the pore became impermeable to the particles $R_0 \to \infty$.
-As we mentioned additional drag of the pore walls is neglected, which would make the dependency steeper, with a significant divergence in the region of large particles $d > r_{\text{pore}}$.
+There is a trivial effect of total resistance increasing with particle size. First, according to the Stokes-Einstein relation, $\frac{\partial \ln D_0^{-1}}{\partial \ln d} = 1$. Second, interference constraints between the impermeable membrane and the spherical particle decrease the effective pore radius and increase the effective membrane thickness.
+\todo{Maybe we do need to write this as an equation to refer to.}
 
-Other than the effects above, the parameters that influence the total resistance are the same as in Eq.~(\ref{eq:rho}).
+This effect can be observed in the resistance of a bare pore, $R_0(d)$, which shows a superlinear dependence.
+Naturally, as $d \to 2r_{\text{pore}}$, the pore becomes impermeable to particles, and $R_0 \to \infty$.
+As previously mentioned, additional drag from the pore walls is neglected here, which would otherwise make the dependence even steeper, with a significant divergence for large particles ($d > r_{\text{pore}}$).
 
-First, polymer filling decrease diffusion coefficient $D$, as in Eq~.(\ref{eq:Rubinstein}) increasing total resistance of the pore.
-Imposing stricter then Stokesian barrier as particle size particle size $\frac{\partial \ln D^{-1}}{\partial \ln d} \approx 3$
+Aside from these effects, the parameters influencing the total resistance are the same as those in Eq.~(\ref{eq:rho}).
 
-Second, osmotic repulsion of polymer filling $\frac{\partial \Delta F_{\text{osm}}}{\partial \ln d} = 3$, scaling with particle volume.
+First, polymer filling reduces the diffusion coefficient $D$, as shown in Eq.~(\ref{eq:Rubinstein}), thereby increasing the total resistance of the pore.
+This imposes a stricter-than-Stokesian barrier at larger particle sizes, such that $\frac{\partial \ln D^{-1}}{\partial \ln d} \approx 3$.
 
-Finally, depending on the sign of $\gamma$ surface interactions can either further increase resistance when $\gamma>0$, or starts to improve it when $\gamma>0$.
-Given a chance, when $\gamma$ is sufficiently low, this could lead to improved compared to even a bare pore permeability.
+Second, osmotic repulsion due to polymer filling contributes as well, with $\frac{\partial \Delta F_{\text{osm}}}{\partial \ln d} = 3$, scaling with particle volume.
 
-Consider a case when $\gamma$ and $\chi_{\text{ads}}$ is not extremely low.
-Then the total resistance is mostly defined by the interior region $R \approx R_{\text{int}}$ (see Figure~\ref{fig:resistivity_profile}b).
-Then the resistance can be approximated as 
+Finally, depending on the sign of $\gamma$, surface interactions can either further increase resistance when $\gamma > 0$, or begin to improve permeability when $\gamma < 0$.
+If $\gamma$ is sufficiently low, permeability may even exceed that of a bare pore.
+
+Consider the case where $\gamma$ and $\chi_{\text{ads}}$ are not extremely low.
+Here, the total resistance is primarily determined by the interior region, $R \approx R_{\text{int}}$ (see Figure~\ref{fig:resistivity_profile}b).
+In this case, the resistance can be approximated as:
 \begin{equation}
     \begin{aligned}
-        &\ln \left(R \frac{k_{\text{B}} T}{\eta_{\text{S}}}\right) = 
+        &\ln \left(R \frac{k_{\text{B}} T}{\eta_{\text{S}}}\right) \approx 
         \\
         &
-        =\underset{\text{(a)}}{- \ln\left(\alpha\tilde{\phi}d^3+d\right)}
-        \underset{\text{(b)}}{- \frac{\pi \Pi\{\tilde{\phi}\}}{6} d^3}
-        \underset{\text{(c)}}{\vphantom{\dfrac{dummy}{dummy}}- \pi \gamma\{\tilde{\phi}\} d^2}
-        +  \log\left(3(L_0+d)(r_{\text{p}}^0 - d/2)\right)
+        =\underset{\text{(i)}}{ \ln\left(\alpha\tilde{\phi}d^3+d\right)}
+        \underset{\text{(ii)}}{+ \frac{\pi \Pi\{\tilde{\phi}\}}{6} d^3}
+        \underset{\text{(iii)}}{\vphantom{\frac{a}{a}}+ \pi \gamma\{\tilde{\phi}\} d^2}
+        +  \log\left(\frac{L_0+d}{3(r_{\text{p}}^0 - d/2)^{2}}\right)
     \end{aligned}
     \label{eq:R_contrib}
 \end{equation}
-where $\tilde{\phi}$ is some average concentration in the pore lumen, (a) is a effect of slowed-down diffusion, (b) is a osmotic penalty and (c) is the surface contribution to the total resistance, the last contribution includes the effects of particle-membrane interference.
+where $\tilde{\phi}$ is the average concentration in the pore lumen.
+Terms (i), (ii), and (iii) correspond to the effects of slowed diffusion, osmotic penalty, and surface contribution to resistance, respectively.
+The last term accounts for particle-membrane interference.
 
+The corresponding logarithmic derivative (relative change rate) is with respect to particle size $d$:
+% \begin{equation}
+%     \begin{aligned}
+%         &\frac{\partial \ln R}{\partial d} \approx 
+%         \\
+%         &
+%         =\underset{\text{(i)}}{ \frac{2 \alpha \phi^{2} d}{\alpha \phi^{2} d^{2} + 1} +\frac{1}{d}}
+%         \underset{\text{(ii)}}{+ \frac{\pi \Pi\{\tilde{\phi}\} d^{2}}{2}}
+%         \underset{\text{(iii)}}{\vphantom{\frac{a}{a}}+ 2 \pi \gamma d}
+%         +  \frac{1}{L_0+d} + \frac{1}{r_{\text{p}}^0 - d/2}
+%     \end{aligned}
+%     \label{eq:R_contrib_deriv}
+% \end{equation}
 \begin{equation}
     \begin{aligned}
-        &\frac{\partial \ln \left(R \frac{k_{\text{B}} T}{\eta_{\text{S}}}\right)}{\partial d} = 
+        &\frac{\partial \ln R}{\partial \ln d} \approx 
         \\
         &
-        =\underset{\text{(a)}}{- \frac{2 \alpha \phi^{2} d}{\alpha \phi^{2} d^{2} + 1}}
-        \underset{\text{(b)}}{- \frac{\pi \Pi\{\tilde{\phi}\} d^{2}}{2}}
-        \underset{\text{(c)}}{\vphantom{\dfrac{dummy}{dummy}}- 2 \pi \gamma d}
-        +  \log\left(3(L_0+d)(r_{\text{p}}^0 - d/2)\right)
+        =\underset{\text{(i)}}{ 1 +\frac{2 \alpha \phi^{2} d^{2}}{\alpha \phi^{2} d^{2} + 1}}
+        \underset{\text{(ii)}}{+ \frac{\pi \Pi\{\tilde{\phi}\} d^{3}}{2}}
+        \underset{\text{(iii)}}{\vphantom{\frac{a}{a}} + 2 \pi \gamma d^{2}}
+        +  \frac{d}{L_0+d} + \frac{d}{r_{\text{p}}^0 - d/2}
     \end{aligned}
     \label{eq:R_contrib_deriv}
 \end{equation}
+where terms (i), (ii), and (iii) are the same as in Eq.~(\ref{eq:R_contrib}), respectively, but differentiated.
+
+For extremely small particles $d \to 0$, all the term that depend on particle size $d$ in Eq.~(\ref{eq:R_contrib_deriv}) cancels out and the relative rate of change is $\frac{\partial \ln R}{\partial \ln d} \gtrapprox  1$, signifying Stokesian behavior of small solutes.
+As seen in Figure~\ref{fig:R_vs_d} with all the lines converging to the same permeability as a bare pore when particles become extremely small.
+
+As particles become larger, given the coefficient $\alpha \approx 30$ and $\tilde{\phi}>0.1$ (see Figure~\ref{fig:phi_hm_grid}) assures $\alpha\phi^2d^2 \gg 1$ even for relatively small particle.
+This result in a resistance scaling with particle size as $\frac{\partial \ln R}{\partial \ln d} \lessapprox 3$.
+Thus for a particle with average insertion free energy $\Delta F(r, z) \approx 0$ close to zero everywhere, resistance will scale approximately with particle volume $R \sim d^3$.
+In the Figure~\ref{fig:phi_hm_grid}a this is approximately correspond to the set of interaction parameters $\chi_{\text{PS}} = 0.5, \chi_{\text{PC}} = -1.0$ when insertion free energy $\Delta F$ slightly negative or close to zero for a wide range of particle sizes (see middle upper frame in Figure~S5).
+
 
 \paragraph{Inert particles}
-For the inert particles, and even moderately attractive particles, the dependency is steep and monotonic.
-The term (a) and (b) in Eq.~(\ref{eq:R_contrib}) are positive 
+The terms (i) and (ii) in Eq.~(\ref{eq:R_contrib_deriv}) are positive, and the term (iii) is either positive or not sufficiently negative to compensate.
+For inert particles and slightly attractive particles, when $\gamma\{\chi_{\text{PS}}, \chi_{\text{PC}}\}<0$ (see Eq~(\ref{eq:chi_ads})), the dependence of resistance on particle size is steep and monotonic $\frac{\partial \ln R}{\partial \ln d} \gtrapprox 3 + \Pi d^{3}/6$.
+Such prohibitive regime renders pore impermeable for inert particle of larger sizes.
+Thus polymer filling effectively blocks transport beyond that of a simple diffusion hindering.
+
+A decrease in polymer-particle interaction strength (increase in $\chi_{\text{PC}}$), makes the pore even more prohibitive systematically for any particle side $d$, as seen in Figure~\ref{fig:R_vs_d}a for $\chi_{\text{PC}} = -0.5$ and $\chi_{\text{PC}} = 0.0$.
+The effect is marginal for small particles up to $d < 2$.
+% It is known that even relatively large colloid particles that are considered inert may leak through a nucleopore (\totdo Ref Popen et al ), which can be attributed...
+
+Polymer-filled pore is selective to polymer-particle interaction strength with selectivity increasing with particle size as seen in Figure~\ref{fig:R_vs_d}a as increasing vertical distance between the curves.
+For large inert particles this selectivity might lie in non operative region of high resistance.
+
+Solvent quality has a minor effect on the permeability of small inert particles, with a marginal increase in pore resistance in poor solvent due to increasing polymer concentration $\phi$ in the pore as can be seen in Figure~\ref{fig:R_vs_d}b for the small colloids up to particle size ($d<4$).
+Particle of larger sizes are more sensitive to the change in solvent strengt with inert particles having lower resistance due to decreased osmotic pressure in a poorer solvent (compare $\chi_{\text{PS}} = 0.3$ and $\chi_{\text{PS}} = 0.4$ in Figure~\ref{fig:R_vs_d}b).
 
 
 
+
+\paragraph{Attractive particles}
+Attractive colloid particles with $\gamma\{\chi_{\text{PS}},\chi_{\text{PC}}\}<0$ exhibit complex non-monotonic dependency on the particle surface features parameters.
+
+As one can see from Eq~(\ref{eq:R_contrib}) terms (ii) and (iii) defines cubic parabola with positive cubic term.
+In the absence 
 
 
 

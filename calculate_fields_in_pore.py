@@ -1,4 +1,5 @@
 # %%
+import numbers
 import numpy as np
 import pandas as pd
 from scipy import ndimage
@@ -97,6 +98,18 @@ def add_walls(fields, exclude_volume = True, d = None):
         W_arr = ndimage.binary_dilation(W_arr, structure = generate_circle_kernel(d))
     fields["walls"] = W_arr
 
+def subst_by_gel(fields, phi:float):
+    l1 = fields["l1"]
+    l2 = fields["l2"]
+    xlayers = fields["xlayers"]
+    ylayers = fields["ylayers"]
+    pore_radius = fields["r"]
+    wall_thickness = fields["s"]
+
+    phi_arr = np.zeros((ylayers,xlayers))
+    phi_arr[l1:l1+wall_thickness+1, :pore_radius] = phi
+    fields["phi"] = phi_arr
+
 def calculate_pressure(fields, truncate = False):
     phi = fields["phi"]
     chi = fields["chi_PS"]
@@ -113,15 +126,19 @@ def calculate_energy(fields, d, method, convolve_mode = "same"):
     #==free energy calculation==
     #----approximate method----
     if method == "approx":
+        print("approximate method")
         fields["surface"] = fields["gamma"]*surface(d)
         fields["osmotic"] = fields["Pi"]*volume(d)
     #----convolution method the output is staggered----
-    if method == "convolve":
+    elif method == "convolve":
+        print("convolution method")
         fields["surface"] = convolve_particle_surface(fields["gamma"].T, d, convolve_mode).T
         fields["osmotic"] = convolve_particle_volume(fields["Pi"].T, d, convolve_mode).T
-    if method == "no_free_energy":
+    elif method == "no_free_energy":
         fields["surface"] = np.zeros_like(fields["Pi"])
         fields["osmotic"] = np.zeros_like(fields["Pi"])
+    else:
+        raise ValueError("Wrong method in calculate free energy call")
     #----total free energy----
     fields["free_energy"] = fields["surface"] + fields["osmotic"]
 
@@ -332,17 +349,27 @@ def calculate_fields(
         cutoff_phi = 1e-5,
         Haberman_correction = False,
         stickiness = False,
-        stickiness_model_kwargs = {}
+        stickiness_model_kwargs = {},
+        gel_phi = None
         ):
+
     fields = utils.get_by_kwargs(master_empty, chi_PS = chi, s = wall_thickness, r = pore_radius, sigma = sigma).squeeze()
     fields["phi"] = fields.dataset["phi"].squeeze().T
+    if gel_phi is not None:
+        if not isinstance(gel_phi, numbers.Number):
+            raise ValueError("phi_gel expected to be numeric")
+        subst_by_gel(fields, phi= gel_phi)
+    if d>=2:
+        add_walls(fields, exclude_volume, d)
+        method = method
+    else:#particle is very small
+        add_walls(fields, exclude_volume = False, d=None)
+        if method != "approx": print("small particle, approx free energy")
+        method = "approx"
+        mobility_correction = "none"
 
-    add_walls(fields, exclude_volume, d)
     calculate_pressure(fields, truncate_pressure)
     calculate_gamma(fields, a0, a1, chi_PC)
-
-    #convolve_mode = "same"
-
     calculate_energy(fields, d, method, convolve_mode)
     calculate_corrected_phi(fields, a0=a0, a1=a1, chi_PC = chi_PC, correction=mobility_correction, d=d, convolve_mode=convolve_mode)
     calculate_mobility(fields, d, mobility_model, mobility_model_kwargs, 
@@ -379,7 +406,8 @@ def calculate_permeability(
         cutoff_phi = 1e-5,
         Haberman_correction = False,
         stickiness = False,
-        stickiness_model_kwargs = {}
+        stickiness_model_kwargs = {},
+        gel_phi = None
         ):
     
     fields = calculate_fields(
@@ -397,7 +425,8 @@ def calculate_permeability(
         cutoff_phi = cutoff_phi,
         Haberman_correction = Haberman_correction,
         stickiness = stickiness,
-        stickiness_model_kwargs = stickiness_model_kwargs
+        stickiness_model_kwargs = stickiness_model_kwargs,
+        gel_phi = gel_phi
         )
 
     result = dict(
@@ -416,7 +445,8 @@ def calculate_permeability(
         cutoff_phi = cutoff_phi,
         Haberman_correction = Haberman_correction,
         stickiness = stickiness,
-        stickiness_model_kwargs = stickiness_model_kwargs
+        stickiness_model_kwargs = stickiness_model_kwargs,
+        gel_phi = gel_phi
     )
     
     if integration=="cylindrical_caps":
@@ -443,3 +473,4 @@ def calculate_permeability(
         result["R_pore"] = fields["R_pore"]/einstein_factor
 
     return result
+# %%
