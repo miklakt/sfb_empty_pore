@@ -264,6 +264,7 @@ $$
 $$
 \begin{equation}
 	k_{\text{B}}T[-\ln(1-\phi(r,z)) - \phi(r,z) -\chi_{\text{PS}}\phi^2(r,z)],
+    \label{eq:osmotic}
 \end{equation}
 where
 $$
@@ -541,7 +542,7 @@ When this crowding is accounted for, the steady-state colloid concentration will
     \label{fig:R_vs_d}
 \end{figure}
 
-Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with colloid size at a fixed solvent strength, $\chi_{\text{PS}}$, or at a fixed polymer-colloid interaction strength, $\chi_{\text{PC}}$.
+Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with colloid size at a different combination of interaction parameters, a fixed solvent strength, $\chi_{\text{PS}}$ in a panel (a), or at a fixed polymer-colloid interaction strength, $\chi_{\text{PC}}$ in panel (b).
 
 There is a trivial effect of total resistance increasing with particle size. First, according to the Stokes-Einstein relation, $\frac{\partial \ln D_0^{-1}}{\partial \ln d} = 1$. Second, interference constraints between the impermeable membrane and the spherical particle decrease the effective pore radius and increase the effective membrane thickness.
 \todo{Maybe we do need to write this as an equation to refer to.}
@@ -550,7 +551,7 @@ This effect can be observed in the resistance of a bare pore, $R_0(d)$, which sh
 Naturally, as $d \to 2r_{\text{pore}}$, the pore becomes impermeable to particles, and $R_0 \to \infty$.
 As previously mentioned, additional drag from the pore walls is neglected here, which would otherwise make the dependence even steeper, with a significant divergence for large particles ($d > r_{\text{pore}}$).
 
-Aside from these effects, the parameters influencing the total resistance are the same as those in Eq.~(\ref{eq:rho}).
+Aside from these effects, the parameters influencing the total resistance are the same as those in Eq.~(\ref{eq:rho}), as the total resistance is a result of integration of position-dependent conductivity.
 
 First, polymer filling reduces the diffusion coefficient $D$, as shown in Eq.~(\ref{eq:Rubinstein}), thereby increasing the total resistance of the pore.
 This imposes a stricter-than-Stokesian barrier at larger particle sizes, such that $\frac{\partial \ln D^{-1}}{\partial \ln d} \approx 3$.
@@ -575,70 +576,90 @@ In this case, the resistance can be approximated as:
     \end{aligned}
     \label{eq:R_contrib}
 \end{equation}
-where $\tilde{\phi}$ is the average concentration in the pore lumen.
-Terms (i), (ii), and (iii) correspond to the effects of slowed diffusion, osmotic penalty, and surface contribution to resistance, respectively.
+where $\tilde{\phi}$ is the equivalent concentration in the pore lumen, such that $R_{\text{int}} = \frac{L}{2 \pi r_{\text{p}}^2 }\rho^{-1}\{\tilde{\phi}\}$ is the same as in Eq.~(\ref{R_int}).
+
+Upon an increase in $\chi_{\text{PS}}$ as a polymer deswell both minimal and maximum polymer concentration $\phi$ increase, so the equivalent concentration follow the same trends with respect to solvent quality $\chi_{\text{PS}}$ as average concentration in the pore $\tilde{\phi} \approx \left<\phi\right>$.
+%Because of the exponential term in the Eq.~(\ref{eq:rho}) the averaging correspond mostly to the one of convex function \emph{i.e.} is closer to the maximum value of $\phi$.
+
+Terms (i), (ii), and (iii) in Eq.~(\ref{eq:R_contrib}) correspond to the effects of slowed diffusion, osmotic penalty, and surface contribution to resistance, respectively.
 The last term accounts for particle-membrane interference.
 
 The corresponding logarithmic derivative (relative change rate) is with respect to particle size $d$:
-% \begin{equation}
-%     \begin{aligned}
-%         &\frac{\partial \ln R}{\partial d} \approx 
-%         \\
-%         &
-%         =\underset{\text{(i)}}{ \frac{2 \alpha \phi^{2} d}{\alpha \phi^{2} d^{2} + 1} +\frac{1}{d}}
-%         \underset{\text{(ii)}}{+ \frac{\pi \Pi\{\tilde{\phi}\} d^{2}}{2}}
-%         \underset{\text{(iii)}}{\vphantom{\frac{a}{a}}+ 2 \pi \gamma d}
-%         +  \frac{1}{L_0+d} + \frac{1}{r_{\text{p}}^0 - d/2}
-%     \end{aligned}
-%     \label{eq:R_contrib_deriv}
-% \end{equation}
 \begin{equation}
     \begin{aligned}
-        &\frac{\partial \ln R}{\partial \ln d} \approx 
+        &\frac{\partial \ln R}{\partial \ln d} = \frac{\partial R}{\partial d}\frac{d}{R}  \approx 
         \\
         &
         =\underset{\text{(i)}}{ 1 +\frac{2 \alpha \phi^{2} d^{2}}{\alpha \phi^{2} d^{2} + 1}}
         \underset{\text{(ii)}}{+ \frac{\pi \Pi\{\tilde{\phi}\} d^{3}}{2}}
-        \underset{\text{(iii)}}{\vphantom{\frac{a}{a}} + 2 \pi \gamma d^{2}}
+        \underset{\text{(iii)}}{\vphantom{\frac{a}{a}} + 2 \pi \gamma\{\tilde{\phi}\} d^{2}}
         +  \frac{d}{L_0+d} + \frac{d}{r_{\text{p}}^0 - d/2}
     \end{aligned}
     \label{eq:R_contrib_deriv}
 \end{equation}
 where terms (i), (ii), and (iii) are the same as in Eq.~(\ref{eq:R_contrib}), respectively, but differentiated.
 
-For extremely small particles $d \to 0$, all the term that depend on particle size $d$ in Eq.~(\ref{eq:R_contrib_deriv}) cancels out and the relative rate of change is $\frac{\partial \ln R}{\partial \ln d} \gtrapprox  1$, signifying Stokesian behavior of small solutes.
+\paragraph{Effect of reduced colloid mobility}
+For extremely small particles $d \to 0$, all the term that depend on particle size $d$ in Eq.~(\ref{eq:R_contrib_deriv}) cancels out and the relative rate of change is $\frac{\partial \ln R}{\partial \ln d} \gtrapprox  1$, signifying Stokesian behavior of small solutes, irregardless of interaction parameters $\chi_{\text{PS}}, \chi_{\text{PC}}$.
 As seen in Figure~\ref{fig:R_vs_d} with all the lines converging to the same permeability as a bare pore when particles become extremely small.
 
 As particles become larger, given the coefficient $\alpha \approx 30$ and $\tilde{\phi}>0.1$ (see Figure~\ref{fig:phi_hm_grid}) assures $\alpha\phi^2d^2 \gg 1$ even for relatively small particle.
 This result in a resistance scaling with particle size as $\frac{\partial \ln R}{\partial \ln d} \lessapprox 3$.
 Thus for a particle with average insertion free energy $\Delta F(r, z) \approx 0$ close to zero everywhere, resistance will scale approximately with particle volume $R \sim d^3$.
+% Positive insertion free energy landscape will make the dependency steep superlinear with $\frac{\partial \ln R}{\partial \ln d} > 3$, while negative insertion free energy landscape will diverge the curves to sublinear behaviour $\frac{\partial \ln R}{\partial \ln d} < 3$ up to a negative slope.
+
 In the Figure~\ref{fig:phi_hm_grid}a this is approximately correspond to the set of interaction parameters $\chi_{\text{PS}} = 0.5, \chi_{\text{PC}} = -1.0$ when insertion free energy $\Delta F$ slightly negative or close to zero for a wide range of particle sizes (see middle upper frame in Figure~S5).
+With $\chi_{\text{PC}} > -1.0$ curls up 
+
+\paragraph{Effect of polymer-colloid interacting strength}
+An increase in polymer-colloid interaction strength (decrease in $\chi_{PC}$) is followed by an increase in $\gamma$ as in Eq.~(\ref{eq:chi_ads}).
+The resistance of the polymer-filled pore systematically drops for every particle size $d$ as each curve in Figure~{\ref{fig:R_vs_d}}a shifts down with decreasing $\chi_{\text{PC}}$.
+Low polymer-colloid interaction strength $\chi_{PC} > \chi_{\text{ads}}$ defines positive insertion free energy landscape (see Figure~\ref{fig:DeltaF_map} for $\chi_{PC} \ge -0.75$) making the (ii) and (iii) terms in Eq.~(\ref{eq:R_contrib_deriv})) positive, as seen in Figure~\ref{fig:R_vs_d}a for $\chi_{PC} > -1$ as superlinear dependency $\frac{\partial \ln R}{\partial \ln d} >3$.
+Thus a polymer filled pore has higher selectivity to particle size for particles with low polymer-colloid interaction strength.
+
+On the other hand, a decrease in $\chi_{\text{PC}}$ below $\chi_{\text{ads}}$ lead to a complex non-monotonic dependency.
+For any negative $\gamma$ the (ii) and the (iii) terms in Eq~(\ref{eq:R_contrib}) defines a cubic parabola as a function of particle size $d$ with a minimum ($d=0$) followed by a maximum ($d = -\frac{4\gamma}{\Pi}$), or an inflection point ($d=0$) in the case $\gamma = 0$.
+Given an always positive, slower growing logarithmic term (i) in Eq~(\ref{eq:R_contrib_deriv}) inflection point at some particle size $d$ appear at some small negative $\gamma < 0$ rather then zero.
+With further decrease in $\gamma < 0$ a maximum ($d>0$) followed by a minimum ($d < -\frac{4\gamma}{\Pi}$) appear, the width of the section of the curve with negative slope $\frac{\partial \ln R}{\partial \ln d}$ grows with more negative $\gamma$.
+This section of the curve signifies an unexpected behavior for the polymer-filled pore when similar homogeneous colloid particles of larger size have less resistance then smaller ones.
+The mentioned extrema is seen on the curve in Figure~\ref{fig:R_vs_d}ab for a set of interaction parameters $\chi_{\text{PC}} = -1.25$ and $\chi_{\text{PS}} = -1.25$ denoted with up arrows as (a) and (b) for maximum and minimum, respectively.
+The selectively with respect to particle size near the extrema is low.
+% Upon an increase in $\chi_{\text{PS}}$ (decrease in solvent strength) or a decrease in $\chi_{\text{PS}}$ (increase in polymer-colloid interaction strength) the behavior is changed from strictly monotonic superlinear to non-monotonic with sub- and superlinear sections.
+
+The selectivity with respect to polymer-colloid interaction increases with particle size and decrease in solvent strength (higher $\chi_{\text{PS}}$, thus higher $\tilde{\phi}$)
+%$\frac{\partial \ln R}{\partial \chi_{\text{PC}}} = \pi d^{2} \frac{\partial \gamma}{\partial \chi_{\text{PC}}} \approx  \frac{\pi d^{2}}{6}\tilde{\phi}$
+$\frac{\partial \ln R}{\partial \chi_{\text{PC}}} \approx  \frac{\pi d^{2}}{6}\tilde{\phi}$.
 
 
-\paragraph{Inert particles}
-The terms (i) and (ii) in Eq.~(\ref{eq:R_contrib_deriv}) are positive, and the term (iii) is either positive or not sufficiently negative to compensate.
-For inert particles and slightly attractive particles, when $\gamma\{\chi_{\text{PS}}, \chi_{\text{PC}}\}<0$ (see Eq~(\ref{eq:chi_ads})), the dependence of resistance on particle size is steep and monotonic $\frac{\partial \ln R}{\partial \ln d} \gtrapprox 3 + \Pi d^{3}/6$.
-Such prohibitive regime renders pore impermeable for inert particle of larger sizes.
-Thus polymer filling effectively blocks transport beyond that of a simple diffusion hindering.
+\paragraph{Effect of solvent strength}
+Similarly, an increase in solvent strength (increase in $\chi_{PS}$) is followed by an increase in $\gamma$ as in Eq.~(\ref{eq:chi_ads}) and decrease in the osmotic pressure $\Pi$ as in Eq.~(\ref{eq:osmotic}).
+For larger particles $d>4$ an decrease in $\chi_{PS}$ is qualitatively the same as an increase in $\chi_{\text{PC}}$, which drives both osmotic and surface term to the insertion free energy landscape more positive.
 
-A decrease in polymer-particle interaction strength (increase in $\chi_{\text{PC}}$), makes the pore even more prohibitive systematically for any particle side $d$, as seen in Figure~\ref{fig:R_vs_d}a for $\chi_{\text{PC}} = -0.5$ and $\chi_{\text{PC}} = 0.0$.
-The effect is marginal for small particles up to $d < 2$.
-% It is known that even relatively large colloid particles that are considered inert may leak through a nucleopore (\totdo Ref Popen et al ), which can be attributed...
+On the contrary, as with increase in $\chi_{PS}$ the polymer deswells, the equivalent concentration $\tilde{\phi}$ in the pore lumen rises.
+For smaller particles the effect of hindered diffusion (term (i) in \ref{eq:R_contrib_deriv}) dominates, so that $\frac{\partial \ln R}{\partial \chi_{\text{PS}}} \approx  < 0$ is small and negative, the slope of $R(d)$ curves does not depend on solvent quality $\frac{1}{\partial \chi_{\text{PS}}}\frac{\partial \ln R}{\partial d} \approx 0$.
+As seen in Figure~\ref{fig:R_vs_d} as the curves closely vertically stack on each other with the same slope in the order of decreasing $\chi_{\text{PS}}$ in the range of smaller particles $d<4$.
+For larger particles term (ii) and (iii) in \ref{eq:R_contrib_deriv} dominate with the curves diverge.
 
-Polymer-filled pore is selective to polymer-particle interaction strength with selectivity increasing with particle size as seen in Figure~\ref{fig:R_vs_d}a as increasing vertical distance between the curves.
-For large inert particles this selectivity might lie in non operative region of high resistance.
+\paragraph{Effect of the reservoir}
+For very low insertion free energies $\Delta F \ll 0$ when $\gamma < 0$ as the interior region is essentially short-circuited $R_{\text{int}} \to 0$ the total resistance of the pore is defined by always finite resistance of the exterior region $R \approx R_{\text{ext}}$ as in Eq.~(\ref{eq:R_tot_tot}) and Figure~\ref{fig:resistivity_profile}.
+At the same time in the case of very attractive particles, the fringes of formed by the swelled polymer may have very low resistance, decreasing the resistance of the exterior region.
+Following Eq.~(\ref{eq:r_dome}), $\frac{\partial \ln R}{\partial \ln d} \approx  1$.
 
-Solvent quality has a minor effect on the permeability of small inert particles, with a marginal increase in pore resistance in poor solvent due to increasing polymer concentration $\phi$ in the pore as can be seen in Figure~\ref{fig:R_vs_d}b for the small colloids up to particle size ($d<4$).
-Particle of larger sizes are more sensitive to the change in solvent strengt with inert particles having lower resistance due to decreased osmotic pressure in a poorer solvent (compare $\chi_{\text{PS}} = 0.3$ and $\chi_{\text{PS}} = 0.4$ in Figure~\ref{fig:R_vs_d}b).
+Upon an increase in particles size when $\gamma$ is sufficiently negative, as we discussed before, we expect a minimum, as one denoted with uparrow (b) in Figure~\ref{fig:R_vs_d}a.
+However, the total resistance is caped, at some particle, the expected parabolic-like section is almost piesewise-like substituted with linear slope.
+The onset of the the linear slope is a minimum is marked with uparrow (c) in Figure~\ref{fig:R_vs_d}a.
+Upon further increase in particle size as the osmotic penalty grows and so does membrane-particle interference constrains, the linear slope is substituted back by the rising branch of parabola-like curve.
 
+% \paragraph{Inert particles}
+% The terms (i) and (ii) in Eq.~(\ref{eq:R_contrib_deriv}) are positive, and the term (iii) is either positive or not sufficiently negative to compensate.
+% For inert particles and slightly attractive particles, when $\gamma\{\chi_{\text{PS}}, \chi_{\text{PC}}\}<0$ (see Eq~(\ref{eq:chi_ads})), the dependence of resistance on particle size is steep and monotonic $\frac{\partial \ln R}{\partial \ln d} \gtrapprox 3 + \Pi d^{3}/6$.
+% Such prohibitive regime renders pore impermeable for inert particle of larger sizes.
+% Thus polymer filling effectively blocks transport beyond that of a simple diffusion hindering.
 
+% A decrease in polymer-particle interaction strength (increase in $\chi_{\text{PC}}$), makes the pore even more prohibitive systematically for any particle side $d$, as seen in Figure~\ref{fig:R_vs_d}a for $\chi_{\text{PC}} = -0.5$ and $\chi_{\text{PC}} = 0.0$.
+% The effect is marginal for small particles up to $d < 2$.
+% % It is known that even relatively large colloid particles that are considered inert may leak through a nucleopore (\totdo Ref Popen et al ), which can be attributed...
 
-
-\paragraph{Attractive particles}
-Attractive colloid particles with $\gamma\{\chi_{\text{PS}},\chi_{\text{PC}}\}<0$ exhibit complex non-monotonic dependency on the particle surface features parameters.
-
-As one can see from Eq~(\ref{eq:R_contrib}) terms (ii) and (iii) defines cubic parabola with positive cubic term.
-In the absence 
 
 
 
