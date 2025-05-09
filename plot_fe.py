@@ -41,7 +41,9 @@ def gamma(chi_PS, chi_PC, phi, X):
     chi_crit = 6*np.log(5/6)
     phi_corrected = (a0 + a1*chi_PC)*phi
     chi_ads = chi_PC - chi_PS*(1-phi_corrected)
+    #chi_ads = chi_PC - chi_PS*(1-phi)
     gamma = (chi_ads - chi_crit)*phi_corrected/6
+    #gamma = (chi_ads - chi_crit)*phi/6
     return gamma
 
 def gamma2(chi_PS, chi_PC, phi, X):
@@ -96,10 +98,10 @@ X = None
 #%%
 s = 52
 r = 26
-ph =[8, 12]
+ph =[8, 12, 16]
 pw =ph
 sigma = 0.02
-chi_PS = [0.4, 0.5, 0.6]
+chi_PS = [0.3, 0.4, 0.5, 0.6, 0.7]
 chi_PC = [-1.5, 0.0]
 
 master = pd.read_pickle("reference_table.pkl")
@@ -245,7 +247,7 @@ def add_text_right(ax_, text):
 #axs[-1, -1].legend(ncols = 5, bbox_to_anchor = [1.2, -.5])
 axs[-1, -1].legend()
 #ax.plot([], [],color = "darkred", linestyle = "--", label = "$P>0$")
-fig.set_size_inches(6,6)
+fig.set_size_inches(10,10)
 #plt.tight_layout()
 #fig.savefig("/home/ml/Desktop/grid.svg")
 #%%

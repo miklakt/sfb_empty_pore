@@ -53,7 +53,7 @@ d = np.arange(2, 20, 2)
 #d =[8 ,10, 12 ,]
 chi_PS = [0.6]
 #chi_PC = [-2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1, -0.75]
-chi_PC_color = [0, -0.5, -0.75]
+chi_PC_color = [0, -0.5]
 chi_PC = chi_PC_color
 
 # model, mobility_model_kwargs = "none", {}

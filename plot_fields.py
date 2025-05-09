@@ -42,9 +42,9 @@ import matplotlib.colors as plt_colors
 a0, a1 = 0.70585835, -0.31406453
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d = 12
-chi_PC = -1.2
-chi = 0.3
+d = 16
+chi_PC = -1.0
+chi = 0.5
 sigma = 0.02
 
 kwargs = dict(
@@ -55,16 +55,18 @@ kwargs = dict(
     pore_radius=pore_radius,
     exclude_volume=True,
     truncate_pressure=False,
-    method= "convolve", 
+    method= "approx", 
     mobility_correction= "vol_average",
     mobility_model = "Rubinstein",
     mobility_model_kwargs = {"prefactor":30.0},
     Haberman_correction = False,
-    stickiness=False
+    stickiness=False,
+    #gel_phi = 0.2
 )
 fields = calculate_fields(
     **kwargs
     )
+#%%
 kwargs["chi_PS"] = kwargs.pop("chi")
 kwargs["convolve_mode"] = "same"
 perm = calculate_permeability(    
@@ -100,9 +102,9 @@ fig = plot_heatmap(fields, r_cut, z_cut, keys = [
     #zmin=0,
     #zmax = 0.7,
     #cmap = cmap_.reversed(),
-    cmap = cmap_,
-    zmin=vmin,
-    zmax = vmax,
+    #cmap = cmap_,
+    #zmin=vmin,
+    #zmax = vmax,
 
     )
 #fig.savefig(f"fig/free_energy/free_energy_{chi=}_{chi_PC=}_{d=}.svg")
