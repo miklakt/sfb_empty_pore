@@ -400,14 +400,14 @@ The problem of finding the total resistance of two semi-infinite solution reserv
 
 %COMMENT RR: In the below sentence, can we calrify what we mean with 'equipotential'?
 
-To this end, we consider a set of approximate equipotential surfaces $\psi(r,z)=\text{const}$ foliating the space available for colloid flow: inside the pore, the surfaces are taken as  discs of radius $r_{\text{p}}$ normal to the pore axis; outside the pore, we use oblate half-spheroids taken from the Rayleigh solution \cite{Strutt1878} (Figure~\ref{fig:resistivity_profile}a).
+To this end, we consider a set of approximate equipotential surfaces $\psi(r,z)=\text{const}$ foliating the space available for colloid flow: inside the pore, the surfaces are taken as  discs of radius $r_{\text{p}}$ normal to the pore axis; outside the pore, we use oblate hemispheroids taken from the Rayleigh solution \cite{Strutt1878} (Figure~\ref{fig:resistivity_profile}a).
 Analogously to a set of resistors connected in parallel, the total conductivity of any layer between two adjacent equipotential surfaces is obtained by integration of local conductivities over the layer. Within the pore, $|z|\leq L/2$, the result is given by
 \begin{equation}
 \varrho_{\text{int}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} \rho^{-1}(r,z) r \, dr
 \label{eq:varrho1}
 \end{equation}
 
-In the exterior region, $|z| >L/2$, the expression is modified to integrate over the aforementioned half-spheroids:
+In the exterior region, $|z| >L/2$, the expression is modified to integrate over the aforementioned hemispheroids:
 \begin{equation}
     \begin{gathered}
         \varrho_{\text{ext}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} \rho^{-1}\left( r'(r,z), z'(r,z) \right)  \tilde{h} (r,z) dr\\
@@ -420,6 +420,19 @@ In the exterior region, $|z| >L/2$, the expression is modified to integrate over
 \label{eq:varrho2}
 \end{equation}
 where $r'(r,z) , z'(r,z)$ are the functions parameterizing the equipotential surfaces, and $h_r$, $h_{\theta}$ and $h_z$ are the corresponding Lam\'e coefficients (see Supplementary Methods 7-8). In the case of a homogeneous brush considered here, the function $\varrho_{\text{ext}}^{-1}(z)$ is even.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.48\linewidth]{fig/resistitance_integration_miniature.png}
+    \caption{%
+    Integration scheme for the layer resistance.  
+    The intrinsic orthogonal curvilinear coordinates are defined by equipotential surfaces, $\psi(r,z)=\text{const}$, and the flux lines $\mathbf{j}$.  
+    A layer between two adjacent equipotential surfaces with a thickness $\text{d}z$ along the central axis has resistance $\varrho_{\text{int}}\text{d}z$ inside the pore ($|z|<L/2$, blue shading) and $\varrho_{\text{ext}}\text{d}z$ in the exterior region (red shading).  
+    The red rectangle illustrates the local conductivity element at $(r',z')$ within the exterior layer.  
+    The parametrisation $(r'(r,z),\,z'(r,z))$ traces the integration path and maps the curvilinear coordinates back to the original cylindrical coordinates $(r,z)$, as indicated by the red arrows.%
+    }
+    \label{fig:integration_scheme}
+\end{figure}
 
 On the other hand, since the consecutive layers are connected in series, their total resistance can be found by appropriate integration:
 \begin{equation}
@@ -443,7 +456,7 @@ Conversely, a brush under good or $\theta$-solvent conditions produces swollen f
 
 \begin{figure}
     \centering
-    \includegraphics[width = 5cm]{fig/resistitance_components.png}
+    \includegraphics[width = 0.5 \linewidth]{fig/resistitance_components.png}
     \caption{
     \textbf{(a)} Special orthogonal curvilinear coordinate system aligned with the flux density $\bm{j}$ stream surfaces (radial coordinate) and level sets of the potential function $\psi$ (axial coordinate).
     Red lines correspond to constant values of the axial coordinate; gray lines are tangential to the flux density field and correspond to constant values of the radial coordinate.
@@ -527,7 +540,7 @@ This condition corresponds to facilitated transport with a total resistance abou
 \end{figure}
 
 The map illustrates several salient features of the diffusion process.
-Outside the region of the pore and polymer fringes, the colloid concentration profile is as expected for plain solution: the concentration rapidly approaches the respective bulk concentrations of the semi-infinite reservoirs, $c(z = -\infty) = \Delta c$ and $c(z = +\infty) = 0$, and the equiconcentration surfaces near the pore entrance ($c/\Delta c$ between 0.92 and 0.97) and exit ($c/\Delta c$ between 0.08 and 0.03) form a symmetric set of oblate half-spheroids.
+Outside the region of the pore and polymer fringes, the colloid concentration profile is as expected for plain solution: the concentration rapidly approaches the respective bulk concentrations of the semi-infinite reservoirs, $c(z = -\infty) = \Delta c$ and $c(z = +\infty) = 0$, and the equiconcentration surfaces near the pore entrance ($c/\Delta c$ between 0.92 and 0.97) and exit ($c/\Delta c$ between 0.08 and 0.03) form a symmetric set of oblate hemispheroids.
 Inside the pore, the flux lines run almost parallel to the pore axis.
 
 The most notable observation is that the colloid concentrations substantively exceed $\Delta c$ near the pore entrance (by a factor of $\sim30$) and inside the pore (by a factor  of $\sim8$.
