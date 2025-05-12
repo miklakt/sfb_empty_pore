@@ -301,18 +301,20 @@ def tau_from_nc_ratio(conc_ratio, volume_ratio, time):
     tau = time/np.log(r)
     return tau
 
-def estimate_protein_diameter(MW_kDa, density=1):
-    # NA = 6.022e23
-    # # Partial specific volume (cm^3/g)
-    # v_bar = 1/density
-    # mw_g_per_mol = MW_kDa * 1000.0
-    # mass_one_molecule = mw_g_per_mol / NA
-    # volume_cm3 = mass_one_molecule * v_bar
-    # volume_nm3 = volume_cm3 * 1.0e21
-    # radius_nm = ((3.0 * volume_nm3) / (4.0 * np.pi)) ** (1.0 / 3.0)
-    # diameter_nm = 2.0 * radius_nm
-    diameter_nm = 0.066*(MW_kDa*1000)**(0.37)*2
+def estimate_protein_diameter(MW_kDa, density=1.1):
+    NA = 6.022e23
+    # Partial specific volume (cm^3/g)
+    v_bar = 1/density
+    mw_g_per_mol = MW_kDa * 1000.0
+    mass_one_molecule = mw_g_per_mol / NA
+    volume_cm3 = mass_one_molecule * v_bar
+    volume_nm3 = volume_cm3 * 1.0e21
+    radius_nm = ((3.0 * volume_nm3) / (4.0 * np.pi)) ** (1.0 / 3.0)
+    diameter_nm = 2.0 * radius_nm
+    #diameter_nm = 0.066*(MW_kDa*1000)**(0.37)*2
     return diameter_nm
+#%%
+#experimental_data["d"] = estimate_protein_diameter(experimental_data["MM"])
 #%%
 #yeast NPC
 nucleus_volume_ = 4.8 #fl
@@ -331,7 +333,7 @@ experimental_data_2["d"] = experimental_data_2["Rg"]*2
 
 experimental_data_2["eta"] = experimental_data_2.apply(lambda _: eta_from_d(_["D"], _["d"]), axis =1)
 
-experimental_data_2["d_est"] = estimate_protein_diameter(experimental_data_2["MM"])
+experimental_data_2["d"] = estimate_protein_diameter(experimental_data_2["MM"])
 #%%
 experimental_data_3["tau"] =  experimental_data_3.apply(lambda _: tau_from_nc_ratio(_["NC"], nucleus_volume_/cytoplasm_volume_, 1*60*60), axis =1)
 experimental_data_3["d"] = estimate_protein_diameter(experimental_data_3["MM"])
