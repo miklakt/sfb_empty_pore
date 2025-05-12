@@ -265,21 +265,21 @@ The local osmotic pressure (normalized by $k_\text{B} T$) is calculated from the
     \end{aligned}
     \label{eq:osmotic}
 \end{equation}
-where
+where 
 $$
 f\{\phi(r,z)\}=(1-\phi(r,z))\ln(1-\phi(r,z)) +\chi_{\text{PS}}\phi(r,z)(1-\phi(r,z))
 $$
 is the mean-field Flory expression for the interaction free energy per unit volume of the polymer solution of concentration (volume fraction) $\phi(r,z)$.
 As long as the osmotic pressure inside the brush is positive, $\Delta F_{\text{osm}}$ is also positive and provides a dominant contribution for sufficiently large particles.
 
-\begin{equation}
-    \gamma (r,z)= \frac{1}{6}(\chi_{\text{ads}} - \chi_{\text{ads}}^{\text{crit}})\phi^{\ast}(r,z),
+The interfacial contribution, $\Delta F_{\text{sur}}$, is proportional to the colloid surface area, with the surface tension $\gamma (r,z)$ approximated as
+\begin{gather}
+     \gamma (r,z)= \frac{1}{6}(\chi_{\text{ads}} - \chi_{\text{ads}}^{\text{crit}})\phi^{\ast}(r,z),
     \label{eq:chi_ads} 
-\end{equation}
-$$
-\text{with } \chi_{\text{ads}} = \chi_{\text{PC}} - \chi_{\text{PS}}(1-\phi^{\ast}), \text{ and } \phi^{\ast}(r,z)= (b_{0} + b_{1}\chi_{\text{PC}})\phi(r,z).
-$$
-
+    \\
+    \text{with } \chi_{\text{ads}} = \chi_{\text{PC}} - \chi_{\text{PS}}(1-\phi^{\ast}), \text{ and } \phi^{\ast}(r,z)= (b_{0} + b_{1}\chi_{\text{PC}})\phi(r,z).
+    \nonumber
+\end{gather}
 Here $\gamma$ is the change in the free energy of a unit area upon replacement of a contact of the colloid with solvent by a contact with a polymer solution of concentration $\phi(r,z)$.
 The coefficients $b_0$ and $b_1$ are parameters that account for depletion or accumulation of the polymer in the vicinity of the colloid surface (Supplementary Methods 4-5).
 
@@ -438,63 +438,78 @@ Conversely, a brush under good or $\theta$-solvent conditions produces swollen f
 
 
 %%%%%%%%%%
-\subsection{An attractive polymer filling dramatically enhances colloid fluxes through the pore}
+\subsection{An attractive polymer filling enhances colloid fluxes through the pore}
 %%%%%%%%%%
 
 \begin{figure}
     \centering
     \includegraphics[width = 5cm]{fig/resistitance_components.png}
     \caption{
-    \textbf{(a)} 
-    Special orthogonal curvilinear coordinate system aligned with the flux density $\bm{j}$ stream surfaces (radial coordinate) and level sets of the potential function $\psi$ (axial coordinate).
+    \textbf{(a)} Special orthogonal curvilinear coordinate system aligned with the flux density $\bm{j}$ stream surfaces (radial coordinate) and level sets of the potential function $\psi$ (axial coordinate).
     Red lines correspond to constant values of the axial coordinate; gray lines are tangential to the flux density field and correspond to constant values of the radial coordinate.
     The lines define bodies of revolution along the $z$-axis; the angular coordinate is not shown.
     In the exterior of the pore, constant radial coordinates are confocal hyperboloids of revolution, constant axial coordinates are confocal oblate spheroids, and constant angular coordinates are half-planes.
-    In the interior of the pore (green non-hatched fill), the coordinate system is equivalent to the cylindrical coordinate system.
-    Inside the pore lumen (green shading) the system reduces to standard cylindrical coordinates; the angular coordinate is not shown.  
-    \textbf{(b)} Interior resistance $R_{\text{int}}$ (dot-dashed) and exterior resistance $R_{\text{ext}}$ (dashed) versus polymer-colloid interaction strength $\chi_{\text{PC}}$ for a good solvent ($\chi_{\text{PS}} = 0.3$) and a poor solvent ($\chi_{\text{PS}} = 0.7$).  
-    The total resistance $R = R_{\text{int}} + R_{\text{ext}}$ appears as solid lines.  
-    Reference values for a bare pore are marked by horizontal red lines: $R_{\text{ext}}^{0}$ for an infinitely thin membrane (dashed) and the corresponding value for a membrane of thickness $L$ (solid).  
-    Pore and brush parameters match those in Figure~\ref{fig:colloid_transport}; the colloid diameter is $d = 8$.%
+    In the pore interior (green shading), the system reduces to standard cylindrical coordinates. 
+    %COMMENT RR: I found the description of panel a quite complex. Can it be simplified, and rendered coherent with the main text?
+    \textbf{(b)} Interior ($R_{\text{int}}$), exterior ($R_{\text{ext}}$) and total ($R = R_{\text{int}} + R_{\text{ext}}$) resistance (all normalized by the visocity of the solvent $\eta_\text{S}$, and encoded by line type as indicated) vs polymer-colloid interaction strength $\chi_{\text{PC}}$ for a good solvent ($\chi_{\text{PS}} = 0.3$, in blue) and a poor solvent ($\chi_{\text{PS}} = 0.7$, in grey).
+    The exterior $R_{\text{ext}}^{0}$ and total $R_0$ resistances for the empty pore are also shown (red lines of matching type).  
+    Pore and brush parameters are as given in Figure~\ref{fig:colloid_transport}; $d = 8$.
     }
     \label{fig:resistivity_profile}
 \end{figure}
 
-As noted in the previous section, integrating the layer resistance $\varrho(z)$ (per unit thickness as measured along the pore axis) yields the exterior and interior contributions, Eqs.~(\ref{R_ext}) and~(\ref{R_int}), whose sum gives the total resistance via Eq.~(\ref{eq:R_tot_tot}).  
-Because the grafted brush extends both inside the pore and into the surrounding solution, it modifies both $R_{\text{int}}$ and $R_{\text{ext}}$.
-
-As the polymer-colloid attraction weakens (increasing $\chi_{\text{PC}}$), the interior resistance $R_{\text{int}}$ rises sharply and soon dominates the overall resistance ($R_{\text{int}}\gg R_{\text{ext}}$, so $R \approx R_{\text{int}}$); see the steep dot-dashed curves in Figure \ref{fig:resistivity_profile}b.
-Lowering the solvent quality (increasing $\chi_{\text{PS}}$) reduces $\chi_{\text{ads}}$ and shifts the entire $R(\chi_{\text{PC}})$ curve toward larger (less negative) $\chi_{\text{PC}}$ values; put differently, the same resistance is now reached at weaker polymer-colloid interaction strength.
-When the polymer is highly attractive -- either through poorer solvent (larger $\chi_{\text{PS}}$) or stronger polymer-colloid affinity (more negative $\chi_{\text{PC}}$) -- the interior "short-circuits" ($R_{\text{int}}\to 0$) and the total resistance is set by the exterior region ($R \approx R_{\text{ext}}$).
-
-Reducing polymer attraction increases the exterior resistance $R_{\text{ext}}$.
-For long pores the interior term dominates, whereas for shorter pores the two contributions are comparable.
-In a poor solvent (large $\chi_{\text{PS}}$, see Figure \ref{fig:resistivity_profile}b) the polymer remains confined to the lumen, so $R_{\text{ext}}$ becomes nearly independent of $\chi_{\text{PC}}$ and approaches the bare value $R_{\text{ext}}^{0}$ once no polymer protrudes into the exterior solution.
-
-Notably, as the polymer-colloid attraction grows stronger (that is, as $\chi_{\text{PC}}$ becomes more negative), the $R_{\text{ext}}(\chi_{\text{PC}})$ curve flattens and reaches a plateau. 
-This plateau lies slightly below the exterior resistance of a bare pore, and approaches the resistance of a semi-infinite solution to an ideally absorbing half-sphere
-\begin{equation}
-    R_{\text{ext}} \to R_{\text{dome}}^{-1} = D_0 \pi r_{\text{dome}} < R_{\text{ext}}^0
-    \label{eq:r_dome}
-\end{equation}
-where $r_{\text{dome}}$ is equivalent radius of the fringe with sufficiently negative insertion free energy $\Delta F \ll 0$.
-
-Ultimately, the dome radius $r_{\text{dome}}$ is governed by solvent quality. In a good solvent the brush swells and extends farther into the surrounding solution (Figure \ref{fig:phi_hm_grid}); when the polymer-colloid affinity is strong (small $\chi_{\text{PC}}$), this produces a larger region with strongly negative insertion free energy ($\Delta F \ll 0$). As a result, the $R_{\text{ext}}(\chi_{\text{PC}})$ plateau is lower in the good-solvent case ($\chi_{\text{PS}} = 0.3$) than in the poor-solvent case ($\chi_{\text{PS}} = 0.7$), where the brush is deswollen.
-
-Colloid size $d$ also has a minor effect: larger colloids meet the protruding brush at greater centre-to-pore distances, effectively enlarging $r_{\text{dome}}$.
-Interestingly, this effect is opposite to the volume exclusion due to the interference between the colloid and the membrane.
-
-Taken together, these effects mean that strongly attractive particles can achieve diffusive fluxes through a polymer-filled pore that exceed the bare-pore limit, as indicated by the segments of the $R(\chi_{\text{PC}})$ curves in Figure \ref{fig:resistivity_profile}b that fall below the solid horizontal red line marking the bare-pore resistance $R_{0}$.
+Figure~\ref{fig:resistivity_profile}b visualizes the relative contributions of the pore interior ($R_{\text{int}}$) and exterior ($R_{\text{ext}}$) to the total resistance as a function of the polymer-colloid attraction $\chi_\text{PC}$,
+for a selected colloid size ($d = 8$) in a good solvent ($\chi_\text{PS} = 0.3$) and a poor solvent ($\chi_\text{PS} = 0.7$).
+A striking feature is that attracted colloids can achieve diffusive fluxes through a polymer-filled pore that exceed the limit of the empty pore, as indicated by the segments of the $R(\chi_{\text{PC}})$ curves that fall below the solid horizontal red line marking the empty-pore resistance $R_{0}$.
 This result may at first appear surprising, given that the polymer medium is expected to slow down the diffusion of colloids.
-However, this slowing down is counteracted by the attractive potential of the polymer meshwork, which reduces local resistivity according to the exponential factor in Eq~\ref{eq:rho}.
-The pore's interior resistance can be driven practically to zero by increasing the polymer-colloid attraction, but the exterior resistance $R_{\text{ext}}$ always retains a finite contribution from the semi-infinite reservoir, setting an absolute lower bound on the total resistance.
+However, this slowing down is counteracted by the attractive potential of the polymer meshwork, which reduces local resistivity according to the exponential factor in Eq.~(\ref{eq:rho}).
+
+The reduced local resistivity has pronounced consequences for diffusive transport in both the interior and the exterior of the pore.
+Figure~\ref{fig:resistivity_profile}b demonstrates that the interior resistance $R_{\text{int}}$ can be driven practically to zero by increasing the polymer-colloid attraction (decreasing $\chi_\text{PC}$) below a certain threshold.
+Compared to an empty pore (Eq.~(\ref{eq:resistance})) this short-circuiting effect alone entails a reduction in the resistance, by a factor of up to $R^0_{\text{int}}/R^0_{\text{ext}}+1 \approx 2/\pi \times L / r_{\text{p}} + 1$.
+For the pore and colloid considered here, this represents an approximately 3-fold reduction, to a level marked by the dashed horizontal red line in Figure~\ref{fig:resistivity_profile}b which equals the contribution of convergent flow to the empty-pore resistance ($R^0_\text{ext}$).
+The reduction would be even stronger for longer pores ($L\gg r_p$), and for larger colloids that increase the effective pore length and decrease the effective pore diameter.
+
+The exterior resistance $R_{\text{ext}}$, on the other hand, always retains a finite contribution from the diffusive fluxes in the semi-infinite reservoir, setting an absolute lower bound on the total resistance.
+The reduction of $R_{\text{ext}}$ below $R^0_\text{ext}$ evidenced in Figure~\ref{fig:resistivity_profile}b is due attractive brush fringes that protrude and faciliate diffusive transport outside the pore.
+The magnitude of this effect increases with the extension of the polymer cap, and explains why the minimal attainable resistance increases with decreasing solvent quality (Figure~\ref{fig:phi_hm_grid}).
+Approximating the brush fringes as a hemisphere cap with radius $r_\text{cap}$, the plateau conditions are equivalent to the doubled resistance of an ideally absorbing hemisphere, $R_\text{ext}^\text{min} = 1 / (D_0 \pi r_\text{cap})$.
+\todo{We draw on the electrostatic analogy of a grounded, perfectly conducting sphere in a uniform field.
+In a half-space, a hemisphere has twice the resistance of a full sphere, as it is accessible from only one side.
+Since the membrane symmetrically divides space and transport must pass through both hemispheres in series, the total resistance is four times that of a full sphere in an unbounded medium.}
+Attractive brush fringes thus entail a reduction in resistance by a factor of up to $R_\text{ext}^0 / R_\text{ext}^\text{min} = \pi/2 \times r_\text{cap}/r_\text{p}$.
+In good solvent ($\chi_\text{PC} = 0.3$), for example, the cap radius (along the pore axis) is comparable to the pore diameter (Figure~\ref{fig:phi_hm_grid}), leading to the 3.3-fold reduction of the external resistance, and a cumulative 10-fold reduction of the total resistance, compared to the empty pore (Figure~\ref{fig:resistivity_profile}b).
+As the solvent quality decreases the cap size shrinks (Figure \ref{fig:phi_hm_grid}), with a correspondingly reduced benefit on pore conductivity, as illustrated for $\chi_\text{PC} = 0.7$.
+For even poorer solvents, the cap and its benefit disappear entirely ($R_\text{ext} = R_\text{ext}^0$; not shown).
+
+
+%%%%%%%%%%
+\subsection{Polymer-filled mesopores effectively gate colloids by their attraction to the polymer}
+%%%%%%%%%%
+
+Figure~\ref{fig:resistivity_profile}b also illustrates how the total resistance of the pore varies with the colloid's affinity to the polymer brush.
+As expected, increasing the polymer-colloid attraction strength (i.e., more negative $\chi_{\text{PC}}$) results in a monotonic decrease in the pore's total resistance, since the interfacial term in the insertion free energy becomes more negative, thereby increasing the local conductivity $\rho^{-1}$.
+
+Most notable is a sharp transition from a regime of facilitated permeation ($R < R_0$) to a regime of impeded permeation ($R > R_0$).
+The regime of impeded permeation is dominated by the internal resistance.
+It exhibits high selectivity with respect to the polymer-colloid interaction strength, and a mostly very high total resistance and thus low colloid flux, both appreciable in Figure~\ref{fig:resistivity_profile}b as a sharp increase in $R$ over a relatively modest $\chi_{\text{PC}}$ range.
+In contrast, the region of facilitated permeation is dominated by the external resistance. 
+It exhibits high colloid fluxes but rather low (if any) $\chi_{\text{PC}}$ selectivity, as demonstrated by the previously analysed plateau.
+Thus, the transition between the two regimes of transport defines the condition for sharp colloid gating, with remarkably efficient transport in the regime limited by external resistance and effective blockage in the regime limited by internal resistance.
+
+In this context, the solvent quality can be seen as a regulator of the polymer-colloid interaction level for gating. 
+Lowering the solvent quality (increasing $\chi_{\text{PS}}$) reduces $\chi_{\text{ads}}$ and shifts the entire $R(\chi_{\text{PC}})$ curve toward larger $\chi_{\text{PC}}$ values.
+Thus, a poorer solvent extends the range of facilitated permeation towards more  weakly interacting colloids.
+
+The here-presented trends are qualitatively correct also for colloids that are smaller or larger than the $d=8$ colloid considered here.
+Naturally, the gating effect will be rather moderate for small colloids, yet even sharper for larger colloids.
 
 
 %%%%%%%%%%
 \subsection{High colloid flux implies colloid enrichment in the pore}
 %%%%%%%%%%
 
-Colloid concentration profiles under stationary flux conditions can be found by numerically solving the Smoluchowsky equation (\ref{eq:Smoluch}) with $\frac{\partial c(r,z)}{\partial t} = 0$  (see Supplementary Information, Section 8). 
+Colloid concentration profiles under stationary flux conditions can be found by numerically solving the Smoluchowsky equation (\ref{eq:Smoluch}) with $\frac{\partial c(r,z)}{\partial t} = 0$  (see Supplementary Method 9). 
 
 Figure~\ref{fig:colloid_concentration} maps the steady-state colloid concentration across a polymer-filled pore with colloid size $d = 12$ and polymer-colloid interaction strength $\chi_{\text{PC}} = -1.5$ in a good solvent ($\chi_{\text{PS}} = 0.3$).
 This condition corresponds to facilitated transport with a total resistance about 10-fold lower than a bare pore ($R \approx R_0/10$).
@@ -504,46 +519,45 @@ This condition corresponds to facilitated transport with a total resistance abou
     \includegraphics[width=0.9\linewidth]{fig/streamlines.png}
     \caption{
     Color map of the steady-state colloid concentration, normalized by the bulk concentration in the source compartment $\Delta c$ as a function of $z$ and $r$.
-    Isoconcentration surfaces are shown with contours for values from 0.99 to 0.90 and from 0.10 to 0.00 in steps of 0.01.
+    Isoconcentration surfaces are shown with contours for values from 0.97 to 0.90, and from 0.10 to 0.03, in steps of 0.01.
     The flux is represented by streamlines marked with small arrows, indicating the average colloid trajectory.
-    Pore and brush parameters are the same as in Figure~\ref{fig:colloid_transport}, $d = 12$, $\chi_{\text{PC}} = -1.5$ and $\chi_{\text{PS}} = 0.3$.
+    Pore and brush parameters are the same as in Figure~\ref{fig:colloid_transport}; $d = 12$, $\chi_{\text{PC}} = -1.5$ and $\chi_{\text{PS}} = 0.3$.
     }
     \label{fig:colloid_concentration}
 \end{figure}
 
 The map illustrates several salient features of the diffusion process.
-Outside the region of the pore and polymer fringes, the colloid concentration profile is as expected for plain solution: the concentration rapidly approaches the respective bulk concentrations of the semi-infinite reservoirs, $c(z = -\infty) = \Delta c$ and $c(z = +\infty) = 0$, and the equiconcentration surfaces near the pore entrance ($c/\Delta c$ between 0.93 and 0.97) and exit ($c/\Delta c$ between 0.07 and 0.03) form a symmetric set of oblate half-spheroids.
+Outside the region of the pore and polymer fringes, the colloid concentration profile is as expected for plain solution: the concentration rapidly approaches the respective bulk concentrations of the semi-infinite reservoirs, $c(z = -\infty) = \Delta c$ and $c(z = +\infty) = 0$, and the equiconcentration surfaces near the pore entrance ($c/\Delta c$ between 0.92 and 0.97) and exit ($c/\Delta c$ between 0.08 and 0.03) form a symmetric set of oblate half-spheroids.
 Inside the pore, the flux lines run almost parallel to the pore axis.
 
-The most notable observation is that the colloid concentrations strongly exceeds $\Delta c$ near the pore entrance (by a factor of $\sim30$) and inside the pore (by a factor  of $\sim8$.
+The most notable observation is that the colloid concentrations substantively exceed $\Delta c$ near the pore entrance (by a factor of $\sim30$) and inside the pore (by a factor  of $\sim8$.
 This effect is caused by the negative insertion free energy in the space occupied by the polymer brush.
 At equilibrium (i.e., with vanishing fluxes), the partitioning would amount to $c_{\text{eq}}/\Delta c = \exp\left( -\Delta F \right)$.
 In the steady state (i.e., with non-vanishing fluxes), the colloid concentration is reduced but approaches the equilibrium concentration as the insertion free energy becomes largely negative ($c/\Delta c \to c_{\text{eq}}/\Delta c$).
 
 The presented quantitative results are only valid for sufficiently low bulk concentrations $\Delta c$, as our model disregards any colloid crowding effects.
-When this crowding is accounted for, the steady-state colloid concentration will be systematically lower.
-
+When this crowding is accounted for, the steady-state colloid concentrations in the brush will be systematically lower.
 
 
 %%%%%%%%%%
-\subsection{Polymer-filled mesopores effectively gate colloids by their size and their attraction to the polymer}
+\subsection{Polymer-filled mesopores effectively gate colloids by their size}
 %%%%%%%%%%
+
 \begin{figure}
     \centering
     \includegraphics[width = 0.5\linewidth]{fig/permeability_on_d.png}
     \caption{
     \textbf{(a)} 
-    Total pore resistance $R$, normalized by the viscosity of the solvent $\eta_\text{S}$, as a function of colloid size $d$ for selected polymer-colloid interaction strengths ($\chi_{\text{PC}}$, as indicated with colored lines) at a fixed solvent strength $\chi_{\text{PS}} =0.5$.
+    Pore resistance $R$, normalized by the viscosity of the solvent $\eta_\text{S}$, as a function of colloid size $d$ for selected polymer-colloid interaction strengths ($\chi_{\text{PC}}$, as indicated with colored lines) at a fixed solvent strength $\chi_{\text{PS}} =0.5$.
     \textbf{(b)}
-    Total pore resistance $R$, normalized by the viscosity of the solvent $\eta_\text{S}$, as a function of colloid size $d$ for selected solvent strength parameters ($\chi_{\text{PS}}$, as indicated with colored lines) at a fixed polymer-colloid interaction strengths $\chi_{\text{PC}} = -1.25$. 
-    \\
-    The resistance of a bare pore $R_{0}$ without polymers (black thick line) serves as a reference value.
+    Normalized pore resistance $R$ as a function of colloid size $d$ for selected solvent strengths ($\chi_{\text{PS}}$, as indicated with colored lines) at a fixed polymer-colloid interaction strengths $\chi_{\text{PC}} = -1.25$. 
+    The normalized resistance of an empty pore $R_{0}$ (black thick lines) serves as a reference.
     Pore and brush parameters are as given in Figure~\ref{fig:colloid_transport}. 
     }
     \label{fig:R_vs_d}
 \end{figure}
 
-Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with colloid size at a different combination of interaction parameters, a fixed solvent strength, $\chi_{\text{PS}}$ in a panel (a), or at a fixed polymer-colloid interaction strength, $\chi_{\text{PC}}$ in panel (b).
+Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with colloid size at a fixed solvent strength (panel a, $\chi_{\text{PS}} = 0.5$) or at a fixed polymer-colloid interaction strength (panel b, $\chi_{\text{PC} = -1.25}$.
 
 There is a trivial effect of total resistance increasing with particle size. First, according to the Stokes-Einstein relation, $\frac{\partial \ln D_0^{-1}}{\partial \ln d} = 1$. Second, interference constraints between the impermeable membrane and the spherical particle decrease the effective pore radius and increase the effective membrane thickness.
 \todo{Maybe we do need to write this as an equation to refer to.}
@@ -552,7 +566,7 @@ This effect can be observed in the resistance of a bare pore, $R_0(d)$, which sh
 Naturally, as $d \to 2r_{\text{pore}}$, the pore becomes impermeable to particles, and $R_0 \to \infty$.
 As previously mentioned, additional drag from the pore walls is neglected here, which would otherwise make the dependence even steeper, with a significant divergence for large particles ($d > r_{\text{pore}}$).
 
-Aside from these effects, the parameters influencing the total resistance are the same as those in Eq.~(\ref{eq:rho}), as the total resistance is a result of integration of position-dependent conductivity.
+Aside from these effects, the parameters influencing the total resistance are the same as those in Eq.~(\ref{eq:rho}).
 
 First, polymer filling reduces the diffusion coefficient $D$, as shown in Eq.~(\ref{eq:Rubinstein}), thereby increasing the total resistance of the pore.
 This imposes a stricter-than-Stokesian barrier at larger particle sizes, such that $\frac{\partial \ln D^{-1}}{\partial \ln d} \approx 3$.
@@ -647,6 +661,72 @@ Because the total resistance is bounded below by $R_{\text{ext}}$, the parabolic
 The onset of this linear regime, indicated by \raisebox{0.25em}{\scriptsize$\uparrow$}(c) in Figure~\ref{fig:R_vs_d}a, marks the capped minimum.  
 Beyond some particle size, further increases in $d$ amplify the osmotic penalty and membrane-particle interference, so the curve leaves the linear section and rises along the upward branch of the original parabola.
 
+%%%%%%%%%%
+\subsection{Experiments of colloid transport through nuclear pores validate the theoretical predictions}
+%%%%%%%%%%
+
+To test how well our theory predicts the experimental reality, we analysed literature data pertinent to colloid transport across nuclear pores.
+
+The estimated distance between nuclear pore complexes (NPCs) in the nuclear envelope is approximately 10 times larger than the pore diameter \cite{Yang2004, Daigle2001, Feldherr1984, Kubitscheck2000}). At such distances, transport across neighbouring NPCs is not mutually interfering \cite{Fabrikant1985}, as can be appreciated from the iso-concentration lines in Figure~\ref{fig:colloid_concentration}. Experimentally measured transport rates, normnalised against the number of pores, therefore can be directly compared with our theoretical predictions.  
+
+It is well-known that colloids with affinity for the disordered nucleoporin FG domains that fill the NPC (such as importins and exportins) are enriched in or near NPCs \cite{Beck2007, Gruenwald2010, Tu2011}, and in microscopic droplets, macroscopic hydrogels and thin films assembled from pure FG domains.
+Moreover, high concentrations of transport factors are essential for effective transport through the pore \cite{Lowe2015}.
+These observations fully align with our predictions that the accumulation of colloids in the pore is required for facilitated transport (Figure~\ref{fig:colloid_concentration}).
+%Need to check and add references.
+
+As the example pore geometry and polymer density in Figure~\ref{fig:colloid_transport} were modelled to represent a NPC (Supporting Method 1), we can directly compare our theoretical predictions with experimental data. To this effect, the effective statistical segment length of disordered polypeptide chains was taken to be $a$ = 0.8 nm. 
+%Need to check and add references.
+
+Mohr et al. quantified the rates of diffusive transport across NPCs for non-sticky colloids of varying size.
+Cytosolic proteins had been washed out in the experiments, and nuclear pores were filled with a plain FG domain brush without transport factors, closely corresponding to the assumptions of our simplified model.
+Figure~\ref{fig:NPC_comparison}a compares these experimental results with the theoretical predictions of our model.
+To compare theory and experiment, we estimated the effective solvent strength in the NPC to be close to $\theta$-solvent ($\chi_{\text{PS}} = 0.5$), consistent with varying yet generally moderate levels of 'cohesiveness' observed for FG domains.
+We indicate the theoretical curves for perfectly inert colloids with $\chi_{\text{PCS}} = 0$ and for weakly attractive colloids with $\chi_{\text{PCS}} = -0.5$ as reasonable boundaries for non-sticky colloids. 
+The only adjustable fitting parameter in our model was the prefactor $\alpha$ in the scaling-based expression for the diffusion coefficient, Eq.~(\ref{eq:Rubinstein}).
+It is clear that the theory reproduces the experimental trends for the increase in pore resistance with colloid size remarkably well.
+The best fit was obtained with $\alpha = 5.5$ and this value was hence fixed  throughout the paper.
+%Need to checkand add references.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{fig/experimental_inert.png}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{fig/experimental_permeability_on_partitioning.png}
+    \end{subfigure}
+    \caption{
+    Comparison of theoretical predictions with experimental findings for NPCs
+    \textbf{(a)} 
+    Gating of non-sticky colloids by size.
+    Nuclear import rate $k$ vs. hydrodynamic diameter $d$ (symbols) cells measured by Mohr et al. for inert colloids of varying sizes on permeabilized Hela cells.
+    %Need to add reference.
+    Theoretical predictions (lines) are for the pore and brush parameters as given in Figure~\ref{fig:colloid_transport}, $\chi_{\text{PS}} = 0.5$, and $\chi_{\text{PC}} = 0 \text{ and } -0.5$ (as indicated).
+    The best fit shown here was obtained with $\alpha = 5.5$.
+    The predicted transport rates across a bare pore are also shown, for reference.
+    \textbf{(b)} 
+    Gating of colloids by their affinity.
+    Nuclear import rate $k$ (obtained as in a) vs. partition coefficient $PC$ into phase-separated droplets of pure FG domains (Nup98A - stars; Nup116 - lozenges) measured by Frey et al. for of a range of green fluorescent protein variants.
+    Theoretical predictions (lines) represent the limits of a homogeneously attractive colloid surface (blue line) vs. $\Delta F_\text{sur}$ concentrated in a single sticky patch (orange line).
+    The pore and brush parameters are as given in (a), except for $\chi_\text{PC}$ which was linked to $PC$.
+    }
+    \label{fig:NPC_comparison}
+\end{figure}
+
+Using an approach similar to Mohr et al., Frey et al. quantified NPC transport rates for a wide range of green fluorescent proteins (GFPs) with surface amino acids mutated to modulate transport from 'superinert' to 'transport factor like'.
+In parallel, the ability of these variants to enrich or deplete in phase-separated droplets of two pure FG domains (Nup98A and Nup116) was quantified (Figure~\ref{fig:NPC_comparison}b).
+This set of experiments enabled the effect of colloid affinity to be tested selectively as the colloid size and shape were effectively constant.
+The transport rate was observed to correlate strongly with the level of GFP enrichment in FG domain phases.
+To recapitulate the correlation between nuclear transport rates $k$ and partition coefficient $PC$ in pure FG domain phases with our theory, we computed $PC = \exp(-\Delta F)$ as a function of $\chi_\text{PC}$ in a homogeneous polymer phase.
+To this end the solvent strengths $\chi_\text{PS}$ were estimated independently for each pure FG domain from their respective concentrations in spontaneously phase-separated droplets (Supplementary Methods 10).
+Our idealised assumption of colloids being homogeneously interactive (blue line in Figure~\ref{fig:NPC_comparison}b) reproduced the experimental data for non-sticky and weakly attractive colloids well without any adjustable parameter.
+For more strongly attractive colloids however, this approach overestimated the transport rated by up to an order of magnitude.
+Theoretical prediction assuming the opposite extreme of all surface free energy being concentrated into a single sticky patch (orange line in Figure~\ref{fig:NPC_comparison}b) reproduced the experimental data quite well, suggesting that the presence of localized sticky patches on the colloid surface and the FG domains slows down diffusion and transport.
+Interestingly, this comparison suggests that protein transport across the NPC is not optimised for the highest rate.
+%Need to check and add references.
+
+Taken together, the quantitative agreement between our theory and a range of experimental data for nuclear pore transport with a very limited number of adjustable parameters provides strong validation for the validity of our theory.
+
 
 %%%%%%%%%%
 \section{DISCUSSION}
@@ -701,7 +781,7 @@ Thus, under conditions when colloid transport is limited by the polymer brush (a
 The maximal permeability of the polymer-filled pore is limited by the resistance of the exterior region.
 Whilst strong  polymer-colloid attraction can make the resistance of the pore interior effectively vanish ($R_{\text{int}} \to 0$), this is not the case for the pore exterior, where mass transport in plain solvent always provides a non-vanishing resistance.
 Under poor solvent conditions  polymers are typically confined to the pore interior, and the total resistance is bounded from below by the Rayleigh resistance  $R \geq R_{\text{ext}}^{0} = \frac{1}{2 D_0 r_{\text{p}}}$.
-Polymer caps emerge outside the pore under good or $\theta$-solvent conditions decreasing the path through plain solvent, and thereby can reduce the total resistance even further. Approximating the caps as half-spheres with radius $r_{\text{ext}}$, and assuming them highly attractive, leads to $R_{\text{ext}} \to \frac{1}{ \pi D_0 r_{\text{ext}}}$.
+Polymer caps emerge outside the pore under good or $\theta$-solvent conditions decreasing the path through plain solvent, and thereby can reduce the total resistance even further. Approximating the caps as hemispheres with radius $r_{\text{ext}}$, and assuming them highly attractive, leads to $R_{\text{ext}} \to \frac{1}{ \pi D_0 r_{\text{ext}}}$.
 The maximum additional reduction in total resistance due to the presence of attractive polymer caps thus scales as $\frac{R_{\text{ext}}^{0}}{R_{\text{ext}}} \to \frac{\pi r_{\text{ext}}}{2 r_{\text{p}}}$.
 Hence, a large polymer cap is beneficial for transport rates, although even a moderate cap size can lead to substantial gain (e.g., approximately 3-fold for $r_{\text{ext}}\simeq L = 2r_{\text{p}}$ as suggested by Fig.\ref{fig:phi_hm_grid}).
 
