@@ -103,6 +103,21 @@ experimental_data=pd.DataFrame(
         "MBP",
         "mCherry"#
     ],
+    "MM":[
+        0.5,
+        1.4,
+        5.8,#external
+        6.5,
+        np.nan,
+        8.5,
+        8.2,
+        13.9,
+        14.2,#external
+        27,
+        37,#https://www.uniprot.org/uniprotkb/P0AG82/entry
+        43,#or 40
+        28,
+    ],
     "stokes_r_nm": [
         0.67,
         0.91,
@@ -170,7 +185,7 @@ experimental_data=pd.DataFrame(
 reference_particle_radius = 1.97#nm
 
 Kuhn_segment = 0.76
-experimental_data["d"] = experimental_data["stokes_r_nm"]*2#/Kuhn_segment*2
+#experimental_data["d"] = experimental_data["stokes_r_nm"]*2#/Kuhn_segment*2
 
 #%%
 #https://doi.org/10.1083/jcb.201601004
@@ -193,6 +208,12 @@ experimental_data_3 = pd.DataFrame(
     }
 )
 
+#https://www.embopress.org/doi/full/10.1093/emboj/20.6.1320
+experimental_data_4 = pd.DataFrame({
+    "Probe":["Large", "Transportin"],
+    "MM":[630, 100],
+    "Translocations" : [28, 65]
+})
 #%%
 def create_interp_func(X, Y, domain=None):
     from scipy.interpolate import CubicSpline
@@ -232,13 +253,41 @@ def k_from_normalized_R(
         V_nucleus,          #fL
         eta=0.00145,        #Pa*s
         T=293,              #K
-        segment_length = 0.76 #nm
+        V_cytoplasm = None,
         ):
     k_B = 1.380649*1e-23   #J/K
     V_nucleus_ = V_nucleus*1e-18   #m^3
     R_ = R_normalized*eta/(k_B * T) #s/m^3
-    k_ = NPC_per_nucleus/V_nucleus_/R_
+    if V_cytoplasm is None:
+        k_ = NPC_per_nucleus/R_*(1/V_nucleus_)
+    else:
+        V_cytoplasm_ = V_cytoplasm*0e-18   #m^3
+        k_ = NPC_per_nucleus/R_*(1/V_nucleus_+1/V_cytoplasm_)
     return k_
+
+def R_from_k(
+        k,                  #s^-1
+        NPC_per_nucleus,
+        V_nucleus,          #fL
+        eta=0.00145,        #Pa*s
+        T=293,              #K
+        V_cytoplasm = None,
+        normalize =True
+    ):
+    k_B = 1.380649*1e-23   #J/K
+    V_nucleus_ = V_nucleus*1e-18   #m^3
+    if V_cytoplasm is None:
+        R_ = NPC_per_nucleus/k*(1/V_nucleus_)
+    else:
+        V_cytoplasm_ = V_cytoplasm*1e-18   #m^3
+        R_ = NPC_per_nucleus/k*(1/V_nucleus_+1/V_cytoplasm_)
+    if normalize:
+        R = R_*k_B*T/eta
+    else:
+        R = R_
+    return R
+
+
 
 def get_k_empty_pore(
         r_p,                #nm
@@ -301,7 +350,7 @@ def tau_from_nc_ratio(conc_ratio, volume_ratio, time):
     tau = time/np.log(r)
     return tau
 
-def estimate_protein_diameter(MW_kDa, density=1.1):
+def estimate_protein_diameter(MW_kDa, density=1.4):
     NA = 6.022e23
     # Partial specific volume (cm^3/g)
     v_bar = 1/density
@@ -313,8 +362,29 @@ def estimate_protein_diameter(MW_kDa, density=1.1):
     diameter_nm = 2.0 * radius_nm
     #diameter_nm = 0.066*(MW_kDa*1000)**(0.37)*2
     return diameter_nm
+
+def estimate_molecular_weight(diameter_nm, density=1.4):
+    """
+    Estimate the molecular weight (in kDa) of a globular protein given its diameter in nanometers.
+    
+    Parameters:
+        diameter_nm (float): Estimated diameter of the protein in nanometers.
+        density (float): Protein density in g/cm^3 (default is 1.1).
+    
+    Returns:
+        float: Estimated molecular weight in kilodaltons (kDa).
+    """
+    NA = 6.022e23  # Avogadro's number
+    v_bar = 1 / density  # cm^3/g
+    radius_nm = diameter_nm / 2.0
+    volume_nm3 = (4.0 / 3.0) * np.pi * radius_nm**3
+    volume_cm3 = volume_nm3 * 1.0e-21
+    mass_one_molecule = volume_cm3 / v_bar
+    mw_g_per_mol = mass_one_molecule * NA
+    mw_kDa = mw_g_per_mol / 1000.0
+    return mw_kDa
 #%%
-#experimental_data["d"] = estimate_protein_diameter(experimental_data["MM"])
+experimental_data["d"] = estimate_protein_diameter(experimental_data["MM"])
 #%%
 #yeast NPC
 nucleus_volume_ = 4.8 #fl
@@ -323,16 +393,11 @@ NPC_per_nucleus_ = 161
 
 NPC_per_nucleus = 2770
 nucleus_volume = 1130#fL
-
 experimental_data_2["tau_renormalized"] = \
     nucleus_volume/NPC_per_nucleus * \
     (nucleus_volume_+cytoplasm_volume_)/(nucleus_volume_*cytoplasm_volume_) *\
-    NPC_per_nucleus_*experimental_data_2["tau"] 
-
-experimental_data_2["d"] = experimental_data_2["Rg"]*2
-
-experimental_data_2["eta"] = experimental_data_2.apply(lambda _: eta_from_d(_["D"], _["d"]), axis =1)
-
+    NPC_per_nucleus_*experimental_data_2["tau"]
+#experimental_data_2["eta"] = experimental_data_2.apply(lambda _: eta_from_d(_["D"], _["d"]), axis =1)
 experimental_data_2["d"] = estimate_protein_diameter(experimental_data_2["MM"])
 #%%
 experimental_data_3["tau"] =  experimental_data_3.apply(lambda _: tau_from_nc_ratio(_["NC"], nucleus_volume_/cytoplasm_volume_, 1*60*60), axis =1)
@@ -351,13 +416,10 @@ x = np.arange(20, 300)
 y = x**3.2/1700
 plt.plot(x,y)
 #%%
-plt.scatter(experimental_data_2["d"], experimental_data_2["tau"])
-plt.scatter(experimental_data_3["d"], experimental_data_3["tau"])
-plt.xscale("log")
-plt.yscale("log")
-# x = np.arange(20, 300)
-# y = x**3.2/1700
-# plt.plot(x,y)
+normalize = False
+experimental_data["R"] = experimental_data.apply(lambda _: R_from_k(_["Influx_rate"], NPC_per_nucleus, nucleus_volume, normalize = normalize), axis = 1)
+experimental_data_2["R"] = experimental_data_2.apply(lambda _: R_from_k(_["tau"]**(-1), NPC_per_nucleus_, nucleus_volume_, V_cytoplasm = cytoplasm_volume_, normalize = normalize), axis = 1)
+experimental_data_3["R"] = experimental_data_3.apply(lambda _: R_from_k(_["tau"]**(-1), NPC_per_nucleus_, nucleus_volume_, V_cytoplasm = cytoplasm_volume_, normalize = normalize), axis = 1)
 # %%
 fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 1, sharex = True)
 if len(chi_PS) == 1:
@@ -600,3 +662,221 @@ plt.tight_layout()
 fig.set_size_inches(3, 3)
 #fig.savefig("fig/experimental_inert.svg")
 # %%
+fig, axs = plt.subplots(ncols = len(chi_PS), sharey="row", nrows = 1, sharex = True)
+if len(chi_PS) == 1:
+    axs_ = [axs]
+else:
+    axs_ = axs
+
+#reference = results.loc[(results.d==6)]
+
+NA = 6.02214076*1e23
+
+for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
+    markers = itertools.cycle(mpl_markers)
+    for chi_PC_, result__ in result_.groupby(by = "chi_PC"):
+        #https://www.embopress.org/doi/full/10.1093/emboj/20.6.1320
+        NPC_per_nucleus = 2770
+        nucleus_volume = 1130#fL
+        eta = 0.00145
+
+        x = estimate_molecular_weight(result__["d"].squeeze()*Kuhn_segment)
+
+        # y = result__.apply(lambda _: k_from_normalized_R(1/_["permeability"], 
+        #                 NPC_per_nucleus, 
+        #                 nucleus_volume,
+        #                 eta = eta,
+        #                 ), axis = 1)
+        
+        k_B = 1.380649*1e-23
+        T=293
+        y = result__["permeability"]**(-1) / (k_B*T/eta) / NA
+        y = y**-1
+        # #y=y/10
+        # x2 = np.linspace(1,12)
+        # y2 = get_k_empty_pore(
+        #             pore_radius*Kuhn_segment,
+        #             wall_thickness*Kuhn_segment,
+        #             x2,
+        #             NPC_per_nucleus,
+        #             nucleus_volume,
+        #             eta=eta,
+        #             )
+        # x2=estimate_molecular_weight(x2) 
+        # ax.plot(
+        #     x2, y2, 
+        #     label = "empty",
+        #     #marker = next(markers),
+        #     #mfc = "none",
+        #     #ms = 3,
+        #     linewidth = 1,
+        #     linestyle = "--",
+        #     color = "black"
+        #     )
+
+       
+        if chi_PC_ in chi_PC_color:
+            plot_kwargs = dict(
+                label = fr"$\chi_{{\text{{PC}}}} = {chi_PC_}$",
+                #label = fr"${chi_PC_:.2f}$",
+                #marker = next(markers),
+                #markevery = 0.5,
+                #markersize = 4,
+            )
+        else:
+            plot_kwargs = dict(
+                linewidth = 0.1,
+                color ="black"
+            )
+
+        ax.plot(
+            x, y, 
+            **plot_kwargs,
+            marker = next(markers),
+            #mfc = "none",
+            ms = 3,
+            linewidth = 0.5,
+            color = "tab:blue"
+            )
+
+        ax.scatter(
+            experimental_data["MM"], 
+            experimental_data["R"]**(-1)*NA, 
+            color = "black", 
+            linewidth = 0.1, 
+            marker = "*", 
+            )
+        
+        ax.scatter(
+            experimental_data_2["MM"], 
+            experimental_data_2["R"]**(-1)*NA, 
+            color = "black", 
+            linewidth = 0.1, 
+            marker = "s", 
+            )
+
+        ax.scatter(
+            experimental_data_3["MM"], 
+            experimental_data_3["R"]**(-1)*NA, 
+            color = "black", 
+            linewidth = 0.1, 
+            marker = "^", 
+            )
+
+        # ax.scatter(
+        #     experimental_data_4["MM"], 
+        #     experimental_data_4["Translocations"], 
+        #     color = "red", 
+        #     linewidth = 0.1, 
+        #     marker = "o", 
+        #     )
+
+    ax.scatter(
+        [], 
+        [], 
+        color = "black", 
+        linewidth = 0.1, 
+        marker = "*", 
+        label ="experimental"
+    )
+
+    reference_probe = "Thioredoxin"
+    # for idx, row in experimental_data.iterrows():
+    #     if row["Probe"] == reference_probe:
+    #         color = "Red"
+    #     else:
+    #         color = None
+    #     ax.text(
+    #         x = row["d"],
+    #         y = row["Influx_rate"],
+    #         s = row["Probe"],
+    #         rotation = 90,
+    #         va = "top",
+    #         ha = "center",
+    #         color = color
+    #     )
+    
+    # ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
+    # x = ref_record["d"].squeeze()
+    # y = ref_record["Influx_rate"].squeeze()
+    # ax.scatter(
+    #     [x], 
+    #     [y], 
+    #     color = "red", 
+    #     linewidth = 0.1, 
+    #     marker = "*", 
+    #     #label =reference_probe
+    # )
+
+    reference_probe = "GFP"
+    ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
+    x = ref_record["MM"].squeeze()
+    y = ref_record["R"].squeeze()**(-1)*NA
+    ax.scatter(
+        [x], 
+        [y], 
+        color = "green", 
+        linewidth = 0.1, 
+        marker = "*", 
+        #label =reference_probe
+    )
+
+    reference_probe = "GFP-HIS"
+    ref_record = experimental_data_2.loc[experimental_data_2["Probe"] == reference_probe]
+    x = ref_record["MM"].squeeze()
+    y = ref_record["R"].squeeze()**(-1)*NA
+    ax.scatter(
+        [x], 
+        [y], 
+        color = "green", 
+        linewidth = 0.1, 
+        marker = "s", 
+        #label =reference_probe
+    )
+
+    reference_probe = "mCherry"
+    ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
+    x = ref_record["MM"].squeeze()
+    y = ref_record["R"].squeeze()**(-1)*NA
+    ax.scatter(
+        [x], 
+        [y], 
+        color = "red", 
+        linewidth = 0.1, 
+        marker = "*", 
+        #label =reference_probe
+    )
+
+    reference_probe = "MBP"
+    ref_record = experimental_data.loc[experimental_data["Probe"] == reference_probe]
+    x = ref_record["MM"].squeeze()
+    y = ref_record["R"].squeeze()**(-1)*NA
+    ax.scatter(
+        [x], 
+        [y], 
+        color = "magenta", 
+        linewidth = 0.1, 
+        marker = "*", 
+        #label =reference_probe
+    )
+
+
+    #ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_title(r"$\chi_{\text{PS}}="+f"{chi_PS_}$")
+    ax.set_xlabel(r"$\sqrt[3]{\text{MM}}, \sqrt[3]{\text{kDa}}$")
+    ax.set_ylim(1e-1,1e6)
+    ax.set_xlim(1,300) 
+
+    ax.grid()
+
+#axs_[0].set_ylabel(r"$R\, [\text{s}/\text{m}^3]$")
+axs_[0].set_ylabel("Number of translocation through NPC\n" +r"at $\Delta c = 1 \mu\text{M}$")
+# ax.legend(
+#     #title = r"$\chi_{\text{PC}}$"
+#     )
+#fig.set_size_inches(2.5*len(chi_PS)+1, 3)
+plt.tight_layout()
+fig.set_size_inches(3, 3)
+#fig.savefig("fig/experimental_inert.svg")
+#%%

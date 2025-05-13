@@ -15,6 +15,9 @@ eprint=false
 \usepackage{xcolor}
 \usepackage{bm}
 
+\usepackage{lineno}
+\linenumbers
+
 \newcommand\todo[1]{\textcolor{red}{#1}}
 
 \addbibresource{biblio.bib}
@@ -336,7 +339,7 @@ Recent theoretical, experimental and simulation studies extended the scaling app
 In the limit where proper diffusion of polymer chains is negligible (relevant to our case of pore-anchored chains), the characteristic desorption time of a single polymer-colloid contact $\tau_\text{des}(\epsilon)$ appears as an extra timescale.
 Here, $\epsilon > 0$ is the absolute value of the activation energy to break a contact (normalized by the thermal energy $k_\text{B}$).
 The polymer-colloid attraction may be considered weak if the desorption time is much smaller than the self-diffusion time.
-Typically, this happens when $\epsilon \lesssim k_\text{B}$, and in this case attractive forces only modify local friction by affecting the local packing of polymers around the particle.
+Typically, this happens when $\epsilon \lesssim k_\text{B} T$, and in this case attractive forces only modify local friction by affecting the local packing of polymers around the particle.
 The magnitude of this effect is estimated to be small, reducing the diffusivity by at most a few 10\% \cite{Yamamoto2011}.
 On the other hand, when $\epsilon$ amounts to several $k_\text{B} T$ units, then the desorption time grows exponentially with $\epsilon$ and affects the diffusion substantively.
 Numerical simulations \cite{Yamamoto2018} demonstrate that the colloid diffusivity is reduced by an exponential factor with approximately half the activation energy:
