@@ -14,40 +14,12 @@ mpl_markers = ('o', '+', 'x', 's', 'D')
 
 from calculate_fields_in_pore import *
 
-a0 = 0.70585835
-a1 = -0.31406453
+a0 = 0.7
+a1 = -0.3
 wall_thickness=52
 pore_radius=26
 sigma = 0.02
 #%%
-def correct_flux(J, d, pore_radius=26, wall_thickness=52, ylayers=492, l1=220):
-    #as the simulation box is finite, it has lower resistance than an infinite reservoir
-    z_left = l1-d/2
-    z_right = ylayers-l1-wall_thickness+d
-    pore_radius_ = pore_radius-d/2
-    R_left = (np.pi - 2*np.arctan(z_left/pore_radius_))/(4*np.pi*pore_radius_)*np.pi
-    R_right = (np.pi - 2*np.arctan(z_right/pore_radius_))/(4*np.pi*pore_radius_)*np.pi
-    J_corrected = 1/(1/J + R_left + R_right)
-    return J_corrected
-#%%
-simulation_results = pd.read_csv("numeric_simulation_results.csv")
-
-simulation_results["J_corrected"] = correct_flux(simulation_results["J_tot"],simulation_results["d"])
-simulation_results["R"] = 1/(simulation_results["J_tot"]/simulation_results["d"]/3)
-simulation_results["R_corrected"] = 1/(simulation_results["J_corrected"]/simulation_results["d"]/3)
-#simulation_results["J_corrected"] = correct_the_flux(simulation_results.J_tot, simulation_results.d)
-#%%
-simulation_empty_pore = pd.DataFrame(
-    columns = ["d", "J_tot"],
-    data = dict(
-            d=[4, 8, 16, 24],
-            #R = [0.203, 0.302]
-            J_tot = [5.927, 4.926, 3.311, 2.063]
-        )
-)
-simulation_empty_pore["J_corrected"] = correct_flux(simulation_empty_pore["J_tot"],simulation_empty_pore["d"])
-simulation_empty_pore["R"] = 1/(simulation_empty_pore["J_tot"]/simulation_empty_pore["d"]/3)
-simulation_empty_pore["R_corrected"] = 1/(simulation_empty_pore["J_corrected"]/simulation_empty_pore["d"]/3)
 #%%
 d = np.arange(2, 20, 2)
 #d =[8 ,10, 12 ,]
@@ -86,106 +58,6 @@ for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
     results.append(result)
 results = pd.DataFrame(results)
 #%%
-experimental_data=pd.DataFrame(
-    {
-    "Probe": [
-        "Fluorescein-Cys",
-        "11 aa peptide",
-        "Insulin",
-        "Aprotinin",
-        "Profilin",
-        "Ubiquitin",
-        "z-domain",
-        "Thioredoxin",
-        "Lactalbumin",
-        "GFP",
-        "PBP",
-        "MBP",
-        "mCherry"#
-    ],
-    "MM":[
-        0.5,
-        1.4,
-        5.8,#external
-        6.5,
-        np.nan,
-        8.5,
-        8.2,
-        13.9,
-        14.2,#external
-        27,
-        37,#https://www.uniprot.org/uniprotkb/P0AG82/entry
-        43,#or 40
-        28,
-    ],
-    "stokes_r_nm": [
-        0.67,
-        0.91,
-        1.19,
-        1.48,
-        1.65,
-        1.69,
-        1.71,
-        1.97,
-        2.07,
-        2.42,
-        2.75,
-        2.85,
-        2.45,#
-    ],
-    "Influx_rate": [
-        0.940,
-        0.53,
-        0.24,
-        0.086,
-        0.0548,
-        0.0356,
-        0.0401,
-        0.0203,
-        0.0144,
-        0.00205,
-        0.00026,
-        0.00022,
-        5.7*1e-4#
-    ],
-    "qi": [
-        46,
-        26,
-        11.8,
-        4.25,
-        2.70,
-        1.75,
-        1.98,
-        1.00,
-        0.707,
-        0.1010,
-        0.0126,
-        0.0109,
-        0.028#
-        
-    ],
-    "qi_std": [
-        9.2,
-        3.9,
-        1.31,
-        0.58,
-        0.40,
-        0.28,
-        0.28,
-        np.nan,
-        0.012,
-        0.0140,
-        0.0071,
-        0.0028,
-        np.nan#
-    ],
-}
-)
-
-reference_particle_radius = 1.97#nm
-
-Kuhn_segment = 0.76
-#experimental_data["d"] = experimental_data["stokes_r_nm"]*2#/Kuhn_segment*2
 
 #%%
 #https://doi.org/10.1083/jcb.201601004
@@ -318,22 +190,6 @@ def get_k_empty_pore(
     
     return k_
 
-def expression(d):
-    numerator = (
-        7.848e5 * d**3
-        - 9.304e7 * d**2
-        + 3.677e9 * d
-        - 4.844e10
-    )
-    denominator = (
-        d * (
-            2.793e5 * d**2
-            + 8.079e7 * d
-            - 3.629e9
-        )
-    )
-    return numerator / denominator
-
 def eta_from_d(
         D, #cm2/s
         d, #nm
@@ -350,7 +206,7 @@ def tau_from_nc_ratio(conc_ratio, volume_ratio, time):
     tau = time/np.log(r)
     return tau
 
-def estimate_protein_diameter(MW_kDa, density=1.4):
+def estimate_protein_diameter(MW_kDa, density=1.2):
     NA = 6.022e23
     # Partial specific volume (cm^3/g)
     v_bar = 1/density
@@ -363,7 +219,7 @@ def estimate_protein_diameter(MW_kDa, density=1.4):
     #diameter_nm = 0.066*(MW_kDa*1000)**(0.37)*2
     return diameter_nm
 
-def estimate_molecular_weight(diameter_nm, density=1.4):
+def estimate_molecular_weight(diameter_nm, density=1.2):
     """
     Estimate the molecular weight (in kDa) of a globular protein given its diameter in nanometers.
     
@@ -861,7 +717,7 @@ for ax, (chi_PS_, result_) in zip(axs_, results.groupby(by = "chi")):
     )
 
 
-    #ax.set_xscale("log")
+    ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_title(r"$\chi_{\text{PS}}="+f"{chi_PS_}$")
     ax.set_xlabel(r"$\sqrt[3]{\text{MM}}, \sqrt[3]{\text{kDa}}$")
