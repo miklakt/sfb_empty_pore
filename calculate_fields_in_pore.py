@@ -13,7 +13,7 @@ memory = Memory("__func_cache__", verbose=1)
 
 import os
 dirname = os.path.dirname(__file__)
-master_empty = pd.read_pickle(os.path.join(dirname,"reference_table_empty_brush.pkl"))
+master_empty = pd.read_pickle(os.path.join(dirname,"pkl/reference_table_empty_brush.pkl"))
 
 def volume(d):
     return np.pi*d**3/6

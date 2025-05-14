@@ -39,7 +39,7 @@ for filename in dir.glob("*.out"):
 # %%
 master = sfbox_utils.store.create_reference_table(storage_dir="h5_slit")
 # %%
-master.to_pickle("reference_table_slit.pkl")
+master.to_pickle("pkl/reference_table_slit.pkl")
 # %%
 %matplotlib qt
 from utils import get_by_kwargs

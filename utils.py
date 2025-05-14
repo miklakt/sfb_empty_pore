@@ -49,7 +49,6 @@ def get_by_kwargs(dataframe, **kwargs):
 
     return selected
 
-
 def calculation_result_to_initial_guess_file(calc_result, save_to = None):
     xlayers = calc_result.xlayers
     ylayers = calc_result.ylayers
@@ -68,7 +67,6 @@ def calculation_result_to_initial_guess_file(calc_result, save_to = None):
     else:
         sfbox_utils.write_initial_guess(save_to, initial_guess_dict)
     return initial_guess_dict
-# %%
 
 def find_closest_in_reference(reference_tbl, requires_dict, optional_dict = {}, return_only_one = False):
     df = get_by_kwargs(reference_tbl, **requires_dict)
@@ -92,4 +90,34 @@ def find_closest_in_reference(reference_tbl, requires_dict, optional_dict = {}, 
             raise KeyError("Too many records, try too concretize search arguments")
     
     return optional_df
-# %%
+
+def create_interp_func(X, Y, domain=None):
+    from scipy.interpolate import CubicSpline
+    """
+    Create an interpolation function using cubic splines.
+
+    Parameters:
+        X (array-like): Array of X values.
+        Y (array-like): Array of Y values corresponding to X.
+        domain (tuple, optional): A tuple (new_min, new_max) defining the new domain for remapping. Default is None.
+
+    Returns:
+        function: An interpolation function interp_func(x).
+    """
+    # Ensure X and Y are numpy arrays
+    X = np.asarray(X)
+    Y = np.asarray(Y)
+
+    # Create the cubic spline interpolation function
+    spline = CubicSpline(X, Y)
+
+    # Define the interpolation function with optional domain remapping
+    def interp_func(x):
+        # Remap x if a domain is provided
+        if domain is not None:
+            new_min, new_max = domain
+            old_min, old_max = np.min(X), np.max(X)
+            x = new_min + (x - old_min) * (new_max - new_min) / (old_max - old_min)
+        return spline(x)
+
+    return interp_func

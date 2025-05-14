@@ -8,7 +8,7 @@ import utils
 
 #%%
 try:
-    ref_tbl = pd.read_pickle("reference_table_slit.pkl")
+    ref_tbl = pd.read_pickle("pkl/reference_table_slit.pkl")
 except FileNotFoundError:
     ref_tbl = pd.DataFrame()
 #%%

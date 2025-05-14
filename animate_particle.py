@@ -145,9 +145,9 @@ chi_PS = 0.5
 chi_PC = -0.5
 X = None
 
-master = pd.read_pickle("reference_table.pkl")
+master = pd.read_pickle("pkl/reference_table.pkl")
 #master = master.loc[master["comment"] == "grown_from_small"]
-master_empty = pd.read_pickle("reference_table_empty_brush.pkl")
+master_empty = pd.read_pickle("pkl/reference_table_empty_brush.pkl")
 master_empty = master_empty.loc[
     (master_empty.s == s) \
     & (master_empty.r== r) \

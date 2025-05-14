@@ -7,7 +7,7 @@ import itertools
 import utils
 
 #%%
-ref_tbl = pd.read_pickle("reference_table_empty_brush.pkl")
+ref_tbl = pd.read_pickle("pkl/reference_table_empty_brush.pkl")
 
 def set_system_geometry(r, s, h, l1, l2, **_):
     xlayers = r+h

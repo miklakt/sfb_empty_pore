@@ -91,5 +91,5 @@ group_by = [
 ground_energy_correction(master, group_by)
 master.pc = master.pc - (master.l1+master.s/2)
 master.pc = master.pc.astype(int)
-master.to_pickle("reference_table.pkl")
+master.to_pickle("pkl/reference_table.pkl")
 # %%

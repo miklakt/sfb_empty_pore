@@ -43,7 +43,7 @@ def convolve_particle_surface(array, particle_d, mode = "valid"):
         raise ValueError("Invalid convolution mode")
     return new_arr
 
-def cylynder_r0_kernel(radius:int, height:int = None):
+def cylinder_r0_kernel(radius:int, height:int = None):
     if height is None:
         height = radius*2
     r = np.arange(radius)+1/2
@@ -59,7 +59,7 @@ def cylynder_r0_kernel(radius:int, height:int = None):
 #%%
 if __name__ == "__main__":
     import calculate_fields_in_pore
-    df = pd.read_pickle("reference_table_empty_brush.pkl")
+    df = pd.read_pickle("pkl/reference_table_empty_brush.pkl")
     phi = utils.get_by_kwargs(df, chi_PS = 1, r=26, s = 52).dataset["phi"].squeeze()
     a0, a1 = 0.70585835, -0.31406453
     gamma = calculate_fields_in_pore.gamma(0.1, -2, phi, a0, a1)

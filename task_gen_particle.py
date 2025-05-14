@@ -6,7 +6,7 @@ import pandas as pd
 import itertools
 import utils
 #%%
-ref_tbl = pd.read_pickle("reference_table.pkl")
+ref_tbl = pd.read_pickle("pkl/reference_table.pkl")
 
 def set_system_geometry(r, s, h, l1, l2, **_):
     xlayers = r+h

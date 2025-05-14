@@ -39,5 +39,5 @@ for filename in dir_.glob("*.out"):
 # %%
 master = sfbox_utils.store.create_reference_table(storage_dir="h5_empty_pore")
 # %%
-master.to_pickle("reference_table_empty_brush.pkl")
+master.to_pickle("pkl/reference_table_empty_brush.pkl")
 # %%
