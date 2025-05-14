@@ -56,6 +56,32 @@ def R_from_k(
         R = R_
     return R
 
+def get_R_empty(        
+        r_p,                #nm
+        L,                  #nm
+        d,                  #nm
+        eta=0.00145,           #Pa*s
+        T=293,              #K
+        Haberman_correction = False
+        ):
+    k_B = 1.380649*1e-23   #J/K
+
+    r_p_ = (r_p-d/2)*1e-9            #m^3
+    L_ = (L+d)*1e-9                  #m^3
+    d_ = d*1e-9                      #m^3
+    eta_ = eta                       #Pa*s
+
+    D_0_ = k_B * T / (3 * np.pi * eta_ * d_)  #m^2/s
+    if Haberman_correction:
+        from calculate_fields_in_pore import Haberman_correction_approximant
+        K = float(Haberman_correction_approximant(d, r_p))
+    else:
+        K = 1.0
+    R_0_ = K*L_ / (D_0_ * np.pi * r_p_**2) + 1 / (2 * D_0_ * r_p_) #s/m^3
+    
+    return R_0_
+
+
 def get_k_empty_pore(
         r_p,                #nm
         L,                  #nm
@@ -84,6 +110,20 @@ def get_k_empty_pore(
     k_ = NPC_per_nucleus/V_nucleus_/R_0_       #1/s
     
     return k_
+
+def get_translocation_empty_pore(        
+        r_p,                #nm
+        L,                  #nm
+        d,                  #nm
+        eta=0.00145,           #Pa*s
+        T=293,              #K
+        Haberman_correction = False,
+        conc_gradient = 1.0, #µMol
+        ):
+    R_0 = get_R_empty(r_p, L, d, eta, T, Haberman_correction)
+    NA = 6.022e23
+    return conc_gradient/R_0*NA/1e3
+    
 
 def estimate_protein_diameter(MW_kDa, density=1.2):
     NA = 6.022e23
@@ -126,17 +166,25 @@ def tau_from_nc_ratio(conc_ratio, volume_ratio, time):
 
 def R_from_translocation_rate(
         translocation, 
-        conc=1.0,       #µMol,
-        eta=0.00145,    #Pa*s
-        T=293,          #K
+        conc_gradient=1.0,     #µMol,
+        eta=0.00145,           #Pa*s
+        T=293,                 #K
         normalized = False,
         ):
     NA = 6.02214076*1e23
-    R = NA/(translocation*conc)
+    R = NA/(translocation*conc_gradient/1e3)
     k_B = 1.380649*1e-23
     if normalized:
         R=R *k_B*T/eta
     return R
+
+# def get_translocations_from_R(
+#         R,
+#         conc_gradient = 1.0#µMol
+#         ):
+    
+
+
 
 #%%
 data=pd.DataFrame(
@@ -251,12 +299,12 @@ data = pd.DataFrame({
     ],
     "MM": [630, 100, 68, 29, 29.5, 29.5],
     "Radius": [8.17, 4.13, 3.55, 2.36, 2.51, 2.51],
-    "Translocations": [28, 65, 0.1, 2, 250, 60],# through NPCs at Δc = 1 μM (NPC-1 s-1)
-    "Translocation_empty": [120, 430, 540, 920, 850, 850] #Diffusion rate through a hypothetical ‘plugless’ NPC at Δc = 1 μM (pore−1 s−1)
+    "Translocations_": [28, 65, 0.1, 2, 250, 60],# through NPCs at Δc = 1 μM (NPC-1 s-1)
+    "Translocations_empty": [120, 430, 540, 920, 850, 850] #Diffusion rate through a hypothetical ‘plugless’ NPC at Δc = 1 μM (pore−1 s−1)
 })
 data["Comment"] = ""
 data.loc[data["Probe"] == 'BSA', "Comment"] = "<0.1"
-data["R"] = 1/data["Translocations"]*6.022e23
+data["R"] = 1/data["Translocations_"]*6.022e23/1e3
 
 Ribbeck2001 = {
     "data" : data,
@@ -289,23 +337,48 @@ for k, v in flux_vs_molar_weight.items():
                 ), axis = 1)
 
 for k, v in flux_vs_molar_weight.items():
-    v["data"]["Translocations_"] = v["data"]["R"]**(-1)*6.022e23
+    v["data"]["Translocations"] = v["data"]["R"]**(-1)*6.022e23/1e3
 # %%
 if __name__=="__main__":
-    calculate_probe_diameter_from_molar_weight(density = 1.2)
+    Kuhn_segment = 0.76
+    pore_radius = 26*Kuhn_segment
+    L = pore_radius*2
+    density = 1.2
+    calculate_probe_diameter_from_molar_weight(density)
+
+    empty_pore = {}
+    MM = np.geomspace(1,700)
+    d = estimate_protein_diameter(MM, density)
+    translocations=get_translocation_empty_pore(pore_radius, L, d)
+    #translocations=get_translocation_empty_pore(5, L, d)
+    empty_pore["MM"] = MM
+    empty_pore["d"] = d
+    empty_pore["Translocations"] = translocations
+    empty_pore["R"] = get_R_empty(pore_radius, L, d)
+    #empty_pore["k"] = get_k_empty_pore(pore_radius, L, d, )
+
+    show_text = False
     fig, ax = plt.subplots()
     markers = itertools.cycle(mpl_markers)
-    X_label = "Translocations_"
+    Y_label = "Translocations"
+    X_label = "MM"
     for k, v in flux_vs_molar_weight.items():
-        x = v["data"]["MM"]
-        y = v["data"][X_label]
+        x = v["data"][X_label]
+        y = v["data"][Y_label]
         ax.scatter(x,y, label = v["Reference"], marker = next(markers))
-        for idx, row in v["data"].iterrows():
-            x = row["MM"]
-            y=  row[X_label]
-            s =row["Probe"]
-            ax.text(x,y,s)
+        if show_text:
+            for idx, row in v["data"].iterrows():
+                x = row[X_label]
+                y=  row[Y_label]
+                s =row["Probe"]
+                ax.text(x,y,s)
+    ax.plot(empty_pore[X_label], empty_pore[Y_label], label = "Empty pore")
     ax.legend()
+    #ax.plot(Ribbeck2001["data"]["MM"], Ribbeck2001["data"]["Translocations_empty"])
+
     ax.set_yscale("log")
     ax.set_xscale("log")
+    ax.set_xlim(1,650)
+
+    fig.set_size_inches(3.5, 3.5)
 # %%
