@@ -191,29 +191,23 @@ data=pd.DataFrame(
     {
     "Probe": ["Fluorescein-Cys", "11 aa peptide", "Insulin", "Aprotinin", 
               "Profilin", "Ubiquitin", "z-domain", "Thioredoxin", 
-              "Lactalbumin", "GFP", "PBP", "MBP", 
-              "mCherry"],
+              "Lactalbumin", "GFP", "PBP", "MBP",],
     "MM":          [0.5, 1.4, 5.8, 6.5,
                     np.nan, 8.5, 8.2, 13.9,
-                    14.2, 27, 37, 43, 
-                    28],
+                    14.2, 27, 37, 43,],
     "stokes_r_nm": [0.67, 0.91, 1.19, 1.48,
                     1.65, 1.69, 1.71, 1.97,
-                    2.07, 2.42, 2.75, 2.85, 
-                    2.45],
+                    2.07, 2.42, 2.75, 2.85,],
     #Influx_rate
     "k":            [0.940, 0.53, 0.24, 0.086,
                     0.0548, 0.0356, 0.0401, 0.0203,
-                    0.0144, 0.00205, 0.00026, 0.00022, 
-                    5.7*1e-4],
+                    0.0144, 0.00205, 0.00026, 0.00022,],
     "qi":          [46, 26, 11.8, 4.25,
                     2.70, 1.75, 1.98, 1.00,
-                    0.707, 0.1010, 0.0126, 0.0109,
-                    0.028],
+                    0.707, 0.1010, 0.0126, 0.0109,],
     "qi_std":      [9.2, 3.9, 1.31, 0.58,
                     0.40, 0.28, 0.28, np.nan,
-                    0.012, 0.0140, 0.0071, 0.0028,
-                    np.nan]
+                    0.012, 0.0140, 0.0071, 0.0028,]
     })
 data["tau"] = data["k"]**(-1)
 data["Comment"] = ""
@@ -449,47 +443,8 @@ if __name__=="__main__":
                 s =row["Probe"]
                 ax.text(x,y,s)
     ax.plot(empty_pore[X_label], empty_pore[Y_label], label = "Empty pore", color = "k")
-    ax.legend()
-    
-    fig.set_size_inches(3.5, 3.5)
-# %%
-    calculate_probe_diameter_from_molar_weight(density)
-
-    empty_pore = {}
-    MM = np.geomspace(1,700)
-    d = estimate_protein_diameter(MM, density)
-    translocations=get_translocation_empty_pore(pore_radius, L, d)
-    #translocations=get_translocation_empty_pore(5, L, d)
-    empty_pore["MM"] = MM
-    empty_pore["d"] = d
-    empty_pore["Translocations"] = translocations
-    empty_pore["R"] = get_R_empty(pore_radius, L, d)
-    #empty_pore["k"] = get_k_empty_pore(pore_radius, L, d, )
-
-    show_text = False
-    fig, ax = plt.subplots()
-    ax.set_yscale("log")
-    ax.set_xscale("log")
-    markers = itertools.cycle(mpl_markers)
-    Y_label = "Translocations"
-    X_label = "MM"
-    ax.set_xlabel(axis_label[X_label])
-    ax.set_ylabel(axis_label[Y_label])
-
-    ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
-
-    for k, v in flux_vs_molar_weight.items():
-        x = v["data"][X_label]
-        y = v["data"][Y_label]
-        ax.scatter(x,y, label = v["Reference"], marker = next(markers))
-        if show_text:
-            for idx, row in v["data"].iterrows():
-                x = row[X_label]
-                y=  row[Y_label]
-                s =row["Probe"]
-                ax.text(x,y,s)
-    ax.plot(empty_pore[X_label], empty_pore[Y_label], label = "Empty pore", color = "k")
-    ax.legend()
+    ax.legend(bbox_to_anchor = [1.0,0.5])
+    ax.grid()
     
     fig.set_size_inches(3.5, 3.5)
 #%%
@@ -502,14 +457,14 @@ if __name__=="__main__":
     #X_label = "MM"
     ax.set_xlabel(r"$\left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}}$")
     ax.set_ylabel(axis_label[Y_label])
-    nups = ["Mac98A","Nup116"]
+    nups = ["Mac98A","Nup116", "Nsp1"]
 
     data = Frey2018["data"].loc[Frey2018["data"]["d"]<5]
 
     #ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
 
     y = data[Y_label]
-    mpl_markers = ('*', 'D')
+    mpl_markers = ('*')
     markers = itertools.cycle(mpl_markers) 
     for nup in nups:
         x = data[nup]
@@ -533,7 +488,7 @@ if __name__=="__main__":
         linestyle = "-", 
         label = "empty pore"
         )
-    ax.legend()
-    
+    ax.legend(bbox_to_anchor = [1.0,0.5])
+    ax.grid()
     fig.set_size_inches(3.5, 3.5)
 # %%
