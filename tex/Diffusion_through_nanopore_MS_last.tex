@@ -608,18 +608,21 @@ Under these conditions both osmotic and surface terms make $\Delta F>0$, so the 
 
 A decrease in $\chi_{\text{PC}}$
 %or increase in $\chi_{\text{PS}}$ (\todo{This maybe not universal}) 
-will decrease $\gamma$ throughout the polymer filling.
-A decrease of $\chi_{\text{PC}}$ below $\chi_{\text{ads}}^{\text{crit}}$ makes $\gamma<0$, then
-due to the cubic dependence of $\Delta F$ on particle size $d$, particles below some size have negative insertion free energy, with $F(d)$ having a maximum $d=0$ followed by a minimum $-\tfrac{4\gamma}{\Pi}$.
-Because of the contributions of diffusion slowdown due to the polymer meshwork, the extrema disappear when $\chi_{\text{PC}}$ and $\gamma$ is not sufficiently negative or shifted leading to non-monotonic $R(d)$ for sufficiently negative $\chi_{\text{PC}}$ and $\gamma$.
+lowers the interfacial term $\gamma$ throughout the polymer filling.
+When $\chi_{\text{PC}}$ drops below the critical value $\chi_{\text{ads}}^{\text{crit}}$, $\gamma$ becomes negative.
+Due to the cubic dependence of $\Delta F$ on particle size $d$, particles below some size have negative insertion free energy, with $F(d)$ having a maximum $d=0$ followed by a minimum $-\tfrac{4\gamma}{\Pi}$.
+The contributions of diffusion slowdown due to the polymer meshwork to the resistance suppresses the extrema when $\chi_{\text{PC}}$ and $\gamma$ is not sufficiently negative, so non-monotonic behaviour in $R(d)$ appears only for strongly attractive particle surface, when $\chi_{\text{PC}}$ and $\gamma$ is sufficiently negative.
 
-Up until $\chi_{\text{PC}}$ and $\gamma$ is not sufficiently negative the insertion free energy landscape is still mostly positive or slightly negative with $R(d)$ being monotonically increasing, within the scaling $d^3 \lesssim R(d) \lesssim \exp(d^3)$ for smaller particles when $\Delta F(d)$ is slightly negative, followed by $R \gtrsim \exp(d^3)$ when particles become larger and $\Delta F(d)>0$.
-This regime of $R(d)$ scaling in Figure~\ref{fig:R_vs_d}a) corresponds to $\chi_{\text{PC}} = -1.0$ or slightly below at $\chi_{\text{PS}} = 0.5$ (with $\chi_{\text{PC}}<-0.7$ driving $\gamma \le 0$ everywhere), or $\chi_{\text{PS}} = 0.3$ and $\chi_{\text{PS}} = 0.4$ at $\chi_{\text{PC}} = -1.25$ in Figure~\ref{fig:R_vs_d}b.
+As long as $\gamma$ is weakly negative the landscape $\Delta F(d)$ is mostly positive—or only slightly negative—and the resistance rises monotonically on particle size $d$, within $d^3 \lesssim R(d) \lesssim \exp(d^3)$ for smaller particles when $\Delta F(d)$ is slightly negative, and $R \gtrsim \exp(d^3)$ for larger particles when $\Delta F(d)$ become positive.
+This $R(d)$-scaling regime appears in Figure \ref{fig:R_vs_d}a for $\chi_{\text{PS}} = 0.5$ when $\chi_{\text{PC}}\approx -1.0$ (and, more generally, for $\chi_{\text{PC}} \lesssim -0.7$, which ensures $\gamma\le 0$ everywhere).
+A similar behaviour is seen in Figure \ref{fig:R_vs_d}b at $\chi_{\text{PC}} = -1.25$ for solvent parameters $\chi_{\text{PS}} = 0.3$ and $0.4$.
+%(and more generally for any $\chi_{\text{PS}}$)
 
-Further decrease in $\chi_{\text{PC}}$ drives $\gamma$ and $\Delta F(d)$ sufficiently negative such that $R(d)$ is non-monotonic the maximum to a some finite particle size, noted in Figure~\ref{fig:R_vs_d}a with \raisebox{0.25em}{\scriptsize$\uparrow$}(a) and minimum noted in Figure~\ref{fig:R_vs_d}a with \raisebox{0.25em}{\scriptsize$\uparrow$}(b).
-The pore became extremely sensitive to pore when the particle size become larger than the one that correspond to the minimum in $R(d)$ (\raisebox{0.25em}{\scriptsize$\uparrow$}(b) in Figure~\ref{fig:R_vs_d}a) as $\Delta F(d)>0$ with $R \gtrsim \exp(d^3)$ scaling.
-Thus for the particles with sufficiently attractive surface controlled by  $\chi_{\text{ads}}(\chi_{\text{PC}}, \chi_{\text{PS}})$, the pore acts as a gate, that have little or no sensitivity to particles size, below some particle size size, and become restrictive as particle hits some critical size, as exemplified in Figure~\ref{fig:R_vs_d}ab for a set of parameters $\chi_{\text{PS}} = 0.5$ at $\chi_{\text{PC}} = -1.25$.
 
+Further decreasing $\chi_{\text{PC}}$ drives $\gamma$ and $\Delta F(d)$ sufficiently negative such that $R(d)$ is no longer monotonic, showing the expected maximum (labelled \raisebox{0.25em}{\scriptsize$\uparrow$}(a) in Figure \ref{fig:R_vs_d}a) and minimum (\raisebox{0.25em}{\scriptsize$\uparrow$}(b)). 
+For particles larger than the size at this minimum, $\Delta F(d)$ turns positive and the resistance again follows the steep $R!\gtrsim!\exp(d^{3})$ scaling.
+Hence, when the surface attraction exceeds $\chi_{\text{ads}}^{\text{crit}}(\chi_{\text{PS}})$ the pore acts as a gate: it is virtually insensitive to particle size below a critical diameter (as (\raisebox{0.25em}{\scriptsize$\uparrow$} in in Figure~\ref{fig:R_vs_d}a(b))), yet becomes highly restrictive once that diameter is exceeded.
+This gating behaviour is exemplified by the curve for $\chi_{\text{PS}} = 0.5,;\chi_{\text{PC}} = -1.25$ in Figure~\ref{fig:R_vs_d}a,b.
 
 Increasing the solvent strength parameter $\chi_{\text{PS}}$ raises $\gamma$ Eq.~(\ref{eq:chi_ads}) and lowers the osmotic pressure $\Pi$ Eq.~(\ref{eq:osmotic}).  
 For large particles ($d>4$), decreasing $\chi_{\text{PS}}$ has the same qualitative effect as increasing $\chi_{\text{PC}}$: both drive the insertion-free-energy landscape toward more positive values.
