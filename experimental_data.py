@@ -447,7 +447,7 @@ if __name__=="__main__":
     ax.grid()
     
     fig.set_size_inches(3.5, 3.5)
-#%%
+    #%%
     show_text = False
     fig, ax = plt.subplots()
     ax.set_yscale("log")

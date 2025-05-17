@@ -49,29 +49,16 @@ sigma = 0.02
 
 kwargs = dict(
     a0=a0, a1=a1, d=d,
-    chi_PC=chi_PC, chi=chi,
+    chi_PC=chi_PC, chi_PS=chi,
     sigma = sigma,
     wall_thickness=wall_thickness,
     pore_radius=pore_radius,
-    exclude_volume=True,
-    truncate_pressure=False,
-    method= "approx", 
-    mobility_correction= "vol_average",
-    mobility_model = "Rubinstein",
     mobility_model_kwargs = {"prefactor":30.0},
-    Haberman_correction = False,
     stickiness=False,
     #gel_phi = 0.2
 )
 fields = calculate_fields(
     **kwargs
-    )
-#%%
-kwargs["chi_PS"] = kwargs.pop("chi")
-kwargs["convolve_mode"] = "same"
-perm = calculate_permeability(    
-    **kwargs,
-    integration_kwargs = dict(spheroid_correction = True),
     )
 
 fields["resistivity"] = (fields["conductivity"])**(-1)

@@ -67,7 +67,6 @@ def Haberman_correction_approximant(d, pore_radius):
     x_ = d/2 / pore_radius
     return np.exp(Pade_approximant(x_))
 
-
     
 #%%
 @lru_cache()
@@ -122,18 +121,19 @@ def calculate_gamma(fields, a0, a1, chi_PC):
     fields["a0"] = a0
     fields["a1"] = a1
 
-def calculate_energy(fields, d, method, convolve_mode = "same"):
+def calculate_energy(fields, d, method):
     #==free energy calculation==
     #----approximate method----
     if method == "approx":
-        print("approximate method")
+        #print("approximate method")
         fields["surface"] = fields["gamma"]*surface(d)
         fields["osmotic"] = fields["Pi"]*volume(d)
     #----convolution method the output is staggered----
     elif method == "convolve":
-        print("convolution method")
-        fields["surface"] = convolve_particle_surface(fields["gamma"].T, d, convolve_mode).T
-        fields["osmotic"] = convolve_particle_volume(fields["Pi"].T, d, convolve_mode).T
+        #print("convolution method")
+        #convolve_mode = "roll"#|trim
+        fields["surface"] = convolve_particle_surface(fields["gamma"].T, d).T
+        fields["osmotic"] = convolve_particle_volume(fields["Pi"].T, d).T
     elif method == "no_free_energy":
         fields["surface"] = np.zeros_like(fields["Pi"])
         fields["osmotic"] = np.zeros_like(fields["Pi"])
@@ -142,15 +142,15 @@ def calculate_energy(fields, d, method, convolve_mode = "same"):
     #----total free energy----
     fields["free_energy"] = fields["surface"] + fields["osmotic"]
 
-def calculate_corrected_phi(fields, a0, a1, chi_PC, correction = "vol_average", d = None, convolve_mode = "valid"):
+def calculate_corrected_phi(fields, a0, a1, chi_PC, correction = "vol_average", d = None):
     phi = fields["phi"].squeeze()
-    #print(d)
     if correction != "none":
+        #convolve_mode = "roll"#|trim
         if correction == "chi_corrected":
             phi = (a0 + a1*chi_PC)*phi
-            fields["corrected_phi"] = convolve_particle_volume(phi.T, d, convolve_mode).T / volume(d)
+            fields["corrected_phi"] = convolve_particle_volume(phi.T, d).T / volume(d)
         elif correction == "vol_average":
-            fields["corrected_phi"] = convolve_particle_volume(phi.T, d, convolve_mode).T / volume(d)
+            fields["corrected_phi"] = convolve_particle_volume(phi.T, d).T / volume(d)
         else:
             raise ValueError("wrong correction mode")
     else:
@@ -164,7 +164,7 @@ def calculate_mobility(
         phi_arr = "phi", 
         Haberman_correction = False,
         stickiness = False,
-        stickiness_model_kwargs = {}
+        stickiness_model_kwargs = {},
         ):
     if model=="Rubinstein":
         if "prefactor" in model_kwargs:
@@ -203,17 +203,30 @@ def calculate_mobility(
             n_sites = 1
         binding_enery = fields["surface"]/n_sites
         mobility = np.where(fields["surface"]<0,mobility*np.exp(binding_enery/2),mobility)
-
+    
     fields["mobility"] = mobility
 
+# def calculate_conductivity(fields, D_0 = "Einstein"):
+#     d = fields["d"]
+#     if D_0 == "Einstein":
+#         D_0 = 1/(3*np.pi*d)
+#     elif D_0 is None:
+#         D_0 = 1
+#     elif isinstance(D_0, float|int):
+#         pass
+#     else:
+#         raise ValueError("Incorrect D_0")
+#     fields["D_0"] = D_0 
+#     fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])*D_0
 def calculate_conductivity(fields):
     fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])
+
 
 def integrate_with_cylindrical_caps(
     field, 
     l1, wall_thickness, pore_radius, 
     xlayers, ylayers,
-    spheroid_correction = False
+    spheroid_correction
     ):
     
     lb = 0
@@ -252,14 +265,13 @@ def integrate_with_cylindrical_caps(
             conductivity_ = base_conductivity+element_conductivity
             
             if spheroid_correction:
-                #f = (2*np.log(3))/np.pi
-                #f = (pore_radius**2 + 4*dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
                 f = 2*(pore_radius**2 + dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
                 conductivity_ = conductivity_*f
+
         conductivity[i] = conductivity_
     return conductivity
 
-def integrate_conductivity_cylindrical_caps(
+def integrate_conductivity(
         fields, 
         spheroid_correction = True, #make correction for iso-potential surface approximated with cylinders
         correct_excluded_volume = True #treat pore as if it has thicker walls and smaller diameter
@@ -273,6 +285,11 @@ def integrate_conductivity_cylindrical_caps(
     d = fields["d"]
 
     if correct_excluded_volume:
+        # here we integrate it as if the interior
+        # has the same radius, as the walls will be ignored anyway
+        # but the pore is longer
+        # in this way in the portion of the effective pore shape
+        # where the corners are rounded the isopotential surfaces are circles 
         l1 = int(l1-d/2)
         wall_thickness = int(wall_thickness+d)
 
@@ -299,32 +316,16 @@ def integrate_conductivity_cylindrical_caps(
 
     permeability = np.sum(permeability_z**(-1))**(-1)
     fields["permeability_z"] = permeability_z
-    #if extend_to_infinity:
     fields["permeability"] = (permeability**(-1) + R_left + R_right)**(-1)
-    #else:
-    #    fields["permeability"] = permeability
+
+    # if correct_excluded_volume:
+    #     # turn it back to keep the geometry of contributions 
+    #     l1 = int(l1+d/2)
+    #     wall_thickness = int(wall_thickness-d)
     fields["R_left"] = np.sum(permeability_z[:l1]**(-1))+R_left
     fields["R_right"] = np.sum(permeability_z[(l1+wall_thickness+1):]**(-1))+R_right
     fields["R_pore"] = np.sum(permeability_z[l1:(l1+wall_thickness+1)]**(-1)) \
         * wall_thickness/(wall_thickness+1) #correct that it was integrated one extra layer
-
-
-# def integrate_conductivity_Rayleigh(fields, L):
-#     #====total permeability over region L====
-#     l1 = fields["l1"]
-#     l2 = fields["l2"]
-#     pore_radius = fields["r"]
-#     wall_thickness = fields["s"]
-#     lb = l1-L
-#     rb = l1+wall_thickness+L+1 #+1 because of the offset after convolution
-    
-#     r = np.arange(0, pore_radius)
-#     get_permeability_z = lambda x: np.sum(x[:, 0:pore_radius]*(2*r+1), axis = 1)*np.pi
-#     get_permeability_total = lambda x: np.sum(x[lb:rb]**(-1))**(-1)
-    
-#     fields["permeability_z"] = get_permeability_z(fields["conductivity"])
-#     fields["permeability"] = get_permeability_total(fields["permeability_z"])
-
 
 def calculate_partition_coefficient(fields, cutoff_phi = 1e-5):
     xlayers = fields["xlayers"]
@@ -333,33 +334,77 @@ def calculate_partition_coefficient(fields, cutoff_phi = 1e-5):
     fields["PC"] = np.sum((np.exp(-fields["free_energy"])*volume)[fields["phi"]>cutoff_phi])\
                                                    /np.sum(volume[fields["phi"]>cutoff_phi])
 
+# def calculate_permeability(
+#         fields,
+#         einstein_factor = True
+#         ):
+
+#     pore_radius = fields["pore_radius"]
+#     d = fields["d"]
+#     wall_thickness = fields["s"]
+    
+#     integrate_conductivity(fields)
+#     fields["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
+#     fields["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
+#     #fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(1, pore_radius, wall_thickness, d)*einstein_factor
+
+#     if einstein_factor_value:
+#     einstein_factor_value = 1/(3*np.pi*d)
+#         # fields["einstein_factor"] = einstein_factor_value
+#         # #fields["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
+#         # #fields["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
+#         # #fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(1, pore_radius, wall_thickness, d)*einstein_factor
+
+#         # fields["permeability"] = fields["permeability"]*einstein_factor
+#         # fields["permeability_z"] = fields["permeability_z"]*einstein_factor
+
+#         # fields["R_left"] = fields["R_left"]/einstein_factor
+#         # fields["R_right"] = fields["R_right"]/einstein_factor
+#         # fields["R_pore"] = fields["R_pore"]/einstein_factor
+
+def empty_pore_permeability(D, r, s):
+    return 2*D*r/(1 + 2*s/(r*np.pi))
+
+def empty_pore_permeability_corrected(D, r, s, d):
+    K = Haberman_correction_approximant(d, r)
+    return 2*D*(r-d/2)/(1 + 2*K*(s+d)/((r-d/2)*np.pi))
+
 @memory.cache
 def calculate_fields(
         a0, a1, 
-        chi_PC, chi, 
-        wall_thickness, pore_radius, d,
+        chi_PC, chi_PS, 
+        wall_thickness, 
+        pore_radius, 
+        d,
         sigma,
+        ###default parameters###
         exclude_volume = True, 
         truncate_pressure = False, 
         method = "convolve",
-        convolve_mode = "valid",
         mobility_correction = "vol_average",
         mobility_model = "Rubinstein",
         mobility_model_kwargs = {},
-        cutoff_phi = 1e-5,
-        Haberman_correction = False,
+        partitioning_cutoff_phi = None,
+        #Haberman_correction = False,
         stickiness = False,
         stickiness_model_kwargs = {},
-        gel_phi = None
+        gel_phi = None,
+        #D_0 = "Einstein"
         ):
 
-    fields = utils.get_by_kwargs(master_empty, chi_PS = chi, s = wall_thickness, r = pore_radius, sigma = sigma).squeeze()
+    fields = utils.get_by_kwargs(master_empty, chi_PS = chi_PS, s = wall_thickness, r = pore_radius, sigma = sigma).squeeze()
     fields["phi"] = fields.dataset["phi"].squeeze().T
+    fields["d"] = d
+    fields["chi_PC"] = chi_PC
     if gel_phi is not None:
         if not isinstance(gel_phi, numbers.Number):
             raise ValueError("phi_gel expected to be numeric")
         subst_by_gel(fields, phi= gel_phi)
     if d>=2:
+        if np.isclose(d, np.round(d)):
+            d = int(d)
+        else:
+            raise ValueError("Only even d is accepted")
         add_walls(fields, exclude_volume, d)
         method = method
     else:#particle is very small
@@ -370,107 +415,46 @@ def calculate_fields(
 
     calculate_pressure(fields, truncate_pressure)
     calculate_gamma(fields, a0, a1, chi_PC)
-    calculate_energy(fields, d, method, convolve_mode)
-    calculate_corrected_phi(fields, a0=a0, a1=a1, chi_PC = chi_PC, correction=mobility_correction, d=d, convolve_mode=convolve_mode)
-    calculate_mobility(fields, d, mobility_model, mobility_model_kwargs, 
-                       phi_arr="corrected_phi", Haberman_correction = Haberman_correction, 
-                       stickiness=stickiness, stickiness_model_kwargs=stickiness_model_kwargs)
+    calculate_energy(fields, d, method)
+    calculate_corrected_phi(fields, a0=a0, a1=a1, chi_PC = chi_PC, correction=mobility_correction, d=d)
+    calculate_mobility(fields, d, 
+                       mobility_model, 
+                       mobility_model_kwargs, 
+                       phi_arr="corrected_phi", 
+                       #Haberman_correction = Haberman_correction, 
+                       stickiness=stickiness, 
+                       stickiness_model_kwargs=stickiness_model_kwargs
+                       )
+    #calculate_conductivity(fields, D_0)
     calculate_conductivity(fields)
-    calculate_partition_coefficient(fields, cutoff_phi)
-    fields["d"] = d
+    integrate_conductivity(fields)
+
+    if partitioning_cutoff_phi is not None:
+        calculate_partition_coefficient(fields, cutoff_phi = partitioning_cutoff_phi)
+    
+    ####To be removed
+    einstein_factor = 1/(3*np.pi*d)
+    #fields["einstein_factor"] = einstein_factor_value
+    fields["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
+    fields["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
+    # #fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(1, pore_radius, wall_thickness, d)*einstein_factor
+
+    fields["permeability"] = fields["permeability"]*einstein_factor
+    fields["permeability_z"] = fields["permeability_z"]*einstein_factor
+
+    fields["R_left"] = fields["R_left"]/einstein_factor
+    fields["R_right"] = fields["R_right"]/einstein_factor
+    fields["R_pore"] = fields["R_pore"]/einstein_factor
 
     return fields
-
-
-def empty_pore_permeability(D, r, s):
-    return 2*D*r/(1 + 2*s/(r*np.pi))
-
-def empty_pore_permeability_corrected(D, r, s, d):
-    K = Haberman_correction_approximant(d, r)
-    return 2*D*(r-d/2)/(1 + 2*K*(s+d)/((r-d/2)*np.pi))
-
-
-def calculate_permeability(
-        a0, a1, pore_radius, wall_thickness,
-        d, chi_PS, chi_PC,
-        sigma, #=0.03
-        exclude_volume,#=True 
-        truncate_pressure,#=False 
-        method,#= "convolve",
-        convolve_mode,# = "same",
-        mobility_correction,# = "vol_average",
-        mobility_model,#, = "Rubinstein",
-        mobility_model_kwargs,
-        integration= "cylindrical_caps", #="Rayleigh"|"Caps",
-        integration_kwargs = {},
-        cutoff_phi = 1e-5,
-        Haberman_correction = False,
-        stickiness = False,
-        stickiness_model_kwargs = {},
-        gel_phi = None
-        ):
-    
-    fields = calculate_fields(
-        a0=a0, a1=a1, d=d, sigma = sigma,
-        chi_PC=chi_PC, chi=chi_PS,
-        wall_thickness=wall_thickness,
-        pore_radius=pore_radius,
-        exclude_volume=exclude_volume,
-        mobility_correction=mobility_correction,
-        mobility_model = mobility_model,
-        truncate_pressure=truncate_pressure,
-        method = method,
-        convolve_mode = convolve_mode,
-        mobility_model_kwargs = mobility_model_kwargs,
-        cutoff_phi = cutoff_phi,
-        Haberman_correction = Haberman_correction,
-        stickiness = stickiness,
-        stickiness_model_kwargs = stickiness_model_kwargs,
-        gel_phi = gel_phi
-        )
-
-    result = dict(
-        a0=a0, a1=a1, d=d, sigma = sigma,
-        chi_PC=chi_PC, chi=chi_PS,
-        wall_thickness=wall_thickness,
-        pore_radius=pore_radius,
-        exclude_volume=exclude_volume,
-        mobility_correction=mobility_correction,
-        mobility_model = mobility_model,
-        truncate_pressure=truncate_pressure,
-        method = method,
-        convolve_mode = convolve_mode,
-        mobility_model_kwargs = mobility_model_kwargs,
-        integration_kwargs = integration_kwargs,
-        cutoff_phi = cutoff_phi,
-        Haberman_correction = Haberman_correction,
-        stickiness = stickiness,
-        stickiness_model_kwargs = stickiness_model_kwargs,
-        gel_phi = gel_phi
-    )
-    
-    if integration=="cylindrical_caps":
-        integrate_conductivity_cylindrical_caps(fields, **integration_kwargs)#, extend_to_infinity=True)
-    # elif integration=="Rayleigh":
-    #     integrate_conductivity_Rayleigh(fields, **integration_kwargs)
-    else:
-        raise ValueError("Wrong integration type")
-
-    einstein_factor = 1/(3*np.pi*d)
-    result["einstein_factor"] = einstein_factor
-
-    result["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
-    result["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
-    result["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(1, pore_radius, wall_thickness, d)*einstein_factor
-
-    result["permeability"] = fields["permeability"]*einstein_factor
-    result["permeability_z"] = fields["permeability_z"]*einstein_factor
-    result["PC"] = fields["PC"]
-
-    if integration=="cylindrical_caps":
-        result["R_left"] = fields["R_left"]/einstein_factor
-        result["R_right"] = fields["R_right"]/einstein_factor
-        result["R_pore"] = fields["R_pore"]/einstein_factor
-
-    return result
+# %%
+if __name__ == "__main__":
+    a0, a1 = 0.7, -0.3
+    chi_PS = 0.5
+    chi_PC = -1.0
+    d=8
+    L=52
+    r_pore = 26
+    sigma = 0.02
+    fields =  calculate_fields(a0, a1, chi_PC, chi_PS, L, r_pore, d, sigma)
 # %%

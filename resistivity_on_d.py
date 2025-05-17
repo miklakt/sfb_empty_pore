@@ -63,61 +63,47 @@ chi_PS = [0.3, 0.4, 0.5, 0.6]
 chi_PC_color = [-1.5, -1.25, -1.0, -0.5, 0]
 chi_PC = chi_PC_color
 
-# model, mobility_model_kwargs = "none", {}
-# model, mobility_model_kwargs = "Phillies", dict(beta = 8, nu = 0.76)
-# model = "Fox-Flory", dict(N = 300)
 model, mobility_model_kwargs = "Rubinstein", {"prefactor":30}
-#model, mobility_model_kwargs = "Hoyst", {"alpha" : 1.63, "delta": 0.89, "N" : 300}
 
-Haberman_correction_ = False
 results = []
 for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
     print(d_, chi_PS_, chi_PC_)
-    result = calculate_permeability(
-        a0, a1, pore_radius, wall_thickness,
-        d_, chi_PS_, chi_PC_,
-        sigma = sigma,
-        exclude_volume=True,
-        truncate_pressure=False,
-        method= "convolve",
-        convolve_mode="same",
-        mobility_correction= "vol_average",
-        mobility_model = model,
+    result = calculate_fields(
+        a0, a1, 
+        chi_PC_, chi_PS_, 
+        wall_thickness, 
+        pore_radius, d_, 
+        sigma,
         mobility_model_kwargs = mobility_model_kwargs,
-        integration="cylindrical_caps",
-        Haberman_correction=Haberman_correction_,
-        stickiness=False,
-        #gel_phi = 0.5
+        #method="approx"
         )
-        
-    #result["limited_permeability"] = (result["permeability"]**(-1) + result["thin_empty_pore"]**(-1))**(-1)
     results.append(result)
 results = pd.DataFrame(results)
 
-results_no_fe = []
-for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
-    print(d_, chi_PS_, chi_PC_)
-    result_no_fe = calculate_permeability(
-        a0, a1, pore_radius, wall_thickness,
-        d_, chi_PS_, chi_PC_,
-        sigma = sigma,
-        exclude_volume=True,
-        truncate_pressure=False,
-        method= "no_free_energy",
-        convolve_mode="same",
-        mobility_correction= "vol_average",
-        mobility_model = model,
-        mobility_model_kwargs = mobility_model_kwargs,
-        # mobility_model = "Phillies",
-        # mobility_model_kwargs = {"beta" : 10, "nu":0.76},
-        integration="cylindrical_caps",
-        Haberman_correction=Haberman_correction_,
-        stickiness=False,
-        )
+# results_no_fe = []
+# for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
+#     print(d_, chi_PS_, chi_PC_)
+#     result_no_fe = calculate_permeability(
+#         a0, a1, pore_radius, wall_thickness,
+#         d_, chi_PS_, chi_PC_,
+#         sigma = sigma,
+#         exclude_volume=True,
+#         truncate_pressure=False,
+#         method= "no_free_energy",
+#         convolve_mode="same",
+#         mobility_correction= "vol_average",
+#         mobility_model = model,
+#         mobility_model_kwargs = mobility_model_kwargs,
+#         # mobility_model = "Phillies",
+#         # mobility_model_kwargs = {"beta" : 10, "nu":0.76},
+#         integration="cylindrical_caps",
+#         Haberman_correction=Haberman_correction_,
+#         stickiness=False,
+#         )
         
-    #result["limited_permeability"] = (result["permeability"]**(-1) + result["thin_empty_pore"]**(-1))**(-1)
-    results_no_fe.append(result_no_fe)
-results_no_fe = pd.DataFrame(results_no_fe)
+#     #result["limited_permeability"] = (result["permeability"]**(-1) + result["thin_empty_pore"]**(-1))**(-1)
+#     results_no_fe.append(result_no_fe)
+# results_no_fe = pd.DataFrame(results_no_fe)
 
 # results_no_D = []
 # for d_, chi_PS_, chi_PC_ in itertools.product(d, chi_PS, chi_PC):
@@ -166,10 +152,10 @@ fig, axs = plt.subplots(ncols = ncols,
                         sharex = True
                         )
 first_row_axes = axs
-results_ = results.loc[(results.mobility_model == model) & (results.chi.isin([0.4, 0.5, 0.6]))]
+results_ = results#.loc[(results.mobility_model == model) & (results.chi.isin([0.4, 0.5, 0.6]))]
 
 mpl_markers = ('o', '+', 'x', 's', 'D')
-for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
+for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi_PS")):
     markers = itertools.cycle(mpl_markers)
     ax.set_title(f"$\chi_{{PS}} = {chi_PS_}$")
     for chi_PC_, result__ in result_.groupby(by = "chi_PC"):
@@ -213,6 +199,7 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
                 linewidth = 0.5
                 )
 
+    Haberman_correction_ = False
     if show_analytical:
         if Haberman_correction_:
             ax.plot(
@@ -294,27 +281,27 @@ for ax, (chi_PS_, result_) in zip(first_row_axes, results_.groupby(by = "chi")):
                     linewidth = 2,
                     zorder = -1,
                     )
-results_ = results_no_fe#.loc[(results_no_fe.mobility_model == model)]
-for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
-    #if chi_PC_ not in [-1.0, -1.25, -1.5]: continue
-    markers = itertools.cycle(mpl_markers)
-    for chi_PC_, result__ in result_.groupby(by = "chi_PC"):
-        x = result__["d"].squeeze()
-        #y = 1/result__["permeability"]/x
-        y = 1/result__["permeability"]
+# results_ = results_no_fe#.loc[(results_no_fe.mobility_model == model)]
+# for ax, (chi_PS_, result_) in zip(axs, results_.groupby(by = "chi")):
+#     #if chi_PC_ not in [-1.0, -1.25, -1.5]: continue
+#     markers = itertools.cycle(mpl_markers)
+#     for chi_PC_, result__ in result_.groupby(by = "chi_PC"):
+#         x = result__["d"].squeeze()
+#         #y = 1/result__["permeability"]/x
+#         y = 1/result__["permeability"]
 
-        plot_kwargs = dict(
-            label = fr"${chi_PC_:.2f}$",
-        )
+#         plot_kwargs = dict(
+#             label = fr"${chi_PC_:.2f}$",
+#         )
 
-        ax.plot(
-            x, y, 
-            **plot_kwargs,
-            marker = next(markers),
-            mfc = "none",
-            ms = 3,
-            linewidth = 0.2
-            )
+#         ax.plot(
+#             x, y, 
+#             **plot_kwargs,
+#             marker = next(markers),
+#             mfc = "none",
+#             ms = 3,
+#             linewidth = 0.2
+#             )
 
 for ax in axs:
     ax.grid(linewidth = 0.2)
@@ -346,7 +333,7 @@ fig, axs = plt.subplots(
     nrows = 1, 
     sharex = False)
 first_row_axes = axs
-results_ = results.loc[(results.mobility_model == model)]
+results_ = results#.loc[(results.mobility_model == model)]
 # results_no_D_ = results_no_D
 
 mpl_markers = ("^",'o', 's', 'D')
@@ -354,7 +341,7 @@ for ax, (chi_PC_, result_) in zip(axs, results_.groupby(by = "chi_PC")):
     if chi_PC_ not in [-1.0, -1.25, -1.5]: continue
     ax.set_title(fr"$\chi_{{PC}} = {chi_PC_}$")
     markers = itertools.cycle(mpl_markers)
-    for chi_PS_, result__ in result_.groupby(by = "chi"):
+    for chi_PS_, result__ in result_.groupby(by = "chi_PS"):
         x = result__["d"].squeeze()
         #y = 1/result__["permeability"]/x
         y = 1/result__["permeability"]
@@ -384,7 +371,7 @@ for ax, (chi_PC_, result_) in zip(axs, results_.groupby(by = "chi_PC")):
                 s=20,
                 linewidth = 0.5
                 )
-
+    Haberman_correction_ = False
     if show_analytical:
         if Haberman_correction_:
             ax.plot(
@@ -423,28 +410,28 @@ for ax, (chi_PC_, result_) in zip(axs, results_.groupby(by = "chi_PC")):
     # d_star = 2*A/(3*(A**2 - 1))#/(3*chi_PS_-1)
     # ax.axvline(d_star)
 
-results_ = results_no_fe#.loc[(results_no_fe.mobility_model == model)]
-for ax, (chi_PC_, result_) in zip(axs, results_.groupby(by = "chi_PC")):
-    if chi_PC_ not in [-1.0, -1.25, -1.5]: continue
-    ax.set_title(fr"$\chi_{{PC}} = {chi_PC_}$")
-    markers = itertools.cycle(mpl_markers)
-    for chi_PS_, result__ in result_.groupby(by = "chi"):
-        x = result__["d"].squeeze()
-        #y = 1/result__["permeability"]/x
-        y = 1/result__["permeability"]
+# results_ = results_no_fe#.loc[(results_no_fe.mobility_model == model)]
+# for ax, (chi_PC_, result_) in zip(axs, results_.groupby(by = "chi_PC")):
+#     if chi_PC_ not in [-1.0, -1.25, -1.5]: continue
+#     ax.set_title(fr"$\chi_{{PC}} = {chi_PC_}$")
+#     markers = itertools.cycle(mpl_markers)
+#     for chi_PS_, result__ in result_.groupby(by = "chi"):
+#         x = result__["d"].squeeze()
+#         #y = 1/result__["permeability"]/x
+#         y = 1/result__["permeability"]
 
-        plot_kwargs = dict(
-            label = fr"${chi_PS_:.2f}$",
-        )
+#         plot_kwargs = dict(
+#             label = fr"${chi_PS_:.2f}$",
+#         )
 
-        ax.plot(
-            x, y, 
-            **plot_kwargs,
-            marker = next(markers),
-            mfc = "none",
-            ms = 3,
-            linewidth = 0.2
-            )
+#         ax.plot(
+#             x, y, 
+#             **plot_kwargs,
+#             marker = next(markers),
+#             mfc = "none",
+#             ms = 3,
+#             linewidth = 0.2
+#             )
 
 for ax in axs:
     ax.grid(linewidth = 0.2)
