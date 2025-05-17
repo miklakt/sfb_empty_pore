@@ -493,11 +493,11 @@ The reduction would be even stronger for longer pores ($L\gg r_p$), and for larg
 The exterior resistance $R_{\text{ext}}$, on the other hand, always retains a finite contribution from the diffusive fluxes in the semi-infinite reservoir, setting an absolute lower bound on the total resistance.
 The reduction of $R_{\text{ext}}$ below $R^0_\text{ext}$ evidenced in Figure~\ref{fig:resistivity_profile}b is due attractive brush fringes that protrude and faciliate diffusive transport outside the pore.
 The magnitude of this effect increases with the extension of the polymer cap, and explains why the minimal attainable resistance increases with decreasing solvent quality (Figure~\ref{fig:phi_hm_grid}).
-Approximating the brush fringes as a hemisphere cap with radius $r_\text{cap}$, the plateau conditions are equivalent to the doubled resistance of an ideally absorbing hemisphere, $R_\text{ext}^\text{min} = 1 / (D_0 \pi r_\text{cap})$.
+Approximating the brush fringes as a hemisphere cap with radius $r_\text{cap}$, the plateau conditions are equivalent to the doubled resistance of an ideally absorbing hemisphere, $R_\text{ext}^\text{\text{min}} = 1 / (D_0 \pi r_\text{cap})$.
 \todo{We draw on the electrostatic analogy of a grounded, perfectly conducting sphere in a uniform field.
 In a half-space, a hemisphere has twice the resistance of a full sphere, as it is accessible from only one side.
 Since the membrane symmetrically divides space and transport must pass through both hemispheres in series, the total resistance is four times that of a full sphere in an unbounded medium.}
-Attractive brush fringes thus entail a reduction in resistance by a factor of up to $R_\text{ext}^0 / R_\text{ext}^\text{min} = \pi/2 \times r_\text{cap}/r_\text{p}$.
+Attractive brush fringes thus entail a reduction in resistance by a factor of up to $R_\text{ext}^0 / R_\text{ext}^\text{\text{min}} = \pi/2 \times r_\text{cap}/r_\text{p}$.
 In good solvent ($\chi_\text{PC} = 0.3$), for example, the cap radius (along the pore axis) is comparable to the pore diameter (Figure~\ref{fig:phi_hm_grid}), leading to the 3.3-fold reduction of the external resistance, and a cumulative 10-fold reduction of the total resistance, compared to the empty pore (Figure~\ref{fig:resistivity_profile}b).
 As the solvent quality decreases the cap size shrinks (Figure \ref{fig:phi_hm_grid}), with a correspondingly reduced benefit on pore conductivity, as illustrated for $\chi_\text{PC} = 0.7$.
 For even poorer solvents, the cap and its benefit disappear entirely ($R_\text{ext} = R_\text{ext}^0$; not shown).
@@ -579,66 +579,96 @@ When this crowding is accounted for, the steady-state colloid concentrations in 
 
 Figure~\ref{fig:R_vs_d} illustrates how the total resistance varies with colloid size at a fixed solvent strength (panel a, $\chi_{\text{PS}} = 0.5$) or at a fixed polymer-colloid interaction strength (panel b, $\chi_{\text{PC}} = -1.25$.
 
-There are a trivial effects that increase the total resistance $R$ with particle size $d$.
+There are some universal effects that increase the total resistance $R$ of both empty and polymer-filled pores with increasing particle size $d$.
 
 First, according to the Stokes-Einstein relation, $D_0 \sim d^{-1}$, so that $R_0 \sim d$ according to Eq~(\ref{eq:resistance}). 
 Figure~\ref{fig:R_vs_d}ab shows all curves converging to the bare-pore permeability with a Stokesian slope $R_0 \sim d$ in the limit of $d \to 0$, as any other contributions that depend on the particle size vanish.
-
 Second, interference constraints between the impermeable membrane and the spherical particle (excluded volume) decrease the effective pore radius and increase the effective membrane thickness.
-The effect is seen in the resistance of a bare pore on particle size $R_0(d)$ as particles become larger $R_0 \gtrsim  d$ and the $R_0(d)$ curves in Figure~\ref{fig:R_vs_d}ab curls up.
+The effect is seen in the dependences of the bare pore resistance $R_0(d)$ on the particle size:  
+as particles become larger the $R_0(d)$ curves in Figure~\ref{fig:R_vs_d}ab curls up.
 Naturally, as $d \to 2r_{\text{pore}}$, the pore becomes impermeable to particles, and $R_0 \to \infty$ (the asymptote is not shown in Figure~\ref{fig:R_vs_d}ab).
+Finally, as previously mentioned, we underestimate resistance of an empty pore $R_0$ for large particles,
+additional drag from the pore walls is neglected, which would otherwise make the dependence $R_0(d)$ even steeper, 
+with a significantly larger resistances for large particles ($d \sim r_{\text{pore}}$).
 
-As previously mentioned, we underestimate resistance of an empty pore $R_0$ for large particles,
-additional drag from the pore walls is neglected, which would otherwise make the dependence $R_0(d)$ even steeper, with a significantly larger resistances for large particles ($d > r_{\text{pore}}$).
-
-The same parameters that controls the local conductivity Eq.~(\ref{eq:rho}) also control the total resistance.
-
-First, polymer filling lowers the diffusion coefficient $D$ [Eq. (\ref{eq:Rubinstein})], thereby raising the pore’s resistance.
-Because $D$ can fall from the Stokesian scaling $D \sim d^{-1}$ down to $D \sim d^{-3}$, a brush with no net polymer-colloid interaction ($\Delta F=0$) gives a resistance that scales as $R(\Delta F=0)\sim d^{3}$.
-This behaviour is exemplified in Figures \ref{fig:R_vs_d}a,b for the parameter set $\chi_{\text{PS}}=0.5,\;\chi_{\text{PC}}=-1.0$, where $\Delta F$ is slightly negative (or nearly zero) across a wide particle-size range.
-
-Second, osmotic repulsion due to polymer filling further increase total resistance $R$, with $\Delta F_{\text{osm}} \sim d^3$, scaling with particle volume.
-
-Finally, the surface term, governed by $\gamma$, can either raise the resistance ($\gamma>0$) or lower it ($\gamma<0$), with $\Delta F_{\text{sur}} \sim d^2$, scaling with particle surface.
-If $\gamma$ is sufficiently negative, the overall permeability can even exceed that of an empty pore.
-
-For the pore and brush parameters of Figure \ref{fig:colloid_transport} at solvent strength $\chi_{\text{PS}}=0.5$, polymer-colloid interactions weaker than $\chi_{\text{PC}}=-0.6$ ensure $\gamma\ge0$ everywhere (see the curves for $\chi_{\text{PC}}=0.0$ and $-0.5$ in Figure \ref{fig:R_vs_d}a).
-Under these conditions both osmotic and surface terms make $\Delta F>0$, so the pore becomes extremely size-selective, with $R\gtrsim\exp(d^{3})$, effectively blocking even moderately sized particles.
+%The same parameters that controls the local conductivity Eq.~(\ref{eq:rho}) also control the total resistance.
 
 
-A decrease in $\chi_{\text{PC}}$
-%or increase in $\chi_{\text{PS}}$ (\todo{This maybe not universal}) 
-lowers the interfacial term $\gamma$ throughout the polymer filling.
-When $\chi_{\text{PC}}$ drops below the critical value $\chi_{\text{ads}}^{\text{crit}}$, $\gamma$ becomes negative.
-Due to the cubic dependence of $\Delta F$ on particle size $d$, particles below some size have negative insertion free energy, with $F(d)$ having a maximum $d=0$ followed by a minimum $-\tfrac{4\gamma}{\Pi}$.
-The contributions of diffusion slowdown due to the polymer meshwork to the resistance suppresses the extrema when $\chi_{\text{PC}}$ and $\gamma$ is not sufficiently negative, so non-monotonic behaviour in $R(d)$ appears only for strongly attractive particle surface, when $\chi_{\text{PC}}$ and $\gamma$ is sufficiently negative.
+Polymer filling substantially alters the dependence  of the pore resistance $R(d)$ on the particle size $d$.
+First of all, polymer meshwork lowers local diffusion coefficient $D$ (Eq. (\ref{eq:Rubinstein})), thereby raising the pore's resistance.
+Because $D$ can follow scaling $D \sim d^{-3}$, which is stronger than Stokesian $D \sim d^{-1}$, a brush with 
+fairly vanishing colloid insertion free energy, $\Delta F\approx 0$,
+exhibits resistance that scales as $R(\Delta F=0)\sim d^{3}$.
+This behaviour is exemplified in Figures \ref{fig:R_vs_d}a,b for the parameter set $\chi_{\text{PS}}=0.5,\;\chi_{\text{PC}}=-1.0$, 
+where $\Delta F$ is slightly negative (or nearly zero) across a wide particle-size range.
 
-As long as $\gamma$ is weakly negative the landscape $\Delta F(d)$ is mostly positive—or only slightly negative—and the resistance rises monotonically on particle size $d$, within $d^3 \lesssim R(d) \lesssim \exp(d^3)$ for smaller particles when $\Delta F(d)$ is slightly negative, and $R \gtrsim \exp(d^3)$ for larger particles when $\Delta F(d)$ become positive.
-This $R(d)$-scaling regime appears in Figure \ref{fig:R_vs_d}a for $\chi_{\text{PS}} = 0.5$ when $\chi_{\text{PC}}\approx -1.0$ (and, more generally, for $\chi_{\text{PC}} \lesssim -0.7$, which ensures $\gamma\le 0$ everywhere).
-A similar behaviour is seen in Figure \ref{fig:R_vs_d}b at $\chi_{\text{PC}} = -1.25$ for solvent parameters $\chi_{\text{PS}} = 0.3$ and $0.4$.
-%(and more generally for any $\chi_{\text{PS}}$)
+Since the pore resistance $R\sim \exp (\Delta F)$ exponentially depends of the net insertion free energy, 
+$\Delta F=\Delta F_{\text{osm}}+ \Delta F_{\text{surf}}$,
+the dependecne of the pore resistence on the particle size is, in general case, controlled by the interplay between
+the osmotic $\Delta F_{\text{osm}} \sim \Pi d^3$, and the surface $\Delta F_{\text{surf}} \sim \gamma d^2$ contribution. 
+While the osmotic repulsions due to polymer filling $\Delta F_{\text{osm}} \sim \Pi d^3$ further enhance total resistance,  
+the surface term, $\Delta F_{\text{surf}} \sim \gamma d^2$, can either raise the resistance (at $\gamma>0$) or lower it (at $\gamma<0$), 
+%$R\sim \exp (\Delta F_{\text{osm}}+ \Delta F_{\text{surf}})$, 
+Noticably, sufficiently large negative values of $\gamma$ can give rise to overall permeability can even exceed that of an empty pore.
+
+For inert or weakly attractive particles, $\gamma\geq 0$, and the pore resistance grows monotonously as a function of the particle size,$d$,
+due to combined effects of decreasing diffusion coefficient $D(d)$ and increasing isertion free energy  $\Delta F(d)$.
+For sufficiently large particles osmotic contribution dominates in the insertion free energy and $R\sim \exp (\Pi d^3)$.
+
+On the contrary, for strongly attractive particles with $\gamma <0$, the dependence of the pore resistance $R(d)$ of the particle size
+becomes non-monotonous and exhibits local maximum at $d=d_{\text{max}}$ followd by a minimum at $d=d_{\text{min}}$.
+The local maximum corresponds to the particles of intermediate size and arises as an outcome of competition between a decrease in local diffusion coefficient and increasing by the absolute value negative
+contribution $\Delta F_{\text{sur}}\sim \gamma d^2$. For larger particules,
+the interplay of negative quadratic, $\Delta F_{\text{sur}}\sim \gamma d^2$,
+and positive cubic, $\Delta F_{osm}\sim \Pi d^3$, gives rise to a minimum in the insertion free energy $\Delta F$ at $d=d_{\text{min}}\sim (-\gamma/Pi)$, and, 
+consequently in the total pore resistance $R\sim \exp(\Delta F)$, as a function of $d$, which is demonstrated by Figure 7 for $\chi_{PC}=-1.25, \chi_{PS}=0.5$. 
+For the particles of larger size, $d\gg d_{\text{min}}$, the resistance $R(d)$ sharply grows due to the dominant osmotic contribution, 
+$R\sim \exp(\Pi d^3)$.
+
+ 
+
+%For the pore and brush parameters of Figure \ref{fig:colloid_transport} at solvent strength $\chi_{\text{PS}}=0.5$, polymer-colloid interactions weaker than $\chi_{\text{PC}}=-0.6$ ensure $\gamma\ge0$ everywhere (see the curves for $\chi_{\text{PC}}=0.0$ and $-0.5$ in Figure \ref{fig:R_vs_d}a).
+%Under these conditions both osmotic and surface terms make $\Delta F>0$, so the pore becomes extremely size-selective, with $R\gtrsim\exp(d^{3})$, effectively blocking even moderately sized particles.
+
+%A decrease in $\chi_{\text{PC}}$
+%%or increase in $\chi_{\text{PS}}$ (\todo{This maybe not universal}) 
+%lowers the interfacial term $\gamma$ throughout the polymer filling.
+%When $\chi_{\text{PC}}$ drops below the critical value $\chi_{\text{ads}}^{\text{crit}}$, $\gamma$ becomes negative.
+%Due to the cubic dependence of $\Delta F$ on particle size $d$, particles below some size have negative insertion free energy, with $F(d)$ having a maximum $d=0$ followed by a minimum $-\tfrac{4\gamma}{\Pi}$.
+%The contributions of diffusion slowdown due to the polymer meshwork to the resistance suppresses the extrema when $\chi_{\text{PC}}$ and $\gamma$ is not sufficiently negative, so non-monotonic behaviour in $R(d)$ appears only for strongly attractive particle surface, when $\chi_{\text{PC}}$ and $\gamma$ is sufficiently negative.
+
+%As long as $\gamma$ is weakly negative the landscape $\Delta F(d)$ is mostly positive—or only slightly negative—and the resistance rises monotonically on particle size $d$, within $d^3 \lesssim R(d) \lesssim \exp(d^3)$ for smaller particles when $\Delta F(d)$ is slightly negative, and $R \gtrsim \exp(d^3)$ for larger particles when $\Delta F(d)$ become positive.
+%This $R(d)$-scaling regime appears in Figure \ref{fig:R_vs_d}a for $\chi_{\text{PS}} = 0.5$ when $\chi_{\text{PC}}\approx -1.0$ (and, more generally, for $\chi_{\text{PC}} \lesssim -0.7$, which ensures $\gamma\le 0$ everywhere).
+%A similar behaviour is seen in Figure \ref{fig:R_vs_d}b at $\chi_{\text{PC}} = -1.25$ for solvent parameters $\chi_{\text{PS}} = 0.3$ and $0.4$.
+%%(and more generally for any $\chi_{\text{PS}}$)
 
 
-Further decreasing $\chi_{\text{PC}}$ drives $\gamma$ and $\Delta F(d)$ sufficiently negative such that $R(d)$ is no longer monotonic, showing the expected maximum (labelled \raisebox{0.25em}{\scriptsize$\uparrow$}(a) in Figure \ref{fig:R_vs_d}a) and minimum (\raisebox{0.25em}{\scriptsize$\uparrow$}(b)). 
-For particles larger than the size at this minimum, $\Delta F(d)$ turns positive and the resistance again follows the steep $R!\gtrsim!\exp(d^{3})$ scaling.
-Hence, when the surface attraction exceeds $\chi_{\text{ads}}^{\text{crit}}(\chi_{\text{PS}})$ the pore acts as a gate: it is virtually insensitive to particle size below a critical diameter (as (\raisebox{0.25em}{\scriptsize$\uparrow$} in in Figure~\ref{fig:R_vs_d}a(b))), yet becomes highly restrictive once that diameter is exceeded.
-This gating behaviour is exemplified by the curve for $\chi_{\text{PS}} = 0.5,;\chi_{\text{PC}} = -1.25$ in Figure~\ref{fig:R_vs_d}a,b.
+%Further decreasing $\chi_{\text{PC}}$ drives $\gamma$ and $\Delta F(d)$ sufficiently negative such that $R(d)$ is no longer monotonic, showing the expected maximum (labelled \raisebox{0.25em}{\scriptsize$\uparrow$}(a) in Figure \ref{fig:R_vs_d}a) and minimum (\raisebox{0.25em}{\scriptsize$\uparrow$}(b)). 
+%For particles larger than the size at this minimum, $\Delta F(d)$ turns positive and the resistance again follows the steep $R!\gtrsim!\exp(d^{3})$ scaling.
+%Hence, when the surface attraction exceeds $\chi_{\text{ads}}^{\text{crit}}(\chi_{\text{PS}})$ the pore acts as a gate: it is virtually insensitive to particle size below a critical diameter (as (\raisebox{0.25em}{\scriptsize$\uparrow$} in in Figure~\ref{fig:R_vs_d}a(b))), yet becomes highly restrictive once that diameter is exceeded.
+%This gating behaviour is exemplified by the curve for $\chi_{\text{PS}} = 0.5,;\chi_{\text{PC}} = -1.25$ in Figure~\ref{fig:R_vs_d}a,b.
 
-Increasing the solvent strength parameter $\chi_{\text{PS}}$ raises $\gamma$ Eq.~(\ref{eq:chi_ads}) and lowers the osmotic pressure $\Pi$ Eq.~(\ref{eq:osmotic}).  
-For large particles ($d>4$), decreasing $\chi_{\text{PS}}$ has the same qualitative effect as increasing $\chi_{\text{PC}}$: both drive the insertion-free-energy landscape toward more positive values.
+%Increasing the solvent strength parameter $\chi_{\text{PS}}$ raises $\gamma$ Eq.~(\ref{eq:chi_ads}) and lowers the osmotic pressure $\Pi$ Eq.~(\ref{eq:osmotic}).  
+%For large particles ($d>4$), decreasing $\chi_{\text{PS}}$ has the same qualitative effect as increasing $\chi_{\text{PC}}$: both drive the insertion-free-energy landscape toward more positive values.
   
-For small particles, hindered diffusion due to polymer meshwork has dominant contribution to $R(d)$ curves that scales within $d \lesssim R \lesssim d^3$.
-When $\chi_{\text{PS}}$ increases, the brush deswells and the polymer concentration in the pore lumen rises, which leads to a slightly lower diffusion coefficient $D(\phi)$ and slightly higher resistance $R$ at higher $\chi_{\text{PS}}$ for the same particle size.
-Accordingly, in Figure~\ref{fig:R_vs_d}b the curves for $d<4$ stack almost vertically, ordered by decreasing $\chi_{\text{PS}}$.
+%For small particles, hindered diffusion due to polymer meshwork has dominant contribution to $R(d)$ curves that scales within $d \lesssim R \lesssim d^3$.
+%When $\chi_{\text{PS}}$ increases, the brush deswells and the polymer concentration in the pore lumen rises, which leads to a slightly lower diffusion coefficient $D(\phi)$ and slightly higher resistance $R$ at higher $\chi_{\text{PS}}$ for the same particle size.
+%Accordingly, in Figure~\ref{fig:R_vs_d}b the curves for $d<4$ stack almost vertically, ordered by decreasing $\chi_{\text{PS}}$.
 
-Further decrease in $\chi_{\text{PC}}$ or increase in $\chi_{\text{PS}}$ will drive the insertion free energy strongly negative ($\Delta F \!\ll\! 0$) and $\gamma<0$, the pore interior is effectively short-circuited, $R_{\text{int}} \to 0$, so the total resistance is set by the finite exterior contribution, $R\approx R_{\text{ext}}$ as in Eq.~(\ref{eq:R_tot_tot}); see Figure~\ref{fig:resistivity_profile}.  
+%Further decrease in $\chi_{\text{PC}}$ or increase in $\chi_{\text{PS}}$ will drive 
 
-For very attractive particles the swollen-brush loose fringe can be highly permeable, further lowering $R_{\text{ext}} \to 1 / (D_0 \pi r_\text{cap})$ which gives the Stokesian scaling  $R \sim d$.
+When the insertion free energy strongly negative, the pore interior is effectively short-circuited, $R_{\text{int}} \to 0$, 
+so the total resistance is set by the finite exterior contribution, $R\approx R_{\text{ext}}$ as in Eq.~(\ref{eq:R_tot_tot}); 
+see Figure~\ref{fig:resistivity_profile}.  
+For very attractive particles the swollen-brush loose fringe can be highly permeable, 
+further lowering $R_{\text{ext}} \to 1 / (D_0 \pi r_\text{cap})$ which gives the Stokesian scaling  $R \sim d$.
 
 As particle size increases under sufficiently negative $\gamma$, a local minimum in $R(d)$ is expected (labelled \raisebox{0.25em}{\scriptsize$\uparrow$}(b) in Figure~\ref{fig:R_vs_d}a).  
 Because the total resistance is bounded below by $R_{\text{ext}}$, the parabolic section that would otherwise appear is truncated and replaced by an almost linear segment.  
 The onset of this linear regime, indicated by \raisebox{0.25em}{\scriptsize$\uparrow$}(c) in Figure~\ref{fig:R_vs_d}a, marks the capped minimum.  
-Beyond some particle size, further increases in $d$ amplify the osmotic penalty and membrane-particle interference, so the curve leaves the linear section and rises along the upward branch of the original parabola.
+Beyond some particle size, further increases in $d$ amplify the osmotic penalty 
+%and particle excluded volume, 
+so the curve leaves the linear section and rises along the upward branch of the original parabola.
 
 %%%%%%%%%%
 \subsection{Experiments of colloid transport through nuclear pores validate the theoretical predictions}
@@ -950,11 +980,11 @@ The agreements are indeed remarkable given that the nuclear pore complex exhibit
 
 %A decrease in $\chi_{ads}$ triggered by a decrease in  $\chi_{\text{PC}}$ or/and an increase in $\chi_{\text{PS}}$ leads to qualitative changes in the insertion free energy 
 %$\Delta F(r,z)$ patterns: At $\chi_{ads}\leq \chi_{crit}$ the particle surface becomes
-%adsorbing for the polymer, $\gamma \leq 0$, that gives rise to a negative contribution $\Delta F_{surf}(r,z)$ to the insertion free energy. 
+%adsorbing for the polymer, $\gamma \leq 0$, that gives rise to a negative contribution $\Delta F_{\text{sur}}(r,z)$ to the insertion free energy. 
 %When $\chi_{\text{PS}}$ increases (the solvent is getting worse for the polymer)
 %the osmotic pressure inside the brush decreases that leads to a decrease in the 
 %magnitude of $\Delta F_{osm}(r,z)$ with the concomitant shrinkage of the  protruding outside the pore parts of the brush where  $\Delta F(r,z)\neq 0$.
-%As a result, the $\Delta F_{surf}(r,z)$ aquires two minima with negative values near the endtance and the exit of the pore, separated by a maximum centered in the middle of the pore
+%As a result, the $\Delta F_{\text{sur}}(r,z)$ aquires two minima with negative values near the endtance and the exit of the pore, separated by a maximum centered in the middle of the pore
 %where polymer concentration is larger and the osmotic repulsive term  $\Delta F_{osm}(r,z)$ dominates.
-%Finally, at strong polymer-particle attraction $\chi_{ads} < \chi_{crit}$, the negative surface contribution $\Delta F_{surf}(r,z)\leq 0$ overperform osmotic repulsion everywhere inside the pore
+%Finally, at strong polymer-particle attraction $\chi_{ads} < \chi_{crit}$, the negative surface contribution $\Delta F_{\text{sur}}(r,z)\leq 0$ overperform osmotic repulsion everywhere inside the pore
 %and the $\Delta F(r,z)$ aquires the shape of the potential well centered in the middle of the pore, which gives rise to preferential accumulation of particles in the pore, $P\geq 1$.
