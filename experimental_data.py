@@ -311,7 +311,7 @@ Ribbeck2001 = {
 
 flux_vs_molar_weight["Ribbeck2001"] = Ribbeck2001
 #%%
-csv_data="""Protein,Arg/Lys,Charge_pH7.4,Passage_Rate,Mac98A,Nup116,Nsp1,MM,MM_err,Oligomer,Plasmid
+csv_data="""Probe,Arg/Lys,Charge_pH7.4,Passage_Rate,Mac98A,Nup116,Nsp1,MM,MM_err,Oligomer,Plasmid
 yNTF2 (dimer),10R/6K,-15.0,600.0,290.0,1400.0,800.0,28.0,,1.0,pSF360
 rNTF2 (dimer),4R/8K,-14.6,680.0,3200.0,13000.0,890.0,28.0,,1.0,pDG2121
 mCherry,8R/24K,-6.4,1.0,0.05,0.09,0.4,28.0,,1.0,pSF779

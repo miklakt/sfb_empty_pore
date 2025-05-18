@@ -49,7 +49,7 @@ def mobility_Rubinstein(phi, k, d, prefactor = 1):
         m = np.ones_like(phi)
         return m
     eps = np.where(phi==0, 0.0, 1/phi)
-    m = eps * eps / (d * d)/prefactor
+    m = eps * eps / (d * d)/prefactor**2
     m = m /(1.0 + m**k)**(1 / k)
     m = np.where(phi>0, m, 1.0)
     return m
@@ -206,20 +206,21 @@ def calculate_mobility(
     
     fields["mobility"] = mobility
 
-# def calculate_conductivity(fields, D_0 = "Einstein"):
-#     d = fields["d"]
-#     if D_0 == "Einstein":
-#         D_0 = 1/(3*np.pi*d)
-#     elif D_0 is None:
-#         D_0 = 1
-#     elif isinstance(D_0, float|int):
-#         pass
-#     else:
-#         raise ValueError("Incorrect D_0")
-#     fields["D_0"] = D_0 
-#     fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])*D_0
-def calculate_conductivity(fields):
-    fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])
+#def calculate_D0(fields)
+def calculate_conductivity(fields, D_0 = "Einstein"):
+    d = fields["d"]
+    if D_0 == "Einstein":
+        D_0 = 1/(3*np.pi*d)
+    elif D_0 is None:
+        D_0 = 1
+    elif isinstance(D_0, float|int):
+        pass
+    else:
+        raise ValueError("Incorrect D_0")
+    fields["D_0"] = D_0 
+    fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])*D_0
+# def calculate_conductivity(fields):
+#     fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])
 
 
 def integrate_with_cylindrical_caps(
@@ -281,8 +282,8 @@ def integrate_conductivity(
     wall_thickness = fields["s"]
     xlayers = fields["xlayers"]
     ylayers = fields["ylayers"]
-
     d = fields["d"]
+    D_0 = fields["D_0"]
 
     if correct_excluded_volume:
         # here we integrate it as if the interior
@@ -305,11 +306,11 @@ def integrate_conductivity(
         pore_radius = pore_radius - d/2
 
         #resistance of the pure solvent outside the integration domain
-        R_left = (np.pi - 2*np.arctan(z_left/pore_radius))/(4*np.pi*pore_radius)
-        R_right = (np.pi - 2*np.arctan(z_right/pore_radius))/(4*np.pi*pore_radius)
+        R_left = (np.pi - 2*np.arctan(z_left/pore_radius))/(4*np.pi*pore_radius)/D_0
+        R_right = (np.pi - 2*np.arctan(z_right/pore_radius))/(4*np.pi*pore_radius)/D_0
     else:
-        R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(2*np.pi*pore_radius)
-        R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(2*np.pi*pore_radius)
+        R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(2*np.pi*pore_radius)/D_0
+        R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(2*np.pi*pore_radius)/D_0
 
     if not np.isclose(R_left, R_right):
         print("The simulation box seems to be asymmetric")
@@ -389,7 +390,7 @@ def calculate_fields(
         stickiness = False,
         stickiness_model_kwargs = {},
         gel_phi = None,
-        #D_0 = "Einstein"
+        D_0 = "Einstein"
         ):
 
     fields = utils.get_by_kwargs(master_empty, chi_PS = chi_PS, s = wall_thickness, r = pore_radius, sigma = sigma).squeeze()
@@ -425,26 +426,17 @@ def calculate_fields(
                        stickiness=stickiness, 
                        stickiness_model_kwargs=stickiness_model_kwargs
                        )
-    #calculate_conductivity(fields, D_0)
-    calculate_conductivity(fields)
+    calculate_conductivity(fields, D_0)
+    #calculate_conductivity(fields)
     integrate_conductivity(fields)
 
     if partitioning_cutoff_phi is not None:
         calculate_partition_coefficient(fields, cutoff_phi = partitioning_cutoff_phi)
     
-    ####To be removed
-    einstein_factor = 1/(3*np.pi*d)
-    #fields["einstein_factor"] = einstein_factor_value
-    fields["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
-    fields["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
-    # #fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(1, pore_radius, wall_thickness, d)*einstein_factor
-
-    fields["permeability"] = fields["permeability"]*einstein_factor
-    fields["permeability_z"] = fields["permeability_z"]*einstein_factor
-
-    fields["R_left"] = fields["R_left"]/einstein_factor
-    fields["R_right"] = fields["R_right"]/einstein_factor
-    fields["R_pore"] = fields["R_pore"]/einstein_factor
+    D_0 = fields["D_0"]
+    fields["thin_empty_pore"] = empty_pore_permeability(D_0, pore_radius-d/2, 0)
+    fields["thick_empty_pore"] = empty_pore_permeability(D_0, pore_radius-d/2, wall_thickness+d)
+    fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(D_0, pore_radius, wall_thickness, d)
 
     return fields
 # %%
