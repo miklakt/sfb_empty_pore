@@ -39,21 +39,21 @@ wall_thickness = 52 # wall thickness
 
 # %%
 import matplotlib.colors as plt_colors
-a0, a1 = 0.70585835, -0.31406453
+a0, a1 = 0.7, -0.3
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d = 16
+d = 8
 chi_PC = -1.0
-chi = 0.5
+chi_PS = 0.5
 sigma = 0.02
 
 kwargs = dict(
     a0=a0, a1=a1, d=d,
-    chi_PC=chi_PC, chi_PS=chi,
+    chi_PC=chi_PC, chi_PS=chi_PS,
     sigma = sigma,
     wall_thickness=wall_thickness,
     pore_radius=pore_radius,
-    mobility_model_kwargs = {"prefactor":30.0},
+    mobility_model_kwargs = {"prefactor":30.0**(1/2)},
     stickiness=False,
     #gel_phi = 0.2
 )
@@ -63,6 +63,7 @@ fields = calculate_fields(
 
 fields["resistivity"] = (fields["conductivity"])**(-1)
 fields["pc"] = np.exp(-fields["free_energy"])
+fields["mobility"] = -np.log(fields["mobility"])
 #%%
 %matplotlib TkAgg
 import cmasher as cmr
@@ -77,17 +78,17 @@ fig = plot_heatmap(fields, r_cut, z_cut, keys = [
     #"phi", 
     #"Pi", 
     #"gamma", 
-    "free_energy", 
-    #"mobility", 
+    #"free_energy", 
+    "mobility", 
     #"conductivity", 
     #"resistivity",
     #"osmotic", 
     #"surface"
     #"pc"
     ], 
-    #cmap = "cividis",
-    #zmin=0,
-    #zmax = 0.7,
+    cmap = "Reds",
+    zmin=0,
+    zmax = 4,
     #cmap = cmap_.reversed(),
     #cmap = cmap_,
     #zmin=vmin,

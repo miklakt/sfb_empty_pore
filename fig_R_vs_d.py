@@ -14,8 +14,12 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 import matplotlib.style as style
-from matplotlib import rc
+from matplotlib import rc, rcParams
 
+rcParams.update({
+    "mathtext.fontset": "cm",  # Use Computer Modern
+    "font.family": "serif",
+})
 
 style.use('tableau-colorblind10')
 get_palette_colors = lambda: itertools.chain([
@@ -29,7 +33,7 @@ get_palette_colors = lambda: itertools.chain([
  '#A2C8EC',
  '#FFBC79',
  '#CFCFCF'])
-mpl_markers = ('+','o', '^', 's', 'D')
+mpl_markers = ('+','o', '^', 's', 'D', 'd')
 
 import calculate_fields_in_pore
 
@@ -56,10 +60,10 @@ R_0_no_vol_excl = np.array([calculate_fields_in_pore.empty_pore_permeability(1/(
 R_0 = np.array([calculate_fields_in_pore.empty_pore_permeability(1/(3*np.pi*d_), r_pore-d_/2, L+d_)**-1 for d_ in d])
 #%%
 fig, axs = plt.subplots(nrows = 2, 
-                        sharex = False)
+                        sharex = True)
 
 chi_PS = 0.5
-chi_PCs =[-1.25] + [0,-0.5, -1.0, -1.5]
+chi_PCs =[-1.3] + [0.0, -1.0, -1.4, -1.8]
 ax = axs[0]
 marker = itertools.chain(mpl_markers)
 color = get_palette_colors()
@@ -69,17 +73,32 @@ for chi_PC in chi_PCs:
     y = calc["permeability"]**-1
     ax.plot(
         x, y, 
-        linewidth = 0.5,
+        linewidth = 1.0 if chi_PC==-1.3 else 0.5,
         ms=4,
         marker = next(marker),
         color = next(color),
         label = chi_PC,
         )
-ax.text(0.05, 0.95, r"$\chi_{\text{PS}} = "+f"{chi_PS}$", transform = ax.transAxes, va = "top", ha = "left", bbox ={"fc" : "white"})
-ax.legend(bbox_to_anchor = [1, 1], title = r"$\chi_{\text{PC}}$")
+
+# Get handles and labels
+handles, labels = ax.get_legend_handles_labels()
+
+# Sort by labels in descending order
+sorted_handles_labels = sorted(zip(handles, labels), key=lambda x: float(x[1]), reverse=True)
+sorted_handles, sorted_labels = zip(*sorted_handles_labels)
+ax.legend(sorted_handles, sorted_labels, 
+          bbox_to_anchor = [1, 1], 
+          title = r"$\chi_{\text{PC}}$",
+          title_fontsize = 12,
+          )
+ax.text(0.02, 0.98, r"$\chi_{\text{PS}} = "+f"{chi_PS}$", 
+        transform = ax.transAxes, va = "top", ha = "left", 
+        bbox ={"fc" : "white", "pad":1},
+        fontsize = 12,
+        )
 
 ax = axs[1]
-chi_PC = -1.25
+chi_PC = -1.3
 chi_PSs = [ 0.5]+[0.3, 0.4, 0.6, 0.7]
 marker = itertools.chain(mpl_markers)
 color = get_palette_colors()
@@ -89,15 +108,30 @@ for chi_PS in chi_PSs:
     y = calc["permeability"]**-1
     ax.plot(
         x, y, 
-        linewidth = 0.5,
+        linewidth = 1.0 if chi_PS==0.5 else 0.5,
         ms=4,
         mfc = "none",
         marker = next(marker),
         color = next(color),
         label = chi_PS
         )
-ax.text(0.05, 0.95, r"$\chi_{\text{PC}} = "+f"{chi_PC}$", transform = ax.transAxes, va = "top", ha = "left", bbox ={"fc" : "white"})
+ax.text(0.02, 0.98, r"$\chi_{\text{PC}} = "+f"{chi_PC}$", 
+        transform = ax.transAxes, va = "top", ha = "left",
+        bbox ={"fc" : "white", "pad":1},
+        fontsize = 12,
+        )
 
+
+handles, labels = ax.get_legend_handles_labels()
+sorted_handles_labels = sorted(zip(handles, labels), key=lambda x: float(x[1]), reverse=False)
+sorted_handles, sorted_labels = zip(*sorted_handles_labels)
+ax.legend(sorted_handles, sorted_labels,
+        bbox_to_anchor = [1, 1], 
+        title = r"$\chi_{\text{PS}}$",
+        title_fontsize = 12,
+        )
+
+litera = itertools.chain(["a", "b"])
 for ax in axs:
     ax.plot(x, R_0, color = "k", linewidth=2)
     ax.plot(x, R_0_no_vol_excl, color = "k", linewidth=0.5)
@@ -106,14 +140,23 @@ for ax in axs:
     ax.set_ylim(1e-1, 1e3)
     ax.set_xlim(5e-1, 32)
     ax.grid()
+    ax.text(x[2], R_0[2], r"$R_0$", 
+        #transform = ax.transAxes, 
+        va = "center", ha = "center", 
+        bbox ={"fc" : "white", "ec":"none", "pad":0.2},
+        fontsize = 12,
+        rotation = 35,
+        )
+    ax.text(-0.3, 1.0, s = f"({next(litera)})",
+            va = "center", ha = "center", 
+            transform = ax.transAxes,
+    )   
+axs[1].set_xlabel("$d$",fontsize = 14,labelpad=-5)
+axs[0].set_ylabel(r"$\qquad R \, \frac{k_{\text{B}}T}{\eta_{\text{S}}}$", fontsize = 16, labelpad=-7)
+axs[1].set_ylabel(r"$\qquad R \, \frac{k_{\text{B}}T}{\eta_{\text{S}}}$", fontsize = 16, labelpad=-7)
 
-axs[1].set_xlabel("$d$",fontsize = 14)
-axs[0].set_ylabel(r"$R \frac{k_{\text{B}}T}{\eta_{\text{S}}}$", fontsize = 14)
-axs[1].set_ylabel(r"$R \frac{k_{\text{B}}T}{\eta_{\text{S}}}$", fontsize = 14)
-
-ax.legend(bbox_to_anchor = [1, 1], title = r"$\chi_{\text{PC}}$")
-
-fig.set_size_inches(2.2,5.5)
+plt.tight_layout()
+fig.set_size_inches(3.5,5.5)
 fig.savefig("fig/permeability_on_d.svg")
 
 # %%

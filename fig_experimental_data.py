@@ -8,7 +8,12 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 import matplotlib.style as style
-from matplotlib import rc
+from matplotlib import rcParams
+
+rcParams.update({
+    "mathtext.fontset": "cm",  # Use Computer Modern
+    "font.family": "serif",
+})
 
 
 style.use('tableau-colorblind10')
@@ -187,7 +192,8 @@ ax.set_xlabel(r"$\left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}}$
 #nups = ["Mac98A","Nup116", "Nsp1"]
 nups = ["Mac98A","Nup116"]
 
-data = Frey2018["data"].loc[Frey2018["data"]["d"]<5]
+#data = Frey2018["data"].loc[Frey2018["data"]["d"]<5]
+data = Frey2018["data"]#.loc[Frey2018["data"]["d"]<5]
 
 #ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
 
@@ -237,14 +243,14 @@ theoretical_particles["R"] = R*eta/(k_B*T)
 theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
 theoretical_particles["PC"] = [PC_gel(phi_gel, chi_PS, chi_PC, d) for chi_PC in chi_PCs]
 
-ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#FF800E', linewidth = 1.5, linestyle = "--")
+ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 1.5, linestyle = "--")
 
 theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d, stickiness=True) for chi_PC in chi_PCs])
 R = np.array(theoretical_particles_result["permeability"]**-1)
 theoretical_particles["R"] = R*eta/(k_B*T)
 theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
 
-ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#FF800E', linewidth = 2)
+ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 2)
 
 ax.axhline(
     empty_pore_line, 
@@ -263,10 +269,10 @@ for xx, ss in zip(theoretical_particles["PC"][2::5], chi_PCs[2::5]):
 
 
 
-ax.legend(
-    #bbox_to_anchor = [0.0,1.0], 
-    loc = "lower left"
-    )
+# ax.legend(
+#     #bbox_to_anchor = [0.0,1.0], 
+#     loc = "lower left"
+#     )
 ax.grid()
 ax.set_ylim(1e-1, ymax)
 ax.set_xlim(2e-2, 2e4)
