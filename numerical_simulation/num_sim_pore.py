@@ -58,21 +58,16 @@ wall_thickness = 52 # wall thickness
 #d_ = [10]
 d = 12
 chi_PC = -1.0
-chi = 0.5
+chi_PS = 0.5
 sigma = 0.02
 prefactor = 30.0
 #for d in d_:
 fields_ = calculate_fields(
-    a0, a1, d=d,
-    chi_PC=chi_PC, chi=chi,
+    a0 = a0, a1 = a1, d = d,
+    chi_PC = chi_PC, chi_PS = chi_PS,
     sigma = sigma,
     wall_thickness=wall_thickness,
     pore_radius=pore_radius,
-    exclude_volume=True,
-    truncate_pressure=False,
-    method= "convolve", 
-    mobility_correction= "vol_average",
-    mobility_model = "Rubinstein",
     mobility_model_kwargs = {"prefactor":prefactor}
     )
 #%%
@@ -103,9 +98,8 @@ dt = 0.2
 drift_diffusion.create_kernel(dt = dt)
 def inflow_boundary(dd):
     dd.c_arr[0,:]=1 #source left
-    dd.c_arr[:,-1]=dd.c_arr[:,-2] #mirror top
-    #c_arr[:,0]=c_arr[:,1] #mirror bottom
-    #dd.c_arr[:,-1]=dd.c_arr[:,-2] + xp.less_equal(dd.c_arr[:,-2] - dd.c_arr[:,-3], 0) # constant deriv 
+    #dd.c_arr[:,-1]=dd.c_arr[:,-2] #mirror top
+    dd.c_arr[:,-1]=dd.c_arr[:,-2] + xp.less_equal(dd.c_arr[:,-2] - dd.c_arr[:,-3], 0) # constant deriv 
     dd.c_arr[-1,:]=0 #sink  right
 
 #%%

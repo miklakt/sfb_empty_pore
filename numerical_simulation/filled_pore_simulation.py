@@ -47,29 +47,24 @@ def pad_fields(fields, pad_sides, pad_top):
         ))
     return padded_fields
 #%%
-a0, a1 = [0.70585835, -0.31406453]
+a0, a1 = [0.7, -0.3]
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
 #d_ = np.arange(6, 22, 2)
 #d_ = [10]
-d = 8
+d = 4
 chi_PC = -1.0
-chi = 0.5
+chi_PS = 0.5
 sigma = 0.02
 
 #for d in d_:
 fields_ = calculate_fields(
-    a0, a1, d=d,
-    chi_PC=chi_PC, chi=chi,
+    a0=a0, a1=a1, d=d,
+    chi_PC = chi_PC, chi_PS = chi_PS,
     sigma = sigma,
     wall_thickness=wall_thickness,
     pore_radius=pore_radius,
-    exclude_volume=True,
-    truncate_pressure=False,
-    method= "convolve", 
-    mobility_correction= "vol_average",
-    mobility_model = "Rubinstein",
-    mobility_model_kwargs = {"prefactor":30.0}
+    mobility_model_kwargs = {"prefactor":30.0**(0.5)}
     )
 #%%
 fields = pad_fields(fields_, pad_sides = 100, pad_top = 200)
@@ -86,9 +81,9 @@ drift_diffusion = DriftDiffusionKernelFactory(
     differencing=differencing
     )
 
-no_energy_calculation = here + f"/simulation_data/no_free_energy_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}_{chi}.txt"
+no_energy_calculation = here + f"/simulation_data/no_free_energy_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}_{chi_PS}.txt"
 empty_pore_calculation = here + f"/simulation_data/empty_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}.txt"
-output_filename = here + f"/simulation_data/filled_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}_{chi}_{chi_PC}.txt"
+output_filename = here + f"/simulation_data/filled_{zlayers}_{rlayers}_{pore_radius}_{wall_thickness}_{d}_{chi_PS}_{chi_PC}.txt"
 
 #%%
 try:
@@ -109,11 +104,13 @@ except FileNotFoundError:
             print("Initial guess is not found")
 drift_diffusion.c_arr = c0
 #%%
+x_center = int(xp.shape(drift_diffusion.c_arr)[0]/2)
 def inflow_boundary(dd):
     dd.c_arr[0,:]=1 #source left
     dd.c_arr[:,-1]=dd.c_arr[:,-2] #mirror top
     #c_arr[:,0]=c_arr[:,1] #mirror bottom
-    #dd.c_arr[:,-1]=dd.c_arr[:,-2] + xp.less_equal(dd.c_arr[:,-2] - dd.c_arr[:,-3], 0) # constant deriv 
+    #dd.c_arr[:x_center,-1]= dd.c_arr[:x_center,-2] + xp.greater_equal(dd.c_arr[:x_center,-2] - dd.c_arr[:x_center,-3],0) # constant deriv before the membrane
+    #dd.c_arr[x_center:,-1]= dd.c_arr[x_center:,-2] + xp.less_equal(dd.c_arr[x_center:,-2] - dd.c_arr[x_center:,-3],0)
     dd.c_arr[-1,:]=0 #sink  right
 #%%
 # c_arr = np.loadtxt("tmp.txt")
@@ -123,7 +120,7 @@ dt = 0.1
 drift_diffusion.run_until(
     inflow_boundary, dt=dt,
     target_divJ_tot=1e-6,
-    #jump_every=10,
+    jump_every=1000000,
     timeout=600,
     #max_jump=1e-3,
     #sigmoid_steepness=0.01
@@ -138,23 +135,26 @@ plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_
 #%%
 plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
 # %%
+%matplotlib QtAgg
+plot_heatmap_and_profiles(drift_diffusion.J_arr.get()[:,:,1], mask = drift_diffusion.W_arr.get())
+#%%
 plt.plot(drift_diffusion.J_z_tot().get())
 # %%
 print("d",   "chi_PS",    "chi_PC",   "J_tot",    "J_tot_err")
 print(
     d,
-    chi,
+    chi_PS,
     chi_PC,
     np.round(np.mean(drift_diffusion.J_z_tot().get()), 4),
     np.round(np.std(drift_diffusion.J_z_tot().get()), 4),
     sep = ", ",
     )
 #%%
-with open("numeric_simulation_results.csv", mode='a', newline='') as file:
+with open("numeric_simulation_results_.csv", mode='a', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(
     (d,
-    chi,
+    chi_PS,
     chi_PC,
     np.round(np.mean(drift_diffusion.J_z_tot().get()), 4),
     np.round(np.std(drift_diffusion.J_z_tot().get()), 4),)
