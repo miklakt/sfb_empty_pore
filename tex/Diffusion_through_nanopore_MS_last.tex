@@ -304,7 +304,6 @@ Although the predictions of different models differ quantitatively, they all sha
 \subsubsection{Defining leading contribution to the insertion free energy}
 %%%%%%%%%%
 
-\todo{[Please check if you are happy with how I have revised the above heading. I have aimed to convey the key result.]}
 The position-dependent insertion free energy $\Delta F(r,z)$ is the work required to move a colloid from the exterior solution into the polymer brush.
 For colloids that are significantly smaller than the size of the pore, the insertion free energy is determined entirely by the local polymer concentration (i.e., wall effects can be neglected), and comprises two distinct contributions:
 \begin{eqnarray}
@@ -363,11 +362,18 @@ For example, the brush shown in Figure~\ref{fig:DeltaF_map} at $\chi_{\text{PC}}
 \begin{figure}
     \centering
     %\REMOVE \CENTERLINE BEFORE SUBMISSION
-    \centerline{\includegraphics[width = 7in]{fig/diffusivity_and_fe.png}}
-    \caption{
-    Maps of the colloid insertion free energy $\Delta F(r,z)$ for a range of polymer-colloid interaction strengths, quantified by the Flory-Huggins parameter $\chi_{\text{PC}}$ and ranging from -0.50 (least attractive) to -1.25 (most attractive), as indicated.
-    Insertion free energies are mapped in cylindrical coordinates, color coded as indicated.
-    Pore and brush parameters are as given in Figure~\ref{fig:colloid_transport}; $\chi_{\text{PS}}=0.5$ and $d=8$.
+    \centerline{\includegraphics[width = 6.5in]{fig/diffusivity_and_fe.png}}
+    \caption{%
+        Effect of the polymer brush on local diffusivity and insertion free energy.  
+        \textbf{(a)}  Comparison of the hindrance caused by the brush (black curve, $-\ln(D/D_{0})$) with the insertion free energy (coloured curves, labelled by $\chi_{\text{PC}}$) as functions of the local polymer volume fraction~$\phi$.  
+        Both quantities share the vertical scale  
+        $\ln(\rho D_{0}) = -\ln(D/D_{0}) + \Delta F$,  
+        so the horizontal zero line corresponds to unimpeded transport in pure solvent; positive values raise the resistance, whereas negative values lower it.
+        Red curves denote a net increase in resistance, blue curves a net decrease due to the effect of insertion free energy.  
+        \textbf{(b)}  Spatial map of the diffusional hindrance, $-\ln\bigl[D(\phi(r,z))/D_{0}\bigr]$, in cylindrical coordinates.  
+        \textbf{(c)}  Maps of the insertion free energy $\Delta F(r,z)$ for polymer-colloid interaction strengths ranging from $\chi_{\text{PC}}=-0.50$ (weakest attraction) to $\chi_{\text{PC}}=-1.25$ (strongest attraction), as indicated.
+        \\  
+        In all panels the pore and brush parameters are those of Figure~\ref{fig:colloid_transport}; the solvent parameter is $\chi_{\text{PS}}=0.5$ and the particle diameter is $d=8$.%
     }
     \label{fig:DeltaF_map}
 \end{figure}
@@ -432,14 +438,13 @@ where $r'(r,z) , z'(r,z)$ are the functions parameterizing the equipotential sur
 
 \begin{figure}
     \centering
-    \includegraphics[width=3.5in]{fig/resistitance_integration_miniature.png}
+    \includegraphics[width=3in]{fig/resistitance_integration_miniature.png}
     \caption{
     Integration scheme for the layer resistance.  
-    The intrinsic orthogonal curvilinear coordinates are defined by equipotential surfaces, $\psi(r,z)=\text{const}$, and the flux lines $\bm{j}$.  
+    The intrinsic orthogonal curvilinear coordinates are defined by equipotential surfaces, \mbox{$\psi(r,z) = \text{const}$}, and the flux lines $\bm{j}$.  
     A layer between two adjacent equipotential surfaces with a thickness $\text{d}z$ along the central axis has resistance $\varrho_{\text{int}}\text{d}z$ inside the pore ($|z|<L/2$, blue shading) and $\varrho_{\text{ext}}\text{d}z$ in the exterior region (red shading).  
     The red rectangle illustrates the local conductivity element at $(r',z')$ within the exterior layer.  
     The parametrization $(r'(r,z),\,z'(r,z))$ traces the integration path and maps the curvilinear coordinates back to the original cylindrical coordinates $(r,z)$, as indicated by the red arrows.
-    \todo{[In the figure, the symbol $j$ should be $\mathbf{j}$ instead for consistency with the legend?]}
     }
     \label{fig:integration_scheme}
 \end{figure}
@@ -466,7 +471,7 @@ Conversely, a brush under good or $\theta$-solvent conditions produces swollen f
 
 \begin{figure}
     \centering
-    \includegraphics[width = 3.5in]{fig/resistitance_components.png}
+    \includegraphics[width = 3in]{fig/resistitance_components.png}
     \caption{
     Interior ($R_{\text{int}}$), exterior ($R_{\text{ext}}$) and total ($R = R_{\text{int}} + R_{\text{ext}}$) resistance  vs polymer-colloid interaction strength $\chi_{\text{PC}}$ for a good solvent ($\chi_{\text{PS}} = 0.3$, in blue) and a poor solvent ($\chi_{\text{PS}} = 0.7$, in grey).
     %(all normalized by the viscosity of the solvent $\eta_\text{S}$, and encoded by line type as indicated)
@@ -572,8 +577,6 @@ When this crowding is accounted for, the steady-state colloid concentrations in 
     \caption{
     Normalized pore resistance $R$ as a function of colloid size $d$ for \textbf{(a)} selected polymer-colloid interaction strengths $\chi_{\text{PC}}$ (as indicated with colored lines) at a fixed solvent strength $\chi_{\text{PS}} =0.5$, and \textbf{(b)} selected $\chi_{\text{PS}}$ (as indicated with colored lines) at a fixed $\chi_{\text{PC}} = -1.25$. 
     The normalized bare-pore resistance $R_{0}$ (black thick lines) serves as a reference.
-    Vertical arrows next to the captions illustrate the qualitative effects of $\chi_{\text{PC}}$ and $\chi_{\text{PS}}$ on the surface tenssion $\gamma$, the osmotic pressure $\Pi$ and the mean polymer volume fraction $\tilde{\phi}$. 
-    \todo{[The arrows and letter in panel a can be removed, as they are not used in the main text. Do we define the meaning of the mean polymer volume fraction somehwere?]} 
     The resistances is presented in dimensionless units $R\tfrac{k_{B}T}{\eta_{\text{S}}}$; pore and brush parameters are as given in Figure~\ref{fig:colloid_transport}. 
     }
     \label{fig:R_vs_d}
@@ -655,10 +658,10 @@ Several studies \cite{Ribbeck2001, Mohr2009, Popken2015, Timney2016, Frey2018} h
 Together, these studies cover two orders of magnitude in molecular mass, and five orders of magnitude in transport rate. 
 Figure~\ref{fig:NPC_comparison}a compares these experimental results with the theoretical predictions of our model.
 As the example pore geometry and polymer density in Figure~\ref{fig:colloid_transport} were modelled to represent a NPC (Supporting Method 1), we can directly compare our theoretical predictions with experimental data.
-The effective statistical segment length of disordered polypeptide chains was taken to be $a$ = 0.8 nm \todo{[Ralf and/or Mikhail to add reference. Mikhail to confirm if indeed he used $a$ = 0.8 nm.]}.
+The effective statistical segment length of disordered polypeptide chains was taken to be $a$ = 0.76 nm \todo{[Ralf and/or Mikhail to add reference.]}.
 The effective solvent strength in the NPC was estimated to be close to $\theta$-solvent ($\chi_{\text{PS}} = 0.5$), consistent with varying yet generally moderate levels of 'cohesiveness' observed for FG domains. \todo{[Ralf and/or Mikhail to add references.]}
 We approximated the proteins as perfectly inert colloids ($\chi_{\text{PC}} = 0$).
-To match the theoretical colloid volumes to protein molecular masses, we considered the effective density of the protein colloids to be bounded by the densities of aqueous solvent ($\rho \geq \text{1 g/cm}^3$) and pure polypeptide in aqueous ($\rho \lesssim \text{1.4 g/cm}^3$).
+To match the theoretical colloid volumes to protein molecular masses, we considered the effective density of the protein colloids to be bounded by the densities of aqueous solvent ($\rho_{\text{gel}} \geq \text{1 g/cm}^3$) and pure polypeptide in aqueous ($\rho_{\text{gel}} \lesssim \text{1.4 g/cm}^3$).
 This approximation reflects that an unknown (and possibly variable) amount of solvent contributes to the effective volume of the proteins during their transport across the NPC.
 The only adjustable fitting parameter in our model was the prefactor $\beta$ in the scaling-based expression for the diffusion coefficient, Eq.~(\ref{eq:Rubinstein}).
 
@@ -675,13 +678,13 @@ The satisfactory fit across all datasets suggests that the crowding of the NPC w
 \begin{figure}
     \centering
     %REMOVE \CENTERLINE BEFORE SUBMISSION
-    \centerline{\includegraphics[width = 7in]{fig/validation.png}}
+    \centerline{\includegraphics[width = 6in]{fig/validation.png}}
     \caption{
     Comparison of theoretical predictions with experimental findings for NPCs.
     \textbf{(a)} 
     Gating of non-sticky colloids by size.
     Nuclear import rate $k$ per pore (at $c_0$ = 1 $\mu$M) vs. molecular mass $M_w$ (symbols) extracted from the literature (\cite{Ribbeck2001, Mohr2009, Popken2015, Timney2016, Frey2018}, as indicated) for non-sticky colloids.
-    Theoretical predictions (shaded orange area) are for the pore and brush parameters as given in Figure~\ref{fig:colloid_transport}, $\chi_{\text{PS}} = 0.5$, $\chi_{\text{PC}} = 0$, $a$ = 0.8 nm, and colloid volumes converted to masses using $\text{1 g/cm}^3 \leq \rho \leq \text{1.4 g/cm}^3$.
+    Theoretical predictions (shaded orange area) are for the pore and brush parameters as given in Figure~\ref{fig:colloid_transport}, $\chi_{\text{PS}} = 0.5$, $\chi_{\text{PC}} = 0$, $a$ = 0.8 nm, and colloid volumes converted to masses using $\text{1 g/cm}^3 \leq \rho_{\text{gel}} \leq \text{1.4 g/cm}^3$.
     The best fit shown here was obtained with $\alpha = 5.5$.
     The predicted transport rates across a bare pore are also shown, for reference (grey shaded area).
     \todo{[Replace MM by $M_w$. Replace Translocoation rate through NPC at ... by $k$. Replace black shaded area by grey shaded area, to make the empty pore data less prominent and make it clearer that an area is spanned (currently it looks like two separate lines).]}

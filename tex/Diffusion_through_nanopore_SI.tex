@@ -1025,7 +1025,7 @@ The pores are spaced far apart such that the convergent fluxes do not overlap. I
 \begin{eqnarray}
     \frac{\partial c}{\partial t} &=& k (c_{\text{out}} - c_{\text{in}}(t)) \\
     \frac{c_{\text{in}}(t)}{c_{\text{out}}} &=& 1 - e^{-kt} \\
-    k &=& \frac{N_{\text{pores}}}{V R}
+    k &=& \frac{N_{\text{pores}}}{R} \left(V_{\text{in}}^{-1}+V_{\text{out}}^{-1}\right)
     \label{eq:rate_constant}
 \end{eqnarray}
 
@@ -1034,6 +1034,12 @@ The initial influx into the reservoir is $J(t=0) = k c_{\text{out}}$.
 The pore resistance $R$ is defined by Eq.~\ref{eq:R_total}.
 
 In the context of nuclear pores, the finite reservoir corresponds to the cell nucleus.
+
+\textbf{Extracting the rate constant from the experimental data.}
+
+\begin{equation}
+    k = t^{-1}
+\end{equation}
 
 \textbf{Influx rate versus particle size for inert particles.}
 
