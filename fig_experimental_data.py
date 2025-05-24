@@ -108,7 +108,7 @@ def get_theory_for_given_density(density):
 #%%
 axis_label = {
     "MM":"MM, [kDa]",
-    "Translocations":"Translocation through NPC\n"+r"at $\Delta c = 1 \mu \text{M}, [\text{s}^{-1}]$",
+    "Translocations":"Translocation per one NPC\n"+r"at $\Delta c = 1 \mu \text{M}, [\text{s}^{-1}]$",
     "d":r"$d, [\text{nm}]$",
     "R":r"$R, [\text{m}^3/\text{s}]$",
 }
@@ -148,18 +148,27 @@ color = get_palette_colors()
 #flux_vs_molar_weight["Frey2018"]["data"] = flux_vs_molar_weight["Frey2018"]["data"].query("Probe in ['EGFP', 'mCherry']")
 
 for k, v in flux_vs_molar_weight.items():
+    marker_ = next(markers)
     if k == "Frey2018":
-        data = flux_vs_molar_weight["Frey2018"]["data"].query("Probe in ['EGFP', 'mCherry']")
-        ec_color_ = "red"
+        #data = flux_vs_molar_weight["Frey2018"]["data"].query("Probe in ['EGFP', 'mCherry']")
+        data= flux_vs_molar_weight["Frey2018"]["data"].loc[flux_vs_molar_weight["Frey2018"]["data"]["Nup116"] < 1.0]
+        #ec_color_ = "red"
+        #color_="none"
+        color_ = next(color)
+        #ec_color_ = next(color)
+        ec_color_="k"
     elif k == "Ribbeck2001":
         data = flux_vs_molar_weight["Ribbeck2001"]["data"].query("Probe in ['GFP', 'BSA']")
     else:
         data = v["data"]
         color_ = next(color)
-        ec_color_ = color_
+        #ec_color_ = color_
+        ec_color_="k"
+    
+    if marker_=="+":color_ = "k"
     x = data[X_label]
     y = data[Y_label]
-    ax.scatter(x,y, label = v["Reference"], marker = next(markers), ec = ec_color_, color = color_, zorder = 3)
+    ax.scatter(x,y, label = v["Reference"], marker = marker_, ec = ec_color_, color = color_, zorder = 3)
     if show_text:
         for idx, row in data.iterrows():
             x = row[X_label]
@@ -169,10 +178,10 @@ for k, v in flux_vs_molar_weight.items():
 
 
 
-ax.legend(
-    #bbox_to_anchor = [0.0,1.0], 
-    loc = "lower left"
-    )
+# ax.legend(
+#     #bbox_to_anchor = [0.0,1.0], 
+#     loc = "lower left"
+#     )
 ax.grid()
 ax.minorticks_off()
 ax.set_ylim(5e-4, 3e3)
@@ -193,31 +202,43 @@ ax.set_xlabel(r"$\left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}}$
 nups = ["Mac98A","Nup116"]
 
 #data = Frey2018["data"].loc[Frey2018["data"]["d"]<5]
-data = Frey2018["data"]#.loc[Frey2018["data"]["d"]<5]
+data = Frey2018["data"].loc[Frey2018["data"]["MM"]<35]
+data_larger_particles = Frey2018["data"].loc[Frey2018["data"]["MM"]>35]
 
 #ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
 
 y = data[Y_label]
+y2 = data_larger_particles[Y_label]
 mpl_markers = ('D')
 markers = itertools.cycle(mpl_markers)
 color = get_palette_colors()
 for nup in nups:
     x = data[nup]
+    marker_ = next(markers)
+    color_ = next(color)
     ax.scatter(
         x,y,label = nup,
-        marker = next(markers),
-        color = next(color)
+        marker = marker_,
+        color = color_,
+        ec = "k",
         )
-    
-    marked = data.query("Probe in ['EGFP', 'mCherry']")
-    x_m = marked[nup]
-    y_m = marked[Y_label]
+    x2 = data_larger_particles[nup]
     ax.scatter(
-        x_m,y_m,
-        marker = "D",
-        ec = "red",
-        fc = "none"
-    )
+        x2,y2,label = nup,
+        marker = marker_,
+        color = color_,
+        ec = "k",
+        alpha = 0.5
+        )
+    # marked = data.query("Probe in ['EGFP', 'mCherry']")
+    # x_m = marked[nup]
+    # y_m = marked[Y_label]
+    # ax.scatter(
+    #     x_m,y_m,
+    #     marker = "D",
+    #     ec = "k",
+    #     fc = "none"
+    # )
     
 
 #ax.plot(empty_pore[X_label], empty_pore[Y_label], label = "Empty pore", color = "k")
@@ -252,6 +273,7 @@ theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e
 
 ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 2)
 
+
 ax.axhline(
     empty_pore_line, 
     color =  "black", 
@@ -259,6 +281,30 @@ ax.axhline(
     label = "empty pore",
     linewidth = 2
     )
+
+# d=8
+# theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d, stickiness=True) for chi_PC in chi_PCs])
+# R = np.array(theoretical_particles_result["permeability"]**-1)
+# theoretical_particles["R"] = R*eta/(k_B*T)
+# theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
+# theoretical_particles["PC"] = [PC_gel(phi_gel, chi_PS, chi_PC, d) for chi_PC in chi_PCs]
+# ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 1, linestyle = "-")
+# empty_pore_line = get_translocation_empty_pore(
+#         r_p = pore_radius,
+#         L=L,
+#         d=d*Kuhn_segment,
+#         #Frey2018["NPCNumber"],
+#         #Frey2018["NuclearVolume"],
+#         #Haberman_correction=True
+#         )
+# ax.axhline(
+#     empty_pore_line, 
+#     color =  "black", 
+#     linestyle = "-", 
+#     label = "empty pore",
+#     linewidth = 2
+#     )
+
 
 ymax=5e3
 for xx, ss in zip(theoretical_particles["PC"][2::5], chi_PCs[2::5]):
