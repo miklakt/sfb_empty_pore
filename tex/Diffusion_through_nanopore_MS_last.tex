@@ -224,7 +224,6 @@ This scenario would result in a distinct permeation behaviour, as colloids could
     Maps of the polymer volume fraction $\phi(r,z)$ for a polymer brush in a cylindrical pore with solvent quality ranging from good (upper left panel) to poor (lower right panel), as quantified by the Flory-Huggins parameter $\chi_{\text{PS}}$.
     Polymer volume fractions are mapped in cylindrical coordinates (as shown by $rz$-coordinate arrows), color coded as indicated and with selected iso-concentration lines. The blank space corresponds to pure solvent; the membrane is colored green.
     Pore and brush parameters are as given in Figure~\ref{fig:colloid_transport}.
-    \todo{[The $10^{-2}$ indicator in the color bar can be removed for simplicity -- the iso-concentration lines in the figure itself are clear enough.]}
     }
     \label{fig:phi_hm_grid}
 \end{figure}
@@ -262,7 +261,10 @@ The correlation length $\xi$ in Eq.~(\ref{eq:Rubinstein}) is controlled by the l
 In the term on the right hand side we have approximated $\xi \cong \phi^{-1}$, which is valid close to $\theta$-solvent conditions in a mean-field regime.
 The coefficient $\beta$ in Eq.~(\ref{eq:Rubinstein}) is a numerical pre-factor.
 In section 2.7, we estimate $\beta = 5.5$ by comparing our theoretical stationary flux predictions to experimental data on the flux of non-sticky colloids of different sizes through nuclear pore complexes.
-In the following sections we consistently use this value for numerical estimates of the pore permeability and permselectivity.  
+In the following sections we consistently use this value for numerical estimates of the pore permeability and permselectivity.
+
+Figure~\ref{fig:D_fe_map}a shows how the colloid diffusivity, $D(\phi)/D_{0}$, varies with the local polymer concentration for a particle of diameter $d = 8$; the corresponding spatial distribution $D(r,z)/D_{0}$ in a $\theta$-solvent ($\chi_{\text{PS}} = 0.5$) is presented in Figure~\ref{fig:D_fe_map}b.
+
 
 Recent theoretical, experimental and simulation studies extended the scaling approach of Cai et al. \cite{Cai2011} to include the effects of polymer-colloid attraction \cite{Yamamoto2018, Carroll2018}.
 In the limit where proper diffusion of polymer chains is negligible (relevant to our case of pore-anchored chains), the characteristic desorption time of a single polymer-colloid contact $\tau_\text{des}(\epsilon)$ appears as an extra timescale.
@@ -355,27 +357,32 @@ The colloid is thus considered as a 'probe' which does not perturb the global po
 With this scheme, we can evaluate the insertion free energy at any position of the colloid in the brush, including off the pore axis (Supplementary Method 6).
 Comparison with direct SF-SCF calculations of the insertion free energy for colloids on the pore axis demonstrated good quantitative agreement (Supplementary Method 5), justifying the use of the more versatile analytical scheme.
 
-Figure~\ref{fig:DeltaF_map} illustrates how colloids may be either repelled or attracted by the polymer meshwork, depending on the balance of osmotic and interfacial contributions to $\Delta F$.
+Figure~\ref{fig:D_fe_map}a shows the net insertion free energy $\Delta F(\phi)$ of a colloid introduced into a homogeneous polymer mesh with polymer volume fraction $\phi$.
+For sufficiently attractive particles, $\chi_{\text{PC}} < \chi_{\text{ads}}^{\text{crit}} + \chi_{\text{PS}}$, the curve is non-monotonic: it crosses zero at a finite concentration where the interfacial gain, $\Delta F_{\text{sur}}(\phi)$, exactly balances the osmotic penalty, $\Delta F_{\text{osm}}(\phi)$.
+Above this concentration the osmotic contribution dominates and $\Delta F(\phi)$ becomes positive.
+Inert or only weakly attractive particles ($\chi_{\text{PC}} = -0.5$) always experience a positive insertion free energy and are therefore repelled by the polymer meshwork.
+ 
+Figure~\ref{fig:D_fe_map}c illustrates how colloids may be either repelled or attracted by the polymer meshwork, depending on the balance of osmotic and interfacial contributions to $\Delta F$.
 Since the polymer concentration in the pore is strongly inhomogeneous, the net insertion free energy $\Delta F(r,z)$ may exhibit quite large spatial variations.
-For example, the brush shown in Figure~\ref{fig:DeltaF_map} at $\chi_{\text{PC}}=-0.75$ simultaneously exhibits attraction ($\Delta F<0$) at the loose fringes and repulsion ($\Delta F>0$) inside the pore where the polymer concentration is high.
+For example, the brush shown in Figure~\ref{fig:D_fe_map}c at $\chi_{\text{PC}}=-0.75$ simultaneously exhibits attraction ($\Delta F<0$) at the loose fringes and repulsion ($\Delta F>0$) inside the pore where the polymer concentration is high.
 
 \begin{figure}
     \centering
     %\REMOVE \CENTERLINE BEFORE SUBMISSION
     \centerline{\includegraphics[width = 6.5in]{fig/diffusivity_and_fe.png}}
     \caption{%
-        Effect of the polymer brush on local diffusivity and insertion free energy.  
-        \textbf{(a)}  Comparison of the hindrance caused by the brush (black curve, $-\ln(D/D_{0})$) with the insertion free energy (colored curves, labelled by $\chi_{\text{PC}}$) as functions of the local polymer volume fraction~$\phi$.  
+        Effect of the polymer meshwork on local diffusivity and insertion free energy.  
+        \textbf{(a)}  Comparison of the reduced colloid diffusivity caused by the polymer meshwork (black curve, $-\ln(D/D_{0})$) with the insertion free energy (colored curves, labelled by $\chi_{\text{PC}}$) as functions of the local polymer volume fraction~$\phi$.  
         Both quantities share the vertical scale  
         $\ln(\rho D_{0}) = -\ln(D/D_{0}) + \Delta F$,  
-        so the horizontal zero line corresponds to unimpeded transport in pure solvent; positive values raise the resistance, whereas negative values lower it.
+        so the horizontal zero line corresponds to unimpeded transport in pure solvent; positive values are raised resistance, whereas negative values are lowered resistance.
         Red curves denote a net increase in resistance, blue curves a net decrease due to the effect of insertion free energy.  
-        \textbf{(b)}  Spatial map of the diffusional hindrance, $-\ln\bigl[D(\phi(r,z))/D_{0}\bigr]$, in cylindrical coordinates.  
+        \textbf{(b)}  Spatial map of the position-dependent diffusivity, $-\ln\bigl[D(\phi(r,z))/D_{0}\bigr]$, in cylindrical coordinates.  
         \textbf{(c)}  Maps of the insertion free energy $\Delta F(r,z)$ for polymer-colloid interaction strengths ranging from $\chi_{\text{PC}}=-0.50$ (weakest attraction) to $\chi_{\text{PC}}=-1.25$ (strongest attraction), as indicated.
         \\  
-        In all panels the pore and brush parameters are those of Figure~\ref{fig:colloid_transport}; the solvent parameter is $\chi_{\text{PS}}=0.5$ and the particle diameter is $d=8$.%
+        In all panels the pore and brush parameters are those of Figure~\ref{fig:colloid_transport}; the solvent strength parameter is $\chi_{\text{PS}}=0.5$ and the particle diameter is $d=8$.%
     }
-    \label{fig:DeltaF_map}
+    \label{fig:D_fe_map}
 \end{figure}
 
 
@@ -413,10 +420,21 @@ The problem of finding the total resistance of two semi-infinite solution reserv
     \label{eq:rho}
 \end{equation}
 where $\rho(r,z)$ is position-dependent resistance.
-%\todo{Please check this equation - should the -1 power for the conductivity should be removed?}
+
+Because the polymer volume fraction $\phi(r,z)$ varies throughout the pore, the local resistance $\rho(r,z)$ is likewise position-dependent.
+Figure~\ref{fig:D_fe_map} separates the two underlying contributions:
+(i) the reduction of the colloid diffusivity in a homogeneous polymer mesh of concentration $\phi$ and 
+(ii) the insertion free energy.
+Adding these curves gives the net effect on resistance,
+$\ln\!\bigl[\rho(\phi)D_{0}\bigr]= -\,\ln\!\bigl[D(\phi)/D_{0}\bigr] + \Delta F(\phi),$
+as stated in Eq.~(\ref{eq:rho}). 
+Only for sufficiently attractive particles, where $\Delta F(\phi)$ is negative enough, does the sum become negative, $\ln\!\bigl[\rho(\phi)D_{0}\bigr] < 0$, indicating that the brush locally reduces the resistance.  
+Otherwise the net effect remains positive and the resistance increases.
+ 
 
 To this end, we consider a set of approximate equipotential surfaces ($\psi(r,z)=\text{const}$) foliating the space available for colloid flow: inside the pore, the surfaces are taken as  discs of radius $r_{\text{p}}$ normal to the pore axis; outside the pore, we use oblate hemispheroids taken from the Rayleigh solution \cite{Strutt1878} (Figure~\ref{fig:integration_scheme}).
-Analogous to a set of resistors connected in parallel, the total conductivity of a layer between two adjacent equipotential surfaces is obtained by integration of local conductivities over the layer. Within the pore, $|z|\leq L/2$, the result is given by
+Analogous to a set of resistors connected in parallel, the total conductivity of a layer between two adjacent equipotential surfaces is obtained by integration of local conductivities over the layer.
+Within the pore, $|z|\leq L/2$, the result is given by
 \begin{equation}
 \varrho_{\text{int}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} \rho^{-1}(r,z) r \, dr
 \label{eq:varrho1}
@@ -440,11 +458,11 @@ where $r'(r,z) , z'(r,z)$ are the functions parameterizing the equipotential sur
     \centering
     \includegraphics[width=3in]{fig/resistitance_integration_miniature.png}
     \caption{
-    Integration scheme for the layer resistance.  
-    The intrinsic orthogonal curvilinear coordinates are defined by equipotential surfaces, \mbox{$\psi(r,z) = \text{const}$}, and the flux lines $\bm{j}$.  
+    Integration scheme for the layer resistance $\varrho_{\text{int}}\text{d}z, \varrho_{\text{ext}}\text{d}z$.  
+    The intrinsic orthogonal curvilinear coordinates are defined by equipotential surfaces, \mbox{$\psi = \text{const}$}, and the flux lines of flux density field $\bm{j}$.
     A layer between two adjacent equipotential surfaces with a thickness $\text{d}z$ along the central axis has resistance $\varrho_{\text{int}}\text{d}z$ inside the pore ($|z|<L/2$, blue shading) and $\varrho_{\text{ext}}\text{d}z$ in the exterior region (red shading).  
     The red rectangle illustrates the local conductivity element at $(r',z')$ within the exterior layer.  
-    The parametrization $(r'(r,z),\,z'(r,z))$ traces the integration path and maps the curvilinear coordinates back to the original cylindrical coordinates $(r,z)$, as indicated by the red arrows.
+    The parametrization $(r'(r,z),\,z'(r,z))$ traces the integration path and maps the intrinsic coordinates back to the original cylindrical coordinates $(r,z)$, as indicated by the red arrows.
     }
     \label{fig:integration_scheme}
 \end{figure}
@@ -496,8 +514,7 @@ The reduction would be even stronger for longer pores ($L\gg r_p$), and for larg
 The exterior resistance $R_{\text{ext}}$, on the other hand, always retains a finite contribution from the diffusive fluxes in the semi-infinite reservoir, setting an absolute lower bound on the total resistance.
 The reduction of $R_{\text{ext}}$ below $R^0_\text{ext}$ evidenced in Figure~\ref{fig:R_vs_chi_PC} is due attractive brush fringes that protrude and facilitate diffusive transport outside the pore.
 The magnitude of this effect increases with the extension of the polymer cap, and explains why the minimal attainable resistance increases with decreasing solvent quality (Figure~\ref{fig:phi_hm_grid}).
-Approximating the brush fringes on either end of the pore as hemispherical caps with radius $r_\text{cap}$, the plateau conditions are equivalent to twice the resistance of an ideally absorbing hemisphere
-\todo{[Add a reference here, a textbook will be fine]},
+Approximating the brush fringes on either end of the pore as hemispherical caps with radius $r_\text{cap}$, the plateau conditions are equivalent to twice the resistance of an ideally absorbing hemisphere \cite{Crank1980},
 \begin{equation}
     R_\text{ext}^\text{\text{min}} = 1 / (D_0 \pi r_\text{cap}).
     \label{eq:R_ext_min}
@@ -805,12 +822,12 @@ A remarkable number of features that we have identified with our theory is also 
 The estimated distance between NPCs in the nuclear envelope is approximately 10 times larger than the pore diameter \cite{Yang2004, Daigle2001, Feldherr1984, Kubitscheck2000}, and transport across neighbouring NPCs therefore can be considered mutually non-interfering. 
 
 Single-cargo tracking studies using fluorescence \cite{Musser2016, Lowe2010, Lowe2015, Yang2004, Kubitscheck2000, Ma2010} and tomography \cite{Beck2007} have shown that transported colloids (e.g., importins, exportins and their complexes with cargo) primarily traverse the central region of the NPC and are rarely observed near the pore walls.
-Such a behaviour is consistent with the  insertion free energy lanscape in our model (Figure~\ref{fig:DeltaF_map}, bottom).
+Such a behaviour is consistent with the  insertion free energy lanscape in our model (Figure~\ref{fig:D_fe_map}c, bottom).
 Importantly, such a path does not require the presence of a bare (i.e., polymer free) channel as had been suggested in some earlier models of NPC transport. Instead, subtle variations in polymer density across the pore's cross-section substantially determine where colloids enrich and translocate.  
 %Need to add further references.
 
 On the other hand, these studies also evidenced that transport attempts are frequently aborted, with the transported colloid either dwelling near the pore entrance for a sustained time period or partially traversing into the pore before returning.
-This behaviour aligns with the predictions of our model that a negative insertion free energy at the periphery of the pore draws colloids into the pore, but the existence of a free energy barrier in the center of the pore (see Figure~\ref{fig:DeltaF_map}, top) would naturally lead to a large number of unsuccessful translocation attempts.
+This behaviour aligns with the predictions of our model that a negative insertion free energy at the periphery of the pore draws colloids into the pore, but the existence of a free energy barrier in the center of the pore (see Figure~\ref{fig:D_fe_map}c, top) would naturally lead to a large number of unsuccessful translocation attempts.
 
 It is also well-known that colloids with affinity for the disordered nucleoporin FG domains that fill the NPC (such as importins and exportins) are enriched in or near NPCs \cite{Beck2007, Gruenwald2010, Tu2011}, and in microscopic droplets, macroscopic hydrogels and thin films assembled from pure FG domains.
 Moreover, high concentrations of transport factors are essential for effective transport through the pore \cite{Lowe2015}.
