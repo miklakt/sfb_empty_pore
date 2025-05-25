@@ -46,6 +46,22 @@ alpha =  30**(1/2)
 d = np.arange(2.0, 32.0, 2)
 d = np.insert(d, 0, [0.5, 1])
 
+show_simulation_results = True
+#%%
+def correct_flux(J, d, pore_radius=26, wall_thickness=52, ylayers=492, l1=220):
+    #as the simulation box is finite, it has lower resistance than an infinite reservoir
+    z_left = l1-d/2
+    z_right = ylayers-l1-wall_thickness+d
+    pore_radius_ = pore_radius-d/2
+    R_left = (np.pi - 2*np.arctan(z_left/pore_radius_))/(4*np.pi*pore_radius_)*np.pi
+    R_right = (np.pi - 2*np.arctan(z_right/pore_radius_))/(4*np.pi*pore_radius_)*np.pi
+    J_corrected = 1/(1/J + R_left + R_right)
+    return J_corrected
+
+simulation_results = pd.read_csv("numeric_simulation_results_.csv")
+simulation_results["J_corrected"] = correct_flux(simulation_results["J_tot"],simulation_results["d"])
+simulation_results["R"] = 1/(simulation_results["J_tot"]/simulation_results["d"]/3)
+simulation_results["R_corrected"] = 1/(simulation_results["J_corrected"]/simulation_results["d"]/3)
 #%%
 calculate_fields = functools.partial(
     calculate_fields_in_pore.calculate_fields,
@@ -69,16 +85,31 @@ marker = itertools.chain(mpl_markers)
 color = get_palette_colors()
 for chi_PC in chi_PCs:
     calc = pd.DataFrame([calculate_fields(chi_PC=chi_PC, chi_PS=chi_PS, d = d_) for d_ in d])
-    x=d
+    x = d
     y = calc["permeability"]**-1
+    color_ = next(color)
     ax.plot(
         x, y, 
         linewidth = 1.0 if chi_PC==-1.3 else 0.5,
         ms=4,
         marker = next(marker),
-        color = next(color),
+        color = color_,
         label = chi_PC,
         )
+    if show_simulation_results:
+        sim_data = simulation_results.query(f"chi_PS == {chi_PS} & chi_PC == {chi_PC}")
+        if not sim_data.empty:
+            x = sim_data["d"]
+            y = sim_data["R"]
+            ax.plot(
+                x, y, 
+                ms=8,
+                mec="k",
+                marker = "*",
+                color = color_,
+                #label = chi_PC,
+                linewidth = 0
+                )
 
 # Get handles and labels
 handles, labels = ax.get_legend_handles_labels()

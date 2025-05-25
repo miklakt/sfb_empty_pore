@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os, sys
 import csv
+prev_cwd = os.getcwd()
 here = os.path.dirname(__file__)
 sys.path.append(os.path.join(here, '..'))
 os.chdir("..")
@@ -52,8 +53,8 @@ pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
 #d_ = np.arange(6, 22, 2)
 #d_ = [10]
-d = 4
-chi_PC = -1.0
+d = 16
+chi_PC = -1.4
 chi_PS = 0.5
 sigma = 0.02
 
@@ -66,7 +67,7 @@ fields_ = calculate_fields(
     pore_radius=pore_radius,
     mobility_model_kwargs = {"prefactor":30.0**(0.5)}
     )
-#%%
+ #%%
 fields = pad_fields(fields_, pad_sides = 100, pad_top = 200)
 #fields = pad_fields(fields_, pad_sides = 0, pad_top = 0)
 W_arr = fields["walls"]
@@ -121,7 +122,7 @@ drift_diffusion.run_until(
     inflow_boundary, dt=dt,
     target_divJ_tot=1e-6,
     jump_every=1000000,
-    timeout=600,
+    timeout=1200,
     #max_jump=1e-3,
     #sigmoid_steepness=0.01
     )
@@ -131,14 +132,14 @@ c_arr = drift_diffusion.c_arr.get()
 #%%
 np.savetxt(output_filename, c_arr)
 # %%
-plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get())
-#%%
-plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
-# %%
-%matplotlib QtAgg
-plot_heatmap_and_profiles(drift_diffusion.J_arr.get()[:,:,1], mask = drift_diffusion.W_arr.get())
-#%%
-plt.plot(drift_diffusion.J_z_tot().get())
+# plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get())
+# #%%
+# plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
+# # %%
+# %matplotlib QtAgg
+# plot_heatmap_and_profiles(drift_diffusion.J_arr.get()[:,:,1], mask = drift_diffusion.W_arr.get())
+# #%%
+# plt.plot(drift_diffusion.J_z_tot().get())
 # %%
 print("d",   "chi_PS",    "chi_PC",   "J_tot",    "J_tot_err")
 print(
@@ -161,3 +162,5 @@ with open("numeric_simulation_results_.csv", mode='a', newline='') as file:
     )
 print("Tuple appended successfully!")
 #%%
+os.chdir(prev_cwd)
+# %%
