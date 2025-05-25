@@ -260,7 +260,7 @@ class DriftDiffusionKernelFactory:
 
             J_tot_current = -J_E + J_W - J_N*self.lambda_n[0,0] +J_S*self.lambda_s[0,0]
             J_tot_prev = -self.div_J[0,0]
-            # Adams–Bashforth methods
+            # Adams-Bashforth methods
             J_tot = 3/2*(J_tot_current) - 1/2*(J_tot_prev)
             #J_tot = J_tot_current
 
