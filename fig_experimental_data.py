@@ -151,7 +151,7 @@ for k, v in flux_vs_molar_weight.items():
     marker_ = next(markers)
     if k == "Frey2018":
         #data = flux_vs_molar_weight["Frey2018"]["data"].query("Probe in ['EGFP', 'mCherry']")
-        data= flux_vs_molar_weight["Frey2018"]["data"].loc[flux_vs_molar_weight["Frey2018"]["data"]["Nup116"] < 1.0]
+        data= flux_vs_molar_weight["Frey2018"]["data"].loc[(flux_vs_molar_weight["Frey2018"]["data"]["Nup116"] < 1.0) | (flux_vs_molar_weight["Frey2018"]["data"]["Probe"].str.contains("MBP"))]
         #ec_color_ = "red"
         #color_="none"
         color_ = next(color)
