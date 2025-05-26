@@ -503,3 +503,9 @@ if __name__=="__main__":
     ax.grid()
     fig.set_size_inches(3.5, 3.5)
 # %%
+df = pd.DataFrame(flux_vs_molar_weight).T
+df["Observable"] = ""
+df = df[["Reference", "Culture", "Observable", "NPCNumber", "NuclearVolume", "CytoplasmVolume"]]
+
+print(df.to_latex(index = False))
+# %%
