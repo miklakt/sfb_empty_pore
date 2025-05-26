@@ -39,6 +39,7 @@
 
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thetable}{S\arabic{table}}     % Tables:   S1, S2, …
 
 \addbibresource{biblio.bib}
 \title{SUPPLEMENTARY INFORMATION}
@@ -983,11 +984,11 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
 
 % This comparison shows that even if the position-dependent diffusion coefficient is underestimated, the qualitative trends remain the same.
 
-% Lower diffusion coefficients correspond to higher pore resistance, shifting the resistance–particle size curves upward for smaller particles.
+% Lower diffusion coefficients correspond to higher pore resistance, shifting the resistance-particle size curves upward for smaller particles.
 
 % When the pore channel resistance $R_{\text{int}}$ is negligible due to large negative insertion free energy, and the total resistance is mainly determined by the convergent flow resistance $R \approx R_{\text{ext}}$, changes in the position-dependent diffusion coefficient $D$ have little impact on the total resistance. This effect is observed in Figure~\ref{fig:permeability_ond_low_D} for highly attractive ($\chi_{\text{PC}} = -2.0$) particles with larger sizes in a $\theta$-solvent and moderately good ($\chi_{\text{PS}} = 0.3$) solvent.
 
-% Furthermore, a lower position-dependent diffusion coefficient exaggerates the portion of the trend with negative slope in the resistance–particle size dependency.
+% Furthermore, a lower position-dependent diffusion coefficient exaggerates the portion of the trend with negative slope in the resistance-particle size dependency.
 
 % Since the local diffusion coefficient depends not only on the local polymer concentration and particle size but also on the molecular-level interactions between the polymer brush and the particle, which are not captured by our coarse-grained approach, incorporating more complex models or empirical data into the calculation of $D$ will not drastically change the trends and structure of the pore resistance.
 
@@ -1007,47 +1008,133 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.9\linewidth]{fig/experiment_description.png}
-        \caption{Overview of relevant pore-mediated equilibration experiments from Refs.~\cite{Ribbeck2001, Frey2018}.\\
-        \textbf{Left:} A finite volume $V$ is separated from a semi-infinite reservoir by an impermeable membrane (green contour) permeated by $N_{\text{pores}}$ polymer-filled pores (red squiggles representing the polymer inside gaps in the membrane). 
+        \caption{Overview of relevant pore-mediated equilibration experiments from Refs.~\cite{Ribbeck2001, Mohr2009, Popken2015, Timney2016, Frey2018}.\\
+        \textbf{Left:} A finite volume $V_{\text{in}}$ is separated from a finite $V_\text{out}$ or semi-infinite reservoir $V_\text{out}\to \infty$  by an impermeable membrane (green contour) permeated by $N_{\text{pores}}$ polymer-filled pores (red squiggles representing the polymer inside gaps in the membrane). 
         Nanocolloids (yellow circles) are mobile particles, present at a concentration $c_{\text{out}}$ in the semi-infinite reservoir, and influx into the finite volume where the time-dependent concentration is $c_{\text{in}}(t)$.\\
         \textbf{Top right:} Isolated polymers phase-separate in a poor solvent with solvent strength $\chi_{\text{PS}}^{\text{FG}}$, forming polymer gel droplets (red irregular shapes) with polymer volume fraction $\phi_{\text{gel}}$.\\
         \textbf{Bottom right:} Nanocolloids equilibrate between the solvent and the polymer gel, characterized by the partition coefficient $\left(c_{\text{in}}/c_{\text{out}}\right)_{\text{gel}}$.\\
-        In the relevant experiments, the finite volume corresponds to the cell nucleus, permeated by nucleopores filled with FG-domains of nucleoporins. In Ref.~\cite{Frey2018}, FG-domains were bacterially expressed, purified, and dissolved; rapid dilution led to phase separation and formation of FG-domain particles. 
+        In the relevant experiments, the finite volume corresponds to the cell nucleus, permeated by nucleopores filled with FG-domains of nucleoporins. 
+        In Ref.~\cite{Frey2018}, FG-domains were bacterially expressed, purified, and dissolved; rapid dilution led to phase separation and formation of FG-domain particles. 
         % In Ref.~\cite{Ribbeck2001}, the influx rate into the nucleus was measured as a function of colloid size $d$ for particles that do not interact with FG-domains in the nucleopores.
         }
         \label{fig:experiments_overview}
     \end{figure}
     
 
-Let us consider a system in which a porous membrane separates a semi-infinite solution from a well-mixed reservoir of finite volume, as illustrated in Figure~\ref{fig:experiments_overview} (left).
-The pores are spaced far apart such that the convergent fluxes do not overlap. If the pore volume is negligible, i.e., $V_{\text{pore}} \ll V$, the equilibration kinetics follow a first-order rate law:
+Consider a system in which a porous membrane separates a semi-infinite solution ($V_{\text{out}} \to \infty$) from a well-mixed reservoir of finite volume, as sketched in Figure~\ref{fig:experiments_overview} (left).
+The pores are spaced far apart such that the convergent fluxes do not overlap.
+If the pores volume is negligible, i.e., $N_{\text{pores}}V_{\text{pore}} \ll V$, the equilibration kinetics follow a first-order rate law:
 
 \begin{eqnarray}
     \frac{\partial c}{\partial t} &=& k (c_{\text{out}} - c_{\text{in}}(t)) \\
-    \frac{c_{\text{in}}(t)}{c_{\text{out}}} &=& 1 - e^{-kt} \\
-    k &=& \frac{N_{\text{pores}}}{R} \left(V_{\text{in}}^{-1}+V_{\text{out}}^{-1}\right)
+    \frac{c_{\text{in}}(t)}{c_{\text{out}}} &=& 1 - e^{-kt} \label{eq:kinetics} \\
+    k &=& \frac{N_{\text{pores}}}{R} V_{\text{in}}^{-1}
     \label{eq:rate_constant}
 \end{eqnarray}
 
-Here, $N_{\text{pores}}$ is the number of pores perforating the membrane, $V$ is the volume of the finite reservoir, and $k$ is the rate constant (with characteristic time $\tau = 1/k$). 
-The initial influx into the reservoir is $J(t=0) = k c_{\text{out}}$.
+where $N_{\text{pores}}$ is the number of pores perforating the membrane,
+$V_{\text{in}}$ is the volume of the finite reservoir and 
+$k$ is the rate constant (with characteristic time $\tau = 1/k$).
 The pore resistance $R$ is defined by Eq.~\ref{eq:R_total}.
 
-In the context of nuclear pores, the finite reservoir corresponds to the cell nucleus.
 
-\textbf{Extracting the rate constant from the experimental data.}
+If both compartments change concentration during equilibration
+(a two-compartment model), the rate constant becomes
+\begin{equation}
+  k = \frac{N_{\text{pores}}}{R}
+      \bigl(V_{\text{in}}^{-1}+V_{\text{out}}^{-1}\bigr),
+  \label{eq:rate_constant_2}
+\end{equation}
+with $V_{\text{out}}$ the volume of the second finite reservoir.
+
+%The initial influx into the reservoir is $J(t=0) = k c_{\text{out}}$.
+
+In nuclear-pore transport the finite compartment $V_{\text{in}}$
+corresponds to the cell nucleus.  
+When exchange occurs between nucleus and a much larger external
+solution ($V_{\text{out}}\!\to\!\infty$), Eq.~\ref{eq:rate_constant}
+applies.
+For nucleus-cytoplasm equilibration, $V_{\text{out}}$ is the
+cytoplasmic volume and the kinetics are described by
+Eq.~\ref{eq:rate_constant_2}.
+
+\begin{table}[H]
+    %Better assemble the table somewhere else and export as latex for the better layout
+    \resizebox{\linewidth}{!}{
+        \begin{tabular}{p{2.6cm}|p{1.9cm}|p{3.4cm}|p{0.7cm}|p{0.7cm}|p{0.4cm}}
+            %\hline
+            Study & Cell culture & Reported quantity & $\!\!N_{\text{pores}}$ & $V_{\text{in}}$ $[f\text{l}]$ & $\!V_{\text{out}}$ $[f\text{l}]$ \\
+            \hline
+            Ribbeck \textit{et al.}\cite{Ribbeck2001} & HeLa & Translocation rate per NPC at $\Delta c = 1 \mu\text{M}$ & 2770 & 1130 & $\infty$ \\
+            Mohr \textit{et al.}\quad\,\cite{Mohr2009} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
+            Popken \textit{et al.}\,\,\cite{Popken2015} & \textit{S. cerevisiae} & Nuclear/cytoplasm concentration $c_{\text{in}}(t\! =\!1\text{h})/c_{\text{out}}$ & 161 & 4.8 & 60 \\
+            Timney \textit{et al.}\cite{Timney2016} & \textit{S. cerevisiae} & Characteristic time $\tau$ & 161 & 4.8 & 60 \\
+            Frey \textit{et al.}\quad\;\;\cite{Frey2018} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
+            %\hline
+        \end{tabular}
+        }
+        \caption{Transport-related quantities extracted from the experimental studies.}
+        \label{tbl:experimental}
+    \end{table}
+
+\textbf{Extracting the pore resistance.}
+    
+We compiled transport data for NPCs from HeLa and \textit{Saccharomyces cerevisiae} cells.  
+The human cells studies used digitonin-permeabilised HeLa cells and monitored nuclear fluorescence while fluorescently tagged probes equilibrated with a large external reservoir 
+\cite{Ribbeck2001,Mohr2009,Frey2018}.  
+The yeast studies followed nuclear-cytoplasmic equilibration after
+photobleaching a reporter protein \cite{Popken2015,Timney2016}.
+
+Although yeast and human NPCs differ in their protein composition, the dimensions of the pore channel are similar and only slightly smaller for yeast NPC \cite{Yang1998}, allowing a direct comparison.  
+Table~\ref{tbl:experimental} lists the experimental observables we extracted. 
+To compare them with one another, and with our theoretical predictions, we convert each observable to the single-pore resistance $R_{\text{exp}}$.  
+For data that report a kinetic constant $k$ (or its reciprocal time constant $\tau$) we use Eqs.~(\ref{eq:rate_constant}, \ref{eq:rate_constant_2}).
+
+Popken \textit{et al.}\,\cite{Popken2015} measured the
+nucleus-to-cytoplasm fluorescence ratio after $t =  1\text{h}$, which directly gives the concentration ratio
+$c_{\text{in}}/c_{\text{out}}$.  
+With finite nuclear and cytoplasmic volumes, the corresponding rate
+constant from Eq.~\ref{eq:rate_constant_2} is
 
 \begin{equation}
-    k = t^{-1}
+    k = t^{-1}\ln\left(
+        \cfrac{\cfrac{c_{\text{in}}(t)}{c_{\text{out}}(t)} \cfrac{V_{\text{in}}}{V_{\text{out}}} +1}
+             {1 - \cfrac{c_{\text{in}}(t)}{c_{\text{out}}(t)}}
+        \right)
 \end{equation}
+
+The single-pore resistance extracted from Eq.~\ref{eq:rate_constant_2}
+for nucleus-cytoplasm equilibration is
+\begin{equation*}
+  R_{\text{exp}}
+  = \frac{N_{\text{pores}}}{k}
+    \bigl(V_{\text{in}}^{-1}+V_{\text{out}}^{-1}\bigr),
+\end{equation*}
+whereas for digitonin-permeabilised nuclei equilibrating with a large
+external reservoir (Eq.~\ref{eq:rate_constant}) it reduces to
+\begin{equation*}
+  R_{\text{exp}}
+  = \frac{N_{\text{pores}}}{k}\,V_{\text{in}}^{-1}.
+\end{equation*}
+
+Because NPCs operate on the nanometer scale, the resulting resistances are extremely small, typically
+$R\sim10^{20}\,\text{s}/\text{m}^{-3}$.  
+To express these values more intuitively, we convert them to a
+\textit{Translocation rate per one pore}, defined as the number of molecules that cross one pore per second under a unit concentration gradient of $\Delta c = 1\;\mu\text{M}$ (cf.~\cite{Ribbeck2001}):
+\begin{equation}
+    \texttt{Translocation rate}
+    = \frac{N_{\mathrm{A}}}{R}\,10^{-3}\;\text{s}^{-1},
+\end{equation}
+
+where \(N_{\mathrm{A}}\) is Avogadro's number.
 
 \textbf{Influx rate versus particle size for inert particles.}
 
 We compare theoretical results with experimental data on particle influx rates (rate constants), such as those reported in Ref.~\cite{Ribbeck2001}, where the rate of entry of inert particles through nuclear pores was measured as a function of particle diameter $d$.
 A natural reference is transport through a membrane perforated by bare aqueous pores.
-For the theoretical dependencies of rate constants $k$ on particle size $d$ of inert particles (see Figure~{\todo{Main text fig}}) we used available estimates for digitonin-permeabilized HeLa cells:
-nuclear volume $V_{\text{nucleus}} \approx 1200 \, \text{fl}$;
-number of pores $N_{\text{pores}} \approx 3000$;
+For the theoretical dependencies of rate constants $k$ on particle size $d$ of inert particles (see Figure~{\todo{Main text fig}}) we used available estimates \cite{Ribbeck2001} for digitonin-permeabilized HeLa cells:
+nuclear volume $V_{\text{in}} \approx 1130 \, \text{fl}$;
+number of pores $N_{\text{pores}} \approx 2770$;
 solvent viscosity $\eta_{\text{S}} = 0.00145 \, \text{Pa} \cdot \text{s}$ at 20$^\circ$C.
 We assumed nuclear pore operates in moderately poor solvent $\chi_{\text{PS}} = 0.6$ with pore parameters as in (see Figure~{\todo{Main text fig}}).
 % we obtain the following approximate expression for the rate constant $k$ [s$^{-1}$] as a function of particle diameter $d$ [nm]:
