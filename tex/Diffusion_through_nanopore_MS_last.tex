@@ -263,7 +263,7 @@ The coefficient $\beta$ in Eq.~(\ref{eq:Rubinstein}) is a numerical pre-factor.
 In section 2.7, we estimate $\beta = 5.5$ by comparing our theoretical stationary flux predictions to experimental data on the flux of non-sticky colloids of different sizes through nuclear pore complexes.
 In the following sections we consistently use this value for numerical estimates of the pore permeability and permselectivity.
 
-Figure~\ref{fig:D_fe_map}a shows how the colloid diffusivity, $D(\phi)/D_{0}$, varies with the local polymer concentration for a particle of diameter $d = 8$; the corresponding spatial distribution $D(r,z)/D_{0}$ in a $\theta$-solvent ($\chi_{\text{PS}} = 0.5$) is presented in Figure~\ref{fig:D_fe_map}b.
+Figure~\ref{fig:D_fe_map}a shows how the colloid diffusivity, $D(\phi/D_{0}$, varies with the local polymer concentration for a fixed colloid size; the corresponding spatial distribution $D(\{\phi(r,z)\})/D_{0}$ in a $\theta$-solvent ($\chi_{\text{PS}} = 0.5$) is presented in Figure~\ref{fig:D_fe_map}b.
 
 
 Recent theoretical, experimental and simulation studies extended the scaling approach of Cai et al. \cite{Cai2011} to include the effects of polymer-colloid attraction \cite{Yamamoto2018, Carroll2018}.
@@ -298,9 +298,6 @@ It is safe to assume that realistic cases of attractive polymer-colloid interact
 
 Several other theoretical and empirical models have been proposed to describe the diffusion of colloids in polymer meshworks \cite{Schweizer2003,Kohli2012,Holyst2009,Phillies1988}.
 Although the predictions of different models differ quantitatively, they all share the same qualitative trend.
-
-\todo{[Do we need a figure that shows an illustrative map of $D/D_0$? This could be conveniently added as a separate panel in Figure 3. I think it would be quite illustrative.]}
-
 
 %%%%%%%%%%
 \subsubsection{Defining leading contribution to the insertion free energy}
@@ -357,9 +354,9 @@ The colloid is thus considered as a 'probe' which does not perturb the global po
 With this scheme, we can evaluate the insertion free energy at any position of the colloid in the brush, including off the pore axis (Supplementary Method 6).
 Comparison with direct SF-SCF calculations of the insertion free energy for colloids on the pore axis demonstrated good quantitative agreement (Supplementary Method 5), justifying the use of the more versatile analytical scheme.
 
-Figure~\ref{fig:D_fe_map}a shows the net insertion free energy $\Delta F(\phi)$ of a colloid introduced into a homogeneous polymer mesh with polymer volume fraction $\phi$.
+Figure~\ref{fig:D_fe_map}a shows the net insertion free energy $\Delta F(\phi)$ of a colloid in a homogeneous polymer mesh with polymer volume fraction $\phi$.
 For sufficiently attractive particles, $\chi_{\text{PC}} < \chi_{\text{ads}}^{\text{crit}} + \chi_{\text{PS}}$, the curve is non-monotonic: it crosses zero at a finite concentration where the interfacial gain, $\Delta F_{\text{sur}}(\phi)$, exactly balances the osmotic penalty, $\Delta F_{\text{osm}}(\phi)$.
-Above this concentration the osmotic contribution dominates and $\Delta F(\phi)$ becomes positive.
+Above this concentration the osmotic contribution dominates and $\Delta F(\phi)$ becomes positive, and colloid are repelled; below that concentration polymer meshwork attracts colloids.
 Inert or only weakly attractive particles ($\chi_{\text{PC}} = -0.5$) always experience a positive insertion free energy and are therefore repelled by the polymer meshwork.
  
 Figure~\ref{fig:D_fe_map}c illustrates how colloids may be either repelled or attracted by the polymer meshwork, depending on the balance of osmotic and interfacial contributions to $\Delta F$.
