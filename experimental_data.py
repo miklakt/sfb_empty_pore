@@ -126,16 +126,17 @@ def get_translocation_empty_pore(
 
 def estimate_protein_diameter(MW_kDa, density=1.2):
     NA = 6.022e23
-    # Partial specific volume (cm^3/g)
-    v_bar = 1/density
-    mw_g_per_mol = MW_kDa * 1000.0
-    mass_one_molecule = mw_g_per_mol / NA
-    volume_cm3 = mass_one_molecule * v_bar
-    volume_nm3 = volume_cm3 * 1.0e21
-    radius_nm = ((3.0 * volume_nm3) / (4.0 * np.pi)) ** (1.0 / 3.0)
-    diameter_nm = 2.0 * radius_nm
-    #Scaling relation
-    #diameter_nm = 0.066*(MW_kDa*1000)**(0.37)*2
+    ## Partial specific volume (cm^3/g)
+    #v_bar = 1/density
+    #mw_g_per_mol = MW_kDa * 1000.0
+    #mass_one_molecule = mw_g_per_mol / NA
+    #volume_cm3 = mass_one_molecule * v_bar
+    #volume_nm3 = volume_cm3 * 1.0e21
+    #radius_nm = ((3.0 * volume_nm3) / (4.0 * np.pi)) ** (1.0 / 3.0)
+    #diameter_nm = 2.0 * radius_nm
+    ##Scaling relation
+    ##diameter_nm = 0.066*(MW_kDa*1000)**(0.37)*2
+    diameter_nm = (6/np.pi*MW_kDa/NA)**(1/3)*density**(-1/3)*1e8
     return diameter_nm
 
 def estimate_molecular_weight(diameter_nm, density=1.2):
@@ -502,31 +503,31 @@ if __name__=="__main__":
     ax.legend(bbox_to_anchor = [1.0,0.5])
     ax.grid()
     fig.set_size_inches(3.5, 3.5)
-# %%
-df = pd.DataFrame(flux_vs_molar_weight).T
-df["Observable"] = ""
-df = df[["Reference", "Culture", "Observable", "NPCNumber", "NuclearVolume", "CytoplasmVolume"]]
+# # %%
+# df = pd.DataFrame(flux_vs_molar_weight).T
+# df["Observable"] = ""
+# df = df[["Reference", "Culture", "Observable", "NPCNumber", "NuclearVolume", "CytoplasmVolume"]]
 
-print(df.to_latex(index = False))
-# %%
-df =[]
+# print(df.to_latex(index = False))
+# # %%
+# df =[]
 
-for k,v in flux_vs_molar_weight.items():
-    print(k)
-    if k=="Frey2018":
-        # data = flux_vs_molar_weight["Frey2018"]["data"].loc[
-        #     (flux_vs_molar_weight["Frey2018"]["data"]["Nup116"] < 1.0) \
-        #     | (flux_vs_molar_weight["Frey2018"]["data"]["Probe"].str.contains("MBP"))]
-        data = flux_vs_molar_weight["Frey2018"]["data"].iloc[[2,3,13,16,17,32,33]]
-    else:
-        data = v["data"]
-    df_ = data.loc[:,["Probe", "MM", "Translocations"]]
-    df_["Study"] = v["Reference"]
-    df.append(df_)
+# for k,v in flux_vs_molar_weight.items():
+#     print(k)
+#     if k=="Frey2018":
+#         # data = flux_vs_molar_weight["Frey2018"]["data"].loc[
+#         #     (flux_vs_molar_weight["Frey2018"]["data"]["Nup116"] < 1.0) \
+#         #     | (flux_vs_molar_weight["Frey2018"]["data"]["Probe"].str.contains("MBP"))]
+#         data = flux_vs_molar_weight["Frey2018"]["data"].iloc[[2,3,13,16,17,32,33]]
+#     else:
+#         data = v["data"]
+#     df_ = data.loc[:,["Probe", "MM", "Translocations"]]
+#     df_["Study"] = v["Reference"]
+#     df.append(df_)
 
-df = pd.concat(df)
-# %%
-print(df.to_latex(index = False))
-# %%
-df=Frey2018["data"][["Probe", "MM", "Translocations", "Mac98A","Nup116"]].iloc[0:32]
-print(df.to_latex(index = False))
+# df = pd.concat(df)
+# # %%
+# print(df.to_latex(index = False))
+# # %%
+# df=Frey2018["data"][["Probe", "MM", "Translocations", "Mac98A","Nup116"]].iloc[0:32]
+# print(df.to_latex(index = False))

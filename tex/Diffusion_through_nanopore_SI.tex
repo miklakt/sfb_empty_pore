@@ -37,9 +37,13 @@
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 \newcommand{\sign}{\text{sign}}
 
+% Add S prefix to figures, equations and tables
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\theequation}{S\arabic{equation}}
-\renewcommand{\thetable}{S\arabic{table}}     % Tables:   S1, S2, …
+\renewcommand{\thetable}{S\arabic{table}}
+\makeatletter
+\renewcommand{\fnum@table}{\textbf{Table~\thetable}}
+\makeatother
 
 \addbibresource{biblio.bib}
 \title{SUPPLEMENTARY INFORMATION}
@@ -1050,24 +1054,6 @@ In nuclear-pore transport the finite compartment $V_{\text{in}}$ corresponds to 
 When exchange occurs between nucleus and a much larger external solution ($V_{\text{out}}\!\to\!\infty$), Eq.~\ref{eq:rate_constant} applies.
 For nucleus-cytoplasm equilibration, $V_{\text{out}}$ is the cytoplasmic volume and the kinetics are described by Eq.~\ref{eq:rate_constant_2}.
 
-\begin{table}[H]
-    %Better assemble the table somewhere else and export as latex for the better layout
-    \resizebox{\linewidth}{!}{
-        \begin{tabular}{p{2.6cm}|p{1.9cm}|p{3.4cm}|p{0.7cm}|p{0.7cm}|p{0.4cm}}
-            %\hline
-            Study & Cell culture & Reported quantity & $\!\!N_{\text{pores}}$ & $V_{\text{in}}$ $[f\text{l}]$ & $\!V_{\text{out}}$ $[f\text{l}]$ \\
-            \hline
-            Ribbeck \textit{et al.}\cite{Ribbeck2001} & HeLa & Translocation rate per NPC at $\Delta c = 1 \mu\text{M}$ & 2770 & 1130 & $\infty$ \\
-            Mohr \textit{et al.}\quad\,\cite{Mohr2009} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
-            Popken \textit{et al.}\,\,\cite{Popken2015} & \textit{S. cerevisiae} & Nuclear/cytoplasm concentration $c_{\text{in}}(t\! =\!1\text{h})/c_{\text{out}}$ & 161 & 4.8 & 60 \\
-            Timney \textit{et al.}\cite{Timney2016} & \textit{S. cerevisiae} & Characteristic time $\tau$ & 161 & 4.8 & 60 \\
-            Frey \textit{et al.}\quad\;\;\cite{Frey2018} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
-            %\hline
-        \end{tabular}
-        }
-        \caption{Transport-related quantities extracted from the experimental studies.}
-        \label{tbl:experimental}
-    \end{table}
 
 \textbf{Extracting pore resistance from the experimental data.}
     
@@ -1112,51 +1098,54 @@ external reservoir (Eq.~\ref{eq:rate_constant}) it reduces to
 Because NPCs operate on the nanometer scale, the resulting resistances are extremely small, typically
 $R\sim10^{20}\,\text{s}/\text{m}^{-3}$.  
 To express these values more intuitively, we convert them to a
-\textit{Translocation rate per one pore}, defined as the number of molecules that cross one pore per second under a unit concentration gradient of $\Delta c = 1\;\mu\text{M}$ (cf.~\cite{Ribbeck2001}):
+\textbf{Translocation rate per one NPC}, defined as the number of molecules that cross one pore per second under a unit concentration gradient of $\Delta c = 1\;\mu\text{M}$ (cf.~\cite{Ribbeck2001}):
 \begin{equation}
-    \texttt{Translocation rate}
-    = \frac{N_{\mathrm{A}}}{R}\,10^{-3}\;\text{s}^{-1},
+    \begin{array}{c}
+        \text{Translocation rate} \\
+        \text{per one NPC}\\
+        \text{at} \Delta c = 1\;\mu\text{M}
+    \end{array}
+    \hspace{-1em}= \,\frac{N_{\mathrm{A}}}{R}\,10^{-3}\;\text{s}^{-1},
 \end{equation}
 
 where \(N_{\mathrm{A}}\) is Avogadro's number.
 
 %\textbf{}
 
-\textbf{Influx rate versus particle size for inert particles.}
+\paragraph{Influx rate versus inert probe colloid molar weight.}
 
-We compare theoretical results with experimental data on particle influx rates (rate constants), such as those reported in Ref.~\cite{Ribbeck2001}, where the rate of entry of inert particles through nuclear pores was measured as a function of particle diameter $d$.
-A natural reference is transport through a membrane perforated by bare aqueous pores.
-For the theoretical dependencies of rate constants $k$ on particle size $d$ of inert particles (see Figure~{\todo{Main text fig}}) we used available estimates \cite{Ribbeck2001} for digitonin-permeabilized HeLa cells:
-nuclear volume $V_{\text{in}} \approx 1130 \, \text{fl}$;
-number of pores $N_{\text{pores}} \approx 2770$;
-solvent viscosity $\eta_{\text{S}} = 0.00145 \, \text{Pa} \cdot \text{s}$ at 20$^\circ$C.
-We assumed nuclear pore operates in moderately poor solvent $\chi_{\text{PS}} = 0.6$ with pore parameters as in (see Figure~{\todo{Main text fig}}).
-% we obtain the following approximate expression for the rate constant $k$ [s$^{-1}$] as a function of particle diameter $d$ [nm]:
+We compare our theoretical predictions with experimental translocation data—both the original measurements of Ribbeck \textit{et al.}\,\cite{Ribbeck2001} and values we deduced from other studies \cite{Mohr2009,Popken2015,Timney2016,Frey2018} (see Table~\ref{tbl:experimental}).  
+For the calculations we adopt the geometric parameters reported for digitonin-permeabilised HeLa cells \cite{Ribbeck2001} and for \textit{S.\,cerevisiae} nuclei \cite{Timney2016}.  
+The buffer viscosity at 20$^\circ$C is taken as
+$\eta_{\text{S}} = 1.45\times10^{-3}\,\text{Pa\,s}$, matching the assay composition (20 mM HEPES-KOH, pH 7.4; 120 mM KOAc; 5 mM Mg(OAc)$_2$; 0.5 mM EGTA; 250 mM sucrose) \cite{Ribbeck2001}.
 
-% \begin{eqnarray}
-% \begin{split}
-%     k = \frac{
-%     7.848 \text{d}^{3} - 9.304 \cdot 10^{2} \text{d}^{2} + 3.677 \cdot 10^{4} \text{d} - 4.844 \cdot 10^{5}
-%     }{
-%     2.793 \text{d}^{3} + 8.079 \cdot 10^{2} \text{d}^{2} - 3.629 \cdot 10^{4} \text{d}
-%     }
-% \end{split}
-% \end{eqnarray}
+Throughout we assume the nuclear-pore brush is in a moderately poor solvent, $\chi_{\text{PS}} = 0.6$, \todo{[add reference or brief rationale]}.and use the pore parameters given in Figure~1.
 
-For polymer-filled pores, theoretical predictions are obtained from Eq.~\ref{eq:rate_constant} by calculating the corresponding pore resistance $R$. This involves:
+All probe particles are treated as spheres with densities in the range $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.  Their
+diameter (in nm) is estimated from the molar mass $M_{w}$ (in kDa) via
+\begin{equation}
+  d_{\text{probe}}
+  = 10^{8}
+    \left(
+      \frac{6}{\pi}\,
+      \frac{M_{w}}{N_{\text{A}}\rho_{\text{probe}}}
+    \right)^{\!1/3},
+  \label{eq:d_probe}
+\end{equation}
+where $N_{\text{A}}$ is Avogadro’s number; the corresponding molecular masses are listed in Tables~\ref{tbl:inert_probes} and~\ref{tbl:attr_probes}.
 
-1) Computing the position-dependent diffusion coefficient using Eq.~(\todo{EQ}), with $D_0 = \frac{k_{\text{B}} T}{3\pi d \eta_{\text{S}}}$ for the diffusion in pure solvent.
-2) Determining the position-dependent conductivity $\rho^{-1}$ via Eq.~(\todo{EQ}).
-3) Integrating the conductivity to obtain $R$ using Eq.~(\todo{EQ}).
+In Figure 8a of the main text the scatter represent the experimental translocation rates extracted for inert probes (Table~\ref{tbl:inert_probes}).
+The matching shaded band shows our theoretical prediction over the size range $1 \le d \le 10$ nm, bounded by the lowest and highest probe densities.
+For reference we also plot the rates expected for a bare pore, using Eq.~(3), again with a band bracketing the density range.
 
 \textbf{Influx rate versus partition coefficient correlation.}
 
 For particles with low $\chi_{\text{PC}}$, we expect enhanced permeability compared to inert particles, possibly even surpassing that of a bare pore.
 
-Ref.~\cite{Frey2018} examined permeability of similarly sized colloidal particles with varying surface properties, ranging from inert to FG-domain-affine.
+Frey \textit{et al}~\cite{Frey2018} examined permeability of similarly sized colloidal particles with varying surface properties, ranging from inert to FG-domain-affine.
 To characterize these surfaces, FG-domain hydrogels were prepared to study colloid partitioning.
 
-The authors of Ref.~\cite{Frey2018} prepared droplets of Mac98A FG-domains via rapid dilution, inducing phase separation, following the protocol of Ref.~\cite{Schmidt2015}.
+The authors prepared droplets of Mac98A FG-domains via rapid dilution, inducing phase separation, following the protocol of Ref.~\cite{Schmidt2015}.
 The estimated protein concentration in the gel phase is $\approx 275 \, \text{mg}/\text{ml}$, which corresponds to a volume fraction $\phi_{\text{gel}} \approx 0.2$, assuming a typical dry protein density of $1.35 \, \text{g}/\text{ml}$.
 
 Similarly, droplets of Nup116 FG-domains were prepared with an estimated intra-particle protein concentration of $\approx 400 \, \text{mg}/\text{ml}$, corresponding to $\phi_{\text{gel}} \approx 0.4$. A compromise value $\phi_{\text{gel}} = 0.3$ was used in Figure~\todo{Main text figure}.
@@ -1199,7 +1188,30 @@ Since the osmotic pressure is negligible, only the surface interaction contribut
     \left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}} = e^{-\Delta F_{\text{gel}}}
 \end{eqnarray}
 
+\end{multicols}
+\pagebreak
 
+\begin{table}[htp]
+    %Better assemble the table somewhere else and export as latex for the better layout
+    \centering
+    \resizebox{0.8\linewidth}{!}{
+        \begin{tabular}{p{2.6cm}|p{1.9cm}|p{8cm}|p{0.7cm}|p{0.7cm}|p{0.4cm}}
+            %\hline
+            Study & Cell culture & Reported quantity & $\!\!N_{\text{pores}}$ & $V_{\text{in}}$ $[f\text{l}]$ & $\!V_{\text{out}}$ $[f\text{l}]$ \\
+            \hline
+            Ribbeck \textit{et al.}\cite{Ribbeck2001} & HeLa & Translocation rate per NPC at $\Delta c = 1 \mu\text{M}$ & 2770 & 1130 & $\infty$ \\
+            Mohr \textit{et al.}\quad\,\cite{Mohr2009} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
+            Popken \textit{et al.}\,\,\cite{Popken2015} & \textit{S. cerevisiae} & Nuclear/cytoplasm concentration $c_{\text{in}}/c_{\text{out}}$ at  $t\! =\!1\text{h}$  & 161 & 4.8 & 60 \\
+            Timney \textit{et al.}\cite{Timney2016} & \textit{S. cerevisiae} & Characteristic time $\tau$ & 161 & 4.8 & 60 \\
+            Frey \textit{et al.}\quad\;\;\cite{Frey2018} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
+            %\hline
+        \end{tabular}
+        }
+        \caption{Transport-related quantities extracted from the experimental studies.}
+        \label{tbl:experimental}
+\end{table}
+
+\begin{multicols}{2}
 
 \begin{table}[H]
 \resizebox{\linewidth}{!}{
@@ -1210,7 +1222,7 @@ Fluorescein-Cys & 0.5 & 231 & Mohr \textit{et al} \\
 11 aa peptide & 1.4 & 130 & Mohr \textit{et al} \\
 Insulin & 5.8 & 59 & Mohr \textit{et al} \\
 Aprotinin & 6.5 & 21.1 & Mohr \textit{et al} \\
-Profilin & ? & 13.4 & Mohr \textit{et al} \\
+\todo{Profilin} & ? & 13.4 & Mohr \textit{et al} \\
 Ubiquitin & 8.5 & 8.7 & Mohr \textit{et al} \\
 z-domain & 8.2 & 9.9 & Mohr \textit{et al} \\
 Thioredoxin & 13.9 & 5.0 & Mohr \textit{et al} \\
@@ -1245,16 +1257,17 @@ MBP K→R & 43.0 & 0.45 & Frey \textit{et al} \\
 }
 \caption{Translocation rates of inert probe colloids calculated from the experimental data.
 Data marked with $^{*}$ are taken directly from the source without modification.}
+\label{tbl:inert_probes}
 \end{table}
 
 \begin{table}[H]
 \resizebox{\linewidth}{!}{
 \begin{tabular}{p{3cm}|p{1cm}|p{2cm}|p{1.2cm}|p{1.2cm}}
-Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& Mac98A & Nup116 \\
+Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& PC in Mac98A & PC in Nup116 \\
 \hline
 yNTF2 (dimer) & 28 & 84 & 290 & 1400 \\
 rNTF2 (dimer) & 28 & 95 & 3200 & 13000 \\
-mCherry & 28 & 0.140 & ND & 0.09 \\
+mCherry & 28 & 0.140 & - & 0.09 \\
 EGFP & 28 & 0.49 & 0.11 & 0.33 \\
 efGFP\_0W & 28 & 0.84 & 0.09 & 0.42 \\
 efGFP\_3W & 33 & 11.5 & 1.50 & 14 \\
@@ -1283,8 +1296,9 @@ GFPNTR\_3B8 & 110 & 94 & 1800 & - \\
 GFPNTR\_3B9 & 113 & 122 & 4800 & - \\
 \end{tabular}
 }
-\caption{Translocation rates probe colloids with different surface features calculated from the experimental data and their partition coefficient in the FG-gel taken directly from the source without modification.
+\caption{Translocation rates probe colloids with different surface features calculated from the experimental data and their partition coefficient in the FG-gel taken directly from the source without modification from Frey \textit{et al}.\cite{Frey2018}
 }
+\label{tbl:attr_probes}
 \end{table}
 
 

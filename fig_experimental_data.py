@@ -39,7 +39,7 @@ L=52
 r_pore=26
 sigma = 0.02
 alpha =  30**(1/2)
-#alpha = 5
+#alpha = 10
 eta=0.00145            #Pa*s
 T=293                  #K
 NA = 6.02214076*1e23
@@ -71,6 +71,18 @@ calculate_fields = functools.partial(
         pore_radius = r_pore,
         sigma = sigma,
         mobility_model_kwargs = {"prefactor":alpha},
+        #method = "no_free_energy",
+    )
+
+alpha_nofe = 8    
+calculate_fields_nofe = functools.partial(
+    calculate_fields_in_pore.calculate_fields,
+        a0=a0, a1=a1, 
+        wall_thickness = L, 
+        pore_radius = r_pore,
+        sigma = sigma,
+        mobility_model_kwargs = {"prefactor":alpha_nofe},
+        method = "no_free_energy",
     )
 
 #R_0_no_vol_excl = np.array([calculate_fields_in_pore.empty_pore_permeability(1/(3*np.pi*d_), r_pore, L)**-1 for d_ in d])
@@ -83,12 +95,12 @@ def get_theory_for_given_density(density):
     empty_pore = {}
     MM = np.geomspace(1,800, 500)
     d = estimate_protein_diameter(MM, density)
-    translocations=get_translocation_empty_pore(pore_radius, L, d)
+    translocations=get_translocation_empty_pore(pore_radius, L, d, eta)
     #translocations=get_translocation_empty_pore(5, L, d)
     empty_pore["MM"] = MM
     empty_pore["d"] = d
     empty_pore["Translocations"] = translocations
-    empty_pore["R"] = get_R_empty(pore_radius, L, d)
+    empty_pore["R"] = get_R_empty(pore_radius, L, d, eta)
     #empty_pore["k"] = get_k_empty_pore(pore_radius, L, d, )
 
     chi_PS = 0.6
@@ -103,8 +115,38 @@ def get_theory_for_given_density(density):
     inert_particles["R"] = R*eta/(k_B*T)
     inert_particles["Translocations"] = inert_particles["R"]**(-1)*NA/1e3
 
+
+
     return empty_pore, inert_particles
     
+def get_nofe_theory_for_given_density(density):
+    chi_PS = 0.6
+    chi_PC = 0
+    inert_particles = {}
+    inert_particles_d = np.arange(2, 14, 2, dtype = float)
+    inert_particles_d=np.insert(inert_particles_d, 0, [0.5, 1])
+    inert_particles["d"] = inert_particles_d*Kuhn_segment
+    inert_particles["MM"] = estimate_molecular_weight(inert_particles_d*Kuhn_segment, density)
+    inert_particles_result = pd.DataFrame([calculate_fields_nofe(chi_PS=chi_PS, chi_PC=chi_PC, d=d_) for d_ in inert_particles_d])
+    R = np.array(inert_particles_result["permeability"]**-1)
+    inert_particles["R"] = R*eta/(k_B*T)
+    inert_particles["Translocations"] = inert_particles["R"]**(-1)*NA/1e3
+    return inert_particles
+
+def get_rigid_pore_for_given_density(density):
+    calculate_probe_diameter_from_molar_weight(density)
+    pore_radius_rigid = 5#Kuhn
+    empty_pore = {}
+    MM = np.geomspace(1,800, 500)
+    d = estimate_protein_diameter(MM, density)
+    translocations=get_translocation_empty_pore(pore_radius_rigid, L, d, eta)
+    #translocations=get_translocation_empty_pore(5, L, d)
+    empty_pore["MM"] = MM
+    empty_pore["d"] = d
+    empty_pore["Translocations"] = translocations
+    empty_pore["R"] = get_R_empty(pore_radius_rigid, L, d, eta)
+    return empty_pore
+
 #%%
 axis_label = {
     "MM":"MM, [kDa]",
@@ -133,15 +175,23 @@ ax.set_ylabel(axis_label[Y_label])
 
 density = 1.0
 empty_pore, inert_particles = get_theory_for_given_density(density)
+nofe_particles = get_nofe_theory_for_given_density(density)
+rigid_pore = get_rigid_pore_for_given_density(density)
 ax.plot(empty_pore[X_label], empty_pore[Y_label], label = "Empty pore", color = "k")
 ax.plot(inert_particles[X_label], inert_particles[Y_label], label = "Inert particles", color = '#FF800E')
-ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
+ax.plot(nofe_particles[X_label], nofe_particles[Y_label], label = "$\Delta F=0$ particles", color = 'k', linewidth=0.5)
+ax.plot(rigid_pore[X_label], rigid_pore[Y_label], label = "Rigid pore channel", color = 'tab:blue', linewidth=0.5)
+#ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
 
 density = 1.4
 empty_pore, inert_particles = get_theory_for_given_density(density)
+nofe_particles = get_nofe_theory_for_given_density(density)
+rigid_pore = get_rigid_pore_for_given_density(density)
 ax.plot(empty_pore[X_label], empty_pore[Y_label], color = "k")
 ax.plot(inert_particles[X_label], inert_particles[Y_label], color = '#FF800E')
-ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
+ax.plot(nofe_particles[X_label], nofe_particles[Y_label], label = "$\Delta F=0$ particles", color = 'k', linewidth=0.5)
+ax.plot(rigid_pore[X_label], rigid_pore[Y_label], label = "Rigid pore channel", color = 'tab:blue', linewidth=0.5)
+#ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
 
 color = get_palette_colors()
 
@@ -185,7 +235,7 @@ for k, v in flux_vs_molar_weight.items():
 ax.grid()
 ax.minorticks_off()
 ax.set_ylim(5e-4, 3e3)
-
+ax.set_xlim(1,3e2)
 #fig.set_size_inches(2.5, 2.5)
 ################################################################################
 ax = axs[1]
@@ -196,7 +246,8 @@ ax.set_xscale("log")
 markers = itertools.cycle(mpl_markers)
 Y_label = "Translocations"
 #X_label = "MM"
-ax.set_xlabel(r"$\left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}}$")
+#ax.set_xlabel(r"$\left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}}$")
+ax.set_xlabel(r"$\text{PC}_{\text{gel}}$", fontsize = 14)
 #ax.set_ylabel(axis_label[Y_label])
 #nups = ["Mac98A","Nup116", "Nsp1"]
 nups = ["Mac98A","Nup116"]
@@ -230,16 +281,6 @@ for nup in nups:
         ec = "k",
         alpha = 0.5
         )
-    # marked = data.query("Probe in ['EGFP', 'mCherry']")
-    # x_m = marked[nup]
-    # y_m = marked[Y_label]
-    # ax.scatter(
-    #     x_m,y_m,
-    #     marker = "D",
-    #     ec = "k",
-    #     fc = "none"
-    # )
-    
 
 #ax.plot(empty_pore[X_label], empty_pore[Y_label], label = "Empty pore", color = "k")
 d = 6
@@ -248,6 +289,7 @@ empty_pore_line = get_translocation_empty_pore(
         r_p = pore_radius,
         L=L,
         d=d*Kuhn_segment,
+        eta=eta,
         #Frey2018["NPCNumber"],
         #Frey2018["NuclearVolume"],
         #Haberman_correction=True
@@ -310,10 +352,10 @@ ymax=5e3
 for xx, ss in zip(theoretical_particles["PC"][2::5], chi_PCs[2::5]):
     if ss<=-2.2: continue
     if ss>0.0: continue
-    ax.text(xx*0.4, ymax*1.1, s = f"{ss:.1f}")
-    ax.scatter([xx],[ymax],marker = "|", color = "k")
+    ax.text(xx*0.4, ymax*1.1, s = f"{ss:.1f}", va = "bottom", color = '#C85200')
+    ax.scatter([xx],[ymax],marker = "|", color = '#C85200')
 
-
+ax.text(0.5,1.08,r"$\chi_{\text{PC}}$", transform = ax.transAxes, ha="center", va="bottom", fontsize = 14, color = '#C85200')
 
 # ax.legend(
 #     #bbox_to_anchor = [0.0,1.0], 
