@@ -509,3 +509,24 @@ df = df[["Reference", "Culture", "Observable", "NPCNumber", "NuclearVolume", "Cy
 
 print(df.to_latex(index = False))
 # %%
+df =[]
+
+for k,v in flux_vs_molar_weight.items():
+    print(k)
+    if k=="Frey2018":
+        # data = flux_vs_molar_weight["Frey2018"]["data"].loc[
+        #     (flux_vs_molar_weight["Frey2018"]["data"]["Nup116"] < 1.0) \
+        #     | (flux_vs_molar_weight["Frey2018"]["data"]["Probe"].str.contains("MBP"))]
+        data = flux_vs_molar_weight["Frey2018"]["data"].iloc[[2,3,13,16,17,32,33]]
+    else:
+        data = v["data"]
+    df_ = data.loc[:,["Probe", "MM", "Translocations"]]
+    df_["Study"] = v["Reference"]
+    df.append(df_)
+
+df = pd.concat(df)
+# %%
+print(df.to_latex(index = False))
+# %%
+df=Frey2018["data"][["Probe", "MM", "Translocations", "Mac98A","Nup116"]].iloc[0:32]
+print(df.to_latex(index = False))

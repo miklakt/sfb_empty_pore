@@ -114,13 +114,13 @@ The excess Helmholtz energy was minimized through a Lagrangian with multipliers 
 \begin{equation}
     \label{eq:fe_lagrangian}
     \begin{aligned}
-        &F[\mathbf{u}, \boldsymbol{\phi}, \boldsymbol{\alpha}] =\\
-        &= F_{\text{ent}}[\mathbf{u}] - \sum\limits_{r,z} \sum\limits_X u_X(r, z) \phi_X(r, z) + \\
+        &F[\bm{u}, \boldsymbol{\phi}, \boldsymbol{\alpha}] =\\
+        &= F_{\text{ent}}[\bm{u}] - \sum\limits_{r,z} \sum\limits_X u_X(r, z) \phi_X(r, z) + \\
         &+ F_{\text{int}} [\boldsymbol{\phi}] 
         + \sum\limits_{r,z} \alpha(r, z) \left( \sum\limits_X \phi_X(r, z) - 1 \right),
     \end{aligned} 
 \end{equation}
-where $\phi_X(r,z)$ is the local volume concentration function of segment type $X$ (polymer, colloid, or solvent), $u_X(r, z)$ is the potential field of segment type $X$, the functional $F_{\text{ent}}[\mathbf{u}]$ is the mixing entropy term, and the functional $F_{\text{int}} [\boldsymbol{\phi}]$ is the interaction term of the free energy.
+where $\phi_X(r,z)$ is the local volume concentration function of segment type $X$ (polymer, colloid, or solvent), $u_X(r, z)$ is the potential field of segment type $X$, the functional $F_{\text{ent}}[\bm{u}]$ is the mixing entropy term, and the functional $F_{\text{int}} [\boldsymbol{\phi}]$ is the interaction term of the free energy.
 
 The condition for the minimum of the functional is a system of three variational equations:
 \begin{equation}
@@ -128,7 +128,7 @@ The condition for the minimum of the functional is a system of three variational
     \begin{cases}
         \frac{\partial F}{\partial \boldsymbol{\alpha}} = 0 \\
         \frac{\partial F}{\partial \boldsymbol{\phi}} = 0 \\
-        \frac{\partial F}{\partial \mathbf{u}} = 0 \\
+        \frac{\partial F}{\partial \bm{u}} = 0 \\
     \end{cases}
 \end{equation}
 The first condition in Eq.~(\ref{eq:energy_min_system}) ensures system incompressibility.
@@ -158,7 +158,7 @@ The statistical weight of all possible processes that start from segment $s_i$ a
 When $s_i=1$ and $s_k=N$, the result contains the statistical weight of all possible and allowed conformations of the chain and is the single-chain partition function $G(N|1)$.
 
 Let $G(r, z) = G(\{r, z\}, 1|1)$ be the initial condition of the Markov process, which contains just one segment (starts and ends at segment $1$).
-The segment potential $\mathbf{u}$ acts on this segment; thus, Boltzmann statistical weights are applied:
+The segment potential $\bm{u}$ acts on this segment; thus, Boltzmann statistical weights are applied:
 \begin{equation}
     G(r, z) = \exp(-u(r,z))
 \end{equation}
@@ -179,7 +179,7 @@ Finally, the volume concentration at coordinates $r, z$ is found as the sum over
     \phi(r, z) = \sum_{i}^{N} \phi(\{r, z\}, s_i)
 \end{equation}
 
-The numerical algorithm solves the Scheutjens-Fleer system of nonlinear equations such that the segment potential $\mathbf{u}$ is consistent with the volume concentration $\boldsymbol{\phi}$.
+The numerical algorithm solves the Scheutjens-Fleer system of nonlinear equations such that the segment potential $\bm{u}$ is consistent with the volume concentration $\boldsymbol{\phi}$.
 The relationship between the segment potential and the volume concentration is defined in Eq.~(\ref{eq:u-phi}).
 
 The SF-SCF scheme can be summarized as:
@@ -190,7 +190,7 @@ The SF-SCF scheme can be summarized as:
 For the calculations, we used the package \emph{SFbox} developed in the University of Wageningen.
 %COMMENT RR: A reference to the literature for details on this software is needed here.
 The package contains several Newton/Quasi-Newton optimization routines to perform the minimization of the functional Eq.~(\ref{eq:fe_lagrangian}).
-Each iteration returns a new improved approximation to the segment potential $\mathbf{u}$ and updates the volume concentrations $\mathbf{\phi}$.
+Each iteration returns a new improved approximation to the segment potential $\bm{u}$ and updates the volume concentrations $\bm{\phi}$.
 The routine was looped until the desired accuracy was reached.
 
 \end{multicols}
@@ -220,7 +220,7 @@ where the first term in Eq.~(\ref{eq:continuous_surf_int}) integrates over the l
 To represent the lattice discretization in SF-SCF, we follow the convention for indices: $i \le 0$ iterates in the direction of the $r$-axis, with indices starting from $i=0$ at the $z$-axis, and $k$ iterates in the direction of the $z$-axis.
 As illustrated in Figure~\ref{fig:sf-scf_scheme}, the cylindrical colloid occupies $d$ lattice elements along the $z$-axis (from $z_{\text{c}} - d/2$ to $z_{\text{c}} + d/2$) and $d/2$ elements along the $r$-axis (from $r = 0$ to $r = d/2$), with $d$ being an even integer to match the lattice.
 
-We define the colloid volume projection matrix $\mathbf{V}_{\text{cyl}}[d/2 \times d]$ for a cylindrical colloid of size $d$, such that each element of the matrix equals the volume of the colloid contained within the corresponding lattice element:
+We define the colloid volume projection matrix $\bm{V}_{\text{cyl}}[d/2 \times d]$ for a cylindrical colloid of size $d$, such that each element of the matrix equals the volume of the colloid contained within the corresponding lattice element:
 \begin{equation}
     V_{\text{cyl}}[i, k] = \pi(2i + 1)
 \end{equation}
@@ -229,7 +229,7 @@ Obviously, the sum of all matrix elements equals the volume of the cylinder.
     \sum_{i=0}^{d/2 - 1} \sum_{k=0}^{d - 1} V_{\text{cyl}}[i, k] = \frac{\pi d^3}{4}
 \end{equation}
 
-Analogously, we define the colloid surface projection matrix $\mathbf{S}_{\text{cyl}}[d/2 \times d]$, such that each element of the matrix equals the surface area of the colloid within the corresponding lattice element.
+Analogously, we define the colloid surface projection matrix $\bm{S}_{\text{cyl}}[d/2 \times d]$, such that each element of the matrix equals the surface area of the colloid within the corresponding lattice element.
 \begin{align}
     \begin{split}
         S_{\text{cyl}}[i, k] = 
@@ -251,7 +251,7 @@ Again, the sum of all matrix elements equals the surface area of the cylinder:
     \sum_{i=0}^{d/2 - 1} \sum_{k=0}^{d - 1} S_{\text{cyl}}[i, k] = \frac{3 \pi d^2}{2}
 \end{equation}
 
-Figure~\ref{fig:cylindrical_kernel_SI} provides a color-coded map of the volume $\mathbf{V}_{\text{cyl}}$ and surface $\mathbf{S}_{\text{cyl}}$ projection matrices for a selected colloid sice ($d = 16$).
+Figure~\ref{fig:cylindrical_kernel_SI} provides a color-coded map of the volume $\bm{V}_{\text{cyl}}$ and surface $\bm{S}_{\text{cyl}}$ projection matrices for a selected colloid sice ($d = 16$).
 
 \begin{figure}[H]
     \centering
@@ -267,9 +267,9 @@ The equivalent operation on a discrete lattice is the matrix dot product.
 The two contributions to the insertion free energy are thus calculated as:
 \begin{equation}\label{eq:cyl_fe_osm}
     \begin{split}
-        \Delta F_{\text{cyl}}^{\text{osm}}(z_{\text{c}}) = \mathbf{V}_{\text{cyl}} \cdot \boldsymbol{\Pi}\{z_{\text{c}},\} \text{ and}
+        \Delta F_{\text{cyl}}^{\text{osm}}(z_{\text{c}}) = \bm{V}_{\text{cyl}} \cdot \boldsymbol{\Pi}\{z_{\text{c}},\} \text{ and}
         \\
-        \Delta F_{\text{cyl}}^{\text{sur}}(z_{\text{c}}) = \mathbf{S}_{\text{cyl}} \cdot \boldsymbol{\gamma}\{z_{\text{c}}\},
+        \Delta F_{\text{cyl}}^{\text{sur}}(z_{\text{c}}) = \bm{S}_{\text{cyl}} \cdot \boldsymbol{\gamma}\{z_{\text{c}}\},
     \end{split}
 \end{equation}
 where the matrix elements for $\boldsymbol{\Pi}\{z_{\text{c}}\}$ and $\boldsymbol{\gamma}\{z_{\text{c}}\}$ run across $0 \leq i < d/2$ and $z_{\text{c}} - d/2 \leq k < z_{\text{c}} + d/2$.
@@ -277,8 +277,8 @@ where the matrix elements for $\boldsymbol{\Pi}\{z_{\text{c}}\}$ and $\boldsymbo
 The discretized insertion free energy profile $\Delta F_{\text{cyl}}$ is obtained from a series of insertion free energy calculations across all possible colloid center positions $z_{\text{c}}$.
 Such a series of sequential integrations (matrix dot products) is equivalent to the convolution with the colloid volume/surface projection matrix acting as a kernel:
 \begin{equation}
-    \Delta F_{\text{cyl}}^{\text{osm}} = \boldsymbol{\Pi} \ast \mathbf{V}_{\text{cyl}} \text{ and }
-    \Delta F_{\text{cyl}}^{\text{sur}} = \boldsymbol{\gamma} \ast \mathbf{S}_{\text{cyl}}.
+    \Delta F_{\text{cyl}}^{\text{osm}} = \boldsymbol{\Pi} \ast \bm{V}_{\text{cyl}} \text{ and }
+    \Delta F_{\text{cyl}}^{\text{sur}} = \boldsymbol{\gamma} \ast \bm{S}_{\text{cyl}}.
 \end{equation}
 Convolution was performed via fast Fourier transform for computational efficiency.
 
@@ -596,11 +596,11 @@ Let the concentration of the solute in the semi-infinite bulk on one side be $c(
 The steady-state solution $\frac{\partial c}{\partial t} = 0$ of the diffusion equation is a concentration profile shown in Figure~\ref{fig:empty_pore_solution}.
 It is known that for a pore in an infinitely thin membrane (an orifice), the iso-concentration lines form oblate spheroids with the pore being a focal circle, and even for a membrane with finite thickness, this remains a good approximation.
 Trivially, for a long cylindrical channel the iso-concentration surfaces are equally-spaced disks, which approximate the solution in the pore lumen.
-The flux intensity field is the gradient of concentration, $\mathbf{j} = -D_0 \nabla c$.
+The flux intensity field is the gradient of concentration, $\bm{j} = -D_0 \nabla c$.
 
 A polymer brush grafted in the pore modulates the local diffusion coefficient $D$ and creates a free energy landscape.
 The iso-concentration lines in the steady state are no longer oblate spheroids, although the steady-state solution still shares the structure with an empty pore in a medium with a constant diffusion coefficient.
-As the flux intensity is a conservative vector field, we introduce a scalar potential function $\psi$, such that $\mathbf{j} = -D \nabla \psi$.
+As the flux intensity is a conservative vector field, we introduce a scalar potential function $\psi$, such that $\bm{j} = -D \nabla \psi$.
 This scalar field $\psi = c \exp(\Delta F / k_B T)$ is a modified Boltzmann distribution and has a structure similar to the steady-state solution of an empty pore.
 
 Consider an orthogonal curvilinear coordinate system $x_{\theta}, x_{r}, x_{z}$ with iso-surfaces defined as follows:
@@ -786,7 +786,7 @@ The eq.\ref{eq:R_total} concludes the analytical estimation with the total resis
 
 \end{multicols}
 
-\section{Validating Analytical Approaches with CFD Simulations}
+\section{Validating Analytical Approaches with Numerical Simulations}
 
 \begin{multicols}{2}
 The diffusion of nanocolloids in the presence of an effective potential is governed by the Smoluchowski diffusion equation:
@@ -799,12 +799,12 @@ Our interest is in a stationary solution to the Smoluchowski diffusion equation,
 
 To the best of our knowledge, a general analytical solution of the stationary equation is not available.
 In the previous section, we discussed an analytical approximation we constructed with a set of assumptions
-Here, we present numerical results via computational fluid dynamics (CFD) simulation.
-The method requires no assumptions about concentration profiles and results directly in a flux density field $\mathbf{j}$.
+Here, we present results of numerical simulation on a discrete regular grid.
+The method requires no assumptions about concentration profiles and results directly in a flux density field $\bm{j}$.
 
 The mass conservation equation connects the rate of change in the colloid concentration and the flux density field:
 \begin{equation}
-    \frac{\partial c}{\partial t} = -\nabla \cdot \mathbf{j}
+    \frac{\partial c}{\partial t} = -\nabla \cdot \bm{j}
 \end{equation}
 
 From the position-dependent flux density, the total flux through the pore is found by integration over a control cross-section.
@@ -813,7 +813,7 @@ For convenience, we select a cross-section at the pore center ($z = 0$), as ther
 Then the total flux through the pore is
 \begin{equation}
     \label{eq:total_flux_1}
-    J = \oint\limits_{S} \mathbf{j} \cdot d\mathbf{S} = 2 \pi \int_0^{r_{\text{p}}} j_z(r, z = 0) \, r \, dr
+    J = \oint\limits_{S} \bm{j} \cdot d\bm{S} = 2 \pi \int_0^{r_{\text{p}}} j_z(r, z = 0) \, r \, dr
 \end{equation}
 
 We employ the finite volume method to simulate transport of the nanocolloid particles through the pore.
@@ -821,7 +821,7 @@ We employ the finite volume method to simulate transport of the nanocolloid part
 The key step in the finite volume method is the control volume integration using the divergence theorem:
 \begin{equation}
     \label{eq:CFD_integration_1}
-    \left( \frac{\partial c}{\partial t} \right)_{\text{CV}} = -\int\limits_{\text{CV}} \nabla \cdot \mathbf{j} \, dV = -\oint\limits_{\text{CV}} \mathbf{j} \cdot d\mathbf{S}
+    \left( \frac{\partial c}{\partial t} \right)_{\text{CV}} = -\int\limits_{\text{CV}} \nabla \cdot \bm{j} \, dV = -\oint\limits_{\text{CV}} \bm{j} \cdot d\bm{S}
 \end{equation}
 
 To update the average colloid concentration $c$ in a control volume, we use the forward Euler time integration scheme:
@@ -920,26 +920,24 @@ Finally, when the stationary state is reached, we calculate the total flux throu
 
 The resistance of the pore is found from the simple equation $R = \dfrac{\Delta c}{J}$, similar to Ohm's law, with a correction from the eq. (\ref{eq:r_reservoir}) to account for the finite size of the simulation box.
 
-While, running CFD simulations to calculate the resistance is more computationally demanding than the approximate analytical scheme explained in the previous section and hides away some of the details on the pore resistance structure.
+While, running numerical simulations to calculate the resistance is more computationally demanding than the approximate analytical scheme explained in the previous section and hides away some of the details on the pore resistance structure.
 Nevertheless, there are major benefits to using it, since it requires no assumptions about the shape of the position-dependent colloid concentration $c$.
-We employ CFD as a guide and sanity check for the developed approximate analytical scheme.
+We employ numerical simulation as a guide and sanity check for the developed approximate analytical scheme.
 The comparison for a set of parameters is given in Figure~\ref{fig:CFD_comparison}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{fig/resistivity_on_d_SI.png}
+    \includegraphics[width=0.9\linewidth]{fig/R_vs_d_SI.png}
     \caption{
-        Total resistance compared between numerical CFD and approximate analytical approaches as a function of particle size.
-        Total resistance is calculated for a good solvent $\chi_{\text{PS}} = 0.3$ and a set of $\chi_{\text{PC}} = \{-1.00, -1.25, -1.50, -1.75, -2.00\}$ interaction parameters ranging from inert to adsorbing particles.
+        Total resistance compared between numerical simulation and approximate analytical approaches as a function of particle size.
+        Total resistance is calculated for a good solvent $\chi_{\text{PS}} = 0.5$ and a set of 
+        $\chi_{\text{PC}} = \{0.0, -1.00, -1.4, -1.8\}$ 
+        interaction parameters ranging from inert to adsorbing particles.
         The pore radius and length are kept at $r_{\text{p}}^{0} = 26$, $L_{0} = 52$.
         \\
-        The thick dashed line is the resistance of a pore with effective shape (volume exclusion).
+        The thick black line is the resistance of a pore with effective shape (volume exclusion).
         \\
-        The upper thin horizontal line denoted with $L_{0} = 0$ is the resistance of an infinitesimally small pore (orifice).
-        \\
-        The lower thin horizontal line represents twice the resistance of a semi-infinite solution to an ideally absorbing sphere, which is an estimate for the case of sufficiently negative insertion free energy in the exterior of the pore, which is possible for a swollen polymer brush.
-        \\
-        The resistance is normalized by the viscosity $\eta_{0}$ of the pure solvent and particle size $d$, which eliminates colloid particles' hydrodynamic viscosity from consideration.
+        The resistance is normalized by the viscosity $\eta_{S}$ of the pure solvent and particle size $d$, Stokesian behaviour from consideration.
         }
     \label{fig:CFD_comparison}
 \end{figure}
@@ -1008,8 +1006,8 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.9\linewidth]{fig/experiment_description.png}
-        \caption{Overview of relevant pore-mediated equilibration experiments from Refs.~\cite{Ribbeck2001, Mohr2009, Popken2015, Timney2016, Frey2018}.\\
-        \textbf{Left:} A finite volume $V_{\text{in}}$ is separated from a finite $V_\text{out}$ or semi-infinite reservoir $V_\text{out}\to \infty$  by an impermeable membrane (green contour) permeated by $N_{\text{pores}}$ polymer-filled pores (red squiggles representing the polymer inside gaps in the membrane). 
+        \caption{Reductionist picture of relevant pore-mediated equilibration experiments from Refs.~\cite{Ribbeck2001, Mohr2009, Popken2015, Timney2016, Frey2018}.\\
+        \textbf{Left:} A finite volume $V_{\text{in}}$ is separated from a finite ($V_\text{out}$) or semi-infinite reservoir ($V_\text{out}\to \infty$)  by an impermeable membrane (green contour) permeated by $N_{\text{pores}}$ polymer-filled pores (red squiggles representing the polymer inside gaps in the membrane). 
         Nanocolloids (yellow circles) are mobile particles, present at a concentration $c_{\text{out}}$ in the semi-infinite reservoir, and influx into the finite volume where the time-dependent concentration is $c_{\text{in}}(t)$.\\
         \textbf{Top right:} Isolated polymers phase-separate in a poor solvent with solvent strength $\chi_{\text{PS}}^{\text{FG}}$, forming polymer gel droplets (red irregular shapes) with polymer volume fraction $\phi_{\text{gel}}$.\\
         \textbf{Bottom right:} Nanocolloids equilibrate between the solvent and the polymer gel, characterized by the partition coefficient $\left(c_{\text{in}}/c_{\text{out}}\right)_{\text{gel}}$.\\
@@ -1020,7 +1018,7 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
         \label{fig:experiments_overview}
     \end{figure}
     
-
+We adopt a reductionist approach to the set of experimental studies on NPC transport phenomena, distilling their essential features into a simplified model,necessarily omitting certain details.
 Consider a system in which a porous membrane separates a semi-infinite solution ($V_{\text{out}} \to \infty$) from a well-mixed reservoir of finite volume, as sketched in Figure~\ref{fig:experiments_overview} (left).
 The pores are spaced far apart such that the convergent fluxes do not overlap.
 If the pores volume is negligible, i.e., $N_{\text{pores}}V_{\text{pore}} \ll V$, the equilibration kinetics follow a first-order rate law:
@@ -1048,15 +1046,9 @@ If both compartments change concentration during equilibration
 with $V_{\text{out}}$ the volume of the second finite reservoir.
 
 %The initial influx into the reservoir is $J(t=0) = k c_{\text{out}}$.
-
-In nuclear-pore transport the finite compartment $V_{\text{in}}$
-corresponds to the cell nucleus.  
-When exchange occurs between nucleus and a much larger external
-solution ($V_{\text{out}}\!\to\!\infty$), Eq.~\ref{eq:rate_constant}
-applies.
-For nucleus-cytoplasm equilibration, $V_{\text{out}}$ is the
-cytoplasmic volume and the kinetics are described by
-Eq.~\ref{eq:rate_constant_2}.
+In nuclear-pore transport the finite compartment $V_{\text{in}}$ corresponds to the cell nucleus.  
+When exchange occurs between nucleus and a much larger external solution ($V_{\text{out}}\!\to\!\infty$), Eq.~\ref{eq:rate_constant} applies.
+For nucleus-cytoplasm equilibration, $V_{\text{out}}$ is the cytoplasmic volume and the kinetics are described by Eq.~\ref{eq:rate_constant_2}.
 
 \begin{table}[H]
     %Better assemble the table somewhere else and export as latex for the better layout
@@ -1077,7 +1069,7 @@ Eq.~\ref{eq:rate_constant_2}.
         \label{tbl:experimental}
     \end{table}
 
-\textbf{Extracting the pore resistance.}
+\textbf{Extracting pore resistance from the experimental data.}
     
 We compiled transport data for NPCs from HeLa and \textit{Saccharomyces cerevisiae} cells.  
 The human cells studies used digitonin-permeabilised HeLa cells and monitored nuclear fluorescence while fluorescently tagged probes equilibrated with a large external reservoir 
@@ -1127,6 +1119,8 @@ To express these values more intuitively, we convert them to a
 \end{equation}
 
 where \(N_{\mathrm{A}}\) is Avogadro's number.
+
+%\textbf{}
 
 \textbf{Influx rate versus particle size for inert particles.}
 
@@ -1205,8 +1199,96 @@ Since the osmotic pressure is negligible, only the surface interaction contribut
     \left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}} = e^{-\Delta F_{\text{gel}}}
 \end{eqnarray}
 
-\end{multicols}
 
+
+\begin{table}[H]
+\resizebox{\linewidth}{!}{
+\begin{tabular}{p{3cm}|p{1cm}|p{2cm}|p{2.6cm}}
+Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& Study \\
+\hline
+Fluorescein-Cys & 0.5 & 231 & Mohr \textit{et al} \\
+11 aa peptide & 1.4 & 130 & Mohr \textit{et al} \\
+Insulin & 5.8 & 59 & Mohr \textit{et al} \\
+Aprotinin & 6.5 & 21.1 & Mohr \textit{et al} \\
+Profilin & ? & 13.4 & Mohr \textit{et al} \\
+Ubiquitin & 8.5 & 8.7 & Mohr \textit{et al} \\
+z-domain & 8.2 & 9.9 & Mohr \textit{et al} \\
+Thioredoxin & 13.9 & 5.0 & Mohr \textit{et al} \\
+Lactalbumin & 14.2 & 3.54 & Mohr \textit{et al} \\
+GFP & 27.0 & 0.50 & Mohr \textit{et al} \\
+PBP & 37.0 & 0.064 & Mohr \textit{et al} \\
+MBP & 43.0 & 0.054 & Mohr \textit{et al} \\
+GFP-HIS & 26.8 & 1.11 & Timney \textit{et al} \\
+GFP-1PrA & 34.2 & 0.268 & Timney \textit{et al} \\
+GFP-2PrA & 40.7 & 0.146 & Timney \textit{et al} \\
+GFP-3PrA & 46.8 & 0.092 & Timney \textit{et al} \\
+GFP-4PrA & 53.6 & 0.067 & Timney \textit{et al} \\
+GFP-6PrA & 66.8 & 0.040 & Timney \textit{et al} \\
+GFP-1PrG & 34.7 & 0.83 & Timney \textit{et al} \\
+GFP-2PrG & 42.3 & 0.25 & Timney \textit{et al} \\
+MGM & 109 & 0.0091 & Popken \textit{et al} \\
+MGM2 & 149 & 0.00250 & Popken \textit{et al} \\
+MGM4 & 230 & 0.00116 & Popken \textit{et al} \\
+MG3 & 122 & 0.0052 & Popken \textit{et al} \\
+MG4 & 150 & 0.00368 & Popken \textit{et al} \\
+MG5 & 177 & 0.00197 & Popken \textit{et al} \\
+BSA & 68 & $<0.1^{*}$ & Ribbeck \textit{et al} \\
+GFP & 29.0 & $2^{*}$ & Ribbeck \textit{et al} \\
+mCherry & 28.0 & 0.140 & Frey \textit{et al} \\
+EGFP & 28.0 & 0.49 & Frey \textit{et al} \\
+efGFP\_8R & 30.0 & 2.66 & Frey \textit{et al} \\
+sffrGFP4 18xR→K & 28.0 & 0.53 & Frey \textit{et al} \\
+sffrGFP4 25xR→K & 27.0 & 0.224 & Frey \textit{et al} \\
+MBP & 43.0 & 0.0112 & Frey \textit{et al} \\
+MBP K→R & 43.0 & 0.45 & Frey \textit{et al} \\
+\end{tabular}
+}
+\caption{Translocation rates of inert probe colloids calculated from the experimental data.
+Data marked with $^{*}$ are taken directly from the source without modification.}
+\end{table}
+
+\begin{table}[H]
+\resizebox{\linewidth}{!}{
+\begin{tabular}{p{3cm}|p{1cm}|p{2cm}|p{1.2cm}|p{1.2cm}}
+Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& Mac98A & Nup116 \\
+\hline
+yNTF2 (dimer) & 28 & 84 & 290 & 1400 \\
+rNTF2 (dimer) & 28 & 95 & 3200 & 13000 \\
+mCherry & 28 & 0.140 & ND & 0.09 \\
+EGFP & 28 & 0.49 & 0.11 & 0.33 \\
+efGFP\_0W & 28 & 0.84 & 0.09 & 0.42 \\
+efGFP\_3W & 33 & 11.5 & 1.50 & 14 \\
+efGFP\_5W & 56 & 12.2 & 2.20 & 15 \\
+efGFP\_8F & 170 & 6.0 & 8.30 & 51 \\
+efGFP\_8L & 59 & 4.6 & 1.80 & 10 \\
+efGFP\_8I & 56 & 9.5 & 2.90 & 23 \\
+efGFP\_8M & 48 & 15.4 & 3 & 17 \\
+efGFP\_8R & 30 & 2.66 & 0.50 & 1.90 \\
+sffrGFP4 & 29 & 22.4 & 14 & 50 \\
+sffrGFP4 & 29 & 22.4 & 14 & 50 \\
+sffrGFP4 18xR→K & 28 & 0.53 & 0.12 & 0.31 \\
+sffrGFP4 25xR→K & 27 & 0.22 & 0.06 & 0.10 \\
+sffrGFP4 & 29 & 22.4 & 14 & 50 \\
+sffrGFP4 & 29 & 22.4 & 14 & 50 \\
+sffrGFP5 & 28 & 9.0 & 0.67 & 5.50 \\
+sffrGFP6 & 29 & 39.2 & 100 & 160 \\
+sffrGFP7 & 29 & 43 & 200 & 200 \\
+GFP\_MaxR\_5W & 140 & 116 & 2100 & 4000 \\
+GFP\_MaxR\_8i & 47 & 182 & 2000 & 4100 \\
+GFPNTR\_2B7 & 65 & 224 & 1200 & 1600 \\
+GFPNTR\_7B3 & 42 & 238 & 1700 & 1400 \\
+GFPNTR\_3B1 & 114 & 60 & 290 & - \\
+GFPNTR\_3B7 & 110 & 106 & 3000 & - \\
+GFPNTR\_3B8 & 110 & 94 & 1800 & - \\
+GFPNTR\_3B9 & 113 & 122 & 4800 & - \\
+\end{tabular}
+}
+\caption{Translocation rates probe colloids with different surface features calculated from the experimental data and their partition coefficient in the FG-gel taken directly from the source without modification.
+}
+\end{table}
+
+
+\end{multicols}
 
 
 \pagebreak
