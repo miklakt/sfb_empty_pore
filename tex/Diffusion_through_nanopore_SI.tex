@@ -1007,25 +1007,23 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
 
 \begin{multicols}{2}
 
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.9\linewidth]{fig/experiment_description.png}
-        \caption{Reductionist picture of relevant pore-mediated equilibration experiments from Refs.~\cite{Ribbeck2001, Mohr2009, Popken2015, Timney2016, Frey2018}.\\
-        \textbf{Left:} A finite volume $V_{\text{in}}$ is separated from a finite ($V_\text{out}$) or semi-infinite reservoir ($V_\text{out}\to \infty$)  by an impermeable membrane (green contour) permeated by $N_{\text{pores}}$ polymer-filled pores (red squiggles representing the polymer inside gaps in the membrane). 
-        Nanocolloids (yellow circles) are mobile particles, present at a concentration $c_{\text{out}}$ in the semi-infinite reservoir, and influx into the finite volume where the time-dependent concentration is $c_{\text{in}}(t)$.\\
-        \textbf{Top right:} Isolated polymers phase-separate in a poor solvent with solvent strength $\chi_{\text{PS}}^{\text{FG}}$, forming polymer gel droplets (red irregular shapes) with polymer volume fraction $\phi_{\text{gel}}$.\\
-        \textbf{Bottom right:} Nanocolloids equilibrate between the solvent and the polymer gel, characterized by the partition coefficient $\left(c_{\text{in}}/c_{\text{out}}\right)_{\text{gel}}$.\\
-        In the relevant experiments, the finite volume corresponds to the cell nucleus, permeated by nucleopores filled with FG-domains of nucleoporins. 
-        In Ref.~\cite{Frey2018}, FG-domains were bacterially expressed, purified, and dissolved; rapid dilution led to phase separation and formation of FG-domain particles. 
-        % In Ref.~\cite{Ribbeck2001}, the influx rate into the nucleus was measured as a function of colloid size $d$ for particles that do not interact with FG-domains in the nucleopores.
-        }
-        \label{fig:experiments_overview}
-    \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/experiment_description.png}
+    \caption{Reductionist view of relevant pore-mediated equilibration experiments from Refs.~\cite{Ribbeck2001, Mohr2009, Popken2015, Timney2016, Frey2018}.\\
+    \textbf{Left:} A compartment with finite volume $V_{\text{in}}$ is separated from a finite ($V_\text{out}$) or semi-infinite reservoir ($V_\text{out}\to \infty$)  by an impermeable membrane (green contour) permeated by $N_{\text{pores}}$ polymer-filled pores. 
+    Nanocolloids (yellow circles) are mobile particles, present at a concentration $c_{\text{out}}$ in the semi-infinite reservoir, and influx into the finite volume where the time-dependent concentration is $c_{\text{in}}(t)$.\\
+    \textbf{Top right:} Isolated polymers phase-separate in a poor solvent with solvent strength $\chi_{\text{PS}}^{\text{FG}}$, forming polymer gel droplets (red irregular shapes) with polymer volume fraction $\phi_{\text{gel}}$.\\
+    \textbf{Bottom right:} Nanocolloids equilibrate between the solvent and the polymer gel, characterized by the partition coefficient $\text{PC}_{\text{gel}} \equiv \left(c_{\text{in}}/c_{\text{out}}\right)_{\text{gel}}$.
+    }
+    \label{fig:experiments_overview}
+\end{figure}
     
-We adopt a reductionist approach to the set of experimental studies on NPC transport phenomena, distilling their essential features into a simplified model,necessarily omitting certain details.
-Consider a system in which a porous membrane separates a semi-infinite solution ($V_{\text{out}} \to \infty$) from a well-mixed reservoir of finite volume, as sketched in Figure~\ref{fig:experiments_overview} (left).
-The pores are spaced far apart such that the convergent fluxes do not overlap.
-If the pores volume is negligible, i.e., $N_{\text{pores}}V_{\text{pore}} \ll V$, the equilibration kinetics follow a first-order rate law:
+We adopt a reductionist view of NPC‐mediated transport (Figure \ref{fig:experiments_overview}, left). 
+The nucleus is represented as a well-mixed compartment of volume $V_{\text{in}}$ bounded by an impermeable membrane that contains $N_{\text{pores}}$ identical, widely spaced cylindrical channels, each filled with a homogeneous polymer brush mimicking the FG-domain meshwork of nucleoporins. 
+
+Colloid particles at concentration $c_{\text{out}} = c_{0}$ diffuse from an external reservoir, either finite ($V_{\text{out}}$) or effectively infinite ($V_{\text{out}}\!\to\!\infty$), into the 'nucleus' compartment, whose initial concentration is $c_{\text{in}}(0)=0$.
+Because the combined pore volume is negligible ($N_{\text{pores}}V_{\text{pore}}\ll V_{\text{in}}$) the equilibration follows a first-order rate law.
 
 \begin{eqnarray}
     \frac{\partial c}{\partial t} &=& k (c_{\text{out}} - c_{\text{in}}(t)) \\
@@ -1033,26 +1031,24 @@ If the pores volume is negligible, i.e., $N_{\text{pores}}V_{\text{pore}} \ll V$
     k &=& \frac{N_{\text{pores}}}{R} V_{\text{in}}^{-1}
     \label{eq:rate_constant}
 \end{eqnarray}
-
-where $N_{\text{pores}}$ is the number of pores perforating the membrane,
-$V_{\text{in}}$ is the volume of the finite reservoir and 
 $k$ is the rate constant (with characteristic time $\tau = 1/k$).
 The pore resistance $R$ is defined by Eq.~\ref{eq:R_total}.
 
-
 If both compartments change concentration during equilibration
-(a two-compartment model), the rate constant becomes
+(a two-compartment model, \textit{i.e.} exchange between the nucleus and cytoplasm), the rate constant becomes
 \begin{equation}
   k = \frac{N_{\text{pores}}}{R}
       \bigl(V_{\text{in}}^{-1}+V_{\text{out}}^{-1}\bigr),
   \label{eq:rate_constant_2}
 \end{equation}
-with $V_{\text{out}}$ the volume of the second finite reservoir.
 
-%The initial influx into the reservoir is $J(t=0) = k c_{\text{out}}$.
-In nuclear-pore transport the finite compartment $V_{\text{in}}$ corresponds to the cell nucleus.  
-When exchange occurs between nucleus and a much larger external solution ($V_{\text{out}}\!\to\!\infty$), Eq.~\ref{eq:rate_constant} applies.
-For nucleus-cytoplasm equilibration, $V_{\text{out}}$ is the cytoplasmic volume and the kinetics are described by Eq.~\ref{eq:rate_constant_2}.
+FG-domains of nucleoporins are slightly hydrophobic. 
+In solution they can therefore phase-separate into hydrogel particles (Figure~\ref{fig:experiments_overview}, top right), whereas when end-grafted to the pore walls they form a dense polymer brush that fills the NPC channel.
+The equilibrium partition coefficient of a probe colloid in these isolated FG hydrogels (Figure~\ref{fig:experiments_overview}, lower right) reflects its interaction with the same domains in the grafted brush, and can be translated into an insertion free energy, and hence into a predicted pore resistance.
+
+To capture this behaviour we treat the chemically diverse FG-domains as identical homopolymer chains with averaged properties.  
+The same model reproduces both the hydrogel phase separation of ungrafted chains and the observed correlation between hydrogel
+partitioning and NPC resistance.
 
 
 \textbf{Extracting pore resistance from the experimental data.}
@@ -1098,12 +1094,12 @@ external reservoir (Eq.~\ref{eq:rate_constant}) it reduces to
 Because NPCs operate on the nanometer scale, the resulting resistances are extremely small, typically
 $R\sim10^{20}\,\text{s}/\text{m}^{-3}$.  
 To express these values more intuitively, we convert them to a
-\textbf{Translocation rate per one NPC}, defined as the number of molecules that cross one pore per second under a unit concentration gradient of $\Delta c = 1\;\mu\text{M}$ (cf.~\cite{Ribbeck2001}):
+translocation rate per one NPC, defined as the number of molecules that cross one pore per second under a unit concentration gradient of $\Delta c = 1\;\mu\text{M}$ (cf.~\cite{Ribbeck2001}):
 \begin{equation}
     \begin{array}{c}
         \text{Translocation rate} \\
         \text{per one NPC}\\
-        \text{at} \Delta c = 1\;\mu\text{M}
+        \text{at} \, \Delta c = 1\;\mu\text{M}
     \end{array}
     \hspace{-1em}= \,\frac{N_{\mathrm{A}}}{R}\,10^{-3}\;\text{s}^{-1},
 \end{equation}
@@ -1112,14 +1108,35 @@ where \(N_{\mathrm{A}}\) is Avogadro's number.
 
 %\textbf{}
 
-\paragraph{Influx rate versus inert probe colloid molar weight.}
+\textbf{Translocation rate versus inert probe colloid molar weight.}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=3.2in]{fig/flux_vs_MW_SI.png}
+    \caption{%
+    Single-NPC translocation rate plotted against probe molar mass:
+    comparison of three models.  
+    \textit{Diffusive barrier} (gray)-
+    the FG mesh lowers the diffusivity but imposes no net insertion free
+    energy;  
+    \textit{Rigid barrier} (grey)-
+    the pore is treated as an impermeable channel $\approx$\,4-5\,nm in
+    diameter (cut-off $\approx$\,40-50\,kDa), so larger inert colloids are almost completely
+    excluded;  
+    \textit{Soft barrier} (orange, this work)-
+    the FG domains are modelled explicitly, combining size-dependent
+    diffusivity with the calculated insertion free energy.  
+    Shaded symbols represent experimental rates; shaded bands indicate parameter
+    uncertainty $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.
+    }
+    \label{fig:flux_vs_MW}
+\end{figure}
 
 We compare our theoretical predictions with experimental translocation data—both the original measurements of Ribbeck \textit{et al.}\,\cite{Ribbeck2001} and values we deduced from other studies \cite{Mohr2009,Popken2015,Timney2016,Frey2018} (see Table~\ref{tbl:experimental}).  
-For the calculations we adopt the geometric parameters reported for digitonin-permeabilised HeLa cells \cite{Ribbeck2001} and for \textit{S.\,cerevisiae} nuclei \cite{Timney2016}.  
-The buffer viscosity at 20$^\circ$C is taken as
-$\eta_{\text{S}} = 1.45\times10^{-3}\,\text{Pa\,s}$, matching the assay composition (20 mM HEPES-KOH, pH 7.4; 120 mM KOAc; 5 mM Mg(OAc)$_2$; 0.5 mM EGTA; 250 mM sucrose) \cite{Ribbeck2001}.
+For the calculations we adopt the number of pores per nucleus, nuclear and cytoplasmic volume reported for digitonin-permeabilised HeLa cells \cite{Ribbeck2001} and for \textit{S.\,cerevisiae} nuclei \cite{Timney2016} (Table~\ref{tbl:experimental}), the inner diameter and the channel length of the pores is set to be $r_{\text{pore}}\approx 40 \text{nm}$ (Figure~1).
+The buffer viscosity at 20$^\circ$C is taken as $\eta_{\text{S}} = 1.45\times10^{-3}\,\text{Pa\,s}$, matching the assay composition (20 mM HEPES-KOH, pH 7.4; 120 mM KOAc; 5 mM Mg(OAc)$_2$; 0.5 mM EGTA; 250 mM sucrose) \cite{Ribbeck2001}.
 
-Throughout we assume the nuclear-pore brush is in a moderately poor solvent, $\chi_{\text{PS}} = 0.6$, \todo{[add reference or brief rationale]}.and use the pore parameters given in Figure~1.
+Throughout we assume the nuclear-pore brush is in a moderately poor solvent, $\chi_{\text{PS}} = 0.6$. \todo{[add reference or brief rationale]}
 
 All probe particles are treated as spheres with densities in the range $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.  Their
 diameter (in nm) is estimated from the molar mass $M_{w}$ (in kDa) via
@@ -1132,23 +1149,45 @@ diameter (in nm) is estimated from the molar mass $M_{w}$ (in kDa) via
     \right)^{\!1/3},
   \label{eq:d_probe}
 \end{equation}
-where $N_{\text{A}}$ is Avogadro’s number; the corresponding molecular masses are listed in Tables~\ref{tbl:inert_probes} and~\ref{tbl:attr_probes}.
+where $N_{\text{A}}$ is Avogadro's number; the corresponding molecular masses are listed in Tables~\ref{tbl:inert_probes} and~\ref{tbl:attr_probes}.
 
-In Figure 8a of the main text the scatter represent the experimental translocation rates extracted for inert probes (Table~\ref{tbl:inert_probes}).
+In Figure 8a the scatter represent the experimental translocation rates extracted for inert probes (Table~\ref{tbl:inert_probes}).
 The matching shaded band shows our theoretical prediction over the size range $1 \le d \le 10$ nm, bounded by the lowest and highest probe densities.
 For reference we also plot the rates expected for a bare pore, using Eq.~(3), again with a band bracketing the density range.
 
-\textbf{Influx rate versus partition coefficient correlation.}
+\todo{Here to write that rigid barrier does not fit the data well, and about correction of wall drag, as it is important here.
+They have similar comparison in Timney et al \cite{Timney2016}.}
 
-For particles with low $\chi_{\text{PC}}$, we expect enhanced permeability compared to inert particles, possibly even surpassing that of a bare pore.
+\begin{equation}
+    R = \frac{LK\{\frac{d}{2r_{\text{pore}}}\}}{D_0 \pi (r_{\text{p}}^0-r_{\text{p}})^{2}} + \frac{1}{2 D_0 (r_{\text{p}}^0-r_{\text{p}})}
+    \label{eq:resistance}
+\end{equation}
+where $K\{\frac{d}{2r_{\text{pore}}}\}$ account for wall drag and found from \cite{Haberman1958}.
+
+\todo{Also reduced by the meshwork diffusivity does not explain the trend, even if $\beta = 8$ instead of $\beta = 5.5$. We change $\beta$ to fit trend to smaller particles}
+
+\textbf{Translocation rate versus partition coefficient in FG-domain hydrogel correlation.}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=3.2in]{fig/flux_vs_PC_SI.png}
+    \caption{%
+    Gating of colloids by their affinity as in Figure~8b ($\rho_{\text{probe}} =1.3 \text{g/cm}^{-3}$).
+    Shaded bands indicate parameter uncertainty $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.
+    }
+    \label{fig:flux_vs_PC}
+\end{figure}
+
+For particles with high affinity to the polymer (low $\chi_{\text{PC}}$), we expect enhanced permeability compared to inert particles, possibly even surpassing that of a bare pore.
 
 Frey \textit{et al}~\cite{Frey2018} examined permeability of similarly sized colloidal particles with varying surface properties, ranging from inert to FG-domain-affine.
 To characterize these surfaces, FG-domain hydrogels were prepared to study colloid partitioning.
 
-The authors prepared droplets of Mac98A FG-domains via rapid dilution, inducing phase separation, following the protocol of Ref.~\cite{Schmidt2015}.
+The authors prepared droplets of Mac98A FG-domains via rapid dilution, inducing phase separation. 
+%following the protocol of Ref.~\cite{Schmidt2015}.
 The estimated protein concentration in the gel phase is $\approx 275 \, \text{mg}/\text{ml}$, which corresponds to a volume fraction $\phi_{\text{gel}} \approx 0.2$, assuming a typical dry protein density of $1.35 \, \text{g}/\text{ml}$.
 
-Similarly, droplets of Nup116 FG-domains were prepared with an estimated intra-particle protein concentration of $\approx 400 \, \text{mg}/\text{ml}$, corresponding to $\phi_{\text{gel}} \approx 0.4$. A compromise value $\phi_{\text{gel}} = 0.3$ was used in Figure~\todo{Main text figure}.
+Similarly, droplets of Nup116 FG-domains were prepared with an estimated intra-particle protein concentration of $\phi_{\text{gel}} \approx 400 \, \text{mg}/\text{ml}$, corresponding to $\phi_{\text{gel}} \approx 0.4$. A compromise value $\phi_{\text{gel}} = 0.3$ was used in Figure~\todo{Main text figure}.
 Within the range $0.2 < \phi_{\text{gel}} < 0.4$, the results are not sensitive to the exact value of $\phi_{\text{gel}}$.
 
 Upon dilution, FG-domains undergo phase separation due to chain cohesiveness, demixing into a dilute FG-poor phase and a condensed FG-rich gel.
@@ -1161,7 +1200,7 @@ $
 according to mean-field theory (assuming $N \gg 1$). 
 Both chemical potentials and osmotic pressures are equal in the rich and poor phases \cite{Vovk2016, Zilman2018}.
 
-The estimated critical concentration for Nup116 and Nup98A FG-domains is $1 \, \mu\text{g}/\text{ml}$, corresponding to $\phi_{\text{gel}}^{\text{out}} \approx 10^{-6}$ \cite{Schmidt2015}.
+The estimated critical concentration for Nup116 and Nup98A FG-domains is $1 \, \mu\text{g}/\text{ml}$, corresponding to \mbox{$\phi_{\text{gel}}^{\text{out}} \approx 10^{-6}$} \cite{Schmidt2015}.
 This extremely low value implies the osmotic pressure is effectively zero in both phases:
 
 \begin{eqnarray}
@@ -1185,8 +1224,14 @@ Since the osmotic pressure is negligible, only the surface interaction contribut
     \phi_{\text{gel}}, \chi_{\text{PC}},
     \chi_{\text{PS}}^{\text{FG}}\{ \phi_{\text{gel}} \}
     \right) \\
-    \left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}} = e^{-\Delta F_{\text{gel}}}
+    \text{PC}_{\text{gel}} = \left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}} = e^{-\Delta F_{\text{gel}}}
 \end{eqnarray}
+
+Owing to the uncertainty in the volume fraction of the FG-particles, $\phi_{\text{gel}}$, we adopt a compromise value of $\phi_{\text{gel}} = 0.30$ in Figure 8b,.  
+With an average probe molar mass of \(\sim\!28\;\text{kDa}\) the particle diameter is estimated to lie in the range  $4.0\;\text{nm} \lesssim d\cdot a \lesssim 4.5\;\text{nm}$.
+Because our theoretical model is implemented for even integer diameters expressed in segment lengths ($a = 0.76\;\text{nm}$), we use the
+nearest value, $d = 6$.
+
 
 \end{multicols}
 \pagebreak
@@ -1199,11 +1244,11 @@ Since the osmotic pressure is negligible, only the surface interaction contribut
             %\hline
             Study & Cell culture & Reported quantity & $\!\!N_{\text{pores}}$ & $V_{\text{in}}$ $[f\text{l}]$ & $\!V_{\text{out}}$ $[f\text{l}]$ \\
             \hline
-            Ribbeck \textit{et al.}\cite{Ribbeck2001} & HeLa & Translocation rate per NPC at $\Delta c = 1 \mu\text{M}$ & 2770 & 1130 & $\infty$ \\
+            Ribbeck \textit{et al.}\cite{Ribbeck2001} & HeLa & Translocation rate per one NPC at $\Delta c = 1 \mu\text{M}$ & 2770 & 1130 & $\infty$ \\
             Mohr \textit{et al.}\quad\,\cite{Mohr2009} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
             Popken \textit{et al.}\,\,\cite{Popken2015} & \textit{S. cerevisiae} & Nuclear/cytoplasm concentration $c_{\text{in}}/c_{\text{out}}$ at  $t\! =\!1\text{h}$  & 161 & 4.8 & 60 \\
             Timney \textit{et al.}\cite{Timney2016} & \textit{S. cerevisiae} & Characteristic time $\tau$ & 161 & 4.8 & 60 \\
-            Frey \textit{et al.}\quad\;\;\cite{Frey2018} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
+            Frey \textit{et al.}\quad\;\;\cite{Frey2018} & HeLa & Rate constant $k$, partitioning in FG hydrogel $\text{PC}_{\text{gel}}$ & 2770 & 1130 & $\infty$ \\
             %\hline
         \end{tabular}
         }
@@ -1270,12 +1315,12 @@ rNTF2 (dimer) & 28 & 95 & 3200 & 13000 \\
 mCherry & 28 & 0.140 & - & 0.09 \\
 EGFP & 28 & 0.49 & 0.11 & 0.33 \\
 efGFP\_0W & 28 & 0.84 & 0.09 & 0.42 \\
-efGFP\_3W & 33 & 11.5 & 1.50 & 14 \\
-efGFP\_5W & 56 & 12.2 & 2.20 & 15 \\
-efGFP\_8F & 170 & 6.0 & 8.30 & 51 \\
-efGFP\_8L & 59 & 4.6 & 1.80 & 10 \\
-efGFP\_8I & 56 & 9.5 & 2.90 & 23 \\
-efGFP\_8M & 48 & 15.4 & 3 & 17 \\
+efGFP\_3W* & 27.5 & 11.5 & 1.50 & 14 \\
+efGFP\_5W* & 28 & 12.2 & 2.20 & 15 \\
+efGFP\_8F* & 28.3 & 6.0 & 8.30 & 51 \\
+efGFP\_8L* & 26.8 & 4.6 & 1.80 & 10 \\
+efGFP\_8I* & 28.2 & 9.5 & 2.90 & 23 \\
+efGFP\_8M* & 28.2 & 15.4 & 3 & 17 \\
 efGFP\_8R & 30 & 2.66 & 0.50 & 1.90 \\
 sffrGFP4 & 29 & 22.4 & 14 & 50 \\
 sffrGFP4 & 29 & 22.4 & 14 & 50 \\
@@ -1286,17 +1331,18 @@ sffrGFP4 & 29 & 22.4 & 14 & 50 \\
 sffrGFP5 & 28 & 9.0 & 0.67 & 5.50 \\
 sffrGFP6 & 29 & 39.2 & 100 & 160 \\
 sffrGFP7 & 29 & 43 & 200 & 200 \\
-GFP\_MaxR\_5W & 140 & 116 & 2100 & 4000 \\
-GFP\_MaxR\_8i & 47 & 182 & 2000 & 4100 \\
-GFPNTR\_2B7 & 65 & 224 & 1200 & 1600 \\
-GFPNTR\_7B3 & 42 & 238 & 1700 & 1400 \\
-GFPNTR\_3B1 & 114 & 60 & 290 & - \\
-GFPNTR\_3B7 & 110 & 106 & 3000 & - \\
-GFPNTR\_3B8 & 110 & 94 & 1800 & - \\
-GFPNTR\_3B9 & 113 & 122 & 4800 & - \\
+GFP\_MaxR\_5W* & 28 & 116 & 2100 & 4000 \\
+GFP\_MaxR\_8i* & 27.6 & 182 & 2000 & 4100 \\
+GFPNTR\_2B7* & 27.1 & 224 & 1200 & 1600 \\
+GFPNTR\_7B3* & 26.3 & 238 & 1700 & 1400 \\
+GFPNTR\_3B1* & 28.5 & 60 & 290 & - \\
+GFPNTR\_3B7* & 27.5 & 106 & 3000 & - \\
+GFPNTR\_3B8* & 27.5 & 94 & 1800 & - \\
+GFPNTR\_3B9 & 28.3 & 122 & 4800 & - \\
 \end{tabular}
 }
-\caption{Translocation rates probe colloids with different surface features calculated from the experimental data and their partition coefficient in the FG-gel taken directly from the source without modification from Frey \textit{et al}.\cite{Frey2018}
+\caption{Translocation rates probe colloids with different surface features calculated from the experimental data and their partition coefficient in the FG-gel taken directly from the source without modification from Frey \textit{et al}.\cite{Frey2018}.
+Probe colloids marked with $^{*}$ reported to form oligomers, molar weights presented for monomer state.
 }
 \label{tbl:attr_probes}
 \end{table}
