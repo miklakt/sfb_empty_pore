@@ -932,7 +932,7 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{fig/R_vs_d_SI.png}
-    \caption{
+    \caption{%
         Total resistance compared between numerical simulation and approximate analytical approaches as a function of particle size.
         Total resistance is calculated for a good solvent $\chi_{\text{PS}} = 0.5$ and a set of 
         $\chi_{\text{PC}} = \{0.0, -1.00, -1.4, -1.8\}$ 
@@ -942,10 +942,16 @@ The comparison for a set of parameters is given in Figure~\ref{fig:CFD_compariso
         The thick black line is the resistance of a pore with effective shape (volume exclusion).
         \\
         The resistance is normalized by the viscosity $\eta_{S}$ of the pure solvent and particle size $d$, Stokesian behaviour from consideration.
+        \\
+        \todo{Will be updated as more simulation be ready}
         }
     \label{fig:CFD_comparison}
 \end{figure}
 
+\todo{Also I soft clipped free energy from below to be more than -10kT, because any more negative free energy does not change conductivity much, but make simulation stale or break due to high partitioning}
+\begin{equation}
+    \Delta F_{\text{clipped}} = \Delta F_{\text{min}}+ \ln[\exp(\Delta F - \Delta F_{\text{min}})]
+\end{equation}
 
 \end{multicols}
 %#########This chapter is to be rewritten to include sticky particles and fix prefactor###############
@@ -1170,7 +1176,7 @@ where $K\{\frac{d}{2r_{\text{pore}}}\}$ account for wall drag and found from \ci
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=3.2in]{fig/flux_vs_PC_SI.png}
+    \includegraphics[width=3.5in]{fig/flux_vs_PC_SI.png}
     \caption{%
     Gating of colloids by their affinity as in Figure~8b ($\rho_{\text{probe}} =1.3 \text{g/cm}^{-3}$).
     Shaded bands indicate parameter uncertainty $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.
