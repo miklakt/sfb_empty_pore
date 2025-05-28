@@ -531,3 +531,8 @@ if __name__=="__main__":
 # # %%
 # df=Frey2018["data"][["Probe", "MM", "Translocations", "Mac98A","Nup116"]].iloc[0:32]
 # print(df.to_latex(index = False))
+#%%
+# data = Frey2018["data"]
+# data = data.loc[~data.MM.isna()]
+# data["MM_"] = data.apply(lambda _: _.MM/float(_.Oligomerisation), axis = 1)
+# %%

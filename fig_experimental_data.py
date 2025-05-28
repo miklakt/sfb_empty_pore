@@ -64,6 +64,13 @@ def PC_gel(phi, chi_PS, chi_PC, d):
     PC = np.exp(-FE)
     return PC
 
+def chi_from_phi_binodal(phi):
+    return (-np.log(1-phi) - phi)/(phi**2)
+
+def PC_gel_nochi(phi, chi_PC, d):
+    chi_PS_ = chi_from_phi_binodal(phi)
+    return PC_gel(phi, chi_PS_, chi_PC, d)
+
 calculate_fields = functools.partial(
     calculate_fields_in_pore.calculate_fields,
         a0=a0, a1=a1, 
@@ -93,7 +100,7 @@ def get_theory_for_given_density(density):
     calculate_probe_diameter_from_molar_weight(density)
 
     empty_pore = {}
-    MM = np.geomspace(1,800, 500)
+    MM = np.geomspace(0.3,800, 500)
     d = estimate_protein_diameter(MM, density)
     translocations=get_translocation_empty_pore(pore_radius, L, d, eta)
     #translocations=get_translocation_empty_pore(5, L, d)
@@ -135,21 +142,28 @@ def get_nofe_theory_for_given_density(density):
 
 def get_rigid_pore_for_given_density(density):
     calculate_probe_diameter_from_molar_weight(density)
-    pore_radius_rigid = 5#Kuhn
+    pore_radius_rigid = 5.0#nm
     empty_pore = {}
-    MM = np.geomspace(1,800, 500)
+    MM = np.geomspace(0.3,220, 500)
     d = estimate_protein_diameter(MM, density)
-    translocations=get_translocation_empty_pore(pore_radius_rigid, L, d, eta)
+    translocations=[get_translocation_empty_pore(r_p=pore_radius_rigid, L=L, d=d_, eta=eta, Haberman_correction=True) for d_ in d]
     #translocations=get_translocation_empty_pore(5, L, d)
     empty_pore["MM"] = MM
     empty_pore["d"] = d
     empty_pore["Translocations"] = translocations
-    empty_pore["R"] = get_R_empty(pore_radius_rigid, L, d, eta)
+    empty_pore["R"] = [get_R_empty(r_p=pore_radius_rigid, L=L, d=d_, eta=eta, Haberman_correction=True) for d_ in d]
     return empty_pore
 
 #%%
+
+show_rigid_pore_model = True
+show_nofe_model = True
+show_phi_band = True
+
+
+
 axis_label = {
-    "MM":"MM, [kDa]",
+    "MM":"$M_w$, [kDa]",
     "Translocations":"Translocation per one NPC\n"+r"at $\Delta c = 1 \mu \text{M}, [\text{s}^{-1}]$",
     "d":r"$d, [\text{nm}]$",
     "R":r"$R, [\text{m}^3/\text{s}]$",
@@ -179,8 +193,10 @@ nofe_particles = get_nofe_theory_for_given_density(density)
 rigid_pore = get_rigid_pore_for_given_density(density)
 ax.plot(empty_pore[X_label], empty_pore[Y_label], label = "Empty pore", color = "k")
 ax.plot(inert_particles[X_label], inert_particles[Y_label], label = "Inert particles", color = '#FF800E')
-ax.plot(nofe_particles[X_label], nofe_particles[Y_label], label = "$\Delta F=0$ particles", color = 'k', linewidth=0.5)
-ax.plot(rigid_pore[X_label], rigid_pore[Y_label], label = "Rigid pore channel", color = 'tab:blue', linewidth=0.5)
+if show_nofe_model:
+    ax.plot(nofe_particles[X_label], nofe_particles[Y_label], label = "$\Delta F=0$ particles", color = 'k', linewidth=0.5)
+if show_rigid_pore_model:
+    ax.plot(rigid_pore[X_label], rigid_pore[Y_label], label = "Rigid pore channel", color = 'tab:blue', linewidth=0.5)
 #ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
 
 density = 1.4
@@ -189,8 +205,10 @@ nofe_particles = get_nofe_theory_for_given_density(density)
 rigid_pore = get_rigid_pore_for_given_density(density)
 ax.plot(empty_pore[X_label], empty_pore[Y_label], color = "k")
 ax.plot(inert_particles[X_label], inert_particles[Y_label], color = '#FF800E')
-ax.plot(nofe_particles[X_label], nofe_particles[Y_label], label = "$\Delta F=0$ particles", color = 'k', linewidth=0.5)
-ax.plot(rigid_pore[X_label], rigid_pore[Y_label], label = "Rigid pore channel", color = 'tab:blue', linewidth=0.5)
+if show_nofe_model:
+    ax.plot(nofe_particles[X_label], nofe_particles[Y_label], color = 'k', linewidth=0.5)
+if show_rigid_pore_model:
+    ax.plot(rigid_pore[X_label], rigid_pore[Y_label], color = 'tab:blue', linewidth=0.5)
 #ax.set_xlim(min(empty_pore[X_label]),max(empty_pore[X_label]))
 
 color = get_palette_colors()
@@ -218,7 +236,15 @@ for k, v in flux_vs_molar_weight.items():
     if marker_=="+":color_ = "k"
     x = data[X_label]
     y = data[Y_label]
-    ax.scatter(x,y, label = v["Reference"], marker = marker_, ec = ec_color_, color = color_, zorder = 3)
+    ax.scatter(
+        x,y, 
+        label = v["Reference"], 
+        marker = marker_, 
+        ec = ec_color_, 
+        color = color_, 
+        zorder = 3, 
+        alpha = 0.7
+        )
     if show_text:
         for idx, row in data.iterrows():
             x = row[X_label]
@@ -235,7 +261,7 @@ for k, v in flux_vs_molar_weight.items():
 ax.grid()
 ax.minorticks_off()
 ax.set_ylim(5e-4, 3e3)
-ax.set_xlim(1,3e2)
+ax.set_xlim(0.4,3e2)
 #fig.set_size_inches(2.5, 2.5)
 ################################################################################
 ax = axs[1]
@@ -272,6 +298,7 @@ for nup in nups:
         marker = marker_,
         color = color_,
         ec = "k",
+        alpha = 0.7
         )
     x2 = data_larger_particles[nup]
     ax.scatter(
@@ -279,11 +306,12 @@ for nup in nups:
         marker = marker_,
         color = color_,
         ec = "k",
-        alpha = 0.5
+        alpha = 0.7
         )
 
 #ax.plot(empty_pore[X_label], empty_pore[Y_label], label = "Empty pore", color = "k")
 d = 6
+
 phi_gel = 0.3
 empty_pore_line = get_translocation_empty_pore(
         r_p = pore_radius,
@@ -304,7 +332,8 @@ theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi
 R = np.array(theoretical_particles_result["permeability"]**-1)
 theoretical_particles["R"] = R*eta/(k_B*T)
 theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
-theoretical_particles["PC"] = [PC_gel(phi_gel, chi_PS, chi_PC, d) for chi_PC in chi_PCs]
+#theoretical_particles["PC"] = [PC_gel(phi_gel, chi_PS, chi_PC, d) for chi_PC in chi_PCs]
+theoretical_particles["PC"] = [PC_gel_nochi(phi_gel, chi_PC, d) for chi_PC in chi_PCs]
 
 ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 1.5, linestyle = "--")
 
@@ -314,7 +343,6 @@ theoretical_particles["R"] = R*eta/(k_B*T)
 theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
 
 ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 2)
-
 
 ax.axhline(
     empty_pore_line, 
@@ -348,6 +376,8 @@ ax.axhline(
 #     )
 
 
+
+
 ymax=5e3
 for xx, ss in zip(theoretical_particles["PC"][2::5], chi_PCs[2::5]):
     if ss<=-2.2: continue
@@ -357,13 +387,61 @@ for xx, ss in zip(theoretical_particles["PC"][2::5], chi_PCs[2::5]):
 
 ax.text(0.5,1.08,r"$\chi_{\text{PC}}$", transform = ax.transAxes, ha="center", va="bottom", fontsize = 14, color = '#C85200')
 
+
+
+if show_phi_band:
+    phi_gel = 0.2
+    theoretical_particles = {}
+    theoretical_particles["d"] = d*Kuhn_segment
+    theoretical_particles["MM"] = estimate_molecular_weight(d*Kuhn_segment, density)
+    theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d) for chi_PC in chi_PCs])
+    R = np.array(theoretical_particles_result["permeability"]**-1)
+    theoretical_particles["R"] = R*eta/(k_B*T)
+    theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
+    #theoretical_particles["PC"] = [PC_gel(phi_gel, chi_PS, chi_PC, d) for chi_PC in chi_PCs]
+    theoretical_particles["PC"] = [PC_gel_nochi(phi_gel, chi_PC, d) for chi_PC in chi_PCs]
+
+    #ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 0.5, linestyle = "--")
+
+    theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d, stickiness=True) for chi_PC in chi_PCs])
+    R = np.array(theoretical_particles_result["permeability"]**-1)
+    theoretical_particles["R"] = R*eta/(k_B*T)
+    theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
+
+    ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 0.7)
+
+    # phi_gel = 0.4
+    # theoretical_particles = {}
+    # theoretical_particles["d"] = d*Kuhn_segment
+    # theoretical_particles["MM"] = estimate_molecular_weight(d*Kuhn_segment, density)
+    # theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d) for chi_PC in chi_PCs])
+    # R = np.array(theoretical_particles_result["permeability"]**-1)
+    # theoretical_particles["R"] = R*eta/(k_B*T)
+    # theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
+    # #theoretical_particles["PC"] = [PC_gel(phi_gel, chi_PS, chi_PC, d) for chi_PC in chi_PCs]
+    # theoretical_particles["PC"] = [PC_gel_nochi(phi_gel, chi_PC, d) for chi_PC in chi_PCs]
+
+    # #ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 0.5, linestyle = "--")
+
+    # theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d, stickiness=True) for chi_PC in chi_PCs])
+    # R = np.array(theoretical_particles_result["permeability"]**-1)
+    # theoretical_particles["R"] = R*eta/(k_B*T)
+    # theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
+
+    # ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 0.7)
+
+
+
+
+
+
 # ax.legend(
 #     #bbox_to_anchor = [0.0,1.0], 
 #     loc = "lower left"
 #     )
 ax.grid()
 ax.set_ylim(1e-1, ymax)
-ax.set_xlim(2e-2, 2e4)
+ax.set_xlim(2e-2, 4e4)
 ax.minorticks_off()
 
 fig.set_size_inches(6, 2.5)

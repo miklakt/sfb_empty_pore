@@ -21,9 +21,9 @@ else:
 #%%
 empty = True
 a0, a1 = [0.70585835, -0.31406453]
-pore_radius = 20 # pore radius
-wall_thickness = 20 # wall thickness
-d=6
+pore_radius = 25 # pore radius
+wall_thickness = 52 # wall thickness
+d=20
 rlayers = 300
 zlayers = 600
 
@@ -75,7 +75,7 @@ c_arr = drift_diffusion.c_arr
 np.savetxt("temp.txt", c_arr)
 np.savetxt(output_filename, c_arr)
 # %%
-plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get(), contour = True)
+plot_heatmap_and_profiles(drift_diffusion.c_arr.get(), mask = drift_diffusion.W_arr.get())
 plot_heatmap_and_profiles(drift_diffusion.div_J_arr.get(), mask = drift_diffusion.W_arr.get())
 # %%
 plt.plot(drift_diffusion.J_z_tot().get())
@@ -129,7 +129,7 @@ ax.add_patch(p)
 p = mpatches.Rectangle((-wall_thickness/2-1, r_cut-1), wall_thickness+1, -r_cut+pore_radius+1, hatch='/', facecolor = "green")
 ax.add_patch(p)
 
-ax.set_xlim(-45, 45)
+ax.set_xlim(-65, 65)
 ax.set_ylim(-40, 40)
 
 ax.set_xlabel("$z$")

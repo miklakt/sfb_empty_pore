@@ -36,14 +36,13 @@ def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
 #%%
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-
 # %%
 import matplotlib.colors as plt_colors
 a0, a1 = 0.7, -0.3
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d = 8
-chi_PC = -1.0
+d = 20
+chi_PC = -1.4
 chi_PS = 0.5
 sigma = 0.02
 
@@ -64,6 +63,9 @@ fields = calculate_fields(
 fields["resistivity"] = (fields["conductivity"])**(-1)
 fields["pc"] = np.exp(-fields["free_energy"])
 fields["mobility"] = -np.log(fields["mobility"])
+def soft_clip_lower(x, min_val, softness=1.0):
+    return min_val + softness * np.log1p(np.exp((x - min_val) / softness))
+fields["free_energy"] = soft_clip_lower(fields["free_energy"],-10)
 #%%
 %matplotlib TkAgg
 import cmasher as cmr
@@ -78,8 +80,8 @@ fig = plot_heatmap(fields, r_cut, z_cut, keys = [
     #"phi", 
     #"Pi", 
     #"gamma", 
-    #"free_energy", 
-    "mobility", 
+    "free_energy", 
+    #"mobility", 
     #"conductivity", 
     #"resistivity",
     #"osmotic", 
@@ -87,8 +89,8 @@ fig = plot_heatmap(fields, r_cut, z_cut, keys = [
     #"pc"
     ], 
     cmap = "Reds",
-    zmin=0,
-    zmax = 4,
+    #zmin=0,
+    #zmax = 4,
     #cmap = cmap_.reversed(),
     #cmap = cmap_,
     #zmin=vmin,

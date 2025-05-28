@@ -22,6 +22,9 @@ if __cupy__:
 else:
     import numpy as xp
 
+def soft_clip_lower(x, min_val, softness=1.0):
+    return min_val + softness * np.log1p(np.exp((x - min_val) / softness))
+
 def pad_fields(fields, pad_sides, pad_top):
     padded_fields = {}
     padded_fields["xlayers"]=fields["xlayers"]+pad_sides*2
@@ -48,7 +51,7 @@ def pad_fields(fields, pad_sides, pad_top):
         ))
     return padded_fields
 #%%
-for d in np.arange(4, 22, 2):
+for d in np.arange(20, 26, 2):
     a0, a1 = [0.7, -0.3]
     pore_radius = 26 # pore radius
     wall_thickness = 52 # wall thickness
@@ -73,7 +76,8 @@ for d in np.arange(4, 22, 2):
     #fields = pad_fields(fields_, pad_sides = 0, pad_top = 0)
     W_arr = fields["walls"]
     D_arr = fields["mobility"]
-    U_arr = fields["free_energy"]
+    #U_arr = fields["free_energy"]
+    U_arr = soft_clip_lower(fields["free_energy"],-10)
 
     zlayers = xp.shape(W_arr)[0]
     rlayers = xp.shape(W_arr)[1]
@@ -121,11 +125,11 @@ for d in np.arange(4, 22, 2):
     dt = 0.1
     drift_diffusion.run_until(
         inflow_boundary, dt=dt,
-        target_divJ_tot=1e-6,
-        jump_every=10,
+        target_divJ_tot=1e-5,
+        jump_every=10000,
         timeout=12000,
-        max_jump=1e-5,
-        sigmoid_steepness=1,
+        #max_jump=1e-5,
+        #sigmoid_steepness=1,
         # jump_if_change = 1e-2
         )
     #%%

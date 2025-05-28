@@ -456,10 +456,11 @@ class DriftDiffusionKernelFactory:
             loop()
             if __cupy__:
                 div_J_tot = xp.sum(xp.abs(self.div_J_arr)).get()
-                print(f"sum_divJ = {div_J_tot:.4E}, sum_c = {xp.sum(self.c_z_tot()).get():.4E}")
+                J_z = np.round(np.mean(self.J_z_tot().get()), 4)
+                J_z_err = np.round(np.std(self.J_z_tot().get()), 4)
             else:
                 div_J_tot = xp.sum(xp.abs(self.div_J_arr))
-                print(f"sum_divJ = {div_J_tot:.4E}, sum_c = {xp.sum(self.c_z_tot()):.4E}")
+            print(f"sum_divJ = {div_J_tot:.4E}, sum_c = {xp.sum(self.c_z_tot()).get():.4E}, J = {float(J_z)}, J_err = {float(J_z_err)}")
             if is_target_reached(): break
             counter = counter+1
             if jump_every is not None:
