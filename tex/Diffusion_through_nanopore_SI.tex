@@ -444,8 +444,8 @@ Similarly, when a surface is defined via an indicator function $\bm{1}_S$, we ca
 \begin{eqnarray}
     \label{eq:int_indicator_S}
     \begin{split}
-        \int\limits_{S} f dS = \int\displaylimits_{0}^{+\infty} \int\displaylimits_{-\infty}^{+\infty} \int\displaylimits_{0}^{2\pi} f(r, z) \bm{1}_S  dA =\\
-        =\int\displaylimits_{0}^{+\infty} \int\displaylimits_{-\infty}^{+\infty} f(r, z)  S_{\theta \downarrow} dr dz
+        \int\limits_{S} f dS = \int\displaylimits_{0}^{+\infty} \int\displaylimits_{-\infty}^{+\infty} \int\displaylimits_{0}^{2\pi} f(r, z) \bm{1}_S  \text{d}A =\\
+        =\int\displaylimits_{0}^{+\infty} \int\displaylimits_{-\infty}^{+\infty} f(r, z)  S_{\theta \downarrow} \text{d}r \text{d}z
     \end{split}
 \end{eqnarray}
 We here dropped the angular dimension by projecting the integration volume $V_{\theta \downarrow}$ and surface $S_{\theta \downarrow}$ onto the $rz$-plane.
@@ -453,18 +453,18 @@ This reduction simplifies the integration, allowing to perform it in two dimensi
 
 The volume $V_{\theta \downarrow}$ and surface $S_{\theta \downarrow}$ projections of a spherical colloid onto the $rz$-plane in cylindrical coordinates are:
 \begin{gather}
-    V_{\theta \downarrow}(r, z, r_{\text{c}}, z_{\text{c}}) = 2\int_{0}^{\pi} H\left( \Delta_{\text{center}} - \frac{d}{2} \right) r \, d\theta
+    V_{\theta \downarrow}(r, z, r_{\text{c}}, z_{\text{c}}) = 2\int_{0}^{\pi} H\left( \Delta_{\text{center}} - \frac{d}{2} \right) r \, \text{d}\theta
     \\
-    S_{\theta \downarrow}(r, z, r_{\text{c}}, z_{\text{c}}) = 2\int_{0}^{\pi} \frac{\delta \left( \Delta_{\text{center}} - \frac{d}{2} \right) \Delta_{\text{center}}}{-r \sin \theta + r_{\text{c}} \sin \theta \cos \theta} \, d\theta
+    S_{\theta \downarrow}(r, z, r_{\text{c}}, z_{\text{c}}) = 2\int_{0}^{\pi} \frac{\delta \left( \Delta_{\text{center}} - \frac{d}{2} \right) \Delta_{\text{center}}}{-r \sin \theta + r_{\text{c}} \sin \theta \cos \theta} \, \text{d}\theta
 \end{gather}
 where $H$ is the Heaviside function and $\delta$ is the Dirac delta function.
 The function domain, values and discretization for $V_{\theta \downarrow}$ and $S_{\theta \downarrow}$ are exemplified in Figure~\ref{fig:sphere_volume_and_surface_projection} for a set of colloid with radial center positions $r_{\text{c}}$.
 
 To find the elements of the projection matrices, we discretize the projections by integrating over a set of domains $r, z \in [i, i + \delta r] \times [k, k + \delta z]$ for possible indices $i,k$:
 \begin{eqnarray}
-    V(r_{\text{c}})_{[i, k]} = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} V_{\theta \downarrow} (r, z, r_{\text{c}}, z_{\text{c}}) dr dz
+    V(r_{\text{c}})_{[i, k]} = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} V_{\theta \downarrow} (r, z, r_{\text{c}}, z_{\text{c}}) \text{d}r \text{d}z
     \\
-    S(r_{\text{c}})_{[i, k]} = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} S_{\theta \downarrow} (r, z, r_{\text{c}}, z_{\text{c}}) dr dz
+    S(r_{\text{c}})_{[i, k]} = \iint \limits_{i, k}^{\substack{i+\delta r\\ k+\delta z}} S_{\theta \downarrow} (r, z, r_{\text{c}}, z_{\text{c}}) \text{d}r \text{d}z
 \end{eqnarray}
 where $z_{\text{c}}$ has an arbitrary value.
 The size of the projection matrices is $\min(d, r_{\text{c}} + d/2) \times d$.
@@ -671,7 +671,7 @@ Integration over the constant $x_z$ surfaces gives the inverse resistance per un
 
 \begin{gather}
     \label{eq:R_z_analyt}
-    \varrho_{z}^{-1} = \int\displaylimits_{0}^{r_{\text{p}}} \int\displaylimits_{0}^{2\pi} \rho^{-1} h_r h_{\theta} h_z^{-1} dx_{\theta} dx_r
+    \varrho_{z}^{-1} = \int\displaylimits_{0}^{r_{\text{p}}} \int\displaylimits_{0}^{2\pi} \rho^{-1} h_r h_{\theta} h_z^{-1} \text{d}x_{\theta} \text{d}x_r
     \\
     \label{eq:h_integrand}
     \begin{aligned} 
@@ -684,7 +684,7 @@ Integration over the constant $x_z$ surfaces gives the inverse resistance per un
     \end{aligned}
     \\
     \label{eq:R_analyt}
-    R = \int_{-\infty}^{+\infty} \varrho_{z} \, dx_z
+    R = \int_{-\infty}^{+\infty} \varrho_{z} \, \text{d}x_z
 \end{gather}
 
 Here, $\varrho_{z} \, dx_z$ is the resistance of an oblate spheroid shell in the exterior region $x_z \notin [-L/2, L/2]$ and a circular disk in the interior of the pore $x_z \in [-L/2, L/2]$.
@@ -708,7 +708,7 @@ For a pore without a polymer brush, the local conductivity is not modulated, so 
 Finally, when we integrate over the $x_z$ domain, we get the classic equation~\cite{Brunn1984}:
 \begin{equation}
     \label{eq:r_empty}
-    R_{0} = \int\displaylimits_{-\infty}^{+\infty} \varrho_{z}^{0} dx_z
+    R_{0} = \int\displaylimits_{-\infty}^{+\infty} \varrho_{z}^{0} \text{d}x_z
     =\frac{L}{D_0 \pi r_{\text{p}}^2} + \frac{1}{D_0 2 r_{\text{p}}}
 \end{equation}
 
@@ -771,7 +771,7 @@ To account for the resistance of semi-infinite reservoirs outside the integratio
 
 \begin{eqnarray}
     \label{eq:r_reservoir}
-    R_{(z, \pm\infty)} = \pm \int\displaylimits_{z}^{\pm\infty} \varrho_{z} \, dx_z = \dfrac{\pi - 2 \arctan\left( \dfrac{|z| - L/2}{r_{\text{p}}^{0}} \right)}{4 \pi r_{\text{p}}^{0}}
+    R_{(z, \pm\infty)} = \pm \int\displaylimits_{z}^{\pm\infty} \varrho_{z} \, \text{d}x_z = \dfrac{\pi - 2 \arctan\left( \dfrac{|z| - L/2}{r_{\text{p}}^{0}} \right)}{4 \pi r_{\text{p}}^{0}}
 \end{eqnarray}
 
 Finally, the total resistance of the pore, integrated on the discrete cylindrical lattice, is:
@@ -817,7 +817,7 @@ For convenience, we select a cross-section at the pore center ($z = 0$), as ther
 Then the total flux through the pore is
 \begin{equation}
     \label{eq:total_flux_1}
-    J = \oint\limits_{S} \bm{j} \cdot d\bm{S} = 2 \pi \int_0^{r_{\text{p}}} j_z(r, z = 0) \, r \, dr
+    J = \oint\limits_{S} \bm{j} \cdot \text{d}\bm{S} = 2 \pi \int_0^{r_{\text{p}}} j_z(r, z = 0) \, r \, \text{d}r
 \end{equation}
 
 We employ the finite volume method to simulate transport of the nanocolloid particles through the pore.
@@ -825,7 +825,7 @@ We employ the finite volume method to simulate transport of the nanocolloid part
 The key step in the finite volume method is the control volume integration using the divergence theorem:
 \begin{equation}
     \label{eq:CFD_integration_1}
-    \left( \frac{\partial c}{\partial t} \right)_{\text{CV}} = -\int\limits_{\text{CV}} \nabla \cdot \bm{j} \, dV = -\oint\limits_{\text{CV}} \bm{j} \cdot d\bm{S}
+    \left( \frac{\partial c}{\partial t} \right)_{\text{CV}} = -\int\limits_{\text{CV}} \nabla \cdot \bm{j} \, \text{d}V = -\oint\limits_{\text{CV}} \bm{j} \cdot \text{d}\bm{S}
 \end{equation}
 
 To update the average colloid concentration $c$ in a control volume, we use the forward Euler time integration scheme:
