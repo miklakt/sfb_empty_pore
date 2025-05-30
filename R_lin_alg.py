@@ -3,6 +3,7 @@ import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spla
 import matplotlib.pyplot as plt
+from scipy.ndimage import binary_dilation
 
 #import calculate_fields_in_pore
 
@@ -85,40 +86,25 @@ def is_inside_ellipse(x, y, a, b, x0=0.0, y0=0.0, side='full'):
     else:  # 'full'
         return inside
 #%%
-def R_steady_state(fields):
-    l1 = fields["l1"]
-    pore_radius = fields["r"]
-    pad_sides = 100
-    pad_top = np.sqrt((l1)**2 + (pore_radius / 2)**2)
+
+#%%
+def R_steady_state(conductivity, bc_source):
+    # l1 = fields["l1"]
+    # pore_radius = fields["r"]
+    # pad_sides = 100
+    # pad_top = np.sqrt((l1)**2 + (pore_radius / 2)**2)
     #pad_top = np.sqrt(4*(l1+pad_sides)**2 + pore_radius**2)
     #pad_fields(fields, pad_sides, pad_top)
 
-    Nr, Nz = fields["xlayers"], fields["ylayers"]
+    Nz, Nr = np.shape(conductivity)
     dr, dz = 1,1
     # Grid
-    r = np.arange(0, Nr)
-    z = np.arange(0, Nz)
-    R_grid, Z_grid = np.meshgrid(r, z, indexing='ij')
+    R = np.arange(0, Nr)
+    Z = np.arange(0, Nz)
+    RR, ZZ = np.meshgrid(R, Z, indexing='ij')
 
-    sigma = fields["conductivity"][Z_grid, R_grid]
+    sigma = conductivity[ZZ, RR]
     R_local =sigma**-1
-
-    l1 = fields["l1"]
-    mask_z = z<l1
-    mask = mask_z[:, np.newaxis]
-    bc_source = ~is_inside_ellipse(
-        Z_grid, 
-        R_grid, 
-        a = fields["r"], 
-        b=l1+1, 
-        x0=l1+1,
-        side = "left"
-        ).T*mask
-    bc_source[fields["walls"]==True] = False
-
-    
-    bc_sink = np.zeros((Nr, Nz), dtype=bool)
-    bc_sink = bc_source[::-1]
 
     # Dirichlet boundary conditions
     psi_source = 1.0
@@ -135,7 +121,7 @@ def R_steady_state(fields):
     for i in range(Nr):
         for j in range(Nz):
             k = idx(i, j)
-            r_i = r[i]
+            r_i = R[i]
 
             if bc_source[j, i]:
                 rows.append(k)
@@ -143,7 +129,7 @@ def R_steady_state(fields):
                 data.append(1.0)
                 b[k] = psi_source
                 continue
-            elif bc_sink[j, i]:
+            elif j==Nz-1:
                 rows.append(k)
                 cols.append(k)
                 data.append(1.0)
@@ -226,7 +212,7 @@ def R_steady_state(fields):
         else:
             dpsi_dz = 0
         Jz = -sigma[i, z_c] * dpsi_dz
-        Jz_total += 2 * np.pi * r[i] * Jz * dr
+        Jz_total += 2 * np.pi * R[i] * Jz * dr
 
     delta_psi = psi_source - psi_sink
     R_total = delta_psi / Jz_total if Jz_total != 0 else np.inf
@@ -236,19 +222,102 @@ def R_steady_state(fields):
         'Total Resistance [R_total]:', R_total)
     
     #The rest of the reservoir before oblate spheroid
-    R_left = (np.pi - 2*np.arctan(l1/fields["r"]))/(4*np.pi*fields["r"])/fields["D_0"]
-    R_total +=R_left
+    # R_left = (np.pi - 2*np.arctan(l1/fields["r"]))/(4*np.pi*fields["r"])/fields["D_0"]
+    # R_total +=R_left
     
     return R_total, psi.T
 #%%
+
+def pad_fields(fields, z_boundary):
+    conductivity = fields["conductivity"]
+    walls = fields["walls"]
+    r_pore = fields["r"]
+    #we ake only the left side, the problem is symmetric
+    conductivity = conductivity[:np.shape(conductivity)[0]//2+1]
+    walls = walls[:np.shape(walls)[0]//2+1]
+
+    bulk_conductivity = fields["conductivity"][1,1]
+    l1 = fields["l1"]
+    pad_z = z_boundary-l1+1
+    if pad_z>0:
+        conductivity = np.pad(conductivity, ((pad_z,0),(0,0)), "constant", constant_values=bulk_conductivity)
+        walls = np.pad(walls, ((pad_z,0),(0,0)), "edge")
+
+    r=np.shape(conductivity)[1]
+ 
+    major_axis = int(np.sqrt(z_boundary**2 + r_pore**2/2))
+    pad_r = major_axis-np.shape(conductivity)[1]+1
+
+    if pad_r>0:
+        bulk = fields["conductivity"][1,1]
+        conductivity = np.pad(conductivity, ((0,0),(0,pad_r+1)), "constant", constant_values=bulk)
+        walls = np.pad(walls, ((0,0),(0,pad_r+1)), "edge")
+    
+    conductivity[walls==True]=0.0
+
+    z,r = np.shape(conductivity)
+    R=np.arange(0,r)
+    Z=np.arange(0,z)
+    RR,ZZ=np.meshgrid(R,Z)
+    x0 = z_boundary
+    y0 = 0
+    bc_source = ~is_inside_ellipse(ZZ,RR,a=r_pore, b=z_boundary, x0=x0, y0=0, side = "left")
+    bc_source[z_boundary:] = False
+    bc_source[walls==True]=False
+
+    return conductivity, bc_source
+
+def R_solve(fields, z_boundary = 200):
+    conductivity, bc_source = pad_fields(fields, z_boundary)
+    R, psi = R_steady_state(conductivity, bc_source)
+    psi = psi[:np.shape(psi)[0]-1]
+
+    
+    psi_mirror = np.flip(psi, axis=0)
+    psi = 0.5+psi/2
+    psi_mirror = 0.5-psi_mirror/2
+    psi = np.concatenate([psi, psi_mirror], axis=0)
+    grad_x, grad_y = np.gradient(psi, edge_order=2)
+
+    x,y=fields["xlayers"],fields["ylayers"]
+    y_,x_ = np.shape(psi)
+    crop_y = (y_-y)//2
+    psi = psi[crop_y:-crop_y,:x]
+
+    grad_x = grad_x[crop_y:-crop_y,:x]
+    grad_y = grad_y[crop_y:-crop_y,:x]
+
+
+    walls = fields["walls"]
+    psi[walls==True] = np.nan
+
+    structure = np.array([[1,1,1]])
+    walls_y = binary_dilation(walls, structure=structure)
+    walls_x = binary_dilation(walls, structure=structure.T)
+    grad_x[walls_x==True] = 0
+    grad_y[walls_y==True] = 0
+
+    fields["psi"] = psi
+    
+    #The rest of the reservoir before oblate spheroid
+    R_left = (np.pi - 2*np.arctan(z_boundary/fields["r"]))/(4*np.pi*fields["r"])/fields["D_0"]
+    R +=R_left
+
+    fields["R_lin_alg"] = R*2
+    fields["J_z"] = grad_y
+    fields["J_r"] = grad_x
+    fields["c"] = fields["psi"]*np.exp(-fields["free_energy"])
+    
+
 if __name__=="__main__":
+    import calculate_fields_in_pore
     a0 = 0.7
     a1 = -0.3
     L=52
     r_pore=26
     sigma_ = 0.02
     alpha =  30**(1/2)
-    d = 20
+    d = 12
     chi_PC = -1.3
     chi_PS =0.5
 
@@ -261,9 +330,23 @@ if __name__=="__main__":
         d=d,
         sigma = sigma_,
         mobility_model_kwargs = {"prefactor":alpha},
+        linalg=False
     )
+    
+    R_solve(fields)
 
-    R, psi = R_steady_state(fields)
+    
 
-    plt.imshow(psi.T, origin = "lower")
+    fig, ax = plt.subplots()
+    #ax.imshow(conductivity.T, interpolation="none", origin = "lower")
+    ax.imshow(fields["psi"].T, interpolation="none", origin = "lower")
+    # ax.scatter([x0],[y0],marker="x",color = "red")
+    # ax.scatter([x0-z_boundary],[y0],marker="x",color = "red")
+    # c=int(np.sqrt(z_boundary**2 + r_pore**2/2))
+    # ax.scatter([x0],[c],marker="x",color = "red")
+
+    ax.set_xlabel("$z$")
+    ax.set_ylabel("$r$")
+
+    ax.set_aspect("equal")
 #%%

@@ -12,7 +12,7 @@ def plot_heatmap(fields, r_cut, z_cut, keys, **kwargs):
     l1 = fields["l1"]
     def cut_and_mirror(arr):
         cut = arr.T[0:r_cut, l1-z_cut:l1+wall_thickness+z_cut]
-        return np.vstack((np.flip(cut), cut[:,::-1]))
+        return np.vstack((np.flip(cut), cut[:,::-1]))[:,::-1]
     extent = [-z_cut-wall_thickness/2, z_cut+wall_thickness/2, -r_cut, r_cut]
     for key in keys:
         mask = cut_and_mirror(fields["walls"])
@@ -41,7 +41,7 @@ import matplotlib.colors as plt_colors
 a0, a1 = 0.7, -0.3
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-d = 20
+d = 8
 chi_PC = -1.4
 chi_PS = 0.5
 sigma = 0.02
@@ -63,9 +63,7 @@ fields = calculate_fields(
 fields["resistivity"] = (fields["conductivity"])**(-1)
 fields["pc"] = np.exp(-fields["free_energy"])
 fields["mobility"] = -np.log(fields["mobility"])
-def soft_clip_lower(x, min_val, softness=1.0):
-    return min_val + softness * np.log1p(np.exp((x - min_val) / softness))
-fields["free_energy"] = soft_clip_lower(fields["free_energy"],-10)
+#fields["c"] = fields["psi"]*np.exp(-fields["free_energy"])
 #%%
 %matplotlib TkAgg
 import cmasher as cmr
@@ -80,7 +78,7 @@ fig = plot_heatmap(fields, r_cut, z_cut, keys = [
     #"phi", 
     #"Pi", 
     #"gamma", 
-    "free_energy", 
+    "c", 
     #"mobility", 
     #"conductivity", 
     #"resistivity",
@@ -88,7 +86,8 @@ fig = plot_heatmap(fields, r_cut, z_cut, keys = [
     #"surface"
     #"pc"
     ], 
-    cmap = "Reds",
+    #cmap = "Reds",
+    cmap = "CMRmap_r",
     #zmin=0,
     #zmax = 4,
     #cmap = cmap_.reversed(),

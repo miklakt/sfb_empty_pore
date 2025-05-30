@@ -9,8 +9,6 @@ from particle_convolution import convolve_particle_surface, convolve_particle_vo
 from joblib import Memory
 np.seterr(divide='ignore')
 
-from R_lin_alg import R_steady_state
-
 memory = Memory("__func_cache__", verbose=1)
 
 import os
@@ -372,6 +370,23 @@ def empty_pore_permeability_corrected(D, r, s, d):
     K = Haberman_correction_approximant(d, r)
     return 2*D*(r-d/2)/(1 + 2*K*(s+d)/((r-d/2)*np.pi))
 
+def pad_phi_field(fields, pad_sides, pad_top):
+    fields["ylayers"]=fields["ylayers"]+pad_sides*2
+    fields["xlayers"]=fields["xlayers"]+pad_top
+
+    fields["h"]=fields["h"]+pad_top
+    fields["l1"]=fields["l1"]+pad_sides
+    fields["l2"]=fields["l2"]+pad_sides
+
+    padding = ((pad_sides, pad_sides),(0, pad_top))    
+    fields["phi"]=np.pad(
+        fields["phi"],
+        padding, 
+        "constant", constant_values=(0.0, 0.0)
+        )
+    print("phi", "padded")
+
+
 @memory.cache
 def calculate_fields(
         a0, a1, 
@@ -392,11 +407,15 @@ def calculate_fields(
         stickiness = False,
         stickiness_model_kwargs = {},
         gel_phi = None,
-        D_0 = "Einstein"
+        D_0 = "Einstein",
+        linalg = True,
+        # pad_phi = None
         ):
 
     fields = utils.get_by_kwargs(master_empty, chi_PS = chi_PS, s = wall_thickness, r = pore_radius, sigma = sigma).squeeze()
     fields["phi"] = fields.dataset["phi"].squeeze().T
+    # if pad_phi is not None:
+    #     pad_phi_field(fields,*pad_phi)
     fields["d"] = d
     fields["chi_PC"] = chi_PC
     if gel_phi is not None:
@@ -440,10 +459,9 @@ def calculate_fields(
     fields["thick_empty_pore"] = empty_pore_permeability(D_0, pore_radius-d/2, wall_thickness+d)
     fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(D_0, pore_radius, wall_thickness, d)
 
-    R_lin_alg, psi = R_steady_state(fields)
-
-    fields["R_lin_alg"] = R_lin_alg
-    fields["psi"] = psi
+    if linalg:
+        from R_lin_alg import R_solve
+        R_solve(fields)
 
     return fields
 # %%
@@ -455,5 +473,5 @@ if __name__ == "__main__":
     L=52
     r_pore = 26
     sigma = 0.02
-    fields =  calculate_fields(a0, a1, chi_PC, chi_PS, L, r_pore, d, sigma)
+    fields =  calculate_fields(a0, a1, chi_PC, chi_PS, L, r_pore, d, sigma, pad_phi=(100,100))
 # %%

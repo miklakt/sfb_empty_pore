@@ -155,34 +155,20 @@ def plot_heatmap(ax,
 a0, a1 = [0.7, -0.3]
 pore_radius = 26 # pore radius
 wall_thickness = 52 # wall thickness
-#d_ = np.arange(6, 22, 2)
-#d_ = [10]
-# d = 30
 chi_PC = -1.3
 chi_PS = 0.5
 sigma = 0.02
 d=12
 
 fields = calculate_fields_in_pore.calculate_fields(a0, a1, chi_PC, chi_PS, wall_thickness, pore_radius, d, sigma)
-pad_sides = 100
-pad_top = 200
-pad_fields(fields, pad_sides, pad_top)
-#%%
+
 xlayers= fields["xlayers"]
 ylayers = fields["ylayers"]
 
-sim_name = f"{here}/numerical_simulation/simulation_data/filled_{ylayers}_{xlayers}_{pore_radius}_{wall_thickness}_{d}_{chi_PS}_{chi_PC}.txt"
-c_arr = np.loadtxt(sim_name)
-
-xlayers_padded, ylayers_padded = np.shape(c_arr)
-
-fields["c"]= c_arr#[pad_sides:-pad_sides, :-pad_top]
-
-fields["psi"]=c_arr*np.exp(fields["free_energy"])
 # %%
 fig, ax = plt.subplots()
-z_cut=100
-r_cut=60
+# z_cut=100
+# r_cut=60
 
 bg = mpatches.Rectangle(
     (0, 0), 1, 1,               # (x, y), width, height in axes coordinates
@@ -208,32 +194,32 @@ plot_walls(ax, fields,
 ax.set_aspect("equal")
 
 
-J_arr = np.load(sim_name.replace(".txt", "_J_arr.npy"))
+# J_arr = np.load(sim_name.replace(".txt", "_J_arr.npy"))
 
-x = np.arange(0, ylayers, 10)-int(ylayers/2)
-y = np.arange(0, xlayers, 10)
-xx, yy = np.meshgrid(x, y)
-uv = [J_arr[xx_+int(ylayers/2), yy_] for xx_, yy_ in zip(xx, yy)]
-u = np.moveaxis(uv, -1, 0)[0]
-v = np.moveaxis(uv, -1, 0)[1]
-norm = np.linalg.norm(np.array((u, v)), axis=0)
+# x = np.arange(0, ylayers, 10)-int(ylayers/2)
+# y = np.arange(0, xlayers, 10)
+# xx, yy = np.meshgrid(x, y)
+# uv = [J_arr[xx_+int(ylayers/2), yy_] for xx_, yy_ in zip(xx, yy)]
+# u = np.moveaxis(uv, -1, 0)[0]
+# v = np.moveaxis(uv, -1, 0)[1]
+# norm = np.linalg.norm(np.array((u, v)), axis=0)
 
 
-# start_points_y = np.arange(0, pore_radius-1,1)
-# start_points_x = np.ones_like(start_points_y)#*dd_obj.zlayers/2
-start_points_y = np.arange(0, xlayers,20)
-start_points_x = np.zeros_like(start_points_y)-ylayers/2+1
-start_points = np.array([start_points_x, start_points_y]).T
-J_arr_stream = ax.streamplot(
-    xx, yy, u, v, 
-    #color = norm,
-    color = "k",
-    start_points = start_points,
-    broken_streamlines = False,
-    arrowsize = 0,
-    linewidth = 0.3,
-    integration_direction="forward"
-    )
+# # start_points_y = np.arange(0, pore_radius-1,1)
+# # start_points_x = np.ones_like(start_points_y)#*dd_obj.zlayers/2
+# start_points_y = np.arange(0, xlayers,20)
+# start_points_x = np.zeros_like(start_points_y)-ylayers/2+1
+# start_points = np.array([start_points_x, start_points_y]).T
+# J_arr_stream = ax.streamplot(
+#     xx, yy, u, v, 
+#     #color = norm,
+#     color = "k",
+#     start_points = start_points,
+#     broken_streamlines = False,
+#     arrowsize = 0,
+#     linewidth = 0.3,
+#     integration_direction="forward"
+#     )
 
 levels = [0.1,0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 ax.contour(fields["c"].T,levels=levels, extent = [-ylayers/2, ylayers/2, 0, xlayers], colors = "red")
@@ -243,7 +229,7 @@ ax.contour(fields["c"].T,levels=levels, extent = [-ylayers/2, ylayers/2, 0, xlay
 levels = np.arange(0.90, 1.0, 0.02)
 ax.contour(fields["c"].T,levels=levels, extent = [-ylayers/2, ylayers/2, 0, xlayers], colors = "orange")
 
-ax.set_xlim(-100,100)
-ax.set_ylim(0,100)
+#ax.set_xlim(-100,100)
+#ax.set_ylim(0,100)
 
 # %%
