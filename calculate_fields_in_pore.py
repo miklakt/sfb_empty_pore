@@ -9,6 +9,8 @@ from particle_convolution import convolve_particle_surface, convolve_particle_vo
 from joblib import Memory
 np.seterr(divide='ignore')
 
+from R_lin_alg import R_steady_state
+
 memory = Memory("__func_cache__", verbose=1)
 
 import os
@@ -437,6 +439,11 @@ def calculate_fields(
     fields["thin_empty_pore"] = empty_pore_permeability(D_0, pore_radius-d/2, 0)
     fields["thick_empty_pore"] = empty_pore_permeability(D_0, pore_radius-d/2, wall_thickness+d)
     fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(D_0, pore_radius, wall_thickness, d)
+
+    R_lin_alg, psi = R_steady_state(fields)
+
+    fields["R_lin_alg"] = R_lin_alg
+    fields["psi"] = psi
 
     return fields
 # %%

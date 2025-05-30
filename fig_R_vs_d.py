@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 import matplotlib.style as style
 from matplotlib import rc, rcParams
 
+from R_lin_alg import R_steady_state
+
 rcParams.update({
     "mathtext.fontset": "cm",  # Use Computer Modern
     "font.family": "serif",
@@ -46,7 +48,7 @@ alpha =  30**(1/2)
 d = np.arange(2.0, 32.0, 2)
 d = np.insert(d, 0, [0.5, 1])
 
-show_simulation_results = True
+show_simulation_results = False
 #%%
 def correct_flux(J, d, pore_radius=26, wall_thickness=52, ylayers=492, l1=220):
     #as the simulation box is finite, it has lower resistance than an infinite reservoir
@@ -96,6 +98,17 @@ for chi_PC in chi_PCs:
         color = color_,
         label = chi_PC,
         )
+
+    y2 = calc["R_lin_alg"]
+    ax.plot(
+        x, y, 
+        linewidth = 1.0 if chi_PC==-1.3 else 0.5,
+        ms=4,
+        marker = "d",
+        color = "k",
+        label = chi_PC,
+        )
+    
     if show_simulation_results:
         sim_data = simulation_results.query(f"chi_PS == {chi_PS} & chi_PC == {chi_PC}")
         if not sim_data.empty:
@@ -146,6 +159,9 @@ for chi_PS in chi_PSs:
         color = next(color),
         label = chi_PS
         )
+    
+    
+
 ax.text(0.02, 0.98, r"$\chi_{\text{PC}} = "+f"{chi_PC}$", 
         transform = ax.transAxes, va = "top", ha = "left",
         bbox ={"fc" : "white", "pad":1},
