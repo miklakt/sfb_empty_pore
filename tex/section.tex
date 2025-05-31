@@ -29,21 +29,21 @@ where $\tilde{c}(\bm{r})$ and $\tilde{D}(\bm{r})$ are modified colloid concentra
 
 In our case the boundary conditions for the modified concentration are $\tilde{c}(z\rightarrow -\infty)=\Delta c$ and $\tilde{c}(z\rightarrow +\infty)=0$ since the insertion free energy $\Delta F$ vanishes far away from the pore.
 
-With the defined transformations Eq.~\ref{eq:transform} and boundary conditions, modified concentration is divergence free $\nabla \tilde{c}(\bm{r}) = 0$ and the Smoluchowski equation (Eq.~(\ref{eq:Smoluch})) have a from of generalized Laplace equation.
+With the defined transformations Eq.~\ref{eq:transform} and boundary conditions, modified concentration is divergence free $\nabla \tilde{c}(\bm{r}) = 0$ and the Smoluchowski equation (Eq.~(\ref{eq:Smoluch})) have a from of a generalized Laplace equation.
 \begin{eqnarray}
-    \begin{gathered}
-        \mathcal{L} \tilde{c} = 0\\
-        \text{where} \quad \mathcal{L}  = \nabla \tilde{D}(\bm{r}) \nabla 
-    \end{gathered}
+    \mathcal{L} \tilde{c} = 0
     \label{eq:laplace}
 \end{eqnarray}
-With the flux density tracking the Fickian form:
+where $\mathcal{L}  = \nabla \tilde{D}(\bm{r}) \nabla$ is Smoluchowski diffusion operator. 
+
+If stationary modified concentration $\tilde{c}(\bm{r})$ is known, this recovers flux density field
+with the flux density tracking a Fickian form:
 \begin{eqnarray}
-    \begin{gathered}
-        \bm{j}(\bm{r}) = \mathcal{J} \tilde{c}(\bm{r})\\
-        \text{where} \quad \mathcal{J}  = \tilde{D}(\bm{r}) \nabla 
-    \end{gathered}
+    %\bm{j}(\bm{r}) = \mathcal{J} \tilde{c}(\bm{r})
+    \bm{j}(\bm{r}) = -\tilde{D}(\bm{r}) \nabla \tilde{c}(\bm{r})
 \end{eqnarray}
+%where $\mathcal{J}  = -\tilde{D}(\bm{r}) \nabla$ is Smoluchowski flux operator.
+
 
 At the central crossection of the pore $z=0$, the flux density has only axial component to it $j=j_z$, thus the total flux through the pore is found by integrating flux density over the central crossection:
 \begin{eqnarray}
@@ -51,30 +51,38 @@ At the central crossection of the pore $z=0$, the flux density has only axial co
     J = 2\pi\int_{0}^{r_p}j(r',z=0) r' \text{d}r'
 \end{eqnarray}
 
-We select large enough finite domain  $r,z \in [0, r_{\text{max}}] \times [z_{\text{min}}, z_{\text{max}}]$, with the pore orientated along $z$-axis with the pore center at the origin.
-In the discretized domain the continuous space is discretized to a cylindrical regular lattice with $\Delta z = \Delta r = 1$ with $N_r$ points in radial direction and $N_z$ points in axial direction $N_r \times N_z$, indexed with $i \in [0, N_r]$ and $k \in [0, N_z]$ respectively.
-such that $r_i = i$ and $z_k =  z_{\text{min}} + k$.
-
-We set the boundary conditions Dirichlet boundary conditions at the edges of axial coordinates $\tilde{c}_{i,k=0} = c_0$ and $\tilde{c}_{i,k=N_z-1} = 0$, and Neumann (reflective) boundary condition at the edge of radial coordinates $\tilde{c}_{i=N_r-1,k} = \tilde{c}_{i=N_r-2,k}$.
-
-In the discrete domain the Smoluchowski diffusion operator $\mathcal{L}$ takes a sparse matrix form $\mathbf{L}_{m,m}$ with dimensions $[N_r N_z \times N_r N_z]$, reindexed as $m = k N_r + i$., the Eq.~(\ref{eq:laplace}) is rewriten in the matrix form as system of linear equations:
-\begin{eqnarray}
-    \mathbf{L} \tilde{\bm{C}} = \bm{b}
-    \label{eq:matrix_form}
-\end{eqnarray}
-where the discrete values of modified concentration $\tilde{c}_{i,k}$ flatten to vector $\tilde{C}_m$ with the dimension $[N_r N_z]$, reindexed as $m = k N_r + i$.
-The boundary conditions are reflected in vector $b$, and operator matrix $\mathbf{L}$ (see Supplementary Method).
-
-From the solution $\tilde{C}_m$ we recover discrete modified concentration reshaped $\tilde{c}_{i,k}$ and physical concentration $\tilde{c}_{i,k} \exp{-\Delta F_{i,k}}$.
-
-\begin{eqnarray}
-    J \approx 2 \pi \sum_{i=0}^{N_r} \tilde{D}_{i, 0} \frac{\tilde{c}_{i, 1} - \tilde{c}_{i, 0}}{\Delta z} 
-\end{eqnarray}
-
+Finally, as we assume in the pore the flux lines to be parallel with teh resistance of the internal region:
 \begin{eqnarray}
     R_{\text{int}} = 2 \pi \int\limits_{-L/2}^{L/2} \Bigg[\int_{0}^{r_p} \tilde{D}(r',z') r' \text{d}r' \Bigg]^{-1} \text{d}z'
-    \\
+\end{eqnarray}
+the rest of the resistance is associated with modulated by the fringes resistance of the external region, as in Eq.~{eq.num}.
+\begin{eqnarray}
     R_{\text{ext}} = \Delta c/J - R_{\text{int}}
 \end{eqnarray}
+where  $\Delta c/J$ is the total resistance of the system as in Eq.~(eq.num)
+
+To find stationary solution of Smoluchowski equation we select large enough finite domain  $(r,z) \in [0, r_{\text{max}}] \times [z_{\text{min}}, z_{\text{max}}]$ the continuous space is discretized to a cylindrical regular lattice with $\Delta z, \Delta r$ with $N_r = r_{\text{max}}/\Delta r$ points in radial direction and $N_z = (z_{\text{max}} - z_{\text{min}})/\Delta z$ points in axial direction $N_r \times N_z$, indexed with $i \in [0, N_r]$ and $k \in [0, N_z]$ respectively, such that $r_i = i$ and $z_k =  z_{\text{min}} + k$.
+
+We map all position-dependent properties defined on two-dimmension discrete domain $(i, k) \in [0, N_r]\times[0, N_z]$ by flattening them in vectors reindexed with $m$ as $m = i N_z + k$, then in the discrete domain the Smoluchowski diffusion operator $\mathcal{L}$ takes a sparse matrix form $\mathbf{L}$ with dimensions $[N_r N_z \times N_r N_z]$,  flattened vector of unknown modified concentrations $\tilde{\bm{c}}$ with dimmensions $[N_r N_z]$
+
+the Eq.~(\ref{eq:laplace}) is rewritten in the matrix form as system of linear equations:
+\begin{eqnarray}
+    \mathbf{L} \tilde{\bm{c}} = \bm{b}
+    \label{eq:matrix_form}
+\end{eqnarray}
+where vector $\bm{b}$ enforces the boundary conditions.
+% We set the boundary conditions Dirichlet boundary conditions at the edges of axial coordinates $\tilde{c}_{i,k=0} = c_0$ and $\tilde{c}_{i,k=N_z-1} = 0$, and Neumann (reflective) boundary condition at the edge of radial coordinates $\tilde{c}_{i=N_r-1,k} = \tilde{c}_{i=N_r-2,k}$.
+
+The boundary conditions and the effects of impermeable membrane are reflected in rhs vector $b$, and operator matrix $\mathbf{L}$ (see Supplementary Method).
+From the solution $\tilde{c}_m$ we recover modified concentration reshaped to $\tilde{c}_{r,z}$ and physical concentration $\tilde{c}_{r,z} \exp{-\Delta F_{r,z}}$.
+
+with the total colloid flux calculated from the discrete values of $\tilde{\bm{c}}$ vector:
+\begin{eqnarray}
+    J \approx 2 \pi \sum_{i=0}^{N_r} \tilde{D}_{N_z(i+1/2)} \frac{\tilde{c}_{N_z(i+1/2)} - \tilde{c}_{N_z(i+1/2)}}{\Delta z} i \Delta r
+\end{eqnarray}
+
+
+
+
 
 \end{document}
