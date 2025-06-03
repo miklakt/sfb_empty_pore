@@ -272,7 +272,9 @@ def R_solve(fields, z_boundary = 200):
     R, psi = R_steady_state(conductivity, bc_source)
     psi = psi[:np.shape(psi)[0]-1]
 
-    
+    bc_source = bc_source[:np.shape(psi)[0]-1]
+    bc_source = np.concatenate([bc_source, np.zeros_like(bc_source)], axis = 0)
+
     psi_mirror = np.flip(psi, axis=0)
     psi = 0.5+psi/2
     psi_mirror = 0.5-psi_mirror/2
@@ -282,14 +284,15 @@ def R_solve(fields, z_boundary = 200):
     x,y=fields["xlayers"],fields["ylayers"]
     y_,x_ = np.shape(psi)
     crop_y = (y_-y)//2
-    psi = psi[crop_y:-crop_y,:x]
-
-    grad_x = grad_x[crop_y:-crop_y,:x]
-    grad_y = grad_y[crop_y:-crop_y,:x]
+    crop_x = x_-x
 
 
     walls = fields["walls"]
+    walls = np.pad(walls, ((crop_y,crop_y),(0,crop_x)), "edge")
+    fe = np.pad(fields["free_energy"], ((crop_y,crop_y),(0,crop_x)), "constant", constant_values = 0)
+
     psi[walls==True] = np.nan
+    c =  psi*np.exp(-fe)
 
     structure = np.array([[1,1,1]])
     walls_y = binary_dilation(walls, structure=structure)
@@ -297,23 +300,39 @@ def R_solve(fields, z_boundary = 200):
     grad_x[walls_x==True] = 0
     grad_y[walls_y==True] = 0
 
-    fields["psi"] = psi
-    
     #The rest of the reservoir before oblate spheroid
     R_left = (np.pi - 2*np.arctan(z_boundary/fields["r"]))/(4*np.pi*fields["r"])/fields["D_0"]
     R +=R_left
 
+    nocrop_fields = {
+        "psi":psi,
+        "walls":walls,
+        "J_z":grad_y,
+        "J_r":grad_x,
+        "c": c,
+        "s" : bc_source
+    }
+
+    psi = psi[crop_y:-crop_y,:x]
+    grad_x = grad_x[crop_y:-crop_y,:x]
+    grad_y = grad_y[crop_y:-crop_y,:x]
+    c = c[crop_y:-crop_y,:x]
+
+    fields["psi"] = psi
     fields["R_lin_alg"] = R*2
     fields["J_z"] = grad_y
     fields["J_r"] = grad_x
-    fields["c"] = fields["psi"]*np.exp(-fields["free_energy"])
-    
+    fields["c"] = c
+    return nocrop_fields
 
 if __name__=="__main__":
     import calculate_fields_in_pore
+    from matplotlib import patches as mpatches
+    from matplotlib import rc
+    rc('hatch', color='darkgreen', linewidth=9)
     a0 = 0.7
     a1 = -0.3
-    L=52
+    L = 52
     r_pore=26
     sigma_ = 0.02
     alpha =  30**(1/2)
@@ -333,17 +352,43 @@ if __name__=="__main__":
         linalg=False
     )
     
-    R_solve(fields)
-
-    
+    nocrop_fields = R_solve(fields)
 
     fig, ax = plt.subplots()
+    
+    bg = mpatches.Rectangle(
+        (0, 0), 1, 1,               # (x, y), width, height in axes coordinates
+        transform=ax.transAxes,    # makes it relative to axes (0-1 range)
+        facecolor='green',          # transparent fill
+        edgecolor='darkgreen',         # hatch color
+        hatch='/',               # hatch pattern
+        zorder=-10                 # draw below everything else
+    )
+    ax.add_patch(bg)
     #ax.imshow(conductivity.T, interpolation="none", origin = "lower")
-    ax.imshow(fields["psi"].T, interpolation="none", origin = "lower")
-    # ax.scatter([x0],[y0],marker="x",color = "red")
-    # ax.scatter([x0-z_boundary],[y0],marker="x",color = "red")
-    # c=int(np.sqrt(z_boundary**2 + r_pore**2/2))
-    # ax.scatter([x0],[c],marker="x",color = "red")
+    ax.imshow(
+        (nocrop_fields["J_z"]**2+nocrop_fields["J_r"]**2).T, 
+        interpolation="none", 
+        origin = "lower"
+        )
+    s = nocrop_fields["s"].astype(float)
+    s[s==0] = np.nan
+
+    ax.imshow(
+        s.T, 
+        interpolation="none", 
+        origin = "lower",
+        #alpha=0.5,
+        cmap = "Greens_r"
+        )
+    
+    ax.imshow(
+        s[::-1].T, 
+        interpolation="none", 
+        origin = "lower",
+        #alpha=0.5,
+        cmap = "Blues_r"
+        )
 
     ax.set_xlabel("$z$")
     ax.set_ylabel("$r$")
