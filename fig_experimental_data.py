@@ -118,7 +118,8 @@ def get_theory_for_given_density(density):
     inert_particles["d"] = inert_particles_d*Kuhn_segment
     inert_particles["MM"] = estimate_molecular_weight(inert_particles_d*Kuhn_segment, density)
     inert_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d_) for d_ in inert_particles_d])
-    R = np.array(inert_particles_result["permeability"]**-1)
+    #R = np.array(inert_particles_result["permeability"]**-1)
+    R = np.array(inert_particles_result["R_lin_alg"])
     inert_particles["R"] = R*eta/(k_B*T)
     inert_particles["Translocations"] = inert_particles["R"]**(-1)*NA/1e3
 
@@ -135,7 +136,8 @@ def get_nofe_theory_for_given_density(density):
     inert_particles["d"] = inert_particles_d*Kuhn_segment
     inert_particles["MM"] = estimate_molecular_weight(inert_particles_d*Kuhn_segment, density)
     inert_particles_result = pd.DataFrame([calculate_fields_nofe(chi_PS=chi_PS, chi_PC=chi_PC, d=d_) for d_ in inert_particles_d])
-    R = np.array(inert_particles_result["permeability"]**-1)
+    # R = np.array(inert_particles_result["permeability"]**-1)
+    R = np.array(inert_particles_result["R_lin_alg"])
     inert_particles["R"] = R*eta/(k_B*T)
     inert_particles["Translocations"] = inert_particles["R"]**(-1)*NA/1e3
     return inert_particles
@@ -329,7 +331,8 @@ theoretical_particles = {}
 theoretical_particles["d"] = d*Kuhn_segment
 theoretical_particles["MM"] = estimate_molecular_weight(d*Kuhn_segment, density)
 theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d) for chi_PC in chi_PCs])
-R = np.array(theoretical_particles_result["permeability"]**-1)
+#R = np.array(theoretical_particles_result["permeability"]**-1)
+R = np.array(theoretical_particles_result["R_lin_alg"])
 theoretical_particles["R"] = R*eta/(k_B*T)
 theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
 #theoretical_particles["PC"] = [PC_gel(phi_gel, chi_PS, chi_PC, d) for chi_PC in chi_PCs]
@@ -338,7 +341,8 @@ theoretical_particles["PC"] = [PC_gel_nochi(phi_gel, chi_PC, d) for chi_PC in ch
 ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 1.5, linestyle = "--")
 
 theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d, stickiness=True) for chi_PC in chi_PCs])
-R = np.array(theoretical_particles_result["permeability"]**-1)
+#R = np.array(theoretical_particles_result["permeability"]**-1)
+R = np.array(theoretical_particles_result["R_lin_alg"])
 theoretical_particles["R"] = R*eta/(k_B*T)
 theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
 
@@ -395,7 +399,8 @@ if show_phi_band:
     theoretical_particles["d"] = d*Kuhn_segment
     theoretical_particles["MM"] = estimate_molecular_weight(d*Kuhn_segment, density)
     theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d) for chi_PC in chi_PCs])
-    R = np.array(theoretical_particles_result["permeability"]**-1)
+    #R = np.array(theoretical_particles_result["permeability"]**-1)
+    R = np.array(theoretical_particles_result["R_lin_alg"])
     theoretical_particles["R"] = R*eta/(k_B*T)
     theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
     #theoretical_particles["PC"] = [PC_gel(phi_gel, chi_PS, chi_PC, d) for chi_PC in chi_PCs]
@@ -404,7 +409,8 @@ if show_phi_band:
     #ax.plot(theoretical_particles["PC"], theoretical_particles[Y_label], color = '#C85200', linewidth = 0.5, linestyle = "--")
 
     theoretical_particles_result = pd.DataFrame([calculate_fields(chi_PS=chi_PS, chi_PC=chi_PC, d=d, stickiness=True) for chi_PC in chi_PCs])
-    R = np.array(theoretical_particles_result["permeability"]**-1)
+    #R = np.array(theoretical_particles_result["permeability"]**-1)
+    R = np.array(theoretical_particles_result["R_lin_alg"])
     theoretical_particles["R"] = R*eta/(k_B*T)
     theoretical_particles["Translocations"] = theoretical_particles["R"]**(-1)*NA/1e3
 

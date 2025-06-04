@@ -21,25 +21,25 @@ pore_radius=26
 sigma = 0.02
 #%%
 d= 12
-chi_PS = [0.3, 0.5, 0.7]
-chi_PC = np.round(np.arange(0, -3.0, -0.05),3)
-model, mobility_model_kwargs = "Rubinstein", {"prefactor":30}
+chi_PS = [0.3,0.5,0.7]
+chi_PC = np.round(np.arange(0, -2.55, -0.05),3)
+# model, mobility_model_kwargs = "Rubinstein", {"prefactor":30}
 
 results = []
 for chi_PS_, chi_PC_ in itertools.product(chi_PS, chi_PC):
     print(chi_PC_)
-    result = calculate_permeability(
-        a0, a1, pore_radius, wall_thickness,
-        d, chi_PS_, chi_PC_,
+    result = calculate_fields(
+        a0=a0, a1=a1, pore_radius=pore_radius, wall_thickness=wall_thickness,
+        d=d, chi_PS=chi_PS_, chi_PC=chi_PC_,
         sigma = sigma,
-        exclude_volume=True,
-        truncate_pressure=False,
-        method= "convolve",
-        convolve_mode="same",
-        mobility_correction= "vol_average",
-        mobility_model = model,
-        mobility_model_kwargs = mobility_model_kwargs,
-        integration="cylindrical_caps"
+        #exclude_volume=True,
+        #truncate_pressure=False,
+        #method= "convolve",
+        #convolve_mode="same",
+        #mobility_correction= "vol_average",
+        #mobility_model = model,
+        mobility_model_kwargs = {"prefactor":30**(1/2)},
+        #integration="cylindrical_caps"
         )
         
     #result["limited_permeability"] = (result["permeability"]**(-1) + result["thin_empty_pore"]**(-1))**(-1)
@@ -48,9 +48,13 @@ results = pd.DataFrame(results)
 #%%
 fig, ax = plt.subplots()
 
-for chi_PS_, result in results.groupby(by = "chi"):
-    R_int = result.R_pore
-    R_ext= result.R_left+result.R_right
+for chi_PS_, result in results.groupby(by = "chi_PS"):
+    # R_int = result.R_pore
+    # R_ext= result.R_left+result.R_right
+    # R_tot = result.permeability**-1
+    R_int = result.R_lin_alg_int
+    R_ext= result.R_lin_alg_ext
+    R_tot = result.R_lin_alg
 
     R_thin = 1/result.thin_empty_pore
     R_thick = 1/result.thick_empty_pore
@@ -58,7 +62,7 @@ for chi_PS_, result in results.groupby(by = "chi"):
     ax.plot(chi_PC, R_int, linestyle = "-.")
     color = ax.get_lines()[-1].get_color()
     ax.plot(chi_PC, R_ext, linestyle = "--", color = color)
-    ax.plot(chi_PC, R_ext+R_int, label = chi_PS_,  color = color, linewidth =2)
+    ax.plot(chi_PC, R_tot, label = chi_PS_,  color = color, linewidth =2)
 
 ax.plot(chi_PC, R_thin, label = r"$R_{\text{ext}}^{0}$", color = "black", linewidth = 0.6)
 ax.plot(chi_PC, R_thick, label = r"$R_{0}$", color = "black", linewidth = 0.6)

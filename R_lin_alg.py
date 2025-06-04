@@ -6,6 +6,11 @@ import matplotlib.pyplot as plt
 from scipy.ndimage import binary_dilation
 
 #import calculate_fields_in_pore
+__CUDA__ = True
+if __CUDA__:
+    import cupy as cp
+    import cupyx.scipy.sparse as cusparse
+    import cupyx.scipy.sparse.linalg as cusplinalg
 
 def pad_fields(fields, pad_sides, pad_top):
     #pad fields to the sides and to the outer radius
@@ -103,8 +108,8 @@ def R_steady_state(conductivity, bc_source):
     Z = np.arange(0, Nz)
     RR, ZZ = np.meshgrid(R, Z, indexing='ij')
 
-    sigma = conductivity[ZZ, RR]
-    R_local =sigma**-1
+    conductivity = conductivity.T#[ZZ, RR]
+    R_local =conductivity**-1
 
     # Dirichlet boundary conditions
     psi_source = 1.0
@@ -123,6 +128,13 @@ def R_steady_state(conductivity, bc_source):
             k = idx(i, j)
             r_i = R[i]
 
+            neighbors_valid = {
+                'rp': lambda: np.isfinite(R_local[i + 1, j]),
+                'rm': lambda: np.isfinite(R_local[i - 1, j]),
+                'zp': lambda: np.isfinite(R_local[i, j + 1]),
+                'zm': lambda: np.isfinite(R_local[i, j - 1]),
+            }
+
             if bc_source[j, i]:
                 rows.append(k)
                 cols.append(k)
@@ -139,54 +151,69 @@ def R_steady_state(conductivity, bc_source):
                 rows.append(k)
                 cols.append(k)
                 data.append(1.0)
+                continue
             elif i == 0:
-                if np.isfinite(R_local[i+1, j]):
+                if neighbors_valid["rp"]():
                     kp = idx(i + 1, j)
                     rows.extend([k, k])
                     cols.extend([k, kp])
                     data.extend([-1 / dr, 1 / dr])
-                else:
+                    #neighbors_valid["rp"] = lambda: False
+                # Add axial neighbors if valid
+                coeff_center = 0
+                stencil = []
+
+                if j < Nz - 1 and np.isfinite(R_local[i, j + 1]):
+                    sz_p = (conductivity[i, j + 1] + conductivity[i, j]) / 2
+                    stencil.append((idx(i, j + 1), sz_p / dz**2))
+                    coeff_center -= sz_p / dz**2
+
+                if j > 0 and np.isfinite(R_local[i, j - 1]):
+                    sz_m = (conductivity[i, j - 1] + conductivity[i, j]) / 2
+                    stencil.append((idx(i, j - 1), sz_m / dz**2))
+                    coeff_center -= sz_m / dz**2
+
+                rows.append(k)
+                cols.append(k)
+                data.append(coeff_center)
+                for col_idx, val in stencil:
                     rows.append(k)
-                    cols.append(k)
-                    data.append(1.0)
+                    cols.append(col_idx)
+                    data.append(val)
+                
             elif i == Nr - 1:
-                if np.isfinite(R_local[i-1, j]):
+                if neighbors_valid["rm"]():
                     km = idx(i - 1, j)
                     rows.extend([k, k])
                     cols.extend([k, km])
                     data.extend([-1 / dr, 1 / dr])
+                    #neighbors_valid["rm"] = lambda: False
                 else:
                     rows.append(k)
                     cols.append(k)
                     data.append(1.0)
             else:
-                neighbors_valid = {
-                    'rp': np.isfinite(R_local[i + 1, j]),
-                    'rm': np.isfinite(R_local[i - 1, j]),
-                    'zp': np.isfinite(R_local[i, j + 1]),
-                    'zm': np.isfinite(R_local[i, j - 1]),
-                }
 
                 coeff_center = 0
                 stencil = []
 
-                if neighbors_valid['rp']:
-                    sr_p = (sigma[i + 1, j] + sigma[i, j]) / 2
+                if neighbors_valid['rp']():
+                    sr_p = (conductivity[i + 1, j] + conductivity[i, j]) / 2
                     stencil.append((idx(i + 1, j), sr_p / dr**2 + sr_p / (2 * dr * r_i)))
                     coeff_center -= sr_p / dr**2 + sr_p / (2 * dr * r_i)
 
-                if neighbors_valid['rm']:
-                    sr_m = (sigma[i - 1, j] + sigma[i, j]) / 2
+                if neighbors_valid['rm']():
+                    sr_m = (conductivity[i - 1, j] + conductivity[i, j]) / 2
                     stencil.append((idx(i - 1, j), sr_m / dr**2 - sr_m / (2 * dr * r_i)))
                     coeff_center -= sr_m / dr**2 - sr_m / (2 * dr * r_i)
 
-                if neighbors_valid['zp']:
-                    sz_p = (sigma[i, j + 1] + sigma[i, j]) / 2
+                if neighbors_valid['zp']():
+                    sz_p = (conductivity[i, j + 1] + conductivity[i, j]) / 2
                     stencil.append((idx(i, j + 1), sz_p / dz**2))
                     coeff_center -= sz_p / dz**2
 
-                if neighbors_valid['zm']:
-                    sz_m = (sigma[i, j - 1] + sigma[i, j]) / 2
+                if neighbors_valid['zm']():
+                    sz_m = (conductivity[i, j - 1] + conductivity[i, j]) / 2
                     stencil.append((idx(i, j - 1), sz_m / dz**2))
                     coeff_center -= sz_m / dz**2
 
@@ -198,7 +225,18 @@ def R_steady_state(conductivity, bc_source):
                     cols.append(col_idx)
                     data.append(val)
 
-    # Assemble and solve
+
+    # if __CUDA__:
+    #     print("CUDA")
+    #     data_gpu = cp.array(data)
+    #     rows_gpu = cp.array(rows)
+    #     cols_gpu = cp.array(cols)
+    #     b_gpu = cp.array(b)
+    #     A_gpu = cusparse.coo_matrix((data_gpu, (rows_gpu, cols_gpu)), shape=(Nr * Nz, Nr * Nz)).tocsr()
+    #     psi_vec_gpu = cusplinalg.spsolve(A_gpu, b_gpu)
+    #     psi = cp.asnumpy(psi_vec_gpu).reshape((Nr, Nz))
+    # else:
+    #Assemble and solve
     A = sp.coo_matrix((data, (rows, cols)), shape=(Nr * Nz, Nr * Nz)).tocsr()
     psi_vec = spla.spsolve(A, b)
     psi = psi_vec.reshape((Nr, Nz))
@@ -211,7 +249,7 @@ def R_steady_state(conductivity, bc_source):
             dpsi_dz = (psi[i, z_c+1] - psi[i, z_c]) / dz
         else:
             dpsi_dz = 0
-        Jz = -sigma[i, z_c] * dpsi_dz
+        Jz = -conductivity[i, z_c] * dpsi_dz
         Jz_total += 2 * np.pi * R[i] * Jz * dr
 
     delta_psi = psi_source - psi_sink
@@ -224,8 +262,8 @@ def R_steady_state(conductivity, bc_source):
     #The rest of the reservoir before oblate spheroid
     # R_left = (np.pi - 2*np.arctan(l1/fields["r"]))/(4*np.pi*fields["r"])/fields["D_0"]
     # R_total +=R_left
-    
-    return R_total, psi.T
+    #A = sp.coo_matrix((data, (rows, cols)), shape=(Nr * Nz, Nr * Nz)).tocsr()
+    return R_total, psi.T, A
 #%%
 
 def pad_fields(fields, z_boundary):
@@ -267,9 +305,9 @@ def pad_fields(fields, z_boundary):
 
     return conductivity, bc_source
 
-def R_solve(fields, z_boundary = 200):
+def R_solve(fields, z_boundary = 1000):
     conductivity, bc_source = pad_fields(fields, z_boundary)
-    R, psi = R_steady_state(conductivity, bc_source)
+    R, psi, A = R_steady_state(conductivity, bc_source)
     psi = psi[:np.shape(psi)[0]-1]
 
     bc_source = bc_source[:np.shape(psi)[0]-1]
@@ -303,6 +341,8 @@ def R_solve(fields, z_boundary = 200):
     #The rest of the reservoir before oblate spheroid
     R_left = (np.pi - 2*np.arctan(z_boundary/fields["r"]))/(4*np.pi*fields["r"])/fields["D_0"]
     R +=R_left
+    R *=2
+
 
     nocrop_fields = {
         "psi":psi,
@@ -318,12 +358,23 @@ def R_solve(fields, z_boundary = 200):
     grad_y = grad_y[crop_y:-crop_y,:x]
     c = c[crop_y:-crop_y,:x]
 
+    r_pore = fields["r"]
+    l1= fields["l1"]
+    s = fields["s"]
+    a_z = np.arange(0, r_pore)
+    #a_z[0] = 1/4
+    pore_conductivity = fields["conductivity"][l1:l1+s,:r_pore]
+    R_int = np.sum((np.pi*np.sum(pore_conductivity*(2*a_z+1), axis = 1))**(-1))
+    R_ext = R - R_int
+
     fields["psi"] = psi
-    fields["R_lin_alg"] = R*2
+    fields["R_lin_alg"] = R
+    fields["R_lin_alg_int"] = R_int
+    fields["R_lin_alg_ext"] = R_ext
     fields["J_z"] = grad_y
     fields["J_r"] = grad_x
     fields["c"] = c
-    return nocrop_fields
+    return nocrop_fields, A
 
 if __name__=="__main__":
     import calculate_fields_in_pore
@@ -334,10 +385,10 @@ if __name__=="__main__":
     a1 = -0.3
     L = 52
     r_pore=26
-    sigma_ = 0.02
+    sigma = 0.02
     alpha =  30**(1/2)
     d = 12
-    chi_PC = -1.3
+    chi_PC = -1.6
     chi_PS =0.5
 
     fields = calculate_fields_in_pore.calculate_fields(
@@ -347,12 +398,12 @@ if __name__=="__main__":
         wall_thickness = L, 
         pore_radius = r_pore,
         d=d,
-        sigma = sigma_,
+        sigma = sigma,
         mobility_model_kwargs = {"prefactor":alpha},
         linalg=False
     )
     
-    nocrop_fields = R_solve(fields)
+    nocrop_fields, A = R_solve(fields)
 
     fig, ax = plt.subplots()
     
@@ -367,7 +418,7 @@ if __name__=="__main__":
     ax.add_patch(bg)
     #ax.imshow(conductivity.T, interpolation="none", origin = "lower")
     ax.imshow(
-        (nocrop_fields["J_z"]**2+nocrop_fields["J_r"]**2).T, 
+        nocrop_fields["psi"].T, 
         interpolation="none", 
         origin = "lower"
         )
@@ -389,9 +440,41 @@ if __name__=="__main__":
         #alpha=0.5,
         cmap = "Blues_r"
         )
+    
+    cs = ax.contour(nocrop_fields["psi"].T, 
+        interpolation="none", 
+        origin = "lower",
+        colors = "k",
+        levels = [0.999, 0.99, 0.9 ,0.75, 0.5, 0.25, 0.1, 0.01, 0.001][::-1],
+        )
+    ax.clabel(cs, cs.levels)
 
     ax.set_xlabel("$z$")
     ax.set_ylabel("$r$")
 
     ax.set_aspect("equal")
-#%%
+    #%%
+    # conductivity =np.ones((6,5))
+
+    # bc_source = np.zeros_like(conductivity)
+    # bc_source[0,:] = 1
+    # bc_source[1,2:]=1
+    # bc_source[2,4:]=1
+    # plt.pcolormesh(bc_source.T)
+    # #%%
+    # wall = np.zeros_like(conductivity)
+    # wall[3:,2:]=1
+    # wall[3,2]=0
+    # plt.pcolormesh(wall.T)
+
+    # conductivity[wall==1]=0
+    # #%%
+    # R, psi, A = R_steady_state(conductivity, bc_source)
+    # # %%
+    # plt.pcolormesh(psi.T)
+    # #%%
+    # fig, ax = plt.subplots()
+    # ax.pcolormesh(A.toarray().T)
+    # ax.set_aspect("equal")
+
+# %%
