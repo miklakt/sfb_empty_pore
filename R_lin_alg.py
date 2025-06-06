@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.ndimage import binary_dilation
 
 #import calculate_fields_in_pore
-__CUDA__ = True
+__CUDA__ = False
 if __CUDA__:
     import cupy as cp
     import cupyx.scipy.sparse as cusparse
@@ -347,8 +347,8 @@ def R_solve(fields, z_boundary = 1000):
     nocrop_fields = {
         "psi":psi,
         "walls":walls,
-        "J_z":grad_y,
-        "J_r":grad_x,
+        "J_z":grad_x,
+        "J_r":grad_y,
         "c": c,
         "s" : bc_source
     }
@@ -403,7 +403,9 @@ if __name__=="__main__":
         linalg=False
     )
     
-    nocrop_fields, A = R_solve(fields)
+    nocrop_fields, A = R_solve(fields, z_boundary=500)
+    x, y = np.shape(nocrop_fields["psi"])
+    extent = [-x/2, x/2, 0, y]
 
     fig, ax = plt.subplots()
     
@@ -417,10 +419,11 @@ if __name__=="__main__":
     )
     ax.add_patch(bg)
     #ax.imshow(conductivity.T, interpolation="none", origin = "lower")
-    ax.imshow(
-        nocrop_fields["psi"].T, 
+    im = ax.imshow(
+        nocrop_fields["J_r"].T, 
         interpolation="none", 
-        origin = "lower"
+        origin = "lower",
+        extent = extent
         )
     s = nocrop_fields["s"].astype(float)
     s[s==0] = np.nan
@@ -430,7 +433,8 @@ if __name__=="__main__":
         interpolation="none", 
         origin = "lower",
         #alpha=0.5,
-        cmap = "Greens_r"
+        cmap = "Greens_r",
+        extent = extent
         )
     
     ax.imshow(
@@ -438,21 +442,27 @@ if __name__=="__main__":
         interpolation="none", 
         origin = "lower",
         #alpha=0.5,
-        cmap = "Blues_r"
+        cmap = "Blues_r",
+        extent = extent
         )
     
-    cs = ax.contour(nocrop_fields["psi"].T, 
+    cs = ax.contour(nocrop_fields["c"].T, 
         interpolation="none", 
         origin = "lower",
         colors = "k",
         levels = [0.999, 0.99, 0.9 ,0.75, 0.5, 0.25, 0.1, 0.01, 0.001][::-1],
+        extent = extent
         )
+
+    # ax.set_xlim(-100,100)
+    # ax.set_ylim(0,100)
     ax.clabel(cs, cs.levels)
 
     ax.set_xlabel("$z$")
     ax.set_ylabel("$r$")
 
     ax.set_aspect("equal")
+    cbar = plt.colorbar(im)
     #%%
     # conductivity =np.ones((6,5))
 
