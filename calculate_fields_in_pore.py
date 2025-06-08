@@ -409,6 +409,7 @@ def calculate_fields(
         gel_phi = None,
         D_0 = "Einstein",
         linalg = True,
+        linalg_kwargs = {"z_boundary":1000}
         # pad_phi = None
         ):
 
@@ -461,7 +462,7 @@ def calculate_fields(
 
     if linalg:
         from R_lin_alg import R_solve
-        R_solve(fields)
+        R_solve(fields, **linalg_kwargs)
 
     return fields
 # %%

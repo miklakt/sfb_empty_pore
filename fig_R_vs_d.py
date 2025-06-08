@@ -72,6 +72,7 @@ calculate_fields = functools.partial(
         pore_radius = r_pore,
         sigma = sigma,
         mobility_model_kwargs = {"prefactor":alpha},
+        linalg_kwargs = {"z_boundary":400}
     )
 
 R_0_no_vol_excl = np.array([calculate_fields_in_pore.empty_pore_permeability(1/(3*np.pi*d_), r_pore, L)**-1 for d_ in d])
@@ -101,12 +102,12 @@ for chi_PC in chi_PCs:
 
     y2 = calc["R_lin_alg"]
     ax.plot(
-        x, y, 
+        x, y2, 
         linewidth = 1.0 if chi_PC==-1.3 else 0.5,
         ms=4,
         marker = "d",
-        color = "k",
-        label = chi_PC,
+        color = color_,
+        #label = chi_PC,
         )
     
     if show_simulation_results:
@@ -148,6 +149,7 @@ marker = itertools.chain(mpl_markers)
 color = get_palette_colors()
 for chi_PS in chi_PSs:
     calc = pd.DataFrame([calculate_fields(chi_PC=chi_PC, chi_PS=chi_PS, d = d_) for d_ in d])
+    color_ = next(color)
     x=d
     y = calc["permeability"]**-1
     ax.plot(
@@ -156,8 +158,17 @@ for chi_PS in chi_PSs:
         ms=4,
         mfc = "none",
         marker = next(marker),
-        color = next(color),
+        color = color_,
         label = chi_PS
+        )
+    y2 = calc["R_lin_alg"]
+    ax.plot(
+        x, y2, 
+        linewidth = 1.0 if chi_PC==-1.3 else 0.5,
+        ms=4,
+        marker = "d",
+        color = color_,
+        #label = chi_PS,
         )
     
     
@@ -167,6 +178,7 @@ ax.text(0.02, 0.98, r"$\chi_{\text{PC}} = "+f"{chi_PC}$",
         bbox ={"fc" : "white", "pad":1},
         fontsize = 12,
         )
+    
 
 
 handles, labels = ax.get_legend_handles_labels()
@@ -203,7 +215,8 @@ axs[0].set_ylabel(r"$\qquad R \, \frac{k_{\text{B}}T}{\eta_{\text{S}}}$", fontsi
 axs[1].set_ylabel(r"$\qquad R \, \frac{k_{\text{B}}T}{\eta_{\text{S}}}$", fontsize = 16, labelpad=-7)
 
 plt.tight_layout()
-fig.set_size_inches(3.5,5.5)
+#fig.set_size_inches(3.5,5.5)
+fig.set_size_inches(10,15)
 fig.savefig("fig/permeability_on_d.svg")
 
 # %%
