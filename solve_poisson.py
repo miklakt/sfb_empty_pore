@@ -141,7 +141,7 @@ class PoissonSolver2DCylindrical:
         r, z = self.get_position(i, j, k)
         rm = 2*r*self.dz
         rp = 2*(r+self.dr)*self.dz
-        zm = zp = 2*r*self.dr
+        zm = zp = (2*r+self.dr)*self.dr
         return {"rm":rm, "rp":rp, "zm":zm, "zp":zp}
     def get_lambdas(self, i:int=None, j:int=None, k:int=None):
         r, z = self.get_position(i, j, k)
@@ -188,21 +188,21 @@ class PoissonSolver2DCylindrical:
 
         b = self.b
 
-        print(i,j,k)
-        print(D)
+        #print(i,j,k)
+        #print(D)
         if source[i,j]:
-            print("source")
+            #print("source")
             stencil["c"] = source_val
             b[k] = source_val
         if self.D[i,j] == 0:
-            print("D=0")
+            #print("D=0")
             stencil["c"] = 0.0
         else:
             # This should not be hard-codded,
             # but handled by choosing BC
             # now it is Dirichlet on the outermost face 
             if j==self.Nz-1:
-                print("last")
+                #print("last")
                 stencil["zm"]+= self.D[i,j]*l["zm"]*2.0
                 stencil["c"]-= self.D[i,j]*l["zm"]*3.0
                 b[k] = self.D[i,j]*l["zm"]*2.0*sink_val
@@ -274,54 +274,164 @@ class PoissonSolver2DCylindrical:
                     cols.append(self.idx_k(i, j + 1))
                     data.append(stencil["zp"])
 
-        A = sp.coo_matrix((data, (rows, cols)), shape=(self.N, self.N)).tocsr()
-        return A, self.b
+        self.A = sp.coo_matrix((data, (rows, cols)), shape=(self.N, self.N)).tocsr()
+        return self.A, self.b
     
-    def compute_flux_faces_conservative(self, psi: FieldType):
+    def compute_psi(self):
+        self.build_matrix()
+        psi_vec = spla.spsolve(self.A, self.b)
+        self.psi = psi_vec.reshape((self.Nr,self.Nz))
+        return self.psi
+    
+    def compute_flux_faces(self):
+        try:
+            psi = self.psi
+        except AttributeError:
+            psi = self.compute_psi()
         Nr, Nz = self.Nr, self.Nz
         dr, dz = self.dr, self.dz
-        D = self.D
 
         J_faces = {
-            "J_rm": np.zeros_like(psi),
-            "J_rp": np.zeros_like(psi),
-            "J_zm": np.zeros_like(psi),
-            "J_zp": np.zeros_like(psi),
+            "rm": np.zeros_like(psi),
+            "rp": np.zeros_like(psi),
+            "zm": np.zeros_like(psi),
+            "zp": np.zeros_like(psi),
         }
 
         for i in range(Nr):
             for j in range(Nz):
-                if D[i, j] == 0:
+                D = self.get_D_faces(i,j)
+                A = self.get_faces(i,j)
+                if self.D[i, j] == 0:
                     continue  # wall: no flux
 
                 # --- r− face ---
-                if i > 0 and D[i - 1, j] != 0:
-                    D_face = 0.5 * (D[i, j] + D[i - 1, j])
+                if i > 0 and self.D[i - 1, j] != 0:
                     dpsi = (psi[i, j] - psi[i - 1, j]) / dr
-                    J_faces["J_rm"][i, j] = -D_face * dpsi
+                    J_faces["rm"][i, j] = -D["rm"] * A["rm"] * dpsi
 
                 # --- r+ face ---
-                if i < Nr - 1 and D[i + 1, j] != 0:
-                    D_face = 0.5 * (D[i, j] + D[i + 1, j])
-                    dpsi = (psi[i + 1, j] - psi[i, j]) / dr
-                    J_faces["J_rp"][i, j] = -D_face * dpsi
+                if i < Nr - 1 and self.D[i + 1, j] != 0:
+                    dpsi = (psi[i, j] - psi[i + 1, j]) / dr
+                    J_faces["rp"][i, j] = -D["rp"] * A["rp"] * dpsi
 
                 # --- z− face ---
-                if j > 0 and D[i, j - 1] != 0:
-                    D_face = 0.5 * (D[i, j] + D[i, j - 1])
+                if j > 0 and self.D[i, j - 1] != 0:
                     dpsi = (psi[i, j] - psi[i, j - 1]) / dz
-                    J_faces["J_zm"][i, j] = -D_face * dpsi
+                    J_faces["zm"][i, j] = -D["zm"] * A["zm"] * dpsi
 
                 # --- z+ face ---
-                if j < Nz - 1 and D[i, j + 1] != 0:
-                    D_face = 0.5 * (D[i, j] + D[i, j + 1])
-                    dpsi = (psi[i, j + 1] - psi[i, j]) / dz
-                    J_faces["J_zp"][i, j] = -D_face * dpsi
+                if j < Nz - 1 and self.D[i, j + 1] != 0:
+                    dpsi = (psi[i, j] - psi[i, j + 1]) / dz
+                    J_faces["zp"][i, j] = -D["zp"] * A["zp"] * dpsi
+                # ---- Dirichlet at z+ face ----
+                elif j == Nz - 1:
+                    sink_val = 0.0
+                    dpsi = (sink_val - psi[i, j]) * 2 / dz
+                    J_faces["zp"][i, j] = self.D[i,j] * dpsi
 
         return J_faces
-
-
     
+    def R_tot(self):
+        J = self.compute_flux_faces()
+        J_tot = np.sum(J["zm"][:,-1])*np.pi
+        R = 1/J_tot
+        print(R)
+        return R
+    
+    # def calculate_flux_through_cylindrical_cap(self, i0, i1, j0, j1):
+    #     J = self.compute_flux_faces()
+    #     Jr = np.sum(J["rm"][i0:i1, j0])
+
+def R_solve(fields, z_boundary = 300):
+    conductivity, source = pad_fields(fields, z_boundary)
+    poisson = PoissonSolver2DCylindrical(D=conductivity.T, S=source.T)
+    R_tot = poisson.R_tot()
+    #print(R)
+    pore_radius = fields["r"]
+    D_0 = fields["D_0"]
+    d = fields["d"]
+    R_left = (np.pi - 2*np.arctan(z_boundary/pore_radius))/(4*np.pi*pore_radius)/D_0
+    R_tot+=R_left
+
+    A_z = np.arange(0, int(pore_radius))
+    dr = 1
+    A_z = (2*A_z+dr)*dr
+    pore_conductivity = conductivity[int(z_boundary+1-d/2):,:int(pore_radius)]
+    R_int = np.sum((np.pi*np.sum(pore_conductivity*A_z, axis = 1))**(-1))
+    R_ext = R_tot - R_int
+
+    #fields = {}
+    fields["R_lin_alg"] = R_tot*2
+    fields["R_lin_alg_int"] = R_int*2
+    fields["R_lin_alg_ext"] = R_ext*2
+    return R_tot*2
+
+def R_empty_pore(pore_radius:int, wall_thickness:int, d:int = None, z_boundary = 300):
+    if d is None:
+        D_0 = 1.0
+    else:
+        if d>1:
+            if d//2 != d/2:
+                raise ValueError("d has to be even")
+            if d>=2*pore_radius:
+                raise ValueError("d > pore_radius")
+        D_0 = 1/(3*np.pi*d)
+
+    from calculate_fields_in_pore import add_walls
+
+    major_axis = int(np.sqrt(z_boundary**2 + pore_radius**2/2))
+
+    xlayers = int(major_axis+1)
+    ylayers = z_boundary*2+wall_thickness+2
+
+    conductivity = np.ones((ylayers, xlayers))*D_0
+    walls = np.zeros_like(conductivity)
+    walls[z_boundary+1:z_boundary+wall_thickness+1, pore_radius:] = True
+    def generate_circle_kernel(d):
+        radius = d/2
+        a = np.zeros((d, d), dtype =bool)
+        radius2 = radius**2
+        for i in range(d):
+            for j in range(d):
+                distance2 = (radius-i-0.5)**2 + (radius-j-0.5)**2
+                if distance2<radius2:
+                    a[i,j] = True
+        return a
+    if (d is not None) and (d>1):
+        walls = binary_dilation(walls, structure=generate_circle_kernel(d))
+    conductivity[walls==1] = 0.0
+
+    conductivity = conductivity[:np.shape(conductivity)[0]//2]
+    walls = walls[:np.shape(walls)[0]//2]
+    
+    R=np.arange(0,xlayers)
+    Z=np.arange(0,ylayers//2)
+    RR,ZZ=np.meshgrid(R,Z)
+    x0 = z_boundary+1
+    y0 = 0
+    bc_source = ~is_inside_ellipse(ZZ,RR,a=int(pore_radius-d/2), b=z_boundary, x0=x0, y0=y0, side = "left")
+    bc_source[z_boundary:] = False
+    bc_source[walls==True] = False
+    
+    poisson = PoissonSolver2DCylindrical(D=conductivity.T, S=bc_source.T)
+    R_tot = poisson.R_tot()
+    R_left = (np.pi - 2*np.arctan(z_boundary/pore_radius))/(4*np.pi*pore_radius)/D_0
+    R_tot+=R_left
+    #R*=2
+
+    A_z = np.arange(0, int(pore_radius))
+    dr = 1
+    A_z = (2*A_z+dr)*dr
+    pore_conductivity = conductivity[int(z_boundary+1-d/2):,:int(pore_radius)]
+    R_int = np.sum((np.pi*np.sum(pore_conductivity*A_z, axis = 1))**(-1))
+    R_ext = R_tot - R_int
+
+    fields = {}
+    fields["R"] = R_tot*2
+    fields["R_int"] = R_int*2
+    fields["R_ext"] = R_ext*2
+    return fields
 #%%
 if __name__=="__main__":
     import calculate_fields_in_pore
@@ -334,9 +444,9 @@ if __name__=="__main__":
     r_pore=26
     sigma = 0.02
     alpha =  30**(1/2)
-    d = 12
-    chi_PC = -1.5
-    chi_PS =0.5
+    d = 8
+    chi_PC = -1.0
+    chi_PS =0.7
 
     fields = calculate_fields_in_pore.calculate_fields(
         a0=a0, a1=a1, 
@@ -347,7 +457,7 @@ if __name__=="__main__":
         d=d,
         sigma = sigma,
         mobility_model_kwargs = {"prefactor":alpha},
-        linalg=False,
+        linalg=True,
         #gel_phi=0.3
     )
     #%%
@@ -355,20 +465,19 @@ if __name__=="__main__":
     # %%
     poisson = PoissonSolver2DCylindrical(D=conductivity.T, S=source.T)
     #%%
-    A, b = poisson.build_matrix()
+    psi = poisson.compute_psi()
+    psi[poisson.D==0]=np.nan
     #%%
-    psi_vec = spla.spsolve(A, b)
-    psi = psi_vec.reshape((poisson.Nr,poisson.Nz))
-    J = poisson.compute_flux_faces_conservative(psi)
+    J = poisson.compute_flux_faces()
     #%%
-    D = np.ones((10,20))
-    D[2:,-2:] = 0
-    S = np.zeros_like(D)
-    S[:,0]=1.0
-    poisson = PoissonSolver2DCylindrical(D, S)
-    A, b = poisson.build_matrix()
-    psi_vec = spla.spsolve(A, b)
-    psi = psi_vec.reshape((poisson.Nr,poisson.Nz))
-
-    
+    divJ = J["rp"]+J["rm"]+J["zp"]+J["zm"]
+    #%%
+    # D = np.ones((10,20))
+    # D[2:,-2:] = 0
+    # S = np.zeros_like(D)
+    # S[:,0]=1.0
+    # poisson = PoissonSolver2DCylindrical(D, S)
+    # A, b = poisson.build_matrix()
+    # psi_vec = spla.spsolve(A, b)
+    # psi = psi_vec.reshape((poisson.Nr,poisson.Nz)) 
 # %%
