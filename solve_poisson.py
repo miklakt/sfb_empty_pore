@@ -277,38 +277,48 @@ class PoissonSolver2DCylindrical:
         A = sp.coo_matrix((data, (rows, cols)), shape=(self.N, self.N)).tocsr()
         return A, self.b
     
-    def compute_flux(self, psi: FieldType) -> tuple[FieldType, FieldType]:
+    def compute_flux_faces_conservative(self, psi: FieldType):
         Nr, Nz = self.Nr, self.Nz
         dr, dz = self.dr, self.dz
+        D = self.D
 
-        J_r = np.zeros_like(psi)
-        J_z = np.zeros_like(psi)
+        J_faces = {
+            "J_rm": np.zeros_like(psi),
+            "J_rp": np.zeros_like(psi),
+            "J_zm": np.zeros_like(psi),
+            "J_zp": np.zeros_like(psi),
+        }
 
         for i in range(Nr):
             for j in range(Nz):
-                if self.D[i, j] == 0:
-                    continue  # skip walls
+                if D[i, j] == 0:
+                    continue  # wall: no flux
 
-                # Radial flux
-                if 0 < i < Nr - 1:
-                    dpsi_dr = (psi[i + 1, j] - psi[i - 1, j]) / (2 * dr)
-                elif i == 0:
-                    dpsi_dr = (psi[i + 1, j] - psi[i, j]) / dr  # one-sided
-                else:  # i == Nr - 1
-                    dpsi_dr = (psi[i, j] - psi[i - 1, j]) / dr  # one-sided
+                # --- r− face ---
+                if i > 0 and D[i - 1, j] != 0:
+                    D_face = 0.5 * (D[i, j] + D[i - 1, j])
+                    dpsi = (psi[i, j] - psi[i - 1, j]) / dr
+                    J_faces["J_rm"][i, j] = -D_face * dpsi
 
-                # Axial flux
-                if 0 < j < Nz - 1:
-                    dpsi_dz = (psi[i, j + 1] - psi[i, j - 1]) / (2 * dz)
-                elif j == 0:
-                    dpsi_dz = (psi[i, j + 1] - psi[i, j]) / dz
-                else:  # j == Nz - 1
-                    dpsi_dz = (psi[i, j] - psi[i, j - 1]) / dz
+                # --- r+ face ---
+                if i < Nr - 1 and D[i + 1, j] != 0:
+                    D_face = 0.5 * (D[i, j] + D[i + 1, j])
+                    dpsi = (psi[i + 1, j] - psi[i, j]) / dr
+                    J_faces["J_rp"][i, j] = -D_face * dpsi
 
-                J_r[i, j] = -self.D[i, j] * dpsi_dr
-                J_z[i, j] = -self.D[i, j] * dpsi_dz
+                # --- z− face ---
+                if j > 0 and D[i, j - 1] != 0:
+                    D_face = 0.5 * (D[i, j] + D[i, j - 1])
+                    dpsi = (psi[i, j] - psi[i, j - 1]) / dz
+                    J_faces["J_zm"][i, j] = -D_face * dpsi
 
-        return J_r, J_z
+                # --- z+ face ---
+                if j < Nz - 1 and D[i, j + 1] != 0:
+                    D_face = 0.5 * (D[i, j] + D[i, j + 1])
+                    dpsi = (psi[i, j + 1] - psi[i, j]) / dz
+                    J_faces["J_zp"][i, j] = -D_face * dpsi
+
+        return J_faces
 
 
     
@@ -349,7 +359,7 @@ if __name__=="__main__":
     #%%
     psi_vec = spla.spsolve(A, b)
     psi = psi_vec.reshape((poisson.Nr,poisson.Nz))
-    Jr, Jz = poisson.compute_flux(psi)
+    J = poisson.compute_flux_faces_conservative(psi)
     #%%
     D = np.ones((10,20))
     D[2:,-2:] = 0
