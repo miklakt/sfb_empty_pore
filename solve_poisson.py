@@ -40,6 +40,45 @@ def is_inside_ellipse(x, y, a, b, x0=0.0, y0=0.0, side='full'):
         return inside & (x >= x0)
     else:  # 'full'
         return inside
+    
+def pad_fields(fields, z_boundary):
+    conductivity = fields["conductivity"][:]
+    walls = fields["walls"]
+    r_pore = fields["r"]
+    d = fields["d"]
+    # we ake only the z minus side, the problem is symmetric
+    conductivity = conductivity[:np.shape(conductivity)[0]//2]
+    walls = walls[:np.shape(walls)[0]//2]
+
+    bulk_conductivity = fields["conductivity"][1,1]
+    l1 = fields["l1"]
+    pad_z = z_boundary-l1+1
+    if pad_z>0:
+        conductivity = np.pad(conductivity, ((pad_z,0),(0,0)), "constant", constant_values=bulk_conductivity)
+        walls = np.pad(walls, ((pad_z,0),(0,0)), "edge")
+
+    # r=np.shape(conductivity)[1]
+    major_axis = int(np.sqrt(z_boundary**2 + r_pore**2/2))
+    pad_r = major_axis-np.shape(conductivity)[1]+1
+
+    if pad_r>0:
+        conductivity = np.pad(conductivity, ((0,0),(0,pad_r)), "constant", constant_values=bulk_conductivity)
+        walls = np.pad(walls, ((0,0),(0,pad_r)), "edge")
+    
+    conductivity[walls==True]=0.0
+    #conductivity[-1] = 0.0
+
+    z,r = np.shape(conductivity)
+    R=np.arange(0,r)
+    Z=np.arange(0,z)
+    RR,ZZ=np.meshgrid(R,Z)
+    x0 = z_boundary+1
+    y0 = 0
+    bc_source = ~is_inside_ellipse(ZZ,RR,a=int(r_pore-d/2), b=z_boundary, x0=x0, y0=y0, side = "left")
+    bc_source[z_boundary:] = False
+    bc_source[walls==True] = False
+
+    return conductivity, bc_source
 
 FieldType = np.typing.NDArray[np.float64]
 class PoissonSolver2DCylindrical:
@@ -113,8 +152,8 @@ class PoissonSolver2DCylindrical:
     
     def get_D_faces(self, i:int=None, j:int=None, k:int=None):
         def mean(a,b):
-            if (a==0) or (b==0): return b
-            return (a+b)/2
+            if (a==0) or (b==0): return 0.0
+            return 2/(a**-1+b**-1)
         #by default we set Neumann zero-flux conditions
         if i==0:
             rm = 0
@@ -150,22 +189,27 @@ class PoissonSolver2DCylindrical:
         b = self.b
 
         print(i,j,k)
+        print(D)
         if source[i,j]:
             print("source")
             stencil["c"] = source_val
             b[k] = source_val
+        if self.D[i,j] == 0:
+            print("D=0")
+            stencil["c"] = 0.0
         else:
             # This should not be hard-codded,
             # but handled by choosing BC
             # now it is Dirichlet on the outermost face 
             if j==self.Nz-1:
                 print("last")
-                coef = self.D[i,j]*l["zm"]*2.0
-                stencil["zm"]+=coef
-                stencil["c"]-=coef
-                b[k] = coef*sink_val
+                stencil["zm"]+= self.D[i,j]*l["zm"]*2.0
+                stencil["c"]-= self.D[i,j]*l["zm"]*3.0
+                b[k] = self.D[i,j]*l["zm"]*2.0*sink_val
                 #block radial flux
                 D["rm"] =  D["rp"] = 0
+                #block already edited
+                D["zm"] = 0
 
             coef = D["rm"]*l["rm"]
             stencil["rm"]+=coef
@@ -186,28 +230,135 @@ class PoissonSolver2DCylindrical:
             
         return stencil
     
-    def get_stencil_indices(self, i:int=None, j:int=None, k:int=None):
-        i, j, k = self.idx(i,j,k)
-        stencil_indices = {"rm":(i-1,j), "rp":(i-1,j), "zm":(i,j-1), "zp":(i,j+1), "c":(i,j)}
-
-    
     def build_matrix(self):
         data, rows, cols = [], [], []
-        b = self.b
-        Nr = self.Nr
-        Nz = self.Nz
-        
+        Nr, Nz = self.Nr, self.Nz
+
         for i in range(Nr):
             for j in range(Nz):
-                k = self.idx_k(i,j)
-                for neigh, coeff
+                k = self.idx_k(i, j)
 
+                # Wall cell: D = 0 → enforce φ = 0 (or keep φ undefined)
+                if self.D[i, j] == 0:
+                    rows.append(k)
+                    cols.append(k)
+                    data.append(1.0)
+                    self.b[k] = 0.0
+                    continue  # Skip stencil construction
+
+                stencil = self.get_stencil(i, j)
+
+                # Center
+                rows.append(k)
+                cols.append(k)
+                data.append(stencil["c"])
+
+                # Neighbors, only if D ≠ 0 at neighbor
+                if stencil["rm"] != 0 and i > 0 and self.D[i - 1, j] != 0:
+                    rows.append(k)
+                    cols.append(self.idx_k(i - 1, j))
+                    data.append(stencil["rm"])
+
+                if stencil["rp"] != 0 and i < Nr - 1 and self.D[i + 1, j] != 0:
+                    rows.append(k)
+                    cols.append(self.idx_k(i + 1, j))
+                    data.append(stencil["rp"])
+
+                if stencil["zm"] != 0 and j > 0 and self.D[i, j - 1] != 0:
+                    rows.append(k)
+                    cols.append(self.idx_k(i, j - 1))
+                    data.append(stencil["zm"])
+
+                if stencil["zp"] != 0 and j < Nz - 1 and self.D[i, j + 1] != 0:
+                    rows.append(k)
+                    cols.append(self.idx_k(i, j + 1))
+                    data.append(stencil["zp"])
+
+        A = sp.coo_matrix((data, (rows, cols)), shape=(self.N, self.N)).tocsr()
+        return A, self.b
+    
+    def compute_flux(self, psi: FieldType) -> tuple[FieldType, FieldType]:
+        Nr, Nz = self.Nr, self.Nz
+        dr, dz = self.dr, self.dz
+
+        J_r = np.zeros_like(psi)
+        J_z = np.zeros_like(psi)
+
+        for i in range(Nr):
+            for j in range(Nz):
+                if self.D[i, j] == 0:
+                    continue  # skip walls
+
+                # Radial flux
+                if 0 < i < Nr - 1:
+                    dpsi_dr = (psi[i + 1, j] - psi[i - 1, j]) / (2 * dr)
+                elif i == 0:
+                    dpsi_dr = (psi[i + 1, j] - psi[i, j]) / dr  # one-sided
+                else:  # i == Nr - 1
+                    dpsi_dr = (psi[i, j] - psi[i - 1, j]) / dr  # one-sided
+
+                # Axial flux
+                if 0 < j < Nz - 1:
+                    dpsi_dz = (psi[i, j + 1] - psi[i, j - 1]) / (2 * dz)
+                elif j == 0:
+                    dpsi_dz = (psi[i, j + 1] - psi[i, j]) / dz
+                else:  # j == Nz - 1
+                    dpsi_dz = (psi[i, j] - psi[i, j - 1]) / dz
+
+                J_r[i, j] = -self.D[i, j] * dpsi_dr
+                J_z[i, j] = -self.D[i, j] * dpsi_dz
+
+        return J_r, J_z
+
+
+    
 #%%
-D = np.ones((10,10))
-S = np.zeros_like(D)
-S[:,:3] = True
+if __name__=="__main__":
+    import calculate_fields_in_pore
+    from matplotlib import patches as mpatches
+    from matplotlib import rc
+    rc('hatch', color='darkgreen', linewidth=9)
+    a0 = 0.7
+    a1 = -0.3
+    L = 52
+    r_pore=26
+    sigma = 0.02
+    alpha =  30**(1/2)
+    d = 12
+    chi_PC = -1.5
+    chi_PS =0.5
 
-poisson = PoissonSolver2DCylindrical(D,S)
-# %%
-poisson.get_stencil(2,9)
+    fields = calculate_fields_in_pore.calculate_fields(
+        a0=a0, a1=a1, 
+        chi_PC=chi_PC,
+        chi_PS=chi_PS,
+        wall_thickness = L, 
+        pore_radius = r_pore,
+        d=d,
+        sigma = sigma,
+        mobility_model_kwargs = {"prefactor":alpha},
+        linalg=False,
+        #gel_phi=0.3
+    )
+    #%%
+    conductivity, source = pad_fields(fields, z_boundary=300)
+    # %%
+    poisson = PoissonSolver2DCylindrical(D=conductivity.T, S=source.T)
+    #%%
+    A, b = poisson.build_matrix()
+    #%%
+    psi_vec = spla.spsolve(A, b)
+    psi = psi_vec.reshape((poisson.Nr,poisson.Nz))
+    Jr, Jz = poisson.compute_flux(psi)
+    #%%
+    D = np.ones((10,20))
+    D[2:,-2:] = 0
+    S = np.zeros_like(D)
+    S[:,0]=1.0
+    poisson = PoissonSolver2DCylindrical(D, S)
+    A, b = poisson.build_matrix()
+    psi_vec = spla.spsolve(A, b)
+    psi = psi_vec.reshape((poisson.Nr,poisson.Nz))
+
+    
 # %%
