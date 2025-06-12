@@ -94,10 +94,12 @@ class PoissonSolver2DCylindrical:
         self.dr = dr
         self.dz = dz
         self.b = np.zeros(self.Nr*self.Nz)
+
     def idx_ij(self, k:int):
         if k>=self.N:
             raise IndexError(f"flatten list index {k} out of range {self.N}")
         return k//self.Nz, k%self.Nz
+    
     def idx_k(self, i:int, j:int):
         if i>= self.Nr:
             raise IndexError(f"list index {i=} out of range {self.Nr}")
@@ -105,6 +107,7 @@ class PoissonSolver2DCylindrical:
             raise IndexError(f"list index {j=} out of range {self.Nz}")
         k = i*self.Nz + j
         return k
+    
     def idx(self, i:int=None, j:int=None, k:int =None):
         """Complete ij and flatten indices
 
@@ -126,6 +129,7 @@ class PoissonSolver2DCylindrical:
                 raise ValueError("too many indices provided")
         else:
             return i, j, self.idx_k(i,j)
+        
     def get_position(self, i:int=None, j:int=None, k:int=None):
         # returns the left lower corner of the cell
         # the physical qt are sampled at z+0.5dz r+0.5dr offset
@@ -133,16 +137,19 @@ class PoissonSolver2DCylindrical:
         r = i*self.dr
         z = j*self.dz
         return r, z
+    
     def get_cell_volume(self,  i:int=None, j:int=None, k:int=None):
         r, z = self.get_position(i, j, k)
         volume = (2*r+1)*self.dr*self.dz
         return volume
+    
     def get_faces(self, i:int=None, j:int=None, k:int=None):
         r, z = self.get_position(i, j, k)
         rm = 2*r*self.dz
         rp = 2*(r+self.dr)*self.dz
         zm = zp = (2*r+self.dr)*self.dr
         return {"rm":rm, "rp":rp, "zm":zm, "zp":zp}
+    
     def get_lambdas(self, i:int=None, j:int=None, k:int=None):
         r, z = self.get_position(i, j, k)
         rm = 2*r/(2*r+1) / self.dr**2
@@ -182,47 +189,38 @@ class PoissonSolver2DCylindrical:
         source_val = 1.0
         sink_val = 0.0
 
-        r, z = self.get_position(i,j)
-        dr = self.dr
-        dz = self.dz
-
         b = self.b
 
-        #print(i,j,k)
-        #print(D)
         if source[i,j]:
-            #print("source")
             stencil["c"] = source_val
             b[k] = source_val
         if self.D[i,j] == 0:
-            #print("D=0")
             stencil["c"] = 0.0
         else:
             # This should not be hard-codded,
             # but handled by choosing BC
             # now it is Dirichlet on the outermost face 
             if j==self.Nz-1:
-                #print("last")
-                stencil["zm"]+= self.D[i,j]*l["zm"]*2.0
-                stencil["c"]-= self.D[i,j]*l["zm"]*3.0
+                stencil["zm"]+= D["zm"]*l["zm"]*2.0
+                stencil["c"]-= (2.0*self.D[i,j] + 1.0*D["zm"])*l["zm"]
                 b[k] = self.D[i,j]*l["zm"]*2.0*sink_val
-                #block radial flux
+                # block radial flux
                 D["rm"] =  D["rp"] = 0
-                #block already edited
+                # block already edited
                 D["zm"] = 0
-
+            # --- r− face ---
             coef = D["rm"]*l["rm"]
             stencil["rm"]+=coef
             stencil["c"]-=coef
-
+            # --- r+ face ---
             coef = D["rp"]*l["rp"]
             stencil["rp"]+=coef
             stencil["c"]-=coef
-
+            # --- z− face ---
             coef = D["zm"]*l["zm"]
             stencil["zm"]+=coef
             stencil["c"]-=coef
-            
+            # --- z+ face ---
             coef = D["zp"]*l["zp"]
             stencil["zp"]+=coef
             stencil["c"]-=coef
@@ -238,7 +236,7 @@ class PoissonSolver2DCylindrical:
             for j in range(Nz):
                 k = self.idx_k(i, j)
 
-                # Wall cell: D = 0 → enforce φ = 0 (or keep φ undefined)
+                # Wall cell
                 if self.D[i, j] == 0:
                     rows.append(k)
                     cols.append(k)
@@ -248,27 +246,28 @@ class PoissonSolver2DCylindrical:
 
                 stencil = self.get_stencil(i, j)
 
-                # Center
+                # Center node
                 rows.append(k)
                 cols.append(k)
                 data.append(stencil["c"])
 
                 # Neighbors, only if D ≠ 0 at neighbor
+                # --- r− face ---
                 if stencil["rm"] != 0 and i > 0 and self.D[i - 1, j] != 0:
                     rows.append(k)
                     cols.append(self.idx_k(i - 1, j))
                     data.append(stencil["rm"])
-
+                # --- r+ face ---
                 if stencil["rp"] != 0 and i < Nr - 1 and self.D[i + 1, j] != 0:
                     rows.append(k)
                     cols.append(self.idx_k(i + 1, j))
                     data.append(stencil["rp"])
-
+                # --- z− face ---
                 if stencil["zm"] != 0 and j > 0 and self.D[i, j - 1] != 0:
                     rows.append(k)
                     cols.append(self.idx_k(i, j - 1))
                     data.append(stencil["zm"])
-
+                # --- z+ face ---
                 if stencil["zp"] != 0 and j < Nz - 1 and self.D[i, j + 1] != 0:
                     rows.append(k)
                     cols.append(self.idx_k(i, j + 1))
@@ -278,7 +277,11 @@ class PoissonSolver2DCylindrical:
         return self.A, self.b
     
     def compute_psi(self):
-        self.build_matrix()
+        try:
+            A = self.A
+            b = self.b
+        except AttributeError:
+            self.build_matrix()
         psi_vec = spla.spsolve(self.A, self.b)
         self.psi = psi_vec.reshape((self.Nr,self.Nz))
         return self.psi
@@ -302,8 +305,9 @@ class PoissonSolver2DCylindrical:
             for j in range(Nz):
                 D = self.get_D_faces(i,j)
                 A = self.get_faces(i,j)
+                # Wall: no flux
                 if self.D[i, j] == 0:
-                    continue  # wall: no flux
+                    continue 
 
                 # --- r− face ---
                 if i > 0 and self.D[i - 1, j] != 0:
@@ -338,16 +342,12 @@ class PoissonSolver2DCylindrical:
         R = 1/J_tot
         print(R)
         return R
-    
-    # def calculate_flux_through_cylindrical_cap(self, i0, i1, j0, j1):
-    #     J = self.compute_flux_faces()
-    #     Jr = np.sum(J["rm"][i0:i1, j0])
 
 def R_solve(fields, z_boundary = 300):
     conductivity, source = pad_fields(fields, z_boundary)
     poisson = PoissonSolver2DCylindrical(D=conductivity.T, S=source.T)
     R_tot = poisson.R_tot()
-    #print(R)
+
     pore_radius = fields["r"]
     D_0 = fields["D_0"]
     d = fields["d"]
@@ -361,7 +361,6 @@ def R_solve(fields, z_boundary = 300):
     R_int = np.sum((np.pi*np.sum(pore_conductivity*A_z, axis = 1))**(-1))
     R_ext = R_tot - R_int
 
-    #fields = {}
     fields["R_lin_alg"] = R_tot*2
     fields["R_lin_alg_int"] = R_int*2
     fields["R_lin_alg_ext"] = R_ext*2
@@ -441,12 +440,12 @@ if __name__=="__main__":
     a0 = 0.7
     a1 = -0.3
     L = 52
-    r_pore=26
+    r_pore = 26
     sigma = 0.02
-    alpha =  30**(1/2)
+    alpha = 30**(1/2)
     d = 8
     chi_PC = -1.0
-    chi_PS =0.7
+    chi_PS = 0.7
 
     fields = calculate_fields_in_pore.calculate_fields(
         a0=a0, a1=a1, 
@@ -458,26 +457,13 @@ if __name__=="__main__":
         sigma = sigma,
         mobility_model_kwargs = {"prefactor":alpha},
         linalg=True,
-        #gel_phi=0.3
+        gel_phi=0.3,
+        method="approx"
     )
-    #%%
+
     conductivity, source = pad_fields(fields, z_boundary=300)
-    # %%
     poisson = PoissonSolver2DCylindrical(D=conductivity.T, S=source.T)
-    #%%
     psi = poisson.compute_psi()
     psi[poisson.D==0]=np.nan
-    #%%
     J = poisson.compute_flux_faces()
-    #%%
-    divJ = J["rp"]+J["rm"]+J["zp"]+J["zm"]
-    #%%
-    # D = np.ones((10,20))
-    # D[2:,-2:] = 0
-    # S = np.zeros_like(D)
-    # S[:,0]=1.0
-    # poisson = PoissonSolver2DCylindrical(D, S)
-    # A, b = poisson.build_matrix()
-    # psi_vec = spla.spsolve(A, b)
-    # psi = psi_vec.reshape((poisson.Nr,poisson.Nz)) 
-# %%
+    divJ = J["rp"] + J["rm"] + J["zp"] + J["zm"]

@@ -106,7 +106,7 @@ def subst_by_gel(fields, phi:float):
     wall_thickness = fields["s"]
 
     phi_arr = np.zeros((ylayers,xlayers))
-    phi_arr[l1:l1+wall_thickness+1, :pore_radius] = phi
+    phi_arr[l1:l1+wall_thickness, :pore_radius] = phi
     fields["phi"] = phi_arr
 
 def calculate_pressure(fields, truncate = False):
@@ -334,35 +334,6 @@ def calculate_partition_coefficient(fields, cutoff_phi = 1e-5):
     volume[:] = 2*np.pi*(np.arange(fields["xlayers"])+1)
     fields["PC"] = np.sum((np.exp(-fields["free_energy"])*volume)[fields["phi"]>cutoff_phi])\
                                                    /np.sum(volume[fields["phi"]>cutoff_phi])
-
-# def calculate_permeability(
-#         fields,
-#         einstein_factor = True
-#         ):
-
-#     pore_radius = fields["pore_radius"]
-#     d = fields["d"]
-#     wall_thickness = fields["s"]
-    
-#     integrate_conductivity(fields)
-#     fields["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
-#     fields["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
-#     #fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(1, pore_radius, wall_thickness, d)*einstein_factor
-
-#     if einstein_factor_value:
-#     einstein_factor_value = 1/(3*np.pi*d)
-#         # fields["einstein_factor"] = einstein_factor_value
-#         # #fields["thin_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, 0)*einstein_factor
-#         # #fields["thick_empty_pore"] = empty_pore_permeability(1, pore_radius-d/2, wall_thickness+d)*einstein_factor
-#         # #fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(1, pore_radius, wall_thickness, d)*einstein_factor
-
-#         # fields["permeability"] = fields["permeability"]*einstein_factor
-#         # fields["permeability_z"] = fields["permeability_z"]*einstein_factor
-
-#         # fields["R_left"] = fields["R_left"]/einstein_factor
-#         # fields["R_right"] = fields["R_right"]/einstein_factor
-#         # fields["R_pore"] = fields["R_pore"]/einstein_factor
-
 def empty_pore_permeability(D, r, s):
     return 2*D*r/(1 + 2*s/(r*np.pi))
 
@@ -409,7 +380,7 @@ def calculate_fields(
         gel_phi = None,
         D_0 = "Einstein",
         linalg = True,
-        linalg_kwargs = {"z_boundary":1000}
+        linalg_kwargs = {"z_boundary":400}
         # pad_phi = None
         ):
 
@@ -443,7 +414,8 @@ def calculate_fields(
     calculate_mobility(fields, d, 
                        mobility_model, 
                        mobility_model_kwargs, 
-                       phi_arr="corrected_phi", 
+                       phi_arr="corrected_phi",
+                       #phi_arr="phi",
                        #Haberman_correction = Haberman_correction, 
                        stickiness=stickiness, 
                        stickiness_model_kwargs=stickiness_model_kwargs
@@ -461,7 +433,7 @@ def calculate_fields(
     fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(D_0, pore_radius, wall_thickness, d)
 
     if linalg:
-        from R_lin_alg import R_solve
+        from solve_poisson import R_solve
         R_solve(fields, **linalg_kwargs)
 
     return fields
@@ -474,5 +446,5 @@ if __name__ == "__main__":
     L=52
     r_pore = 26
     sigma = 0.02
-    fields =  calculate_fields(a0, a1, chi_PC, chi_PS, L, r_pore, d, sigma, pad_phi=(100,100))
+    fields =  calculate_fields(a0, a1, chi_PC, chi_PS, L, r_pore, d, sigma)
 # %%

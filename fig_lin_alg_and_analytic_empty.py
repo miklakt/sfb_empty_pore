@@ -7,7 +7,7 @@ LAST_USED_COLOR = lambda: plt.gca().lines[-1].get_color()
 plt.rcParams['axes.xmargin'] = 0
 plt.rcParams['axes.ymargin'] = 0
 #%%
-import R_lin_alg
+from solve_poisson import R_empty_pore
 
 def R_analytic(pore_radius:int, wall_thickness:int, d:int=None):
     if d is None:
@@ -32,7 +32,7 @@ d = d_linalg
 analytic = [R_analytic(pore_radius, wall_thickness, d_) for  d_ in d]
 analytic = pd.DataFrame(analytic)
 
-linalg = [R_lin_alg.R_empty_pore(pore_radius, wall_thickness, d_, z_boundary=500) for d_ in d_linalg]
+linalg = [R_empty_pore(pore_radius, wall_thickness, d_, z_boundary=300) for d_ in d_linalg]
 linalg = pd.DataFrame(linalg)
 # %%
 fig, ax = plt.subplots()
