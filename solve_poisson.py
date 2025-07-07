@@ -340,7 +340,7 @@ class PoissonSolver2DCylindrical:
         J = self.compute_flux_faces()
         J_tot = np.sum(J["zm"][:,-1])*np.pi
         R = 1/J_tot
-        print(R)
+        print("Poisson solved, R=",R)
         return R
 
 def R_solve(fields, z_boundary = 300):
@@ -467,3 +467,4 @@ if __name__=="__main__":
     psi[poisson.D==0]=np.nan
     J = poisson.compute_flux_faces()
     divJ = J["rp"] + J["rm"] + J["zp"] + J["zm"]
+#%%
