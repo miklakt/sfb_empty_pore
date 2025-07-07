@@ -8,6 +8,7 @@ plt.rcParams['axes.xmargin'] = 0
 plt.rcParams['axes.ymargin'] = 0
 #%%
 from solve_poisson import R_empty_pore
+import calculate_fields_in_pore
 
 def R_analytic(pore_radius:int, wall_thickness:int, d:int=None):
     if d is None:
@@ -32,8 +33,19 @@ d = d_linalg
 analytic = [R_analytic(pore_radius, wall_thickness, d_) for  d_ in d]
 analytic = pd.DataFrame(analytic)
 
-linalg = [R_empty_pore(pore_radius, wall_thickness, d_, z_boundary=300) for d_ in d_linalg]
-linalg = pd.DataFrame(linalg)
+R_default_calc = [calculate_fields_in_pore.calculate_fields(
+    a0=0.7, a1 = -0.3, chi_PC = 0, chi_PS = 0, 
+    wall_thickness=wall_thickness, pore_radius=pore_radius,
+    sigma = 0.02, method="no_free_energy",
+    mobility_model="none",
+    linalg = False,
+    d=d_
+) for d_ in d]
+
+R_default_calc = pd.DataFrame(R_default_calc)
+#%%
+# linalg = [R_empty_pore(pore_radius, wall_thickness, d_, z_boundary=300) for d_ in d_linalg]
+# linalg = pd.DataFrame(linalg)
 # %%
 fig, ax = plt.subplots()
 ax.set_xlabel("$d$")
@@ -45,10 +57,14 @@ ax.plot(d, analytic["R"], label = "R", color = "k")
 ax.plot(d, analytic["R_ext"], label = "R_ext", color = "k", linestyle="--")
 ax.plot(d, analytic["R_int"], label = "R_int", color = "k", linestyle="-.")
 
-ax.plot(d_linalg, linalg["R"], label = "R", color = "red")
-#ax.plot(d_linalg, linalg["R_ext"], label = "R_ext", color = "red", linestyle="--")
-ax.plot(d_linalg, linalg["R"] - analytic["R_int"], label = "R_ext", color = "green", linestyle="--")
-ax.plot(d_linalg, linalg["R_int"], label = "R_int", color = "red", linestyle="-.")
+ax.plot(d, R_default_calc["R"], label = "R", color = "orange")
+ax.plot(d, R_default_calc["R_ext"], label = "R_ext", color = "orange", linestyle="--")
+ax.plot(d, R_default_calc["R_int"], label = "R_int", color = "orange", linestyle="-.")
+
+# ax.plot(d_linalg, linalg["R"]-linalg["R_ext"], label = "R", color = "red")
+# ax.plot(d_linalg, linalg["R_ext"], label = "R_ext", color = "red", linestyle="--")
+# # ax.plot(d_linalg, linalg["R"] - analytic["R_int"], label = "R_ext", color = "green", linestyle="--")
+# ax.plot(d_linalg, linalg["R_int"], label = "R_int", color = "red", linestyle="-.")
 
 
 ax.legend()

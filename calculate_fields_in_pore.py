@@ -206,7 +206,7 @@ def calculate_mobility(
     
     fields["mobility"] = mobility
 
-#def calculate_D0(fields)
+
 def calculate_conductivity(fields, D_0 = "Einstein"):
     d = fields["d"]
     if D_0 == "Einstein":
@@ -219,64 +219,8 @@ def calculate_conductivity(fields, D_0 = "Einstein"):
         raise ValueError("Incorrect D_0")
     fields["D_0"] = D_0 
     fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])*D_0
-# def calculate_conductivity(fields):
-#     fields["conductivity"]  = fields["mobility"]*np.exp(-fields["free_energy"])
-
-
-def integrate_with_cylindrical_caps(
-    field, 
-    l1, wall_thickness, pore_radius, 
-    xlayers, ylayers,
-    spheroid_correction
-    ):
     
-    lb = 0
-    rb = ylayers
-    conductivity = np.zeros(rb-lb)
-    for i, z_ in enumerate(range(lb, rb)):
-        #inside the pore
-        if (z_>=l1) and (z_<=l1+wall_thickness):
-            conductivity_ = np.pi*np.sum(field[z_, :pore_radius]*(2*np.arange(pore_radius)+1))
-        else:
-            if z_<l1:
-                side = "left"
-                el_a = z_
-                el_b = l1
-            elif z_>l1+wall_thickness:
-                side = "right"
-                el_a = l1+wall_thickness
-                el_b = z_
-            else:
-                raise ValueError("z value is very strange")
-            dist = el_b - el_a #how far we are form the edge
-            cap_radius = pore_radius+dist
-            if side == "left":
-                z__ = z_
-            if side == "right":
-                z__ = z_-1
-            
-            if cap_radius>=xlayers:#outside simbox
-                base_conductivity = np.pi*np.sum(field[z__, :xlayers]*(2*np.arange(xlayers)+1))
-                base_conductivity = base_conductivity + np.pi*(cap_radius**2 - xlayers**2)
-                element_conductivity = 2*np.pi*cap_radius*dist
-            else:
-                base_conductivity = np.pi*np.sum(field[z__, :cap_radius]*(2*np.arange(cap_radius)+1))
-                element_conductivity = 2*np.pi*cap_radius*np.sum(field[el_a:el_b, cap_radius])
-
-            conductivity_ = base_conductivity+element_conductivity
-            
-            if spheroid_correction:
-                f = 2*(pore_radius**2 + dist**2)/((pore_radius + dist)*(pore_radius + 3*dist))
-                conductivity_ = conductivity_*f
-
-        conductivity[i] = conductivity_
-    return conductivity
-
-def integrate_conductivity(
-        fields, 
-        spheroid_correction = True, #make correction for iso-potential surface approximated with cylinders
-        correct_excluded_volume = True #treat pore as if it has thicker walls and smaller diameter
-        ):
+def integrate_conductivity(fields, conductivity_key = "conductivity"):
     l1 = fields["l1"]
     pore_radius = fields["r"]
     wall_thickness = fields["s"]
@@ -284,49 +228,55 @@ def integrate_conductivity(
     ylayers = fields["ylayers"]
     d = fields["d"]
     D_0 = fields["D_0"]
+    conductivity = fields[conductivity_key]
 
-    if correct_excluded_volume:
-        # here we integrate it as if the interior
-        # has the same radius, as the walls will be ignored anyway
-        # but the pore is longer
-        # in this way in the portion of the effective pore shape
-        # where the corners are rounded the isopotential surfaces are circles 
-        l1 = int(l1-d/2)
-        wall_thickness = int(wall_thickness+d)
-
-    permeability_z = integrate_with_cylindrical_caps(
-        fields["conductivity"],
-        l1, wall_thickness, pore_radius, xlayers, ylayers,
-        spheroid_correction=spheroid_correction
-        )
-    
-    if spheroid_correction:
-        z_left = l1
-        z_right = ylayers-l1-wall_thickness
-        pore_radius = pore_radius - d/2
-
-        #resistance of the pure solvent outside the integration domain
-        R_left = (np.pi - 2*np.arctan(z_left/pore_radius))/(4*np.pi*pore_radius)/D_0
-        R_right = (np.pi - 2*np.arctan(z_right/pore_radius))/(4*np.pi*pore_radius)/D_0
+    R_ext = 0
+    if d>=2:
+        z_ext = int(l1-d//2)
+        pore_radius_apparent = int(pore_radius - d//2)
     else:
-        R_left = (-np.log(pore_radius/3 + l1) + np.log(pore_radius + l1))/(2*np.pi*pore_radius)/D_0
-        R_right = (-np.log(pore_radius/3 + (ylayers-l1-wall_thickness)) + np.log(pore_radius + (ylayers-l1-wall_thickness)))/(2*np.pi*pore_radius)/D_0
+        z_ext = int(l1)
+        pore_radius_apparent = pore_radius
+    # z_ext = int(l1)
+    # pore_radius_apparent = pore_radius
+    for z in range(z_ext):
+        dist = int(z_ext-z)
+        cap_radius = int(dist+pore_radius_apparent)
+        if cap_radius>=xlayers:#outside simbox
+            base_conductivity = np.pi*np.sum(conductivity[z, :xlayers]*(2*np.arange(xlayers)+1))
+            base_conductivity = base_conductivity + np.pi*(cap_radius**2 - xlayers**2)
+            element_conductivity = 2*np.pi*D_0*dist
+            # conductivity of the hollow tube with potential gradient applied to the inner and outer surface
+            element_conductivity = element_conductivity/np.log(cap_radius/(cap_radius-1)) 
+        else:
+            base_conductivity = np.pi*np.sum(conductivity[z, :cap_radius]*(2*np.arange(cap_radius)+1))
+            #cap_radius-1 is offset for elements being below the contour
+            #no need too to offset for z, as the elements are to the right
+            element_conductivity = 2*np.pi*np.sum(conductivity[z:z_ext, cap_radius])#*cap_radius
+            # conductivity of the hollow tube with potential gradient applied to the inner and outer surface
+            element_conductivity = element_conductivity/np.log(cap_radius/(cap_radius-1)) 
 
-    if not np.isclose(R_left, R_right):
-        print("The simulation box seems to be asymmetric")
+        conductivity_z = base_conductivity + element_conductivity
+        #spheroid correction
 
-    permeability = np.sum(permeability_z**(-1))**(-1)
-    fields["permeability_z"] = permeability_z
-    fields["permeability"] = (permeability**(-1) + R_left + R_right)**(-1)
+        f = pore_radius_apparent/((dist*np.log((pore_radius_apparent + dist)/(pore_radius_apparent + dist - 1)) + (pore_radius_apparent + dist)**2)*(np.arctan(dist/pore_radius_apparent) - np.arctan((dist - 1)/pore_radius_apparent)))
+        conductivity_z = conductivity_z*f
+        R_ext = R_ext + conductivity_z**-1
 
-    # if correct_excluded_volume:
-    #     # turn it back to keep the geometry of contributions 
-    #     l1 = int(l1+d/2)
-    #     wall_thickness = int(wall_thickness-d)
-    fields["R_left"] = np.sum(permeability_z[:l1]**(-1))+R_left
-    fields["R_right"] = np.sum(permeability_z[(l1+wall_thickness+1):]**(-1))+R_right
-    fields["R_pore"] = np.sum(permeability_z[l1:(l1+wall_thickness+1)]**(-1)) \
-        * wall_thickness/(wall_thickness+1) #correct that it was integrated one extra layer
+    R_left = np.arctan(pore_radius_apparent/z_ext)/(2*np.pi*pore_radius_apparent*D_0)
+    R_ext = R_ext+R_left
+    R_ext = R_ext*2.0
+
+    R_int = 0
+    for z in range(z_ext, ylayers//2):
+        conductivity_z = np.pi*np.sum(conductivity[z, :pore_radius]*(2*np.arange(pore_radius)+1))
+        R_int = R_int + conductivity_z**-1
+    R_int = R_int*2.0
+
+    fields["R"] = R_int+R_ext
+    fields["R_int"] = R_int
+    fields["R_ext"] = R_ext
+
 
 def calculate_partition_coefficient(fields, cutoff_phi = 1e-5):
     xlayers = fields["xlayers"]
@@ -401,11 +351,13 @@ def calculate_fields(
             raise ValueError("Only even d is accepted")
         add_walls(fields, exclude_volume, d)
         method = method
+        correct_excluded_volume = True
     else:#particle is very small
         add_walls(fields, exclude_volume = False, d=None)
         if method != "approx": print("small particle, approx free energy")
         method = "approx"
         mobility_correction = "none"
+        correct_excluded_volume = False
 
     calculate_pressure(fields, truncate_pressure)
     calculate_gamma(fields, a0, a1, chi_PC)
@@ -421,16 +373,17 @@ def calculate_fields(
                        stickiness_model_kwargs=stickiness_model_kwargs
                        )
     calculate_conductivity(fields, D_0)
-    #calculate_conductivity(fields)
+    # integrate_conductivity(fields, correct_excluded_volume=correct_excluded_volume)
     integrate_conductivity(fields)
+    fields["permeability"] = fields["R"]**-1
 
     if partitioning_cutoff_phi is not None:
         calculate_partition_coefficient(fields, cutoff_phi = partitioning_cutoff_phi)
     
-    D_0 = fields["D_0"]
-    fields["thin_empty_pore"] = empty_pore_permeability(D_0, pore_radius-d/2, 0)
-    fields["thick_empty_pore"] = empty_pore_permeability(D_0, pore_radius-d/2, wall_thickness+d)
-    fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(D_0, pore_radius, wall_thickness, d)
+    D_0_ = fields["D_0"]
+    fields["thin_empty_pore"] = empty_pore_permeability(D_0_, pore_radius-d/2, 0)
+    fields["thick_empty_pore"] = empty_pore_permeability(D_0_, pore_radius-d/2, wall_thickness+d)
+    fields["thick_empty_pore_Haberman"] = empty_pore_permeability_corrected(D_0_, pore_radius, wall_thickness, d)
 
     if linalg:
         from solve_poisson import R_solve
@@ -442,9 +395,9 @@ if __name__ == "__main__":
     a0, a1 = 0.7, -0.3
     chi_PS = 0.5
     chi_PC = -1.0
-    d=8
+    d=12
     L=52
-    r_pore = 26
+    pore_radius = 26
     sigma = 0.02
-    fields =  calculate_fields(a0, a1, chi_PC, chi_PS, L, r_pore, d, sigma)
+    fields =  calculate_fields(a0, a1, chi_PC, chi_PS, L, pore_radius, d, sigma)
 # %%
