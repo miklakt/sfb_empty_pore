@@ -328,6 +328,7 @@ class PoissonSolver2DCylindrical:
                 if j < Nz - 1 and self.D[i, j + 1] != 0:
                     dpsi = (psi[i, j] - psi[i, j + 1]) / dz
                     J_faces["zp"][i, j] = -D["zp"] * A["zp"] * dpsi
+                
                 # ---- Dirichlet at z+ face ----
                 elif j == Nz - 1:
                     sink_val = 0.0
