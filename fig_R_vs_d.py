@@ -48,7 +48,7 @@ alpha =  30**(1/2)
 d = np.arange(2.0, 32.0, 2)
 d = np.insert(d, 0, [0.5, 1])
 
-show_simulation_results = False
+show_linalg = False
 #%%
 calculate_fields = functools.partial(
     calculate_fields_in_pore.calculate_fields,
@@ -67,7 +67,7 @@ fig, axs = plt.subplots(nrows = 2,
                         sharex = True)
 
 chi_PS = 0.5
-chi_PCs =[-1.3] + [0.0, -1.0, -1.4, -1.8]
+chi_PCs =[-1.25] + [0.0, -1.0, -1.4, -1.8]
 ax = axs[0]
 marker = itertools.chain(mpl_markers)
 color = get_palette_colors()
@@ -78,37 +78,23 @@ for chi_PC in chi_PCs:
     color_ = next(color)
     ax.plot(
         x, y, 
-        linewidth = 1.0 if chi_PC==-1.3 else 0.5,
+        linewidth = 1.0 if chi_PC==-1.25 else 0.5,
         ms=4,
         marker = next(marker),
         color = color_,
         label = chi_PC,
         )
 
-    y2 = calc["R_lin_alg"]
-    ax.plot(
-        x, y2, 
-        linewidth = 1.0 if chi_PC==-1.3 else 0.5,
-        ms=4,
-        marker = "d",
-        color = color_,
-        #label = chi_PC,
-        )
-    
-    if show_simulation_results:
-        sim_data = simulation_results.query(f"chi_PS == {chi_PS} & chi_PC == {chi_PC}")
-        if not sim_data.empty:
-            x = sim_data["d"]
-            y = sim_data["R"]
-            ax.plot(
-                x, y, 
-                ms=8,
-                mec="k",
-                marker = "*",
-                color = color_,
-                #label = chi_PC,
-                linewidth = 0
-                )
+    if show_linalg:
+        y2 = calc["R_lin_alg"]
+        ax.plot(
+            x, y2, 
+            linewidth = 1.0 if chi_PC==-1.25 else 0.5,
+            ms=4,
+            marker = "d",
+            color = color_,
+            #label = chi_PC,
+            )
 
 # Get handles and labels
 handles, labels = ax.get_legend_handles_labels()
@@ -128,7 +114,7 @@ ax.text(0.02, 0.98, r"$\chi_{\text{PS}} = "+f"{chi_PS}$",
         )
 
 ax = axs[1]
-chi_PC = -1.3
+chi_PC = -1.25
 chi_PSs = [ 0.5]+[0.3, 0.4, 0.6, 0.7]
 marker = itertools.chain(mpl_markers)
 color = get_palette_colors()
@@ -146,15 +132,16 @@ for chi_PS in chi_PSs:
         color = color_,
         label = chi_PS
         )
-    y2 = calc["R_lin_alg"]
-    ax.plot(
-        x, y2, 
-        linewidth = 1.0 if chi_PC==-1.3 else 0.5,
-        ms=4,
-        marker = "d",
-        color = color_,
-        #label = chi_PS,
-        )
+    if show_linalg:
+        y2 = calc["R_lin_alg"]
+        ax.plot(
+            x, y2, 
+            linewidth = 1.0 if chi_PC==-1.3 else 0.5,
+            ms=4,
+            marker = "d",
+            color = color_,
+            #label = chi_PS,
+            )
     
     
 
@@ -178,30 +165,33 @@ ax.legend(sorted_handles, sorted_labels,
 litera = itertools.chain(["a", "b"])
 for ax in axs:
     ax.plot(x, R_0, color = "k", linewidth=2)
-    ax.plot(x, R_0_no_vol_excl, color = "k", linewidth=0.5)
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_ylim(1e-1, 1e3)
     ax.set_xlim(5e-1, 32)
     ax.grid()
-    ax.text(x[2], R_0[2], r"$R_0$", 
-        #transform = ax.transAxes, 
-        va = "center", ha = "center", 
-        bbox ={"fc" : "white", "ec":"none", "pad":0.2},
-        fontsize = 12,
-        rotation = 35,
-        )
+    # ax.text(x[2]*1.1, R_0[2]*1.5, r"$R_0$", 
+    #     #transform = ax.transAxes, 
+    #     va = "center", ha = "center", 
+    #     bbox ={"fc" : "white", "ec":"none", "pad":0.0},
+    #     fontsize = 12,
+    #     rotation = 35,
+    #     )
     ax.text(-0.3, 1.0, s = f"({next(litera)})",
-            va = "center", ha = "center", 
+            va = "center", ha = "center",
+            fontweight='bold',
             transform = ax.transAxes,
-    )   
+    )
+    ax.plot(x, R_0_no_vol_excl, color = "k", linewidth=0.5, zorder = 3)
+
+axs[0].set_xlabel("$d$",fontsize = 14,labelpad=-5)   
 axs[1].set_xlabel("$d$",fontsize = 14,labelpad=-5)
 axs[0].set_ylabel(r"$\qquad R \, \frac{k_{\text{B}}T}{\eta_{\text{S}}}$", fontsize = 16, labelpad=-7)
 axs[1].set_ylabel(r"$\qquad R \, \frac{k_{\text{B}}T}{\eta_{\text{S}}}$", fontsize = 16, labelpad=-7)
 
 plt.tight_layout()
-#fig.set_size_inches(3.5,5.5)
-fig.set_size_inches(10,15)
+fig.set_size_inches(3.5,5.5)
+# fig.set_size_inches(10,15)
 fig.savefig("fig/permeability_on_d.svg")
 
 # %%
