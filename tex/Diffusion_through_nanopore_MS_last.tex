@@ -43,7 +43,8 @@ Faculty of Engineering and Physical Sciences,\\
 Astbury Centre for Structural Molecular Biology,\\ 
 and Bragg Center for Materials Research,\\ 
 Leeds, LS2 9JT, United Kingdom\\
-$^{5}$University of Wageningen, The Netherlands\\
+$^{5}$Physical Chemistry and Soft Matter,\\
+Wageningen University, Stippeneng 4, 6708 WE Wageningen, the Netherlands\\
 }
 \date{}
 
@@ -69,11 +70,13 @@ This combination of feature provides a physical explanation for the basic mechan
 \section{INTRODUCTION}
 %%%%%%%%%%
 
-Polymer-modified mesoporous materials and membranes belong to a new class of functional nanostructured materials with great potential in a number of technologies. 
+Polymer-modified mesoporous materials and membranes belong to a new class of functional nanostructured materials with great potential in a number of technologies.
+\todo{[FL: I do not like this first line and paragraph not saying much... Consider starting with third paragraph and slip in somehow the first and second paragraph in the text. the advantage is that mesoporours have been defined and then you can say that these have potential( first paragraph) and in which direction these can be found (second paragraph).]}
 
 The interaction of (macro)molecules and nanocolloidal particles with porous media, as well as their transport through porous membranes, are important elements of many technological processes (chromatography, heterogeneous catalysis, micro- and ultrafiltration, protein separation and purification, etc.) and, therefore, have been the subject of intensive research for more than sixty years \cite{Watson1959, Rout2003, Huang2023, Uredat2024}.
 
 Advances in macromolecular chemistry have made it possible to significantly improve functional properties of materials with mesopores (i.e., pores with a diameter between a few and many tens of nanometers) by modifying them with polymers of various chemical nature anchored to  the pore walls.
+\todo{[FL: Perhaps first/second paragraph inserted here?]}
 Thus, a fuzzy meshwork of solvated polymers is formed filling the entire pore volume or just the near-wall regions, depending on the molecular mass and conformational state of the polymer chains.
 The interaction of this polymer meshwork with colloids, that is, nanoparticles or (macro)molecules in the solution phase, essentially determines the absorption and separation properties of the polymer-modified mesoporous materials and membranes.
 These interactions can be attractive or repulsive, and controlled by a broad spectrum of external stimuli \cite{Jeong2002, Lee2010, Low2019}, 
@@ -127,9 +130,10 @@ Using a self-consistent field approach, we define how solvent quality and colloi
 
 Salient features of our simulated mesopore are illustrated in Figure~\ref{fig:colloid_transport}.
 The cylinder-shaped pore perforates a planar membrane, and is the sole conduit for colloids between two semi-infinite solution reservoirs.
+\todo{[FL: To my knowledge, in biology there is not a single membrane but a pair of membranes around the nucleus. The pore spans two membranes simultaneously and forms some saddle shaped pore ..... I understand that this issue is not important for you because the details about the membrane as a barrier are not accounted for in your model, but perhaps you can mention that in reality it is a double bilayer, which you choose to represent by an effective membrane...]}
 Flexible polymer chains are end-grafted to the inner pore walls, at a density sufficient to form a polymer brush that fills the entire pore cross-section.
 
-We will focus on a pore with a set radius $r_{\text{p}}^0$ and length $L^0$, and polymers with a degree of polymerization $N$ and grafting density $\sigma$ (Figure~\ref{fig:colloid_transport}).
+We will focus on a pore with a set radius $r_{\text{p}}^0$ and length $L^0$, and polymers with a degree of polymerization $N$ and grafting density $\sigma$ (Figure~\ref{fig:colloid_transport}). \todo{[FL: in units a]}
 Whilst the selected values are inspired by the nuclear pore complex \todo{(see Supplementary Methods 1)}, we expect that our findings will be of rather general validity so they can be applied to the performance analysis and rational design of mesopores with other geometries or polymer fillings.
 
 Colloids are taken to be sphere-shaped with diameter $d$.
@@ -142,11 +146,11 @@ The interaction strength (contact free energy) between a polymer segment and the
         Schematic illustration of colloid diffusive transport through a pore filled with a polymer brush. 
         The brush is formed by linear polymer chains (red strands) with a degree of polymerization $N$, uniformly grafted with grafting density $\sigma$ 
         to the inner surface of a cylindrical pore.
-        The pore radius is $r_{\text{p}}^0$ and the thickness of the impermeable membrane is $L^0$.
+        The pore radius is $r_{\text{p}}^0$ (not indicated) and the thickness of the impermeable membrane is $L^0$.
         Polymer chains are flexible with a statistical segment length $a$ and volume $\sim a^3$. 
         Spherical colloids with diameter $d$ are free to diffuse in the surrounding solvent.
         All length scales are normalized by the statistical segment length $a$.
-        As a model pore, we set $L^0 = 2r_{\text{p}}^0 = 56$, $\sigma = 0.02$ and $N = 300$.
+        As a model pore, we set $L_0 = 2r_{\text{p}}^0 = 56$, $\sigma = 0.02$ and $N = 300$.
         With $a = 0.76 {\text{ nm}}$, these parameters reproduce the basic features of nuclear pore complexes.
         }
     \label{fig:colloid_transport}
@@ -154,7 +158,7 @@ The interaction strength (contact free energy) between a polymer segment and the
 
 To understand how the polymer brush affects transport, we consider the stationary diffusive flux of colloids through the pore and analyze how it depends on the parameters of the pore, the brush and the colloid.
 Considering unidirectional colloid transport driven by a concentration difference across the membrane, we focus on the mechanisms of diffusion mediated by colloid-polymer interactions.
-The colloid concentrations are set to zero and $c_0$ far away from the membrane (at $z\rightarrow\pm\infty$, respectively).
+The colloid concentrations are set to zero and $c_0$ far away from the membrane (at $z\rightarrow\pm\infty$, respectively).\todo{[FL: is this clear? .... it is zero at $z \to \infty$ and $c_0$ at $z \to -\infty$]}
 
 
 %%%%%%%%%%
@@ -194,7 +198,7 @@ In the bare pore scenario, the inverse of the diffusion constant ($\rho_0=D_0^{-
 Naturally, the resistance for a thin membrane is determined by the exterior region ($R \approx R_{\text{ext}}^{0}$ for $L \ll r_{\text{p}}$), whereas for long pores the inner region becomes dominant ($R \approx R_{\text{int}}^{0}$ for $L \gg r_{\text{p}}$).
 
 The finite size of colloids affects the diffusive flux in two ways.
-First, the excluded volume reduces the effective pore radius ($r_{\text{p}} = r_{\text{p}}^0 - d/2$) and increases the effective pore length ($L = L^0 + d$) \cite{Renkin1954, Beck1970, Bungay1973, Anderson1974, Brenner1977}.
+First, the excluded volume reduces the effective pore radius ($r_{\text{p}} = r_{\text{p}}^0 - d/2$) and increases the effective pore length ($L = L_0 + d$) \cite{Renkin1954, Beck1970, Bungay1973, Anderson1974, Brenner1977}.
 Second, the presence of the pore walls entails some additional drag \cite{Ladenburg1907, Faxen1922, Haberman1958}.
 We neglect the latter as the presence of the polymer brush screens hydrodynamics and thus requires a different kind of drag analysis, as discussed below.
 
@@ -219,7 +223,7 @@ This scenario would result in a distinct permeation behaviour, as colloids could
     \centering
     \includegraphics[width = 3.5in]{fig/phi_hm_grid.png}
     \caption{
-    Maps of the polymer volume fraction $\phi(r,z)$ for a polymer brush in a cylindrical pore with solvent quality ranging from good (upper left panel) to poor (lower right panel), as quantified by the Flory-Huggins parameter $\chi_{\text{PS}}$.
+    Maps of the polymer volume fraction $\phi(r,z)$ for a polymer brush in a cylindrical pore with solvent quality ranging from good (upper left panel) to poor as indicated (lower right panel), as quantified by the Flory-Huggins parameter $\chi_{\text{PS}}$.
     Polymer volume fractions are mapped in cylindrical coordinates (as shown by $rz$-coordinate arrows), color coded as indicated and with selected iso-concentration lines. The blank space corresponds to plain solvent; the membrane is colored green.
     Pore and brush parameters are as given in Figure~\ref{fig:colloid_transport}.
     }
@@ -520,7 +524,7 @@ Compared to a bare pore (Eq.~(\ref{eq:resistance})) such a short-circuiting effe
 For the pore and colloid considered here, this represents an approximately 3-fold reduction, to a level marked by the dashed horizontal red line in Figure~\ref{fig:R_vs_chi_PC} which equals the contribution of convergent flow to the bare-pore resistance ($R^0_\text{ext}$).
 The reduction would be even stronger for longer pores ($L\gg r_p$), and for larger colloids that increase the effective pore length and decrease the effective pore diameter.
 
-The exterior resistance $R_{\text{ext}}$, on the other hand, always retains a finite contribution from the diffusive fluxes in the semi-infinite reservoir, setting an absolute lower bound on the total resistance.
+The exterior resistance $R_{\text{ext}}$, on the other hand, always retains a finite contribution from the diffusive fluxes in the semi-infinite reservoir, setting an absolute lower bound to the total resistance.
 The reduction of $R_{\text{ext}}$ below $R^0_\text{ext}$ evidenced in Figure~\ref{fig:R_vs_chi_PC} is due attractive brush fringes that protrude and facilitate diffusive transport outside the pore.
 The magnitude of this effect increases with the extension of the polymer cap, and explains why the minimal attainable resistance increases with decreasing solvent quality (Figure~\ref{fig:phi_hm_grid}).
 Approximating the brush fringes on either end of the pore as hemispherical caps with radius $r_\text{cap}$, the plateau conditions are equivalent to twice the resistance of an ideally absorbing hemisphere \cite{Crank1980},
@@ -733,7 +737,7 @@ This set of experiments enabled the effect of polymer-colloid interaction to be 
 
 To reproduce theoretically the correlation between the experimentally measured NPC transport rates $k$ and the partition coefficient $P$ in pure FG domain phases, we determined the effective solvent strength for each FG domain $\chi_\text{PC}$ from the experimentally measured volume fractions of the FG domain in its polymer-rich droplets formed upon spontaneous phase separation \cite{Frey2018} 
 \todo{(see Supplementary Methods 8)}.
-\todo{RR: Please check if correct, or justify why vanishing osmotic642
+\todo{RR: Please check if correct, or justify why vanishing osmotic
 pressure is a sensible assumption}
 \todo{ML: SI The estimated critical concentration for Nup116 and Nup98A FG-domains is $1 \, \mu\text{g}/\text{ml}$, corresponding to \mbox{$\phi_{\text{gel}}^{\text{out}} \approx 10^{-6}$} \cite{Schmidt2015}.
 This extremely low value implies the osmotic pressure is effectively zero in both phases. SI}
