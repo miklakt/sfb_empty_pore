@@ -31,7 +31,7 @@
 \usepackage[utf8]{inputenc}
 
 %\REMOVE BEFORE SUBMISSION
-\usepackage[switch]{lineno}
+\usepackage[right]{lineno}
 \linenumbers
 
 
@@ -270,7 +270,7 @@ Figure~\ref{fig:cylindrical_kernel_SI} provides a color-coded map of the volume 
     \label{fig:cylindrical_kernel_SI}
 \end{figure}
 
-To calculate the colloid insertion free energy, we integrated the osmotic pressure over the colloid volume and the surface tension over the colloid surface (Eq.~(5)).
+To calculate the colloid insertion free energy, we integrated the osmotic pressure over the colloid volume and the surface tension over the colloid surface (Eq.~(15)).
 The equivalent operation on a discrete lattice is the matrix dot product.
 The two contributions to the insertion free energy are thus calculated as:
 \begin{equation}\label{eq:cyl_fe_osm}
@@ -309,7 +309,7 @@ Convolution was performed via fast Fourier transform for computational efficienc
 \end{figure}
 
 Depending on the magnitude of the polymer-colloid interaction strength $\chi_{\text{PC}}$, a colloid may attract or repel the polymer around it, causing local perturbations within a distance of a few segments.
-In Eq. (7), the effective polymer volume fraction (concentration) near the colloid was approximated as $\phi^{\ast} = (b_0 + b_1 \chi_{\text{PC}}) \phi$.
+In Eq. (17), the effective polymer volume fraction (concentration) near the colloid was approximated as $\phi^{\ast} = (b_0 + b_1 \chi_{\text{PC}}) \phi$.
 Here, we justify this approximation based on SF-SCF data and quantify the coefficients $b_0$ and $b_1$, which capture the local perturbation to the polymer volume fraction profile.
 
 As illustrated in Figure~\ref{fig:sf-scf_scheme}, a cylindrical particle is positioned coaxially along the $z$-axis explicitly as impermeable lattice elements.
@@ -318,16 +318,18 @@ Consequently, the polymer-brush chains adjust to the available space and the pol
 We performed a series of SF-SCF calculations to determine the insertion free energy profiles $\Delta F_{\text{SF-SCF}}(z_{\text{c}})$ for a range of $d$, $\chi_{\text{PS}}$ and $\chi_{\text{PC}}$ values with a pore geometry and polymer brush parameters as set in Figure~1.
 % For each condition, we performed a ground state free energy correction, subtracting the total free energy for a colloid far away from the pore to ensure the reference value $\Delta F_{\text{SF-SCF}}(z_{\text{c}} \to \pm \infty) = 0$.
 
-The insertion free energies thus computed were compared to $\Delta F_{\text{cyl}}(z_{\text{c}})$, obtained as described in the previous section with $\gamma_{i,k}$ parametrized according to Eq. (7).
+The insertion free energies thus computed were compared to $\Delta F_{\text{cyl}}(z_{\text{c}})$, obtained as described in the previous section with $\gamma_{i,k}$ parametrized according to Eq. (17).
 The optimal coefficients $b_0$ and $b_1$ were found using the least-squares method, i.e, minimizing $\sum [\Delta F_{\text{SF-SCF}} - \Delta F_{\text{cyl}}(b_0,b_1)]^2$ across a range of $\chi_{\text{PS}} \in [0,1]$  and $\chi_{\text{PC}} \in [-2,0]$ for a relevant particle positions $-60 \leq z_{\text{c}} \leq 0$.
 Fits were performed with small colloids ($d=4$), to focus on local effects and avoid added effects that may arise due to global perturbations of the polymer distribution in the pore.
 
 In a $\theta$-solvent (chosen here as a representative case) and for fixed pore geometry and brush parameters, the three interaction parameters
 $\chi_{\text{PC}} = 0.00,; -0.75,; \text{and}; -1.50$ span the regimes of net repulsion, near-critical adsorption, and net attraction, respectively.
 Figure~\ref{fig:fit_SI} demonstrates that a satisfactory fit (thick solid line) to the $\Delta F_{\text{SF-SCF}}$ profiles (circles) could be obtained across all three representative datasets with a single parameter set $b_0 = 0.7$ and $b_1 = -0.3$.
-The insertion free energies are consistently close to zero for $\chi_{\text{PC}} = -0.75$ illustrates that this value is close to $\chi_{\text{PC}}^{\text{crit}} = \chi_{\text{crit}} + \chi_{\text{PS}} (1 - \phi)$, where polymer attraction and osmotic repulsion just cancel each other.
-Consequently, the least-squares fits considered the regimes of net repulsion and net attraction approximately equally through $\chi_{\text{PC}} = 0.00$ and $\chi_{\text{PC}} = -1.50$, respectively.
-In contrast, neglect of local perturbations to the polymer concentration ($b_0 = 1.0$ and $b_1 = 0.0$) reproduces $\Delta F_{\text{SF-SCF}}$ rather poorly for repulsive and attractive colloids (Figure~\ref{fig:fit_SI}, thin dashed line), thus demonstrating the importance of the correction.
+Given the overall small volume contribution to the insertion free energy for small particles, the fact that $\Delta F$ remains consistently close to zero for $\chi_{\text{PC}} = -0.75$ illustrates that this interaction parameter is close to the critical value $\chi_{\text{PC}}^{\text{crit}} = \chi_{\text{crit}} + \chi_{\text{PS}} (1 - \phi)$, where the loss in polymer conformational entropy due to surface exclusion is exactly balanced by the free energy gain from favorable monomer–surface interactions. At this point, the surface tension $\gamma$ vanishes \cite{Fleer1993, Birshtein1979, Birshtein1983, Eisenriegler1982}.
+
+In contrast, neglecting local perturbations in the polymer concentration (i.e., using $b_0 = 1.0$ and $b_1 = 0.0$) results in a poor reproduction of the SF-SCF-calculated insertion free energy $\Delta F_{\text{SF-SCF}}$ for both repulsive and attractive colloids ($\gamma \neq 0$), as illustrated by the thin dashed line in Figure~\ref{fig:fit_SI}. This highlights the importance of accounting for local corrections in the theoretical model.
+% Consequently, the least-squares fits considered the regimes of net repulsion and net attraction approximately equally through $\chi_{\text{PC}} = 0.00$ and $\chi_{\text{PC}} = -1.50$, respectively.
+% In contrast, neglect of local perturbations to the polymer concentration ($b_0 = 1.0$ and $b_1 = 0.0$) reproduces $\Delta F_{\text{SF-SCF}}$ rather poorly for repulsive and attractive colloids (Figure~\ref{fig:fit_SI}, thin dashed line), thus demonstrating the importance of the correction.
 
 \begin{figure}[]
     \centering
@@ -463,7 +465,7 @@ Naturally, the sum of all matrix elements equals the surface and the volume of t
     \mathop{\sum\sum}_{\mathclap{\substack{i \in [0, \min(r_{\text{c}}+d/2,d)-1] \\ k \in [0, d-1]}}}  S\{r_{\text{c}}\}{[i, k]} = \frac{\pi d^3}{6} .
 \end{eqnarray*}
 
-The discretized form of \todo{Eq.~(6)} to calculate the osmotic term in the insertion free energy for a spherical particle is:
+The discretized form of Eq.~(15) to calculate the osmotic term in the insertion free energy for a spherical particle is:
 \begin{eqnarray}
     \begin{aligned}
         \Delta F_{\text{osm}}(r_{\text{c}}, z_{\text{c}}) =\\
@@ -680,7 +682,7 @@ Finally, the total resistance of the pore, integrated on the discrete cylindrica
 \end{eqnarray}
 where $z_{\text{left}}, z_{\text{right}}$ is the limits of the discrete domain.
 
-Equation~(\ref{eq:R_total}) concludes the analytical estimation scheme, giving the total resistance $R_{\text{lat}}$ of the pore.
+Eq.~(\ref{eq:R_total}) concludes the analytical estimation scheme, giving the total resistance $R_{\text{lat}}$ of the pore.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -688,7 +690,7 @@ Equation~(\ref{eq:R_total}) concludes the analytical estimation scheme, giving t
 \section{Validating Analytical Approaches with Numerical Simulations}
 
 
-Applying \todo{Eq.~(12,13)} and the boundary conditions reduces the Smoluchowski equation Eq.~(11) in the stationary state to the generalized Laplace equation:
+Applying Eqs.~(2,3) and the boundary conditions reduces the Smoluchowski equation Eq.~(1) in the stationary state to the generalized Laplace equation:
 \begin{equation}
   \mathcal L\tilde c=0,
   \label{eq:laplace}
@@ -973,7 +975,7 @@ Because the combined pore volume is negligible ($N_{\text{pores}}V_{\text{pore}}
     \label{eq:rate_constant}
 \end{eqnarray}
 where $k$ is the rate constant ($\tau = 1/k$ is characteristic time).
-The pore resistance $R$ is defined by \todo{Eq.~(4)}.
+The pore resistance $R$ is defined by Eq.~(14).
 
 If both compartments change concentration during equilibration
 (a two-compartment model, \textit{i.e.} exchange between the nucleus and cytoplasm), the rate constant becomes
@@ -1094,7 +1096,7 @@ where $N_{\text{A}}$ is Avogadro's number; the corresponding molecular masses ar
 
 In Figure 8a the scatter represent the experimental translocation rates extracted for inert probes (Table~\ref{tbl:inert_probes}).
 The matching shaded band shows our theoretical prediction over the size range $1 \le d \le 10$ nm, bounded by the lowest and highest probe densities.
-For reference we also plot the rates expected for a bare pore, using Eq.~(3), again with a band bracketing the density range.
+For reference we also plot the rates expected for a bare pore, using Eq.~(9), again with a band bracketing the density range.
 
 % \todo{Here to write that rigid barrier does not fit the data well, and about correction of wall drag, as it is important here.
 % They have similar comparison in Timney et al \cite{Timney2016}.}
@@ -1148,7 +1150,7 @@ This extremely low value implies the osmotic pressure is effectively zero in bot
     \Pi(\phi_{\text{gel}}) = \Pi(\phi_{\text{gel}}^{\text{out}}) \approx 0
 \end{eqnarray}
 
-This allows us to estimate the solvent quality $\chi_{\text{PS}}^{\text{FG}}$ using the condition for vanishing osmotic pressure \todo{Eq.~(9)}:
+This allows us to estimate the solvent quality $\chi_{\text{PS}}^{\text{FG}}$ using the condition for vanishing osmotic pressure Eq.~(16):
 
 \begin{eqnarray}
     \chi_{\text{PS}}^{\text{FG}} = \frac{-\ln(1-\phi_{\text{gel}}) - \phi_{\text{gel}}}{\phi_{\text{gel}}^2}
