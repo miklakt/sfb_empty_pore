@@ -30,6 +30,8 @@ __pycache__/
 *.xml
 *.bcf
 *.bbl
+*.upa
+*.upb
 
 ## Intermediate documents:
 *.dvi
