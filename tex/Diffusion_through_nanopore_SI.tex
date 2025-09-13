@@ -31,14 +31,14 @@
 \usepackage[utf8]{inputenc}
 
 %\REMOVE BEFORE SUBMISSION
-\usepackage[right]{lineno}
+\usepackage[switch]{lineno}
 \linenumbers
 
 
 \usepackage{titlesec}
 \titleformat{\section}[block]
   {\normalfont\bfseries\fontsize{12pt}{12pt}}  % Style
-  {Supplementary Method \thesection.} % Label
+  {Supplementary Note \thesection.} % Label
   {0.5em}                 % Spacing between label and title
   {}                      % Before-code (empty)
   %[\vspace{0.5em}]        % After-code (optional vertical space)
@@ -70,19 +70,212 @@
 
 
 \begin{center}
-    \textbf{This file includes:} Supplementary Methods 1 to 8, and Supplementary References.
+    \textbf{This file includes:} Supplementary Notes 1 to 7, Supplementary Tables S1 to S4, and Supplementary References.
 \end{center}
 \twocolumn
 
+
 \pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Estimates of nucleopore geometry and polymer filling}
 
-\todo{Ralf to add a short description of what is known about the nucleopore geometry, and the length and number of FG domains in the nucleopore, and a comparison with the assumptions in our model.}
+According to recent structural work \cite{Zimmerli2021, Schuller2021}, the diameter, and to a lesser extent the height, of the inner FG-domain-filled channel of nuclear complexes can vary depending on the cellular environment and species.
+Diameters between 40 and 80 nm, and heights between 30 and 70 nm, were reported.
+In our model, we took diameter and height to extend over 56 Kuhn segments, corresponding to 42.6 nm.
+This choice reflects that the plain cylinder shape with evenly distributed anchors for homopolymers in our model is a simplifcation of the more complex shape, and the heterogeneity in anchorage and composition of FG domains, in the NPC.
+
+To estimate the amount of intrinsically disordered protein material in the NPC, we considered the copy number, and the size of the region predicted to be intrinsically disordered, for each FG nucleoporin in \textit{S. cerevisiae} yeast NPCs.
+For the copy numbers, we used the data by Kim et al. \cite{Kim2018}, who assessed all yeast nucleoporins except Nup2 through quantitative mass spectrometry.
+A large subset of nucleoporins (though missing some major FG nucleoporins) was independently analysed by Rajoo et al. \cite{Rajoo2018} through quantitative image analysis, with consistent results.
+The size of the instrinsically disordered regions had been predicted by Yamada et al. \cite{Yamada2010}.
+We included here the total mass of all intrinsically disordered regions irrespective of their FG motif content, as they contribute to the filling of the pore.
+The total number of FG nucleoporins (excluding Nup2 as non-essential) per NPC thus is 216, and the total content in intrinsically disordered parts amounts to  $11.7 \times 10^4$ amino acids (Supplementary Table~\ref{tbl:idr_npc}).
+
+In our model, we took a grafting density of $\sigma = 0.02$ and a degree of polymerisation of $N = 300$.
+With the chosen pore geometry, a Kuhn segment length of $a = 0.76$ nm, and 2 amino acids per Kuhn segment, this corresponds to 197 polymers and a total of $11.8 \times 10^4$ amino acids, in close agreement with the properties of the yeast NPC.
+The total amount of polymer is also in close agreement with an estimated 14.5 MDa FG domain mass in human NPCs \cite{Ng2023}, which corresponds to $13.1 \times 10^4$ amino acids, considering an average mass per amino acid of 110 Da.
+
 
 \pagebreak
-\section{Computing polymer density maps with the Scheutjens-Fleer self-consistent field (SF-SCF) numerical method}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analytical estimation of the pore resistance, separating internal and external contributions}
 
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=0.85\linewidth]{fig/coordinate_system.png}
+    \caption{%
+        \textbf{Left:}
+        Steady-state solution of the diffusion equation for a point-like particle diffusing through an empty cylindrical pore of finite thickness.
+        Iso-concentration surfaces, $c = \text{const}$, are represented by contour lines with labeled concentration values.
+        Blue and red axes indicate radial and axial coordinates, respectively.
+        \textbf{Right:}
+        Intrinsic orthogonal curvilinear coordinate system for the pore.
+        Radial and axial coordinates are parameterized as $r'(r,z)$ and $z'(r,z)$, respectively.
+        Solid lines indicate surfaces of rotation about the pore axis.
+        Red lines correspond to surfaces of constant $z'$; blue lines correspond to surfaces of constant $r'$.
+        Semi-planes with constant angular coordinate $\theta$ are not shown.
+        Local basis vectors of the intrinsic coordinate system ($\hat{e}_r$, $\hat{e}_z$) are illustrated by arrows.
+        Lamé coefficients are defined by the magnitudes of the local basis vectors as $h_r = |\hat{e}_r|$, $h_z = |\hat{e}_z|$, and $h_{\theta} = |\hat{e}_{\theta}|$.
+        Pore radius $r_{\text{p}}^{0} = 20$ and thickness $L_{0} = 20$ were chosen for illustrative purposes.
+        \todo{RR: Can we use $2r_{\text{p}}^{0} = L_{0} = 56$ instead, for consistency with the remainder of the manuscript?}
+        The membrane is illustrated in striped green.
+        \todo{RR: Can we use labels a and b instead of left and right here, for enhanced clarity?}
+    }
+    \label{fig:empty_pore_solution}    
+\end{figure*}
+
+To construct an approximate analytical solution, we first consider a bare pore with a set geometry (Figure 1).
+The diffusivity $D_0$ is constant throughout the solution.
+Boundary conditions are set as $c(z=-\infty) = 1$ and $c(z=+\infty) = 0$.
+The steady-state solution of the diffusion equation, defined by $\partial c/\partial t = 0$, produces the concentration profile shown in Figure~\ref{fig:empty_pore_solution} (left).
+For a pore in an infinitely thin membrane, the iso-concentration surfaces are known to form oblate spheroids with the pore rim as their focal circle.
+\todo{RR: Mikhail, please add a reference.}
+This approximation remains valid for the exterior of the pore in a membrane of finite thickness, as considered here.
+The solution in the pore lumen is approximated by equally spaced, disk-shaped iso-concentration surfaces. 
+The flux density field, is directly related to the concentration gradient via Fick's law \mbox{$\bm{j} = -D_0 \nabla c$}.
+
+A polymer filling within the pore modifies the local diffusion coefficient $D$ and generates a free-energy landscape, resulting in an effective position-dependent diffusion coefficient (conductivity) $\tilde{D}(r,z) = D\,e^{-\Delta F/k_B T}$, or local resistivity $\rho = \tilde{D}^{-1}$.
+Since the flux density $\bm{j}$ is a conservative vector field, we define a scalar potential function $\psi = c\,e^{\Delta F/k_B T}$, such that $\bm{j} = -\tilde{D}\nabla\psi$.
+Consequently, the steady-state iso-concentration surfaces differ from the oblate spheroids of the bare pore; however, they retain a similar structure for iso-values of $\psi$.
+
+For the exterior region, we introduce an intrinsic curvilinear coordinate system $(r', z', \theta)$ aligned with the approximate iso-surfaces of $\psi$, as depicted in Figure~\ref{fig:empty_pore_solution} (right) and defined as follows.
+Level sets of the potential function $\psi$ form a family of oblate hemispheroids $z'$, indexed by their intersection points with the $z$-axis:
+\begin{gather}
+    r' = \left\{(r,z) \mid \nabla f \cdot \nabla \psi = 0,\; f=f(r,0)\right\}
+\end{gather}
+The flux-density stream surfaces, perpendicular to $\psi$, form a family of hyperboloids of revolution $r'$, indexed by their intersection radii with the plane $z=0$:
+\begin{gather}
+    z' = \left\{(r,z) \mid \psi(r,z)=\psi(0,z)\right\}
+\end{gather}
+Half-planes of constant azimuthal angle $\theta$ remain unchanged from the original cylindrical coordinate system.
+
+In the exterior region ($|z| > L/2$, where we consider the effective pore size to account for the finite colloid size), the intrinsic coordinate system $(r', z', \theta)$ is parameterized using the original cylindrical coordinates $(r,z,\theta)$ and the distance from the pore opening $z_{\text{ext}} = |z| - L/2$:
+\begin{align}
+    r'(r,z) &= r\sqrt{1 + \frac{z_{\text{ext}}^2}{r_{\text{p}}^2}},\\[4pt]
+    z'(r,z) &= z_{\text{ext}}\frac{\sqrt{r_{\text{p}}^2 - r^2}}{r_{\text{p}}} + \text{sign}(z)\frac{L}{2}.
+\end{align}
+The corresponding Lam\'e  coefficients are:
+\begin{align}
+    h_r &= \frac{\sqrt{r_{\text{p}}^2 + z_{\text{ext}}^2 - r^2}}{\sqrt{r_{\text{p}}^2 - r^2}},\\[4pt]
+    h_z &= \frac{\sqrt{r_{\text{p}}^2 + z_{\text{ext}}^2 - r^2}}{\sqrt{r_{\text{p}}^2 + z_{\text{ext}}^2}},\\[4pt]
+    h_{\theta} &= \frac{r\sqrt{r_{\text{p}}^2 + z_{\text{ext}}^2}}{r_{\text{p}}},\\[4pt]
+    \tilde{h}(r,z) &= h_r h_{\theta} h_z^{-1} = \frac{r}{r_{\text{p}}}\frac{r_{\text{p}}^2 + z_{\text{ext}}^2}{\sqrt{r_{\text{p}}^2 - r^2}}.
+\end{align}
+
+The conductivity integrated over the oblate hemispheroids in the exterior region is given by:
+\begin{equation}
+  \label{eq:rho_ext}
+  \varrho_{\text{ext}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} 
+  \tilde{D}\left( r'(r,z), z'(r,z) \right)\tilde{h}(r,z)\,dr.
+\end{equation}
+Inside the pore ($|z|\leq L/2$), assuming no significant radial flux, the conductivity of a disk cross-section at position $z$ is approximated as:
+\begin{equation}
+  \varrho_{\text{int}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} \tilde{D}(r,z)\,r\,dr.
+\end{equation}
+Therefore, the total resistances of the exterior and interior regions are respectively obtained by:
+\begin{align}
+   \label{eq:R_ext}
+   R_{\text{ext}} &=2\int_{+L/2}^{+\infty}\varrho_{\text{ext}}(z)\,dz,\\[5pt]
+   \label{eq:R_int}
+   R_{\text{int}} &=\int_{-L/2}^{+L/2}\varrho_{\text{int}}(z)\,dz.
+\end{align}
+
+We now revisit the resistance of a bare pore of finite thickness to the diffusion of a point-like colloid using Eqs.~(\ref{eq:R_ext},~\ref{eq:R_int}).
+For a bare pore, the effective diffusion coefficient is simply $\tilde{D} = D_0$:
+\begin{eqnarray}
+    \varrho^{0}_{\text{int}}(z) &=& \frac{1}{D_0 \pi r_{\text{p}}^2},\\[4pt]
+    \varrho^{0}_{\text{ext}}(z) &=& \frac{1}{2\pi D_0\left(z_{\text{ext}}^2 + r_{\text{p}}^2\right)}.
+\end{eqnarray}
+
+Integration over the full domains of $z$ yields the classical result \cite{Brunn1984}:
+\begin{eqnarray}
+    \label{eq:r_empty}
+    R_{\text{ext}}^{0} &=& 2 \int_{-\infty}^{-L/2} \varrho_{\text{ext}}^{0}(z)\,dz = \frac{1}{2 D_0 r_{\text{p}}},\\[4pt]
+    R_{\text{int}}^{0} &=& \int_{-L/2}^{+L/2} \varrho_{\text{int}}^{0}(z)\,dz = \frac{L}{D_0 \pi r_{\text{p}}^2}.
+\end{eqnarray}
+
+Our numerical approach inherently employs the discrete cylindrical lattice from the SF-SCF calculations, with discretization steps $\delta z = \delta r = 1$.
+Consequently, continuous integration across equipotential surfaces foliating space is replaced by summation over discrete conductive layers, each bounded by two adjacent equipotential surfaces. 
+Layers are indexed by the first equipotential surface intersecting the $z$-axis (see Figure~\ref{fig:integration_scheme}).
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=\linewidth]{fig/resistance_integration.png}
+    \caption{
+        Schematice of the numerical integration of the local conductivity/resistance on a cylindrical lattice.    
+        \textbf{Left:}
+        In the exterior region, conductivities are integrated over nested cylindrical layers (red), each indexed by $z$.
+        A selected layer with radius $r_{\text{ext}}$ and height $z_{\text{ext}}$ is highlighted with a darker red color.
+        Dashed red lines illustrate the boundaries of the cylindrical layers that approximate the oblate hemispheroidal equipotentials shown in Figure~\ref{fig:empty_pore_solution}.
+        In the interior region, integration is performed over disk-shaped layers (bluel), with a selected layer highlighted in darker blue.
+        The membrane is shown in striped green.
+        \textbf{Right:}
+        Perspective view to illustrate the nested cylindrical exterior layers (in different tones of red) and disk-shaped interior layers (in different tones of blue) in three dimensions.
+    }
+    \label{fig:integration_scheme}
+\end{figure}
+
+In the interior region, this discretization is straightforwardly applied, giving the resistance of a discrete disk-shaped layer as:
+\begin{equation}
+    \varrho_{\text{int}}^{\text{lat}}(z) 
+    =\left[\pi \sum_{r=0}^{r_{\text{p}}-1}(2r+1)\,\tilde{D}[r,z]\right]^{-1}.
+\end{equation}
+
+For numerical integration in the exterior region, we approximate the equipotential surfaces as cylindrical rather than oblate hemispheroidal layers (Figure~\ref{fig:integration_scheme}).
+Thus, instead of nested oblate hemispheroids (or "bowls"), the discretization yields nested cylinders (or "buckets") with increasing radius $r_{\text{ext}} = r_{\text{p}} + |z| - L/2$ and height $z_{\text{ext}} = |z| - L/2$.
+
+The resistance of each cylindrical layer naturally underestimates the corresponding oblate hemispheroidal layer at the same position $z$.
+To compensate, we introduce a correction factor $p(z)$, which equals the ratio of the resistances of an oblate spheroidal layer to a cylindrical layer with identical local conductivity $\tilde{D}$:
+\begin{gather}
+    \label{eq:prefactor}
+    \begin{aligned}
+        p(z) &= r_{\text{p}} \left(z_{\text{ext}} \log{\frac{r_{\text{ext}}}{r_{\text{ext}} - 1}} + r_{\text{ext}}^{2}\right)^{-1} \times \\[4pt]
+        &\quad\times\left[\operatorname{atan}{\frac{z_{\text{ext}}}{r_{\text{p}}}} - \operatorname{atan}{\frac{z_{\text{ext}} - 1}{r_{\text{p}}}}\right]^{-1}.
+    \end{aligned}
+\end{gather}
+The resistance of a layer at position $z$ in the exterior region, computed on a cylindrical lattice, then is:
+\begin{equation}
+    \begin{aligned}
+        &\varrho_{\text{ext}}^{\text{lat}}(z) = 
+        \frac{p(z)}{\pi}\left[
+        \sum_{r=0}^{r_{\text{ext}}-1}(2r+1)\tilde{D}[r,z_a]\right. + \\[4pt]
+        &\quad+\left. 2 \log\left(\frac{r_{\text{ext}}}{r_{\text{ext}}\!-\! 1}\right)\sum_{z^{\prime}=z_{a}}^{z_{b}}\tilde{D}[r_{\text{ext}}\!-\!1,z^{\prime}]
+        \right]^{-1}
+    \end{aligned}
+\end{equation}
+with indexing limits defined by:
+\begin{equation*}
+    \begin{cases}
+        z_{a} = -z,\quad z_{b} = -L/2-1,&\text{if } z < -L/2,\\[4pt]
+        z_{a} = L/2,\quad z_{b} = z-1,&\text{if } z > L/2.
+    \end{cases}
+\end{equation*}
+
+To account for the resistance of the semi-infinite reservoirs beyond the integration domain on the cylindrical lattice, we evaluate the analytical expression for the exterior resistance, Eq.~\eqref{eq:rho_ext}, from the integration boundary $z$ to infinity:
+
+\begin{eqnarray}
+    \label{eq:r_reservoir}
+    R_{(z, \pm\infty)} = \pm\!\! \int\displaylimits_{z}^{\pm\infty}\!\! \varrho_(z') \, \text{d}z' = \frac{\arctan\left({r_{\text{p}}}/{z_{\text{ext}}} \right)}{2 D_0 \pi r_{\text{p}}^{0}}
+\end{eqnarray}
+
+Finally, the total resistance of the pore, integrated on the discrete cylindrical lattice, is given by:
+
+\begin{eqnarray}
+    R_{\text{int}}^{\text{lat}} = \sum_{z=-L/2}^{+L/2} \varrho_{\text{int}}^{\text{lat}}(z)
+    \\
+    R_{\text{ext}}^{\text{lat}} = R_{(z_{\text{left}}, -\infty)} + \sum\limits_{\mathclap{\substack{z \in [z_{\text{left}},-L/2)\\z \in (L/2, z_\text{right}]}}} \varrho_{z} + R_{(z_{\text{right}}, +\infty)}
+    \\
+    \label{eq:R_total}
+    R_{\text{lat}} = R_{\text{ext}}^{\text{lat}} + R_{\text{int}}^{\text{lat}}
+\end{eqnarray}
+where $z_{\text{left}}$ and $z_{\text{right}}$ are the limits of the discrete domain.
+
+Equation~\eqref{eq:R_total} concludes the analytical estimation scheme, giving the total resistance $R_{\text{lat}}$ of the pore.
+
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Computing polymer density maps with the numerical Scheutjens-Fleer self-consistent field (SF-SCF) method}
 
 \begin{figure}[h]
     \centering
@@ -94,39 +287,42 @@
     \label{fig:sf-scf_scheme}
 \end{figure}
 
-%COMMENT RR: This section looks very detailed, and some aspects, e.g. with regard to Eq. (S2) seem to be standard. Can these be omitted, stasting instead an authoritative reference?
-
-The SF-SCF numerical method was deployed to this end, with pore, polymer and colloid parameters as defined in Figure~\ref{fig:sf-scf_scheme} to calculate polymer spatial distribution $\phi(r,z)$ and as reference insertion free energy for cylindrical colloids to build an approximate analytical model.
-The method is based on the minimization of the excess Helmholtz energy with the constraint that all volume concentrations sum up to unity (incompressibility condition).
-Space is discretized into a regular lattice, and the temporal average of the polymer volume fraction is calculated at each lattice site, such that the corresponding equilibrium distribution of polymers minimizes the overall system free energy.
+The numerical SF-SCF method was deployed with pore, polymer brush and colloid parameters as defined in Figure~\ref{fig:sf-scf_scheme}.
+With this method, we (i) calculated the spatial polymer distribution $\phi(r,z)$ and (ii) evaluated the insertion free energy for cylindrical colloids into the brush.
+The latter data serve as a reference for the approximate analytical model.
+The method is based on the minimization of the excess Helmholtz energy in the incompressible limit, that is, at each specified coordinate $(r,z)$ all volume fractions add up to unity.
+The method uses lattice approximations, a (local) mean-field approximation with short-ranged interactions parameterized by Flory-Huggins interaction parameters, and employs the freely joined chain model for conformational degrees of freedom of polymer chains composed of segments that fit on the lattice sites. 
 
 As our problem exhibits axial symmetry, space was discretized into a cylindrical lattice with a degenerate angular direction,
 implemented as a homogeneously curved two-gradient lattice defined by longitudinal $z$ and radial $r$ coordinates (Figure~\ref{fig:sf-scf_scheme}).
-This $rz$ coordinate system is visualized as a two-dimensional Cartesian coordinate system (Figure~\ref{fig:sf-scf_scheme}, right); however, each element of the lattice represents a square toroid (of volume $2 \pi r a^3$) instead of a square (of area $a^2$).
+This $(r,z)$ coordinate system is visualized as a two-dimensional Cartesian coordinate system (Figure~\ref{fig:sf-scf_scheme}, right); however, each element of the lattice represents a square toroid (of volume $2 \pi r a^3$) instead of a square (of area $a^2$).
 The mean-field approximation is applied in the angular direction, meaning properties in the angular direction are uniform.
 
-The membrane and any colloids were coarse-grained.
-The membrane was modeled as a toroid with a rectangular cross-section of physical height $L_0$, a physical inner radius $r_{\text{p}}$, and an outer radius large enough to be effectively infinite with respect to the polymer distribution (Figure~\ref{fig:sf-scf_scheme}, green).
+The shape of the membrane and any colloids were fixed.
+The membrane was modeled as a toroid with a rectangular cross-section of physical height $L_0$, a physical inner radius $r_{\text{p}}^0$, and an outer radius large enough to be effectively infinite with respect to the polymer distribution (Figure~\ref{fig:sf-scf_scheme}, green).
+For $L_0/2 < z < L_0/2$, we refer to the coordinates $\{z_\text{p}\}$ inside the pore.
 The colloid was modeled as a cylinder with height and diameter $d$ (Figure~\ref{fig:sf-scf_scheme}, yellow).
-Membrane and colloid lattice elements were modeled as impermeable to the solvent and the polymers, illustrated as crossed-out cells in matching colors in Figure~\ref{fig:sf-scf_scheme} (right).
+The membrane and colloid lattice elements were modeled as impermeable to the solvent and the polymers, illustrated as crossed-out cells in matching colors in Figure~\ref{fig:sf-scf_scheme} (right).
 
-Each polymer chain was represented as a freely jointed chain (FJC) with $N$ segments of length $a$, modelled as a step-weighted random walk on the lattice (Figure~\ref{fig:sf-scf_scheme}, right, red circles with black connecting lines).
+Each polymer chain was represented as a freely jointed chain (FJC) with $s=1, \cdots, N$ segments of length $a$, modeled as a step-weighted random walk on the lattice (Figure~\ref{fig:sf-scf_scheme}, right; red circles with black connecting lines).
+The first segment $s=1$ is constrained to the coordinate next to the pore wall (grafting condition).
 The weights of each step direction were set according to the boundary conditions and the lattice curvature.
 Steps into impermeable lattice elements had zero weight.
-Other steps were weighted according to the change in volume per lattice element, with steps towards increasing $r$ consequently being favoured, and steps towards decreasing $r$ being disfavoured, compared to steps along $z$.
-The resulting local polymer concentration $\phi$ is a weighted sum of all possible paths the chain can take, Eq.~(\ref{eq:sum_to_phi}).
+Other steps were weighted according to the change in volume per lattice element, with steps towards increasing $r$ consequently being favored, and steps towards decreasing $r$ being disfavored, compared to steps along the $z$-direction.
+The resulting local polymer concentration $\phi$ is a weighted sum of all possible paths the chain can take (Eq.~\eqref{eq:sum_to_phi}).
 
 The excess Helmholtz energy was minimized through a Lagrangian with multipliers $\alpha(r,z)$:
 \begin{equation}
     \label{eq:fe_lagrangian}
     \begin{aligned}
         &F[\bm{u}, \boldsymbol{\phi}, \boldsymbol{\alpha}] =\\
-        &= F_{\text{ent}}[\bm{u}] - \sum\limits_{r,z} \sum\limits_X u_X(r, z) \phi_X(r, z) + \\
+        &= F_{\text{mix}}[\bm{u}] - \sum\limits_{r,z} \sum\limits_X u_X(r, z) \phi_X(r, z) + \\
         &+ F_{\text{int}} [\boldsymbol{\phi}] 
         + \sum\limits_{r,z} \alpha(r, z) \left( \sum\limits_X \phi_X(r, z) - 1 \right),
     \end{aligned} 
 \end{equation}
-where $\phi_X(r,z)$ is the local volume concentration function of segment type $X$ (polymer, colloid, or solvent), $u_X(r, z)$ is the potential field of segment type $X$, the functional $F_{\text{ent}}[\bm{u}]$ is the mixing entropy term, and the functional $F_{\text{int}} [\boldsymbol{\phi}]$ is the interaction term of the free energy.
+where $\phi_X(r,z)$ is the local volume concentration function of segment type $X$ (polymer, colloid, or solvent), $u_X(r, z)$ is the potential field of segment type $X$, the functional $F_{\text{mix}}[\bm{u}]$ is the mixing free energy expressed in segment potentials, and the functional $F_{\text{int}} [\boldsymbol{\phi}]$ is the interaction energy expressed in  segment densities.
+The second therm $- u\cdot \phi$ transforms the free energy from potential space to density space.
 
 The condition for the minimum of the functional is a system of three variational equations:
 \begin{equation}
@@ -137,82 +333,102 @@ The condition for the minimum of the functional is a system of three variational
         \frac{\partial F}{\partial \bm{u}} = 0 \\
     \end{cases}
 \end{equation}
-The first condition in Eq.~(\ref{eq:energy_min_system}) ensures system incompressibility.
+The first condition in Eq.~\eqref{eq:energy_min_system} ensures system incompressibility for each specified coordinate $(r,z)$.
 
-The second condition in Eq.~(\ref{eq:energy_min_system}) results in the segment potential field equation for a regular solution:
+The second condition in Eq.~\eqref{eq:energy_min_system} results in the segment potential field equation for a regular solution:
 \begin{equation}
     \label{eq:u-phi}
-    u_A(r, z) =\sum\limits_{B} \chi_{A,B} \left(\phi_B(r,z) - \phi_B^b \right) + \alpha(r, z),
+    u_A(r, z) =\sum\limits_{B} \chi_{A,B} \left(\langle \phi_B(r,z)\rangle - \phi_B^b \right) + \alpha(r, z),
 \end{equation}
 where $\chi_{A,B}$ is the Flory interaction parameter between segments $A$ and $B$, and $\phi_B^b$ is the volume fraction of $B$ in the bulk (equal to 1 for the solvent and zero otherwise).
+The angular brackets indicate the site average $\langle X(r,z)\rangle = \sum_{r'=r-1,\ r,\ r+1}\sum_{z'=z-1,\ z,\ z+1} \lambda(r',r,z',z) X(r',z')$ with a priori step probabilities $\lambda(r',r,z',z)=\lambda_{r'-r}(r) \lambda_{z'-z}(z) $ and individual steps obeying to $\lambda_{-1}(r)=\frac{1}{6}(1-\frac{1}{2r-1}$, $\lambda_1 (r)=\frac{1}{6}(1+\frac{1}{2r-1}$, $\lambda_{-1}(z)=\lambda_1(z)=1/6$ and $\lambda_0(z)=\lambda_0(r)=4/6$.
+It is easily seen that the sum over the step probabilities equals unity (as it should): $\sum_z'\sum_r' \lambda(r',r,z',z) = 1$.
 
-The third condition in Eq.~(\ref{eq:energy_min_system}) (minimization with respect to potentials) links the chain partition function with the local polymer concentration $\phi$ in a diffusion-like equation (Eq.~(\ref{eq:propagation})).
+The third condition in Eq.~\eqref{eq:energy_min_system}, the minimization with respect to potentials, links the chain partition function with the local polymer concentration $\phi$ in a diffusion-like equation (Eq.~\eqref{eq:propagation}).
+
 Any subchain of the FJC can be considered a Markov process starting at some segment $s_i$ at coordinates $r_i, z_i$ that goes through intermediate steps to segment $s_k$ at coordinates $r_k, z_k$ (Figure~\ref{fig:sf-scf_scheme}, bottom right).
 Such a process has a statistical weight $G(\{r_k, z_k\}, s_k | \{r_i, z_i\}, s_i)$.
 
-All the Markov processes that start with segment $s_i$ and end with segment $s_k$ at fixed coordinates $\{r, z\}$ are found as the sum over all possible starting coordinates:
+All the Markov processes that start with segment $s_i$ and end with segment $s_k$ at fixed coordinates $\{r, z\}$ are found as the sum over all possible and allowed starting coordinates:
 \begin{equation}
     \label{eq:sum_to_phi}
     G(\{r, z\}, s_k | s_i) = \sum_{r^{\prime}, z^{\prime}} G(\{r, z\}, s_i | \{r^{\prime}, z^{\prime}\}, s_i)
 \end{equation}
 
-
 The statistical weight of all possible processes that start from segment $s_i$ and end with segment $s_k$ is the sum over all possible coordinates:
 \begin{equation}
-    G(s_k | s_i) = \sum_{r, z} G(\{r, z\}, s_k | s_i)
+    G(s_k | s_i) = \sum_{r, z} G(\{r, z\}, s_k | s_i) \pi (2r-1)
 \end{equation}
-
+where the weight $\pi (2r-1)$ is the degeneracy in the radial direction.
 When $s_i=1$ and $s_k=N$, the result contains the statistical weight of all possible and allowed conformations of the chain and is the single-chain partition function $G(N|1)$.
 
-Let $G(r, z) = G(\{r, z\}, 1|1)$ be the initial condition of the Markov process, which contains just one segment (starts and ends at segment $1$).
-The segment potential $\bm{u}$ acts on this segment; thus, Boltzmann statistical weights are applied:
+There are two initial (starting) conditions.
+The first one, $G(\{r, z\}, 1|1)=G(r,z) \delta_{r_p,z_p}(r,z) $ is the initial condition of the Markov process which contains just one segment (starts and ends at segment $1$).
+Here $\delta_{r_p,z_p}(r,z)=1$ when $r_p-r=1$ and $z \in \{z_p\}$ and zero otherwise (implementing the grafting of chains by segment 1 onto the pore wall).
+The starting condition for the complementary statistical weights is $G(\{r,z\},N|N)=G(r,z)$, because these ends are not restricted. 
+
+The segment potential $\bm{u}$ acts on the 'free' segment; thus, Boltzmann statistical weights are applied:
 \begin{equation}
     G(r, z) = \exp(-u(r,z))
 \end{equation}
 
-The volume density distribution of segment $s_i$ at coordinates $r, z$ is found from the composition law:
+Within the FJC approach, there are two complementary propagators used to generate all (mentioned) once integrated statistical weights:
+\todo{RR: There seems to be an issue with the syntax of this sentence. Please can you check and correct.}
+\begin{eqnarray}
+    G(\{r,z\},s|1) =G(r,z) \langle  G(\{r,z\},s-1|1)\rangle \\
+    G(\{r,z\},s|N) =G(r,z) \langle  G(\{r,z\},s+1|N)\rangle   
+\end{eqnarray}
+where the angular brackets are computed similarly as for the site fractions mentioned above.
+
+The volume density distribution of segment $s$ at coordinates $\{r, z\}$ is found from the composition law:
 \begin{equation}
     \label{eq:propagation}
-    \begin{aligned}
-        &\phi(\{r, z\}, s_i) = \\
-        &\frac{2 \pi r_{\text{p}}^{0} \sigma N}{G(N|1)}
-        \frac{G(\{r, z\}, s_n | 1) G(\{r, z\}, (N - s_n + 1) | 1)}{G(r, z)}
-    \end{aligned}
+    \phi(\{r, z\}, s) = \\
+    \frac{2 \pi r_\text{p}^0 L_0 \sigma}{G(N,1)} \frac{G(\{r, z\}, s | 1) G(\{r, z\}, s | N)}{G(r, z)},
 \end{equation}
-where $G(\{r, z\}, s_n | 1)$ and $G(\{r, z\}, (N - s_n + 1) | 1)$ are forward and backward propagators, respectively; $\sigma$ is the grafting density.
+where $\sigma$ is the grafting density.
 
 Finally, the volume concentration at coordinates $r, z$ is found as the sum over all chain segments:
 \begin{equation}
-    \phi(r, z) = \sum_{i}^{N} \phi(\{r, z\}, s_i)
+    \phi(r, z) = \sum_{s=1}^{N} \phi(\{r, z\}, s)
 \end{equation}
 
-The numerical algorithm solves the Scheutjens-Fleer system of nonlinear equations such that the segment potential $\bm{u}$ is consistent with the volume concentration $\boldsymbol{\phi}$.
-The relationship between the segment potential and the volume concentration is defined in Eq.~(\ref{eq:u-phi}).
+For the solvent, $S$, we may use
+\begin{equation}
+    \phi_S(r,z) =\varphi_S^\text{b} \exp (-u_S(r,z))
+\end{equation}
+where $\varphi_S^\text{b} = 1$ represents the plain bulk solution far from the polymer brush. 
 
-The SF-SCF scheme can be summarized as:
+The numerical algorithm solves the Scheutjens-Fleer system of nonlinear equations such that the segment potentials $\bm{u}$ are consistent with the volume concentrations $\boldsymbol{\phi}$.
+The relationship between the segment potentials and the volume concentrations is defined in Eq.~\eqref{eq:u-phi}.
+Hence, the SF-SCF scheme can be summarized as:
 \begin{equation}
     \boldsymbol{u}[\boldsymbol{\phi}] \xleftrightarrow[]{\sum_{X} \phi_X = 1} \boldsymbol{\phi}[\boldsymbol{u}]
 \end{equation}
 
-For the calculations, we used the package \emph{SFbox} developed in the University of Wageningen.
-%COMMENT RR: A reference to the literature for details on this software is needed here.
+The equations were solved by a Newton/quasi-Newton optimization routine which effectively leads to the minimization of the functional Eq.~\eqref{eq:fe_lagrangian}.
+During a numerical iteration step the specified guess for the segment potentials $\bm{u}$ leads to an update of the volume concentrations $\bm{\phi}$.
+It was checked whether these new volume fractions obey to the incompressibility limit, and the values of $\alpha(r, z)$ were adjusted if they did not.
+The segement potentials where then re-evaluated, and a new guess was generated when the input- and output potentials differed.
+The evaluation loop was repeated until the desired accuracy was reached, that is, when the difference between input and output potentials and errors with respect to the incompressibility constraint were less than 7 significant digits.
+From the resulting SCF solution, the excess free energy was then evaluated.
 
-The package contains several Newton/Quasi-Newton optimization routines to perform the minimization of the functional Eq.~(\ref{eq:fe_lagrangian}).
-Each iteration returns a new improved approximation to the segment potential $\bm{u}$ and updates the volume concentrations $\bm{\phi}$.
-The routine was looped until the desired accuracy was reached.
+For the calculations, we used the package \emph{SFbox} developed at Wageningen University, and we refer to the literature for further computational details \cite{Evers1990b}.
 
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \pagebreak
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Extracting surface and volume contributions to the colloid insertion free energy from SF-SCF data}
 
-
-
 The two-gradient SF-SCF numerical model limits the cylindrical colloid to be positioned coaxially along the $z$-axis with the coordinate of the colloid center $z_{\text{c}}$.
-The arising insertion free energy $\Delta F_{\text{cyl}}(z_{\text{c}})$ is composed of the volume contribution $\Delta F_{\text{cyl}}^{\text{osm}}(z_{\text{c}})$ and the surface contribution $\Delta F_{\text{cyl}}^{\text{sur}}(z_{\text{c}})$.
+Analogous to the analytical aproach presented in the main text (Eq.~ (15)), the arising insertion free energy of a cylindrical colloid $\Delta F_{\text{cyl}}(z_{\text{c}})$ is composed of the volume contribution $\Delta F_{\text{cyl}}^{\text{osm}}(z_{\text{c}})$ and the surface contribution $\Delta F_{\text{cyl}}^{\text{sur}}(z_{\text{c}})$.
 We here define how these two contributions are extracted from the SF-SCF data.
+
+\bigskip
+\textbf{Linking $\Delta F_{\text{cyl}}^{\text{osm}}$ and $\Delta F_{\text{cyl}}^{\text{sur}}$ to $\boldsymbol{\Pi}$ and $\boldsymbol{\gamma}$, respectively, for cylindrical colloids on a discrete lattice}
+
+\todo{RR:Please check if the added sub-heading represents what follows well, and revise as needed.}
+
 In their continuous form, the contributions are:
 \begin{equation}
     \Delta F_{\text{cyl}}^{\text{osm}}(z_{\text{c}}) = 2 \pi \int_{z_{\text{c}} - d/2}^{z_{\text{c}} + d/2} \int_{0}^{d/2} \Pi(r,z) \, r \, dr \, dz
@@ -224,9 +440,10 @@ and
         + \pi \int_{0}^{d/2} \left[ \gamma(z_{\text{c}} - d/2, r) + \gamma(z_{\text{c}} + d/2,r) \right] dr,
     \end{aligned}
 \end{equation}
-where the first term in Eq.~(\ref{eq:continuous_surf_int}) integrates over the lateral surface, and the second term integrates over the top and bottom faces, of the cylinder.
+where the first term in Eq.~\eqref{eq:continuous_surf_int} integrates over the lateral surface, and the second term integrates over the top and bottom faces, of the cylinder.
 
-Following the lattice discretization of SF-SCF outputs with discretization steps $\delta r = \delta z = 1$, we use the indexing: $0 \le i \le d/2-1$ iterates in the direction of the $r$-axis and $0 \le k \le d-1$ iterates in the direction of the $z$-axis, which corresponds to the physical coordinates $r,z \in [0, d/2]\times[z_{\text{c}} - d/2, z_{\text{c}} + d/2]$ (as illustrated in Figure~\ref{fig:sf-scf_scheme}) with $d$ being an even integer to match the lattice.
+Following the lattice discretization of SF-SCF outputs with discretization steps $\delta r = \delta z = 1$, we use an indexing such that $0 \le i \le d/2-1$ iterates in the direction of the $r$-axis, and $0 \le k \le d-1$ iterates in the direction of the $z$-axis.
+This corresponds to the physical coordinates $r,z \in [0, d/2]\times[z_{\text{c}} - d/2, z_{\text{c}} + d/2]$ (as illustrated in Figure~\ref{fig:sf-scf_scheme}) with $d$ being an even integer to match the lattice.
 
 We define the volume projection matrix $\bm{V}_{\text{cyl}}[d/2 \times d]$ for a cylindrical colloid of size $d$, such that each element of the matrix equals the volume of the colloid contained within the corresponding lattice element:
 \begin{equation}
@@ -237,7 +454,7 @@ Obviously, the sum of all matrix elements equals the volume of the cylinder.
     \sum_{i=0}^{d/2 - 1} \sum_{k=0}^{d - 1} V_{\text{cyl}}[i, k] = \frac{\pi d^3}{4}
 \end{equation*}
 
-Analogously, we define the colloid surface projection matrix $\bm{S}_{\text{cyl}}[d/2 \times d]$, such that each element of the matrix equals the surface area of the colloid within the corresponding lattice element.
+Analogously, we define the colloid surface projection matrix $\bm{S}_{\text{cyl}}[d/2 \times d]$, such that each element of the matrix equals the surface area of the colloid within the corresponding lattice element:
 \begin{align}
     \begin{split}
         S_{\text{cyl}}[i, k] = 
@@ -265,7 +482,7 @@ Figure~\ref{fig:cylindrical_kernel_SI} provides a color-coded map of the volume 
     \centering
     \includegraphics[width = \linewidth]{fig/cylindrical_kernel_SI.png}
     \caption{
-    Volume (left) and surface (right) projection matrices for a cylindrical particle with diameter and height $d = 16$. The element values of the matrices are color-coded, with violet representing zero and yellow the highest values.
+    Volume (left) and surface (right) projection matrices for a cylindrical colloid with diameter and height $d = 16$. The element values of the matrices are color-coded, with violet representing zero and yellow the highest values.
     }
     \label{fig:cylindrical_kernel_SI}
 \end{figure}
@@ -273,10 +490,10 @@ Figure~\ref{fig:cylindrical_kernel_SI} provides a color-coded map of the volume 
 To calculate the colloid insertion free energy, we integrated the osmotic pressure over the colloid volume and the surface tension over the colloid surface (Eq.~(15)).
 The equivalent operation on a discrete lattice is the matrix dot product.
 The two contributions to the insertion free energy are thus calculated as:
-\begin{equation}\label{eq:cyl_fe_osm}
+\begin{equation}
+    \label{eq:cyl_fe_osm}
     \begin{split}
-        \Delta F_{\text{cyl}}^{\text{osm}}(z_{\text{c}}) = \bm{V}_{\text{cyl}} \cdot \boldsymbol{\Pi}\{z_{\text{c}},\} \text{ and}
-        \\
+        \Delta F_{\text{cyl}}^{\text{osm}}(z_{\text{c}}) = \bm{V}_{\text{cyl}} \cdot \boldsymbol{\Pi}\{z_{\text{c}}\} \text{ and} \\
         \Delta F_{\text{cyl}}^{\text{sur}}(z_{\text{c}}) = \bm{S}_{\text{cyl}} \cdot \boldsymbol{\gamma}\{z_{\text{c}}\},
     \end{split}
 \end{equation}
@@ -290,12 +507,15 @@ Such a series of sequential integrations (matrix dot products) is equivalent to 
 \end{equation*}
 Convolution was performed via fast Fourier transform for computational efficiency.
 
+\bigskip
+\textbf{Estimating the effective polymer concentration near a colloid from SF-SCF data}
 
+Depending on the magnitude of the polymer-colloid interaction strength $\chi_{\text{PC}}$, a colloid may attract or repel the polymer around it, causing local perturbations within a distance of a few segments.
+In Eq. (17), the effective polymer volume fraction (concentration) near the colloid was approximated as $\phi^{\ast} = (b_0 + b_1 \chi_{\text{PC}}) \phi$.
+Here, we justify this approximation based on SF-SCF data and quantify the coefficients $b_0$ and $b_1$, which capture the local perturbation to the polymer volume fraction profile.
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \pagebreak
-\section{Estimating the effective polymer concentration near a colloid from SF-SCF data}
+As illustrated in Figure~\ref{fig:sf-scf_scheme}, a cylindrical colloid is positioned coaxially along the $z$-axis as impermeable lattice elements.
+Consequently, the polymer-brush chains adjust to the available space and the polymer-colloid interaction strength, producing a change in the system's total free energy, $F_{\text{cyl}}(z_{\text{c}})$.
 
 \begin{figure}[]
     \centering
@@ -304,78 +524,54 @@ Convolution was performed via fast Fourier transform for computational efficienc
     Comparison of $\Delta F_{\text{SF-SCF}}$ profiles (circles) with $\Delta F_{\text{cyl}}(b_0,b_1)$, for the best-fit values of $b_0 = 0.7$ and $b_1 = -0.3$ (optimally accounting for local perturbations in the polymer concentration; thick solid lines) and for $b_0 = 1.0$ and $b_1 = 0.0$ (neglecting any local perturbations in polymer concentration; thin dashed lines).
     Pore and brush parameters are as given in Figure 1; $d = 4$, $\chi_{\text{PS}} = 0.5$, and $\chi_{\text{PC}}$ values are color-coded and indicated on the right side of the figure.
     The light green hatched area marks values of $z_{\text{c}}$ that are located inside the pore lumen ($|z| \leq 26$).
+    \todo{RR: In this graph, it would seem more appropriate to replace $z$ by $|z|$ and render all axis values positive?}
     }
     \label{fig:fit_SI}
 \end{figure}
 
-Depending on the magnitude of the polymer-colloid interaction strength $\chi_{\text{PC}}$, a colloid may attract or repel the polymer around it, causing local perturbations within a distance of a few segments.
-In Eq. (17), the effective polymer volume fraction (concentration) near the colloid was approximated as $\phi^{\ast} = (b_0 + b_1 \chi_{\text{PC}}) \phi$.
-Here, we justify this approximation based on SF-SCF data and quantify the coefficients $b_0$ and $b_1$, which capture the local perturbation to the polymer volume fraction profile.
-
-As illustrated in Figure~\ref{fig:sf-scf_scheme}, a cylindrical particle is positioned coaxially along the $z$-axis explicitly as impermeable lattice elements.
-Consequently, the polymer-brush chains adjust to the available space and the polymer-colloid interaction strength, producing a change in the system's total free energy, $F_{\text{cyl}}(z_{\text{c}})$.
-
 We performed a series of SF-SCF calculations to determine the insertion free energy profiles $\Delta F_{\text{SF-SCF}}(z_{\text{c}})$ for a range of $d$, $\chi_{\text{PS}}$ and $\chi_{\text{PC}}$ values with a pore geometry and polymer brush parameters as set in Figure~1.
-% For each condition, we performed a ground state free energy correction, subtracting the total free energy for a colloid far away from the pore to ensure the reference value $\Delta F_{\text{SF-SCF}}(z_{\text{c}} \to \pm \infty) = 0$.
-
 The insertion free energies thus computed were compared to $\Delta F_{\text{cyl}}(z_{\text{c}})$, obtained as described in the previous section with $\gamma_{i,k}$ parametrized according to Eq. (17).
-The optimal coefficients $b_0$ and $b_1$ were found using the least-squares method, i.e, minimizing $\sum [\Delta F_{\text{SF-SCF}} - \Delta F_{\text{cyl}}(b_0,b_1)]^2$ across a range of $\chi_{\text{PS}} \in [0,1]$  and $\chi_{\text{PC}} \in [-2,0]$ for a relevant particle positions $-60 \leq z_{\text{c}} \leq 0$.
+\todo{RR: I was here left confused: What is the difference between $\Delta F_{\text{SF-SCF}}$ and $\Delta F_{\text{cyl}}$? With both obtained from SC-SCF, this was not obvious to me. Can we clarify?}
+The optimal coefficients $b_0$ and $b_1$ were found using the least-squares method, i.e., minimizing $\sum [\Delta F_{\text{SF-SCF}} - \Delta F_{\text{cyl}}(b_0,b_1)]^2$ across a range of $\chi_{\text{PS}} \in [0,1]$  and $\chi_{\text{PC}} \in [-2,0]$ for the relevant colloid positions $-60 \leq z_{\text{c}} \leq 0$.
+\todo{RR: Perhaps clearer $0 \leq |z_{\text{c}}| \leq 60$?}
 Fits were performed with small colloids ($d=4$), to focus on local effects and avoid added effects that may arise due to global perturbations of the polymer distribution in the pore.
 
-In a $\theta$-solvent (chosen here as a representative case) and for fixed pore geometry and brush parameters, the three interaction parameters
-$\chi_{\text{PC}} = 0.00,; -0.75,; \text{and}; -1.50$ span the regimes of net repulsion, near-critical adsorption, and net attraction, respectively.
-Figure~\ref{fig:fit_SI} demonstrates that a satisfactory fit (thick solid line) to the $\Delta F_{\text{SF-SCF}}$ profiles (circles) could be obtained across all three representative datasets with a single parameter set $b_0 = 0.7$ and $b_1 = -0.3$.
-Given the overall small volume contribution to the insertion free energy for small particles, the fact that $\Delta F$ remains consistently close to zero for $\chi_{\text{PC}} = -0.75$ illustrates that this interaction parameter is close to the critical value $\chi_{\text{PC}}^{\text{crit}} = \chi_{\text{crit}} + \chi_{\text{PS}} (1 - \phi)$, where the loss in polymer conformational entropy due to surface exclusion is exactly balanced by the free energy gain from favorable monomer–surface interactions. At this point, the surface tension $\gamma$ vanishes \cite{Fleer1993, Birshtein1979, Birshtein1983, Eisenriegler1982}.
-
-In contrast, neglecting local perturbations in the polymer concentration (i.e., using $b_0 = 1.0$ and $b_1 = 0.0$) results in a poor reproduction of the SF-SCF-calculated insertion free energy $\Delta F_{\text{SF-SCF}}$ for both repulsive and attractive colloids ($\gamma \neq 0$), as illustrated by the thin dashed line in Figure~\ref{fig:fit_SI}. This highlights the importance of accounting for local corrections in the theoretical model.
-% Consequently, the least-squares fits considered the regimes of net repulsion and net attraction approximately equally through $\chi_{\text{PC}} = 0.00$ and $\chi_{\text{PC}} = -1.50$, respectively.
-% In contrast, neglect of local perturbations to the polymer concentration ($b_0 = 1.0$ and $b_1 = 0.0$) reproduces $\Delta F_{\text{SF-SCF}}$ rather poorly for repulsive and attractive colloids (Figure~\ref{fig:fit_SI}, thin dashed line), thus demonstrating the importance of the correction.
-
-\begin{figure}[]
-    \centering
-    \includegraphics[width = 0.95\linewidth]{fig/fe_scf_grid2.png}
-    \caption{ 
-    Comparison of $\Delta F_{\text{SF-SCF}}$ profiles (squares) with $\Delta F_{\text{cyl}}(b_0,b_1)$ for the best-fit values $b_0 = 0.7$ and $b_1 = -0.3$ (solid lines), for $d = [8, 12, 16]$ (color coded).
-    Pore and brush parameters are as given in Figure 1. $\chi_{\text{PC}} = -1.0$ (top row) and -0.5 (bottom row); the solvent quality was varied near the $\theta$-point with $\chi_{\text{PS}} = [0.4, 0.5, 0.6]$, as indicated.
-    The light green hatched area marks values of $z_{\text{c}}$ that are located inside the pore lumen ($|z| \leq 26$).
-    \label{fig:fe_scf_grid}
-    }
-\end{figure}
+In a $\theta$-solvent (chosen here as a representative case) and for the selected pore geometry and brush parameters (Figure 1), we selected three $\chi_{\text{PC}}$ values (0.00, -0.75 and -1.50) to span the regimes of net repulsion, near-critical adsorption, and net attraction, respectively.
+Figure~\ref{fig:fit_SI} demonstrates that a satisfactory fit (thick solid line) to the $\Delta F_{\text{SF-SCF}}$ profiles (circles) could be obtained across all three representative datasets with a single parameter set, $b_0 = 0.7$ and $b_1 = -0.3$.
+The insertion free energies are consistently close to zero for $\chi_{\text{PC}} = -0.75$, illustrating that this value is indeed near the critical condition, $\chi_{\text{PC}}^{\text{crit}} = \chi_{\text{crit}} + \chi_{\text{PS}} (1 - \phi)$, where polymer attraction and osmotic repulsion just cancel each other.
+Consequently, the least-square fits considered the regimes of net repulsion and net attraction approximately equally through $\chi_{\text{PC}} = 0.00$ and $\chi_{\text{PC}} = -1.50$, respectively.
+In contrast, neglect of local perturbations to the polymer concentration ($b_0 = 1.0$ and $b_1 = 0.0$) reproduces $\Delta F_{\text{SF-SCF}}$ rather poorly for repulsive and attractive colloids (Figure~\ref{fig:fit_SI}, thin dashed line), thus demonstrating the importance of the correction.
 
 Although the fit was performed only for small colloids, the resulting parameters $b_{0}$ and $b_{1}$ still successfully account for the local perturbations to the polymer concentration when calculating the insertion free energy of larger colloids.
 This is illustrated in Figure~\ref{fig:fe_scf_grid} for two selected $\chi_{\text{PC}}$ values (-0.5 and -1.0) and three selected $\chi_{\text{PS}}$ values (0.4, 0.5 and 0.6).
-% We vary the solvent strength $\chi_{\text{PS}}$ around the $\theta$-condition, thereby shifting an attractive particle from repulsion in a moderately good solvent to attraction in a moderately poor solvent.
-% Changing $\chi_{\text{PS}}$ in either direction affects only the magnitude of the profile, not its overall trend.
 
 Deviations become notable, however, for $d = 16$ under conditions of strong repulsion or attraction.
 This size regime thus marks the limit of validity of the local perturbation approximation.
 Instead, attractive or repulsive interactions entail non-local changes that impact the polymer concentration across the entire pore cross-section.
 As a consequence, the pore walls also influence colloid insertion. 
 
-% A similar profiles to Figure~\ref{fig:fe_scf_grid} for position-dependent insertion were obtained by Molecular Dynamics in ref \cite{Ananth2018, Tagliazucchi2018}.
-Another interesting effect can also observed for strongly attractive particles, even when small.
-The SF-SCF results predict that, to reach the minimum of the insertion free energy $\Delta F_{\text{SF-SCF}}$, the polymer brush changes conformation to reach the particle at a greater distance $|z_{\text{c}}|$ from the pore.
+\begin{figure}[]
+    \centering
+    \includegraphics[width = 0.95\linewidth]{fig/fe_scf_grid2.png}
+    \caption{ 
+    Comparison of $\Delta F_{\text{SF-SCF}}$ (square symbols) with $\Delta F_{\text{cyl}}(b_0,b_1)$ profiles for the best-fit values $b_0 = 0.7$ and $b_1 = -0.3$ (solid lines), for $d = [8, 12, 16]$ (color coded).
+    Pore and brush parameters are as given in Figure 1; $\chi_{\text{PC}} = -1.0$ (top row) and -0.5 (bottom row), and the solvent quality was varied near the $\theta$-point with $\chi_{\text{PS}} = [0.4, 0.5, 0.6]$, as indicated.
+    The light green hatched area marks values of $z_{\text{c}}$ that are located inside the pore lumen ($|z| \leq 26$).
+    \label{fig:fe_scf_grid}
+    }
+\end{figure}
+
+\todo{RR: Is the following paragraph needed? If we don't refer to this in the main text, then we better remove it. We can add this point back later, in case the reviewers will query it.}
+Another interesting effect can also observed for strongly attractive colloids, even when small.
+The SF-SCF results predict that, to reach the minimum of the insertion free energy $\Delta F_{\text{SF-SCF}}$, the polymer brush changes conformation to reach the colloid at a greater distance $|z_{\text{c}}|$ from the pore.
 In Figure~\ref{fig:fit_SI}, this effect is apparent for $\chi_{\text{PC}} = -1.5$, where the SF-SCF results (blue circles) predict systematically lower insertion free energies than the analytical approach (blue solid line) outside the pore ($|z_{\text{c}}| > 26$).
 This effect is mild and only slightly increases the region with negative insertion free energy.
-It may entail a slight reduction in the total resistance to diffusive transport: for pores with regions of negative insertion free energy the total resistance is defined by the resistance of the bulk solution (Figure 4), and the capture of colloids by the polymers at a larger distance from the pore reduces the bulk resistivity.
+It may entail a slight reduction in the total resistance to diffusive transport: for pores with regions of negative insertion free energy, the resistance of the bulk solution limits the total resistance, and the capture of colloids by the polymers at a larger distance from the pore reduces the bulk resistivity.
 
 
-
-% \begin{figure}[]
-%     \centering
-%     \includegraphics[width = 0.95\linewidth]{fig/perturbation.png}
-%     \caption{ 
-%     Perturbation to polymer concentration $\Delta\phi = \phi^{\text{ins}} - \phi$, where $\phi^{\text{ins}}$ is perturbed by the colloid particle polymer concentration.
-%     \label{fig:perturbation}
-%     }
-% \end{figure}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \pagebreak
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Computing insertion free energies for arbitrarily placed spherical colloids}
-
 
 The SF-SCF method considered in the previous sections is limited to colloids moving along the main axis of the pore.
 In reality, colloids may be located off the pore axis.
@@ -385,29 +581,27 @@ In doing so, we also change the shape of the colloid, from a cylinder to a simpl
 As the polymer and pore geometrical features are uniform in the angular direction, we use $r, z$ cylindrical coordinates with a degenerate angular axis.
 Any property such as the polymer volume fraction can hence be expressed as a function $f(r,z,\theta) = f(r,z)$.
 
-Let the distance to the center of spherical body of a colloid particle be 
+The distance to the center of spherical body of a colloid is 
 \begin{eqnarray}
 \Delta_{\text{c}} = \sqrt{r^2 + r_{\text{c}}^2 - 2 r r_{\text{c}} \cos(\theta) + (z - z_{\text{c}})^2},
 \end{eqnarray} 
-where $r_{\text{c}}, z_{\text{c}}, \theta_{\text{c}}$ are the position of the center in cylindrical coordinates, without the loss of generality, we set $\theta_{\text{c}} = 0$.
+where $r_{\text{c}}, z_{\text{c}}, \theta_{\text{c}}$ are the position of the center in cylindrical coordinates.
+Without the loss of generality, we set $\theta_{\text{c}} = 0$.
 
-Then we can integrate a function $f(r,z)$ over the spherical volume as:
-
+The function $f(r,z)$ is integrated over the spherical volume as:
 \begin{eqnarray}
     \label{eq:int_indicator_V}
     \begin{aligned}
         \int\limits_{V} f dV
-        % =\int\displaylimits_{0}^{+\infty} \int\displaylimits_{-\infty}^{+\infty} \int\displaylimits_{0}^{2\pi} f(r, z) H(\Delta_{\text{c}} - d/2) r \text{d}r \text{d}z \text{d}\theta =\\
-        =\int\displaylimits_{0}^{+\infty} \int\displaylimits_{-\infty}^{+\infty} f(r, z) \int\displaylimits_{0}^{2\pi}  H(\Delta_{\text{c}} - d/2) r \text{d}r \text{d}z \text{d}\theta =\\
+        =\int\displaylimits_{0}^{+\infty} \int\displaylimits_{-\infty}^{+\infty} f(r, z) \int\displaylimits_{0}^{2\pi}  H(\Delta_{\text{c}} - d/2) r \text{d}r \text{d}z \text{d}\theta \\
         =\int\displaylimits_{0}^{+\infty} \int\displaylimits_{-\infty}^{+\infty} f(r, z)  V_{\theta \downarrow}(r,z) \text{d}r \text{d}z
     \end{aligned}
 \end{eqnarray}
-
 where $r \text{d}r \text{d}z \text{d}\theta$ is the differential volume element in cylindrical coordinates, $H(\Delta_{\text{c}} - d/2)$ is the Heaviside function, that evaluates to 1 inside the sphere.
-The $V_{\theta \downarrow}(r,z)$ is a projection of sphere volume on the $rz$-plane, with $\theta$ being the projecting direction.
+$V_{\theta \downarrow}(r,z)$ is a projection of sphere volume on the $rz$-plane, with $\theta$ being the projecting direction.
 
-Similarly, to compute surface integrals over the spherical colloid, we apply the Dirac delta function $\delta(\Delta_{\text{c}} - d/2)$ to restrict the integration domain to the spherical surface.
-This allows us to express the surface integral of a scalar function $f(r,z)$ as:
+Similarly, to compute surface integrals over the spherical colloid, the Dirac delta function $\delta(\Delta_{\text{c}} - d/2)$ is applied to restrict the integration domain to the spherical surface.
+This allows to express the surface integral of a scalar function $f(r,z)$ as:
 \begin{eqnarray}
     \label{eq:int_indicator_S}
     \begin{aligned}
@@ -418,14 +612,12 @@ This allows us to express the surface integral of a scalar function $f(r,z)$ as:
 \end{eqnarray}
 where the factor $\frac{\Delta_{\text{c}}}{r_{\text{c}} |\sin\theta|}r \, dr dz$ corresponds to the surface area element expressed in cylindrical coordinates.
 
-
-From the Eqs.~(\ref{eq:int_indicator_V}, \ref{eq:int_indicator_S}) the volume $V_{\theta \downarrow}$ and surface $S_{\theta \downarrow}$ projections of a spherical body onto the $rz$-plane in cylindrical coordinates are:
+From Eqs.~(\ref{eq:int_indicator_V}, \ref{eq:int_indicator_S}) the volume $V_{\theta \downarrow}$ and surface $S_{\theta \downarrow}$ projections of a spherical body onto the $rz$-plane in cylindrical coordinates are:
 \begin{gather}
     V_{\theta \downarrow}(r, z, r_{\text{c}}, z_{\text{c}}) = 2\int_{0}^{\pi} H\!\left( \Delta_{\text{center}} - {d}/{2} \right) r \, \text{d}\theta
     \\
     S_{\theta \downarrow}(r, z, r_{\text{c}}, z_{\text{c}}) = 2\int_{0}^{\pi}\delta(\Delta_{\text{c}} - d/2)  \frac{\Delta_{\text{c}}}{r_{\text{c}} |\sin\theta|} r \, \text{d}\theta
 \end{gather}
-
 These expressions describe the angular integration of the volume and surface projected onto the $rz$-plane, effectively reducing the 3D geometry to a two-gradient description suitable for cylindrical symmetry.
 
 \begin{figure}[]
@@ -433,21 +625,18 @@ These expressions describe the angular integration of the volume and surface pro
     \includegraphics[width=0.95\linewidth]{fig/sphere_volume_and_surface_projection.png}
     \caption{
         \textbf{Left:}
-        Surface $S_{\theta \downarrow}\{r_{\text{c}}\}$ (upper) and volume projections $V_{\theta \downarrow}\{r_{\text{c}}\}$ (lower) for a spherical colloid with diameter $d = 8$ on $rz$-plane, shown for a set of sphere center offsets $r_{\text{c}} = \{0, 2, 4, 6\}$ to the $z$-axis (shown side by side).
+        Surface $S_{\theta \downarrow}\{r_{\text{c}}\}$ (top) and volume $V_{\theta \downarrow}\{r_{\text{c}}\}$ (bottom) projections on the $rz$-plane for a spherical colloid with diameter $d = 8$, for a set of sphere center offsets $r_{\text{c}} = \{0, 2, 4, 6\}$ to the $z$-axis (shown side by side).
         The sphere centers are indicated with a red cross.
-        The $r$-axis is shown with blue arrow, $z$-axis is omitted, as the center coordinates $z_{\text{c}}$ are arbitrary.
-        The color code is shown with the colorbar below, where blue corresponds to zero and yellow corresponds to values above $25$.
-        \\
+        The $r$-axis is shown with a blue arrow; the $z$-axis is omitted, as the center coordinates $z_{\text{c}}$ are arbitrary.
         \textbf{Right:}
-        The discretization results of the surface and volume projection matrices $\bm{S}\{r_{\text{c}}\}$ and $\bm{V}\{r_{\text{c}}\}$ as heatmaps, respectively, shown for $r_{\text{c}} = 6$.
-        The color code with the colorbar below, where blue corresponds to zero and yellow rescaled to $8$ for clarity.
-        \\
-        Intensities for surface and volume are normalized by $a^2$ and $a^3$, respectively, where $a$ is the lattice unit length.
+        Discretization results of the surface and volume projection matrices $\bm{S}\{r_{\text{c}}\}$ and $\bm{V}\{r_{\text{c}}\}$ as heatmaps, for $r_{\text{c}} = 6$.
+        Color codes are distinct for dsata on the left and right, as indicated.
+        Intensities for surface and volume are normalized by $a^2$ and $a^3$, respectively.
     }
     \label{fig:sphere_volume_and_surface_projection}
 \end{figure}
 
-To find the elements of the projection matrices (each representing the volume or surface area of the spherical colloid intersecting a given lattice cell), we discretize the angularly projected volume and surface area over finite lattice elements.
+To find the elements of the projection matrices (each representing the volume or surface area of the spherical colloid intersecting a given lattice cell), the angularly projected volume and surface area are dicretized over finite lattice elements.
 For each grid element indexed by $i, k$, corresponding to the domain $r \in [i, i + \delta r]$ and $z \in [k, k + \delta z]$, the matrix entries  are defined as
 \begin{eqnarray}
     V\{r_{\text{c}}\}{[i, k]} = \! \iint \limits_{i, k}^{\quad \substack{i+\delta r\\ k+\delta z}} \! V_{\theta \downarrow} (r, z, r_{\text{c}}, z_{\text{c}})\, \text{d}r \text{d}z
@@ -465,7 +654,7 @@ Naturally, the sum of all matrix elements equals the surface and the volume of t
     \mathop{\sum\sum}_{\mathclap{\substack{i \in [0, \min(r_{\text{c}}+d/2,d)-1] \\ k \in [0, d-1]}}}  S\{r_{\text{c}}\}{[i, k]} = \frac{\pi d^3}{6} .
 \end{eqnarray*}
 
-The discretized form of Eq.~(15) to calculate the osmotic term in the insertion free energy for a spherical particle is:
+The discretized form of Eq.~(15) to calculate the osmotic term in the insertion free energy for a spherical colloid is:
 \begin{eqnarray}
     \begin{aligned}
         \Delta F_{\text{osm}}(r_{\text{c}}, z_{\text{c}}) =\\
@@ -482,215 +671,31 @@ Similarly, the surface term in the insertion free energy is the following matrix
     \end{aligned}
 \end{eqnarray}
 
-The function domain, values and discretization for $V_{\theta \downarrow}$ and $S_{\theta \downarrow}$ are exemplified in Figure~\ref{fig:sphere_volume_and_surface_projection} for a set of colloid with varying radial center positions $r_{\text{c}}$.
+The function domain, values and discretization for $V_{\theta \downarrow}$ and $S_{\theta \downarrow}$ are exemplified in Figure~\ref{fig:sphere_volume_and_surface_projection} for a set of colloids with varying radial center positions $r_{\text{c}}$.
 
-The method allow us to find insertion free energy $\Delta F(r,z)$ from inherently discrete SF-SCF outputs $\Pi, \gamma$, preserving the cylindrical lattice.
-
+The method was used to compute the insertion free energy $\Delta F(r,z)$ from inherently discrete SF-SCF outputs $\Pi, \gamma$, preserving the cylindrical lattice.
 Volume and surface projection matrices are explained geometrically in Figure~\ref{fig:spherical_kernel}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{fig/spherical_kernel.png}
     \caption{
-        Illustration of a spherical colloid's volume and surface projection matrices in a cylindrical lattice, exemplifying the volume projection matrix $\bm{V}\{r_c\}$ for a spherical colloid with diameter $d = 12$ and $r_{\text{c}}= 8$.
+        Illustration of a spherical colloid's volume and surface projection matrices in a cylindrical lattice.
+        Showm on the left is the volume projection matrix $\bm{V}\{r_c\}$ for a spherical colloid with diameter $d = 12$ and $r_{\text{c}}= 8$.
         The colored tiles encode the matrix elements' values, where violet means zero and yellow represents the largest values.
         The geometrical meaning of the matrix element is the colloid volume (red body) or surface (green small patch) found in the domain $r,z \in [i, i + \delta r] \times [k, k + \delta z]$ (opaque blue toroid).
-        The smaller drawing on the right complements the main drawing with a $z$-view for clarity, using consistent color-coding for volume and surface elements, with pale blue annulus being the domain of lattice element.
-        The yellow circle indicates the colloid cross-section within the current $z$-slice, while the larger pale yellow circle shows the rest of the colloid body lying behind the plane of the cross-section.
+        The smaller drawing on the right complements the main drawing with a $z$-view for clarity, using consistent color-coding for volume and surface elements, with the pale blue annulus being the domain of lattice element.
+        The yellow circle indicates the colloid cross-section within the selected $z$-slice, while the larger pale yellow circle shows the rest of the colloid body lying behind the plane of the cross-section.
     }
     \label{fig:spherical_kernel}
 \end{figure}
 
 
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Validating analytical approaches with numerical simulations}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \pagebreak
-\section{Analytical Estimation of Pore Resistance}
-\begin{figure*}[h]
-    \centering
-    \includegraphics[width=0.85\linewidth]{fig/coordinate_system.png}
-    \caption{%
-        \textbf{Left:}
-        Steady-state solution of the diffusion equation for a point-like particle diffusing through an empty cylindrical pore of finite thickness.
-        Iso-concentration surfaces, $c = \text{const}$, are represented by contour lines with labeled concentration values.
-        % For an empty pore, $\psi = c$; for a polymer brush-filled pore, $\psi = c\exp(\Delta F/k_B T)$.
-        Blue and red axes indicate radial and axial coordinates, respectively.
-        Pore radius $r_{\text{p}}^{0} = 20$ and thickness $L_{0} = 20$.
-    }
-    \label{fig:empty_pore_solution}
-    \caption{
-        \textbf{Right:}
-        Intrinsic orthogonal curvilinear coordinate system for the pore.
-        Radial and axial coordinates are parameterized as $r'(r,z)$ and $z'(r,z)$, respectively.
-        Solid lines indicate surfaces of rotation about the pore axis.
-        Red lines correspond to surfaces of constant $z'$; blue lines correspond to surfaces of constant $r'$.
-        Semi-planes with constant angular coordinate $\theta$ are not shown.
-        Local basis vectors of the intrinsic coordinate system ($\hat{e}_r$, $\hat{e}_z$) are illustrated by arrows.
-        Lamé coefficients are defined by the magnitudes of the local basis vectors as $h_r = |\hat{e}_r|$, $h_z = |\hat{e}_z|$, and $h_{\theta} = |\hat{e}_{\theta}|$.
-        Pore radius $r_{\text{p}}^{0} = 20$ and thickness $L_{0} = 20$.
-        }
-    \label{fig:coordinate_system}
-\end{figure*}
-
-
-
-To construct an approximate analytical solution, we first consider a bare cylindrical pore of radius $r_{\text{p}}^{0}$ in an impermeable membrane separating two semi-infinite bulk solutions.
-The pore axis coincides with the $z$-axis, and the membrane has thickness $L_{0}$.
-We assume constant diffusivity $D_0$ and impose boundary conditions with concentrations $c(z=-\infty)=1$ and $c(z=+\infty)=0$ on opposite sides of the membrane.
-
-The steady-state solution of the diffusion equation, defined by $\partial c/\partial t = 0$, produces the concentration profile shown in Figure~\ref{fig:empty_pore_solution}.
-
-For a pore in an infinitely thin membrane (an orifice), the iso-concentration surfaces are known to form oblate spheroids with the pore rim as their focal circle.
-This approximation remains valid for the iso-concentration lines in the exterior region even for membranes of finite thickness.
-
-For a cylindrical channel, the solution in the pore lumen is approximated by equally spaced, disk-shaped iso-concentration surfaces. 
-
-The flux density field, is directly related to the concentration gradient via Fick's law \mbox{$\bm{j} = -D_0 \nabla c$}.
-
-Polymer filling within the pore modifies the local diffusion coefficient $D$ and generates a free-energy landscape, resulting in an effective position-dependent diffusion coefficient (conductivity) $\tilde{D}(r,z) = D\,e^{-\Delta F/k_B T}$ or local resistivity $\rho = \tilde{D}^{-1}$.
-Since the flux density $\bm{j}$ is a conservative vector field, we define a scalar potential function $\psi = c\,e^{\Delta F/k_B T}$, such that $\bm{j} = -\tilde{D}\nabla\psi$.
-Consequently, the steady-state iso-concentration surfaces differ from the oblate spheroids of the bare pore; however, they retain a similar structure for iso-values of $\psi$.
-
-For the exterior region, we introduce an intrinsic curvilinear coordinate system $(r', z', \theta)$ aligned with approximate iso-surfaces of \(\psi\) (as depicted in Figure~\ref{fig:coordinate_system}), defined as follows:
-level sets of the potential function $\psi$ form a family of oblate hemispheroids $z'$, indexed by their intersection points with the $z$-axis;
-flux-density stream surfaces, perpendicular to $\psi$, form a family of hyperboloids of revolution $r'$, indexed by their intersection radii with the plane $z=0$:
-\begin{gather}
-    r' = \left\{(r,z) \mid \nabla f \cdot \nabla \psi = 0,\; f=f(r,0)\right\},
-    \\
-    z' = \left\{(r,z) \mid \psi(r,z)=\psi(0,z)\right\}.
-\end{gather}
-Half-planes of constant azimuthal angle \(\theta\) remain unchanged from the original cylindrical coordinate system.
-
-In the exterior region ($|z| > L/2$), the intrinsic coordinate system $(r', z', \theta)$ is parameterized using the original cylindrical coordinates $(r,z,\theta)$ and the distance from the pore opening $z_{\text{ext}} = |z| - L/2$:
-\begin{align}
-    r'(r,z) &= r\sqrt{1 + \frac{z_{\text{ext}}^2}{r_{\text{p}}^2}},\\[4pt]
-    z'(r,z) &= z_{\text{ext}}\frac{\sqrt{r_{\text{p}}^2 - r^2}}{r_{\text{p}}} + \text{sign}(z)\frac{L}{2}.
-\end{align}
-The corresponding Lam\'e  coefficients are:
-\begin{align}
-    h_r &= \frac{\sqrt{r_{\text{p}}^2 + z_{\text{ext}}^2 - r^2}}{\sqrt{r_{\text{p}}^2 - r^2}},\\[4pt]
-    h_z &= \frac{\sqrt{r_{\text{p}}^2 + z_{\text{ext}}^2 - r^2}}{\sqrt{r_{\text{p}}^2 + z_{\text{ext}}^2}},\\[4pt]
-    h_{\theta} &= \frac{r\sqrt{r_{\text{p}}^2 + z_{\text{ext}}^2}}{r_{\text{p}}},\\[4pt]
-    \tilde{h}(r,z) &= h_r h_{\theta} h_z^{-1} = \frac{r}{r_{\text{p}}}\frac{r_{\text{p}}^2 + z_{\text{ext}}^2}{\sqrt{r_{\text{p}}^2 - r^2}}.
-\end{align}
-
-The conductivity integrated over the oblate hemispheroids in the exterior region is given by:
-\begin{equation}
-  \label{eq:rho_ext}
-  \varrho_{\text{ext}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} 
-  \tilde{D}\left( r'(r,z), z'(r,z) \right)\tilde{h}(r,z)\,dr.
-\end{equation}
-
-Inside the pore ($|z|\leq L/2$), assuming no significant radial flux, the conductivity of a disk cross-section at position $z$ is approximated as:
-\begin{equation}
-  \varrho_{\text{int}}^{-1}(z)= 2\pi\int_{0}^{r_{\text{p}}^{}} \tilde{D}(r,z)\,r\,dr.
-\end{equation}
-
-Therefore, the total resistances of the exterior and interior regions are respectively obtained by:
-\begin{align}
-   \label{eq:R_ext}
-   R_{\text{ext}} &=2\int_{+L/2}^{+\infty}\varrho_{\text{ext}}(z)\,dz,\\[5pt]
-   \label{eq:R_int}
-   R_{\text{int}} &=\int_{-L/2}^{+L/2}\varrho_{\text{int}}(z)\,dz.
-\end{align}
-
-We now revisit the resistance of a bare pore of finite thickness to the diffusion of a point-like colloid using Eqs.~(\ref{eq:R_ext},~\ref{eq:R_int}).
-For a bare pore, the effective diffusion coefficient is simply $\tilde{D} = D_0$:
-\begin{eqnarray}
-    \varrho^{0}_{\text{int}}(z) &=& \frac{1}{D_0 \pi r_{\text{p}}^2},\\[4pt]
-    \varrho^{0}_{\text{ext}}(z) &=& \frac{1}{2\pi D_0\left(z_{\text{ext}}^2 + r_{\text{p}}^2\right)}.
-\end{eqnarray}
-
-Integration over the full domains of $z$ yields the classical result~\cite{Brunn1984}:
-\begin{eqnarray}
-    \label{eq:r_empty}
-    R_{\text{ext}}^{0} &=& 2 \int_{-\infty}^{-L/2} \varrho_{\text{ext}}^{0}(z)\,dz = \frac{1}{2 D_0 r_{\text{p}}},\\[4pt]
-    R_{\text{int}}^{0} &=& \int_{-L/2}^{+L/2} \varrho_{\text{int}}^{0}(z)\,dz = \frac{L}{D_0 \pi r_{\text{p}}^2}.
-\end{eqnarray}
-
-Our numerical approach inherently employs the discrete cylindrical lattice from the SF-SCF calculations, with discretization steps $\delta z = \delta r = 1$.
-Consequently, continuous integration across equipotential surfaces foliating space is replaced by summation over discrete conductive layers, each bounded by two adjacent equipotential surfaces. 
-Layers are indexed by the first equipotential surface intersecting the $z$-axis (see Figure~\ref{fig:integration_scheme}).
-
-\begin{figure}[]
-    \centering
-    \includegraphics[width=\linewidth]{fig/resistance_integration.png}
-    \caption{
-        Numerical integration of local conductivity/resistance on a cylindrical lattice.
-        In the exterior region, conductivities are integrated over half-cylinder layers (red fill), each indexed by $z$, with radius $r_{\text{ext}}$ and height $z_{\text{ext}}$, a single layer is highlighted with the darker red color.
-        In the interior region, integration is performed over cylindrical disk layers (blue fill); a single layer is highlighted in darker blue.
-        Dashed red lines illustrate half-cylinder surfaces that approximate the oblate spheroidal equipotentials shown in Figure~\ref{fig:coordinate_system}.
-    }
-    \label{fig:integration_scheme}
-\end{figure}
-
-In the interior region, this discretization is straightforwardly applied, giving the resistance of a discrete disk-shaped layer as:
-\begin{equation}
-    \varrho_{\text{int}}^{\text{lat}}(z) 
-    =\left[\pi \sum_{r=0}^{r_{\text{p}}-1}(2r+1)\,\tilde{D}[r,z]\right]^{-1}.
-\end{equation}
-
-For numerical integration in the exterior region, we approximate the equipotential surfaces as half-cylindrical rather than oblate hemispheroidal layers (Figure~\ref{fig:integration_scheme}).
-Thus, instead of oblate hemispheroid-shaped "bowls," the discretization yields nested cylindrical "buckets" or caps with increasing radius $r_{\text{ext}} = r_{\text{p}} + |z| - L/2$ and height $z_{\text{ext}} = |z| - L/2$.
-
-The resistance of a cylindrical cap layer naturally underestimates the corresponding oblate hemispheroidal layer at the same position $z$.
-To compensate, we introduce a correction factor $p(z)$, which equals the ratio of the resistances of an oblate spheroidal layer to a cylindrical-cap layer with identical local conductivity $\tilde{D}$:
-\begin{gather}
-    \label{eq:prefactor}
-    \begin{aligned}
-        p(z) &= r_{\text{p}} \left(z_{\text{ext}} \log{\frac{r_{\text{ext}}}{r_{\text{ext}} - 1}} + r_{\text{ext}}^{2}\right)^{-1} \times \\[4pt]
-        &\quad\times\left[\operatorname{atan}{\frac{z_{\text{ext}}}{r_{\text{p}}}} - \operatorname{atan}{\frac{z_{\text{ext}} - 1}{r_{\text{p}}}}\right]^{-1}.
-    \end{aligned}
-\end{gather}
-
-The resistance of a layer at position $z$ in the exterior region, computed on a cylindrical lattice, is:
-\begin{equation}
-    \begin{aligned}
-        &\varrho_{\text{ext}}^{\text{lat}}(z) = 
-        \frac{p(z)}{\pi}\left[
-        \sum_{r=0}^{r_{\text{ext}}-1}(2r+1)\tilde{D}[r,z_a]\right. + \\[4pt]
-        &\quad+\left. 2 \log\left(\frac{r_{\text{ext}}}{r_{\text{ext}}\!-\! 1}\right)\sum_{z^{\prime}=z_{a}}^{z_{b}}\tilde{D}[r_{\text{ext}}\!-\!1,z^{\prime}]
-        \right]^{-1}
-    \end{aligned}
-\end{equation}
-with indexing limits defined by:
-\begin{equation*}
-    \begin{cases}
-        z_{a} = -z,\quad z_{b} = -L/2-1,&\text{if } z < -L/2,\\[4pt]
-        z_{a} = L/2,\quad z_{b} = z-1,&\text{if } z > L/2.
-    \end{cases}
-\end{equation*}
-
-
-To account for the resistance of the semi-infinite reservoirs beyond the integration domain on the cylindrical lattice, we evaluate the analytical expression for the exterior resistance, Eq.~\ref{eq:rho_ext}, from the integration boundary $z$ to infinity:
-
-\begin{eqnarray}
-    \label{eq:r_reservoir}
-    R_{(z, \pm\infty)} = \pm\!\! \int\displaylimits_{z}^{\pm\infty}\!\! \varrho_(z') \, \text{d}z' = \frac{\arctan\left({r_{\text{p}}}/{z_{\text{ext}}} \right)}{2 D_0 \pi r_{\text{p}}^{0}}
-\end{eqnarray}
-
-Finally, the total resistance of the pore, integrated on the discrete cylindrical lattice, is given by:
-
-\begin{eqnarray}
-    R_{\text{int}}^{\text{lat}} = \sum_{z=-L/2}^{+L/2} \varrho_{\text{int}}^{\text{lat}}(z)
-    \\
-    R_{\text{ext}}^{\text{lat}} = R_{(z_{\text{left}}, -\infty)} + \sum\limits_{\mathclap{\substack{z \in [z_{\text{left}},-L/2)\\z \in (L/2, z_\text{right}]}}} \varrho_{z} + R_{(z_{\text{right}}, +\infty)}
-    \\
-    \label{eq:R_total}
-    R_{\text{lat}} = R_{\text{ext}}^{\text{lat}} + R_{\text{int}}^{\text{lat}}
-\end{eqnarray}
-where $z_{\text{left}}, z_{\text{right}}$ is the limits of the discrete domain.
-
-Eq.~(\ref{eq:R_total}) concludes the analytical estimation scheme, giving the total resistance $R_{\text{lat}}$ of the pore.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \pagebreak
-\section{Validating Analytical Approaches with Numerical Simulations}
-
-
-Applying Eqs.~(2,3) and the boundary conditions reduces the Smoluchowski equation Eq.~(1) in the stationary state to the generalized Laplace equation:
+Applying Eqs.~(2, 3) and the boundary conditions reduces the Smoluchowski equation (Eq.~(1)) in the stationary state to the generalized Laplace equation:
 \begin{equation}
   \mathcal L\tilde c=0,
   \label{eq:laplace}
@@ -700,14 +705,15 @@ with the Smoluchowski diffusion operator
   \mathcal L=\nabla\!\cdot\!\bigl(\tilde D(\bm r)\nabla\bigr).
 \end{equation*}
 
-\textbf{Laplace Equation in Discrete Finite Domain}
+\bigskip
+\textbf{Defining the Laplace equation in a finite, discretized domain}
 
 To obtain a stationary solution of Eq.~\eqref{eq:laplace}, we consider a finite cylindrical domain large enough to exclude edge effects:
 \begin{equation*}
   (r,z) \in \Omega = [0,r_{\max}]\times[z_{\min},0],
 \end{equation*}
 and discretize it on a regular cylindrical lattice with spacings $\delta r=\delta z$. 
-Due to symmetry about the mid-plane $z = 0$, we restrict the domain accordingly with imposing suitable boundary condition.
+Due to symmetry about the mid-plane $z = 0$, we restrict the domain accordingly with suitable boundary conditions.
 
 The computational grid contains $N_r=r_{\max}/\delta r$ radial nodes and $N_z=(z_{\max}-z_{\min})/\delta z$ axial nodes, indexed by $i=0,\dots,N_r-1$ and $k=0,\dots,N_z-1$, respectively.
 Physical coordinates are $r_i=i\delta r$ and $z_k=z_{\min}+k\delta z$ as shown in Figure~\ref{fig:stencil}a.
@@ -720,14 +726,12 @@ Applying the divergence theorem to each finite volume element yields a discrete 
         \nabla_{i,k} \psi = 
         \\
         \lambda^{z} D^{z+}_{i,k} (\psi_{i,k} - \psi_{i,k+1}) +  \lambda^{z} D^{z-}_{i,k} (\psi_{i,k} - \psi_{i,k-1})\\
-        \lambda^{r+}_{i} D^{r+}_{i,k} (\psi_{i,k} - \psi_{i+1,k}) +  \lambda^{r-}_{i} D^{r-}_{i,k} (\psi_{i,k} - \psi_{i-1,k})
+        \lambda^{r+}_{i} D^{r+}_{i,k} (\psi_{i,k} - \psi_{i+1,k}) +  \lambda^{r-}_{i} D^{r-}_{i,k} (\psi_{i,k} - \psi_{i-1,k}),
     \end{aligned}
     \label{eq:FV_divergence}
 \end{eqnarray}
-
-where, $D^{r\pm}_{i,k}$ and $D^{z\pm}_{i,k}$ denote effective diffusion coefficient evaluated at finite volume element faces, as a harmonic averaging of values at adjacent finite volume elements elements, 
-the finite volume expansion in the radial direction (see Figure~\ref{fig:stencil}b) and discretization step is accounted with coordinate-dependent prefactors:
-
+where, $D^{r\pm}_{i,k}$ and $D^{z\pm}_{i,k}$ denote effective diffusion coefficient evaluated at finite volume element faces, as a harmonic averaging of values at adjacent finite volume elements. 
+The finite volume expansion in the radial direction (see Figure~\ref{fig:stencil}b) and discretization steps are accounted for through coordinate-dependent prefactors:
 \begin{eqnarray}
     \lambda^{z} = \frac{1}{\delta z^2}\\
     \lambda^{r+}_{i} = \frac{2 r_i + 2 \delta r}{2 r_i + 1} \frac {1}{\delta r^2}\\
@@ -735,39 +739,37 @@ the finite volume expansion in the radial direction (see Figure~\ref{fig:stencil
 \end{eqnarray}
 
 \begin{figure}[]
-  \includegraphics[width = \linewidth]{fig/stencil.png}
-  \caption{\textbf{(a)} The setup of the discrete domain for the numerical solution.
-  Following the analytical solution for the bare pore the source nodes are placed in the region circumferenced by the oblate semi-spheroid (orange fill).
-  The effective shape of the impermeable membrane (light green hatched fill) is constructed from the elements the correspond to the physical membrane (dark green hatched fill).
-  We exploit system symmetry by modeling only half of the system, by placing Dirichlet boundary condition on what would be the mid-plane.
-  The Smoluchowski operator is defined with 5-point stencil on the finite volume elements (red element and with grey neighbors).
-  The dots on the stencil denotes the indexing nodes.
-  \textbf{(b)} The finite volume element, naturally, expands with the radial coordinate, with the size defined by the discretization steps $\delta r$ and $\delta z$.
-  \textbf{(c)} The finite volume element shares common faces with the neighboring elements with faces labeled with the coordinate direction along the radial $r \pm$ and the axial $z\pm$ axes.
+    \includegraphics[width = \linewidth]{fig/stencil.png}
+    \caption{
+        \textbf{(a)} Discretized domain for numerical simulations.Following the analytical solution for the bare pore, the source nodes are placed in the region circumferenced by oblate hemispheroids (orange).
+        The effective shape of the impermeable membrane wall is constructed from the real membrane wall (dark green) and excluded volume due to the finite colloid size (light green, see Figure~\ref{fig:excluded_volume}).
+        Exploiting system symmetry, we modelled only half of the system, by placing Dirichlet boundary condition on the mid-plane  of the full system.
+        The Smoluchowski operator is defined with a 5-point stencil on the finite volume elements (red element with grey neighbors).
+        The dots on the stencil denote the indexing nodes.
+        \textbf{(b)} The finite volume elements naturally expand with the radial coordinate, with the size defined by the discretization steps $\delta r$ and $\delta z$.
+        \textbf{(c)} Each volume element shares common faces with the neighboring elements, labeled with the coordinate direction along the radial $r \pm$ and the axial $z\pm$ axes.
   }
   \label{fig:stencil}
 \end{figure}
-
-
-
 
 The discretized system is assembled into matrix form:
 \begin{equation}
   \mathbf L\, \bm{\psi}=\bm b,
   \label{eq:matrix_form}
 \end{equation}
-where $\mathbf{L}$ applies the finite volume stencil from Eq.~\ref{eq:FV_divergence} and $\bm b$ enforces boundary conditions.
+where $\mathbf{L}$ applies the finite volume stencil from Eq.~\eqref{eq:FV_divergence} and $\bm b$ enforces boundary conditions.
 
 The two-dimensional grid of volume elements are flattened into vectors of length $N_rN_z$ reindexed with $m=iN_z+k$.
 Under this mapping, the continuous operator $\mathcal L$ becomes a sparse $[N_rN_z\times N_rN_z]$ matrix $\mathbf L$, and the unknown values of $\psi(r_i, z_k)$ form the column $[N_rN_z]$ vector $\bm{\psi}$.
 
-Once the linear system Eq.~\ref{eq:matrix_form} is solved for $\bm{\psi}$, the resulting vector is reshaped into the $rz$-grid, giving $\psi(r,z)$, recovering the colloid concentration $c(r,z)$.
-This allows us to examine the non-equilibrium partitioning of colloids in the presence of position-dependent insertion free energy fora given boundary conditions.
+Once Eq.~\eqref{eq:matrix_form} is solved for $\bm{\psi}$, the resulting vector is reshaped into the $rz$-grid, giving $\psi(r,z)$ and recovering the colloid concentration $c(r,z)$.
+This enabled examination of the non-equilibrium partitioning of colloids in the presence of position-dependent insertion free energies for given boundary conditions.
 
-\textbf{Impermeable Wall (No-flux Elements)}
+\bigskip
+\textbf{Defining the impermeable wall (no-flux elements)}
 
 The impermeable regions are inherited from the SF-SCF calculations and define the finite volume elements inaccessible to diffusing colloids.
-For a given pore size we define the original impermeable walls grid elements as set:
+We define the original impermeable wall grid elements as:
 \begin{eqnarray}
     \textbf{Wall}_{0} [i,k] = 
     \begin{cases}
@@ -776,19 +778,16 @@ For a given pore size we define the original impermeable walls grid elements as 
     \end{cases}
 \end{eqnarray}
 
-Due to the excluded volume effect, the effective shape is different, the space impermeable to a spherical particle is an effective pore with a radius smaller than the actual pore radius, $r_{\text{p}} = r_{\text{p}}^{0} - \frac{d}{2}$, and longer chanel, $L = L_{0} + d$, with rounded corners, as shown in Figure~\ref{fig:excluded_volume} (left).
-
-This excluded volume region corresponds to a morphological dilation of the membrane body by the particle. In this case, the dilation is the set of all grid points that the center of a particle of diameter $d$ cannot enter without intersecting the wall.
-
-The dilated impermeable region is computed via the morphological dilation operation:
+Due to excluded volume of the colloid, the effective pore shape is different.
+The space impermeable to the centre of a spherical colloid of diameter $d$ defines an effective pore with radius $r_{\text{p}} = r_{\text{p}}^{0} - \frac{d}{2}$, length $L = L_{0} + d$, and rounded corners, as shown in Figure~\ref{fig:excluded_volume}a.
+In discretized space, the dilated impermeable region is computed via the morphological dilation operation:
 \begin{eqnarray}
-    \textbf{Wall} = \textbf{Wall}_{0} \oplus \textbf{Particle}
+    \textbf{Wall} = \textbf{Wall}_{0} \oplus \textbf{Colloid}
 \end{eqnarray}
-
-The structuring element $\textbf{Particle}$ is coarse-grained circle in $rz$-coordinate, see Figure~\ref{fig:excluded_volume} (right).
+with the structuring element $\textbf{Colloid}$ being a coarse-grained circle in $rz$-coordinate, see Figure~\ref{fig:excluded_volume}b.
 \begin{equation}
     \begin{gathered}
-        \textbf{Particle}[i,k] = \\
+        \textbf{Colloid}[i,k] = \\
         \begin{cases}
                 1, & \text{if } \left( \dfrac{d}{2} - r_i\right)^2 + \left( \dfrac{d}{2} - z_k\right)^2 \le \dfrac{d^2}{4} \\[5pt]
                 0, & \text{otherwise}
@@ -800,29 +799,28 @@ The structuring element $\textbf{Particle}$ is coarse-grained circle in $rz$-coo
     \centering
     \includegraphics[width=\linewidth]{fig/excluded_volume.png}
     \caption{
-        In the left frame, the effective pore shape is traced with a dashed red line
-        The excluded volume is created by a spherical particle with diameter $d$ and is shown with a red shade.
-        In the right frame, the excluded volume is shown on the regular lattice on the $rz$-plane circumferenced with dashed red line .
-        % The excluded volume on the regular lattice is a result of a morphological binary dilation $\bm{W}^{\ast} = \bm{W} \bigoplus \bm{V}$.
+        \textbf{(a)} Effective pore size in real space. Perspective view of the real (green) and effective (red) pore shapes.
+        In the cut through, the surface of the effective pore is traced with a dashed red line, and a colloid of size $d$ is shown in orange.
+        The effective dilation of the pore is due to the finite size of the colloid.
+        \textbf{(b)} Effective pore size in discretized space. $rz$ plane view of the real (dark green) and effective (light green, delimited with a red dashed line) membrane wall shapes.
+        The coarse-grained colloid is shown in orange.
+        \todo{RR: Can we replace 'particle' by 'colloid' for consistency?}
         }
     \label{fig:excluded_volume}
 \end{figure}
 
+\bigskip
+\textbf{Defining the colloid source}
 
-\textbf{Colloid Particles Source}
-
-We place source nodes at a finite axial distance, chosen to align with an oblate spheroidal surface (an ellipse in the $rz$-plane) intersecting the $z$-axis at $z_{\text{min}} + \delta z$.
-The ellipse has foci located at $(\pm r_{\text{p}}, -L/2)$, such that the pore rim acts as the focal circle.
+We place source nodes at a finite axial distance, chosen to align with an oblate hemispheroidal surface (or a half ellipse in the $rz$-plane) intersecting the $z$-axis at $z_{\text{min}} + \delta z$.
+The half ellipse has foci located at $(\pm r_{\text{p}}, -L/2)$, such that the pore rim acts as the focal circle.
 This defines the major semi-axis $r_{\text{max}} - \delta r$ and hence the radial extent of the discrete computational domain:
-
 \begin{equation}
     r_{\text{max}} - \delta r = \sqrt{(|z_{\text{min}}| - L/2 + \delta z)^2 + r_{\text{p}}^2}
 \end{equation}
-
-We then define a binary mask $\textbf{Source}[i,j]$, which identifies the grid nodes at the boundary of the domain that act as the colloid source (see Figure~\ref{fig:stencil}a).
+The binary mask $\textbf{Source}[i,j]$ identifies the grid nodes at the boundary of the domain that act as the colloid source (see Figure~\ref{fig:stencil}a).
 These nodes lie outside the oblate ellipsoid defined by the above condition.
 The set is constructed as:
-
 \begin{eqnarray}
     \begin{gathered}
         \textbf{Source}[i,j] = \\
@@ -840,17 +838,17 @@ The set is constructed as:
 This boundary condition ensures that the solution approximates that of an idealized system with a source located infinitely far away ($z \to -\infty$).
 We effectively reproduce the shape of iso-concentration lines in the exterior region of a bare pore, thereby maintaining a realistic flux geometry.
 
-This deviation can be corrected by analytically adding the missing reservoir resistance, as given by Eq.~\ref{eq:r_reservoir}, which accounts for the truncated semi-infinite space.
+\todo{RR:The following paragrpaph seems out of context. Please revise, or remove?}
+This deviation can be corrected by analytically adding the missing reservoir resistance, as given by Eq.~\eqref{eq:r_reservoir}, which accounts for the truncated semi-infinite space.
 
-\textbf{Colloid Particles Sink}
+\bigskip
+\textbf{Defining the colloid sink}
 
-To exploit the system's symmetry, we impose a Dirichlet boundary condition $\psi = \psi_{\text{sink}}$ at the $z+$ face of all finite volume elements with $k = N_z - 1$.
+Exploiting the system's symmetry, we impose a Dirichlet boundary condition $\psi = \psi_{\text{sink}}$ at the $z+$ face of all finite volume elements with $k = N_z - 1$.
 This corresponds to placing the absorbing boundary condition at the mid-plane $z = 0$.
-
 Due to symmetry, there is no radial component of the flux at $z = 0$, so no flux crosses the $r-$ or $r+$ faces of these finite volume elements.
 
 We define the set of finite volume elements that act as sinks as:
-
 \begin{equation}
     \textbf{Sink}[i,k] =
     \begin{cases}
@@ -858,19 +856,17 @@ We define the set of finite volume elements that act as sinks as:
     0, & \text{otherwise}.
     \end{cases}
 \end{equation}
-
 For these elements, the divergence term simplifies to account for the fixed potential at the $z+$ face and no flux at the radial faces:
-
 \begin{equation}
-\nabla_{i,k_0} \psi =
-\lambda^{z} D_{i,k_0} (\psi_{i,k_0} - \psi_{\text{sink}})
-+ 2 \lambda^{z} D_{i,k_0}^{z-} (\psi_{i,k_0} - \psi_{i,k_0-1})
+    \nabla_{i,k_0} \psi =
+    \lambda^{z} D_{i,k_0} (\psi_{i,k_0} - \psi_{\text{sink}})
+    + 2 \lambda^{z} D_{i,k_0}^{z-} (\psi_{i,k_0} - \psi_{i,k_0-1})
 \end{equation}
 
+\bigskip
+\textbf{Constructing the Laplace operator matrix}
 
-\textbf{Laplace operator matrix}
-
-The matrix $\mathbf{L}$ is constructed using a five-point stencil that adapts near boundaries.
+The matrix $\mathbf{L}$ is constructed using a five-point stencil (Figure~\ref{fig:stencil}a) that adapts near boundaries.
 The diagonal entries are defined as
 \begin{equation}
   \bm{L}_{m,m} = 
@@ -884,13 +880,12 @@ The diagonal entries are defined as
 \end{equation}
 where $\mathcal{N}_m$ is the set of valid neighbor indices:
 \begin{equation}
-  \textbf{N}_{i,k} = \left( \{(i \pm 1, k),\; (i, k \pm 1)\} \right) \cap \Omega,
+  \mathcal{N}_{i,k} = \left( \{(i \pm 1, k),\; (i, k \pm 1)\} \right) \cap \Omega,
   \label{eq:neighbors}
 \end{equation}
-and node indices are flattened as $m = i N_z + k$, $m' = i' N_z + k'$.
+and node indices are flattened as $m = i N_z + k$ and $m' = i' N_z + k'$.
 
-The off-diagonal entries $\bm{L}_{m,m'}$ represent finite-volume approximations of the Laplace operator Eq.~(\ref{eq:FV_divergence}), that aware of the boundary conditions:
-
+The off-diagonal entries $\bm{L}_{m,m'}$ represent finite-volume approximations of the Laplace operator (Eq.~\eqref{eq:FV_divergence}) taking account of the boundary conditions:
 \begin{eqnarray}
     \bm{L}_{m,m+1} =
     \begin{cases}
@@ -912,7 +907,6 @@ The off-diagonal entries $\bm{L}_{m,m'}$ represent finite-volume approximations 
     \end{cases}
 \end{eqnarray}
 
-
 The right-hand side vector $\bm{b}$ enforces the boundary condition from the source and the sink:
 \begin{eqnarray}
     \bm{b}_m = 
@@ -925,290 +919,179 @@ The right-hand side vector $\bm{b}$ enforces the boundary condition from the sou
 
 The resulting sparse linear system in Eq.~\eqref{eq:matrix_form} is solved using the \texttt{scipy.sparse.linalg} module in Python.
 
-\textbf{Extracting Pore Resistance}
 
-The total colloid flux is computed by summing the fluxes through the $z+$ faces of the finite volume elements at $k = N_z - 1$, corresponding to the pore cross-section at the mid-plane $z = 0$.
-Due to symmetry, the radial flux vanishes at this plane, so only the axial ($z$-direction) components contribute.
+\bigskip
+\textbf{Extracting pore resistance}
 
+The total colloid flux was computed by summing the fluxes through the $z+$ faces of the finite volume elements at $k = N_z - 1$, corresponding to the pore cross-section at the mid-plane $z = 0$.
+Due to symmetry, the radial flux vanishes at this plane, so only the axial ($z$-direction) components contribute:
 \begin{equation}
-    J_{\text{num}} = 2\pi \sum_{i=0}^{N_r-1} D_{i,k'} \frac{2(\psi_{i,k'} - \psi_{\text{sink}})}{\delta z} (2i + 1) \delta r^2
+    J_{\text{num}} = 2\pi \sum_{i=0}^{N_r-1} D_{i,k'} \frac{2(\psi_{i,k'} - \psi_{\text{sink}})}{\delta z} (2i + 1) \delta r^2,
 \end{equation}
 where $k' = N_z - 1$ is the axial index of the mid-plane.
 
 To determine the total pore resistance, we prescribe boundary conditions $\psi_{\text{source}} = 1.0$ and $\psi_{\text{sink}} = 0.5$.
-This corresponds to a concentration difference of $\Delta c = 1.0$ across the full system, assuming symmetry about the mid-plane.
-
+This corresponds to a concentration difference of $\Delta c = 1.0$ across the full system, assuming symmetry about the mid-plane:
 \begin{equation}
     R_{\text{num}} = \frac{\Delta c}{J_{\text{num}}} + 2 R_{\left(\left|z_{\text{min}} - L/2\right|,\ -\infty\right)}
 \end{equation}
-Here, $R_{(|z_{\text{min}} - L/2|, -\infty)}$ is the analytically estimated resistance of the truncated semi-infinite reservoir, as given by Eq.~\ref{eq:r_reservoir}.
+Here, $R_{(|z_{\text{min}} - L/2|, -\infty)}$ is the analytically estimated resistance of the truncated semi-infinite reservoir, as given by Eq.~\eqref{eq:r_reservoir}.
 
 
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mapping our model to experimental data for biocolloid transport across NPCs}
 
-% \pagebreak
-\section{Kinetics of Pore-Mediated Equilibration: Comparison to Experimental Data}
+Figure~\ref{fig:experiments_overview} and Table~\ref{tbl:experimental} summarise the most relevant spects of the published experimental quantifications of biocolloid transport rates across NPCs in the nuclear envelope of cells, along with partition coefficients for sticky colloids in phase-separated droplets of pure FG domain. 
+The nucleus is represented as a well-mixed compartment of volume $V_\text{nucleus}$ bounded by an impermeable envelope that is perforated by $N_\text{NPC}$ NPCs.
+The NPC are assumed to be sufficiently far apart for transport through each NPC to be independent.
+Assuming (somewhat simplistically) that the nuclei are spherical, one can estimate a root-mean-square distances between NPCs of 0.44 $\mu$m for HeLa and 0.29 $\mu$m for yeast cells, based on the nuclear characteristics (Table~\ref{tbl:experimental}).
+These values exceed the NPC transport channel diameter by at least 5-fold, and should indeed be sufficent for quasi-independent transport in most cases (Figure 6) \cite{Fabrikant1985}.
+In mapping our model to the experimental data, we naturally ignore the chemical heterogeneity of FG domains and biocolloids.
+Instead, we demonstrate the this level of detail is dispensible for a basic yet quantitative description of the NPC permselectivity barrier.
 
-
+\bigskip
+\textbf{Extracting NPC resistances from the experimental data}
+    
+Table~\ref{tbl:experimental} highlights that the experimental conditions vary, and so do the reported transport rate observables.
+To enable direct comparisons, we first converted all observables into resistances of individual NPCs.
+To provide intuitively accessible numbers, we further considered translocation rates per NPC at a set probe colloid concentration of $\Delta c = 1 \mu \text{M}$.
+The results are given in Tables~\ref{tbl:inert_probes} and \ref{tbl:attr_probes}, and Figure 8.
 
 \begin{figure}[]
     \centering
     \includegraphics[width=0.9\linewidth]{fig/experiment_description.png}
     \caption{Reductionist view of relevant pore-mediated equilibration experiments from Refs.~\cite{Ribbeck2001, Mohr2009, Popken2015, Timney2016, Frey2018}.\\
-    \textbf{Left:} A compartment with finite volume $V_{\text{in}}$ is separated from a finite ($V_\text{out}$) or semi-infinite reservoir ($V_\text{out}\to \infty$)  by an impermeable membrane (green contour) permeated by $N_{\text{pores}}$ polymer-filled pores. 
-    Nanocolloids (yellow circles) are mobile particles, present at a concentration $c_{\text{out}}$ in the semi-infinite reservoir, and influx into the finite volume where the time-dependent concentration is $c_{\text{in}}(t)$.\\
-    \textbf{Top right:} Isolated polymers phase-separate in a poor solvent with solvent strength $\chi_{\text{PS}}^{\text{FG}}$, forming polymer gel droplets (red irregular shapes) with polymer volume fraction $\phi_{\text{gel}}$.\\
-    \textbf{Bottom right:} Nanocolloids equilibrate between the solvent and the polymer gel, characterized by the partition coefficient $\text{PC}_{\text{gel}} \equiv \left(c_{\text{in}}/c_{\text{out}}\right)_{\text{gel}}$.
+    \textbf{Left:} The nucleus with finite volume $V_\text{nucleus}$ is separated from a finite cytosol ($V_\text{cytosol}$) or a quasi-infinite bulk solution by an impermeable envelope (green contour) perforated by $N_\text{NPC}$ FG-domain filled NPCs. 
+    Biocolloids (yellow circles) are mobile, and a concentration difference $\Delta c$ drives their diffusive flux into the nucleus where they accumulate over time $c_\text{nucleus}(t)$.
+    \textbf{Top right:} Isolated FG domain polymers phase-separate in a poor solvent with solvent strength $\chi_{\text{PS}}^{\text{FG}}$, forming droplets (red spheres) with polymer volume fraction $\phi_{\text{droplet}}$.
+    \textbf{Bottom right:} Colloids equilibrate between the dilute and condensed droplet phases, characterized by the partition coefficient $P = c_\text{droplet}/c_\text{dilute}$.
+    \todo{RR: Mikhail, can you please adjust the nomenclature in the Figure to match the legend. Thanks!}
     }
     \label{fig:experiments_overview}
 \end{figure}
-    
-We adopt a reductionist view of NPC‐mediated transport (Figure \ref{fig:experiments_overview}, left). 
-The nucleus is represented as a well-mixed compartment of volume $V_{\text{in}}$ bounded by an impermeable membrane that contains $N_{\text{pores}}$ identical, widely spaced cylindrical channels, each filled with a homogeneous polymer brush mimicking the FG-domain meshwork of nucleoporins. 
 
-Colloid particles at concentration $c_{\text{out}} = c_{0}$ diffuse from an external reservoir, either finite ($V_{\text{out}}$) or effectively infinite ($V_{\text{out}}\!\to\!\infty$), into the 'nucleus' compartment, whose initial concentration is $c_{\text{in}}(0)=0$.
-Because the combined pore volume is negligible ($N_{\text{pores}}V_{\text{pore}}\ll V_{\text{in}}$) the equilibration follows a first-order rate law.
-
-\begin{eqnarray}
-    \frac{\partial c}{\partial t} &=& k (c_{\text{out}} - c_{\text{in}}(t)) \\
-    \frac{c_{\text{in}}(t)}{c_{\text{out}}} &=& 1 - e^{-kt} \label{eq:kinetics} \\
-    k &=& \frac{N_{\text{pores}}}{R} V_{\text{in}}^{-1}
-    \label{eq:rate_constant}
-\end{eqnarray}
-where $k$ is the rate constant ($\tau = 1/k$ is characteristic time).
-The pore resistance $R$ is defined by Eq.~(14).
-
-If both compartments change concentration during equilibration
-(a two-compartment model, \textit{i.e.} exchange between the nucleus and cytoplasm), the rate constant becomes
+\textbf{Permeablised human cells.} In several studies \cite{Ribbeck2001, Mohr2009, Frey2018}, the plasma membrane of human HeLa cells was digitonin-permeabilised whilst leaving the nuclear membrane intact, fluorescent probe colloids were then delivered and the initial rate of probe concentration increase in the nucleus was quantified.
+Here, the external solution represents a quasi-infinite reservoir with constant probe concentration $c_0$.
+Under these conditions, the probe concentration in the nucleus initially increases linearly with time, $c_\text{nucleus} \approx k t c_0$ for $t \ll k^{-1}$, with the measured rate constant $k$.
+From the rate constant, the experimentally determined resistance of each NPC in the nuclear envelope is obtained through: 
 \begin{equation}
-  k = \frac{N_{\text{pores}}}{R}
-      \bigl(V_{\text{in}}^{-1}+V_{\text{out}}^{-1}\bigr),
-  \label{eq:rate_constant_2}
+    R_\text{exp} = \frac{N_\text{NPC}}{k V_\text{nucleus}},
+    \label{eq:Exp_Resistance_1}
 \end{equation}
+where $N_\text{NPC}$ is the number of NPCs per nucleus, and $V_\text{nucleus}$ is the volume of the nucleus.
 
-FG-domains of nucleoporins are slightly hydrophobic. 
-In solution they can therefore phase-separate into hydrogel particles (Figure~\ref{fig:experiments_overview}, top right), whereas when end-grafted to the pore walls they form a dense polymer brush that fills the NPC channel.
-The equilibrium partition coefficient of a probe colloid in these isolated FG hydrogels (Figure~\ref{fig:experiments_overview}, lower right) reflects its interaction with the same domains in the grafted brush, and can be translated into an insertion free energy, and hence into a predicted pore resistance.
-
-To capture this behaviour we treat the chemically diverse FG-domains as identical homopolymer chains with averaged properties.  
-The same model reproduces both the hydrogel phase separation of ungrafted chains and the observed correlation between hydrogel
-partitioning and NPC resistance.
-
-
-\textbf{Extracting pore resistance from the experimental data.}
-    
-We compiled transport data for NPCs from HeLa, \textit{S. cerevisiae} and \textit{T. thermophilia} cells.  
-The human cells studies used digitonin-permeabilised HeLa cells and monitored nuclear fluorescence while fluorescently tagged probes equilibrated with a large external reservoir 
-\cite{Ribbeck2001,Mohr2009,Frey2018}.  
-The yeast studies followed nuclear-cytoplasmic equilibration after
-photobleaching a reporter protein \cite{Popken2015,Timney2016}.
-
-Although yeast and human NPCs differ in their protein composition, the dimensions of the pore channel are similar and only slightly smaller for yeast NPC \cite{Yang1998}, allowing a direct comparison.  
-Table~\ref{tbl:experimental} lists the experimental observables we extracted. 
-To compare them with one another, and with our theoretical predictions, we convert each observable to the single-pore resistance $R_{\text{exp}}$.  
-For data that report a kinetic constant $k$ (or its reciprocal time constant $\tau$) we use Eqs.~(\ref{eq:rate_constant}, \ref{eq:rate_constant_2}).
-
-Popken \textit{et al.}\,\cite{Popken2015} measured the
-nucleus-to-cytoplasm fluorescence ratio after $t =  1\text{h}$, which directly gives the concentration ratio
-$c_{\text{in}}/c_{\text{out}}$.  
-With finite nuclear and cytoplasmic volumes, the corresponding rate
-constant from Eq.~\ref{eq:rate_constant_2} is
-
+\textbf{Intact yeast cells.} Two studies \cite{Popken2015,Timney2016} photobleached the nuclear pool of fluorescent probe colloids in intact \textit{S. cerevisiae} cells, and then quantified the rate of influx of fluorescent probe molecules from the cytosol.
+Here, the nuclear and cytosolic volumes are both finite, and the rate constant defining the transport process is given by
 \begin{equation}
-    k = t^{-1}\ln\left(
-        \cfrac{\cfrac{c_{\text{in}}(t)}{c_{\text{out}}(t)} \cfrac{V_{\text{in}}}{V_{\text{out}}} +1}
-             {1 - \cfrac{c_{\text{in}}(t)}{c_{\text{out}}(t)}}
-        \right)
-\end{equation}
-
-The single-pore resistance extracted from Eq.~\ref{eq:rate_constant_2}
-for nucleus-cytoplasm equilibration is
-\begin{equation*}
-  R_{\text{exp}}
-  = \frac{N_{\text{pores}}}{k}
-    \bigl(V_{\text{in}}^{-1}+V_{\text{out}}^{-1}\bigr),
-\end{equation*}
-whereas for digitonin-permeabilised nuclei equilibrating with a large
-external reservoir (Eq.~\ref{eq:rate_constant}) it reduces to
-\begin{equation*}
-  R_{\text{exp}}
-  = \frac{N_{\text{pores}}}{k}\,V_{\text{in}}^{-1}.
-\end{equation*}
-
-Because NPCs operate on the nanometer scale, the resulting resistances are extremely small, typically
-$R\sim10^{20}\,\text{s}/\text{m}^{-3}$.  
-To express these values more intuitively, we convert them to a
-translocation rate per one NPC, defined as the number of molecules that cross one pore per second under a unit concentration gradient of $\Delta c = 1\;\mu\text{M}$ (cf.~\cite{Ribbeck2001}):
-\begin{equation}
-    \begin{array}{c}
-        \text{Translocation rate} \\
-        \text{per one NPC}\\
-        \text{at} \, \Delta c = 1\;\mu\text{M}
-    \end{array}
-    \hspace{-1em}= \,\frac{N_{\mathrm{A}}}{R}\,10^{-3}\;\text{s}^{-1},
-\end{equation}
-
-where \(N_{\mathrm{A}}\) is Avogadro's number.
-
-%\textbf{}
-
-\textbf{Translocation rate versus inert probe colloid molar weight.}
-
-% \begin{figure}[]
-%     \centering
-%     \includegraphics[width=3.2in]{fig/flux_vs_MW_SI.png}
-%     \caption{%
-%     Single-NPC translocation rate plotted against probe molar mass:
-%     comparison of three models.  
-%     \textit{Diffusive barrier} (gray)-
-%     the FG mesh lowers the diffusivity but imposes no net insertion free
-%     energy;  
-%     \textit{Rigid barrier} (grey)-
-%     the pore is treated as an impermeable channel $\approx$\,4-5\,nm in
-%     diameter (cut-off $\approx$\,40-50\,kDa), so larger inert colloids are almost completely
-%     excluded;  
-%     \textit{Soft barrier} (orange, this work)-
-%     the FG domains are modelled explicitly, combining size-dependent
-%     diffusivity with the calculated insertion free energy.  
-%     Shaded symbols represent experimental rates; shaded bands indicate parameter
-%     uncertainty $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.
-%     }
-%     \label{fig:flux_vs_MW}
-% \end{figure}
-
-We compare our theoretical predictions with experimental translocation data—both the original measurements of Ribbeck \textit{et al.}\,\cite{Ribbeck2001} and values we deduced from other studies \cite{Mohr2009,Popken2015,Timney2016,Frey2018} (see Table~\ref{tbl:experimental}).  
-For the calculations we adopt the number of pores per nucleus, nuclear and cytoplasmic volume reported for digitonin-permeabilised HeLa cells \cite{Ribbeck2001} and for \textit{S.\,cerevisiae} nuclei \cite{Timney2016} (Table~\ref{tbl:experimental}), the inner diameter and the channel length of the pores is set to be $r_{\text{pore}}\approx 40 \text{nm}$ (Figure~1).
-The buffer viscosity at 20$^\circ$C is taken as $\eta_{\text{S}} = 1.45\times10^{-3}\,\text{Pa\,s}$, matching the assay composition (20 mM HEPES-KOH, pH 7.4; 120 mM KOAc; 5 mM Mg(OAc)$_2$; 0.5 mM EGTA; 250 mM sucrose) \cite{Ribbeck2001}.
-
-Throughout we assume the nuclear-pore brush is in a moderately poor solvent, $\chi_{\text{PS}} = 0.6$. \todo{[add reference or brief rationale]}
-
-All probe particles are treated as spheres with densities in the range $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.  Their
-diameter (in nm) is estimated from the molar mass $M_{w}$ (in kDa) via
-\begin{equation}
-  d_{\text{probe}}
-  = 10^{8}
+    k = t^{-1}\ln
     \left(
-      \frac{6}{\pi}\,
-      \frac{M_{w}}{N_{\text{A}}\rho_{\text{probe}}}
-    \right)^{\!1/3},
-  \label{eq:d_probe}
+        \cfrac{1 + \cfrac{c_\text{nucleus}(t)}{c_\text{cytosol}(t)}
+        \cfrac{V_\text{nucleus}}{V_\text{cytosol}}}
+        {1 - \cfrac{c_\text{nucleus}(t)}{c_\text{cytosol}(t)}}
+    \right)
 \end{equation}
-where $N_{\text{A}}$ is Avogadro's number; the corresponding molecular masses are listed in Tables~\ref{tbl:inert_probes} and~\ref{tbl:attr_probes}.
+From the rate constant $k$, or equivalently the characteristic time $\tau = k^{-1}$, the resistance per NPC is obtained through:
+\begin{equation}
+    R_\text{exp} = \frac{N_\text{NPC}}{k} 
+    \left(\frac{1}{V_\text{nucleus}} + \frac{1}{V_\text{cytosol}}\right)
+    \label{eq:Exp_Resistance_2}
+\end{equation} 
 
-In Figure 8a the scatter represent the experimental translocation rates extracted for inert probes (Table~\ref{tbl:inert_probes}).
-The matching shaded band shows our theoretical prediction over the size range $1 \le d \le 10$ nm, bounded by the lowest and highest probe densities.
-For reference we also plot the rates expected for a bare pore, using Eq.~(9), again with a band bracketing the density range.
+\bigskip
+\textbf{Determining translocation rates per NPC.}
+From the expirimentally determined NPC resistances, the translocation rates per NPC for a given molar probe concentration are readily obtained as:
+\begin{equation}
+    J_\text{exp} = \Delta c N_\text{A} / R_\text{exp}
+    \label{eq:Translocation_rate}
+\end{equation}
 
-% \todo{Here to write that rigid barrier does not fit the data well, and about correction of wall drag, as it is important here.
-% They have similar comparison in Timney et al \cite{Timney2016}.}
+Naturally, this relation was also used to convert the theoretically predicted pore resistances into translocation rates.
+Here, the solvent viscosity and temperature (which affect $D_0$) were set to $\eta_{\text{S}} = 1.45 \times 10^{-3} \text{ Pa s}$ and $T = 293 \text{ K}$, respectively, matching the conditions used for the experiments with HeLa cells \cite{Ribbeck2001}.
+\todo{RR: Mikhail, a quick search suggests that the yeast cytoplasm at similar temperature has a viscosity of $\eta_{\text{S}} = 5 \times 10^{-3} \text{ Pa s}$.
+Do we want to/can we address this discrepancy somehow?
+ML: you are correct in Figure S12 and 
+}
 
-% \begin{equation}
-%     R = \frac{LK\{\frac{d}{2r_{\text{pore}}}\}}{D_0 \pi (r_{\text{p}}^0-r_{\text{p}})^{2}} + \frac{1}{2 D_0 (r_{\text{p}}^0-r_{\text{p}})}
-%     \label{eq:resistance}
-% \end{equation}
-% where $K\{\frac{d}{2r_{\text{pore}}}\}$ account for wall drag and found from \cite{Haberman1958}.
+\bigskip
+\textbf{Mapping model and experimental parameters for the transport of sticky colloids} 
 
-% \todo{Also reduced by the meshwork diffusivity does not explain the trend, even if $\beta = 8$ instead of $\beta = 5.5$. We change $\beta$ to fit trend to smaller particles}
+Frey et al. \cite{Frey2018} used probe protein variants (GFP and mCherry) with varying FG domain attraction but similar size, to correlate their translocation rates across HeLa cell NPCs with their partition coefficients $P$ in phase-separated droplets of pure FG domains of either Nup116 from \textit{S. cerevisiae} or Nup98A from \textit{T. thermophilia}.
 
-\textbf{Translocation rate versus partition coefficient in FG-domain hydrogel correlation.}
+To compare these data with the predictions of our model, we estimated the effective solvent quality $\chi_\text{PS}^\text{FG}$ of the pure FG domain droplets, and the effective interaction strength $\chi_\text{PC}^\text{FG}$  between the colloids and the pure FG domains, as follows.
 
-For particles with high affinity to the polymer (low $\chi_{\text{PC}}$), we expect enhanced permeability compared to inert particles, possibly even surpassing that of a bare pore.
+\bigskip
+\textbf{Estimating $\chi_\text{PS}^\text{FG}$.} 
+Nup98A and Nup116 FG domains undergo spontaneous phase separation due to chain cohesiveness, demixing into a dilute FG-poor phase and condensed FG-rich droplets.
+The polymer concentration in the dilute phase, $\phi_\text{FG dilute}$, approximately equals the critical concentration for phase separation.
+For a two-component system (here comprising the FG domain and the solvent), phase separation occurs at
+$\chi_\text{PS}^\text{FG} > \frac{1}{2} + \frac{1}{\sqrt{N}} \gtrsim 0.5$
+according to mean-field theory (assuming $N \gg 1$), and both chemical potentials and osmotic pressures are equal in the dilute and condensed phases \cite{Vovk2016, Zilman2018}.
+
+The estimated critical concentration of Nup116 and Nup98A FG domains is $1 \mu\text{g}/\text{ml}$, corresponding to a FG domain volume fraction in the dilute phase of $\phi_\text{FG dilute} \approx 10^{-6}$ \cite{Schmidt2015}.
+This extremely low value implies that the osmotic pressure is effectively zero in both the droplet and dilute phases, and allows to estimate the solvent quality from the condition for vanishing osmotic pressure (Eq.~(16)):
+\begin{eqnarray}
+    \chi_{\text{PS}}^{\text{FG}} = \frac{-\ln(1-\phi_\text{FG droplet}) - \phi_\text{FG droplet}}{\phi_\text{FG droplet}^2}
+\end{eqnarray}
+
+The concentration of Nup98A in phase-separated droplets was in a later study \cite{Ng2023} quantifed at 474 $\pm$ 32 mg/mL, and corresponds to a volume fraction $\phi_\text{Nup98A droplet}$ between 0.31 and 0.51 considering the range of plausible densities ($1.0 \text{ g/mL} < \rho < 1.4 \text{ g/mL}$, taking into account that some solvent may contribute to the effective FG domain volume).
+The concentration of 116 was not quantified, but it is likely that it is lower than for Nup98A.
+\todo{RR: Mikhail, you wrote that $c_\text{FG droplet} \approx 400 \text{mg/ml}$ was estimated, but I could not find this info anywhere. Can you please advise where to find it? We should reference it.}
+An intermediate value of $\phi_\text{FG droplet} = 0.3$ was thus chosen to reprent both FG domain types, corresonding to $\chi_{\text{PS}}^{\text{FG}} = 0.63$.
+Within the range $0.2 < \phi_\text{FG droplet} < 0.4$, or $0.58 < \chi_{\text{PS}}^{\text{FG}} < 0.69$, the dependence of the transport rate on the partition coefficient $P$ is not very sensitive to the exact value of $\phi_\text{FG droplet}$ (Figure~\ref{fig:flux_vs_PC}).
+\todo{RR: Mikhail, please check if I have revised the above correctly.}
+
+\bigskip
+\textbf{Estimating $\chi_\text{PC}^\text{FG}$ for each probe protein.} 
+The effective volume of the probe proteins was determined from the molecular mass $M_w$ as $V_\text{probe} = M_w / (N_\text{A} \rho)$, with $N_\text{A}$ Avogadro's number and $1.0 \text{ g/mL} < \rho < 1.4 \text{ g/mL}$.
+The effective size of the probe was taken as the diameter of a sphere of equivalent volume:
+\begin{eqnarray}
+    d_\text{probe} =
+    \left( \frac{6}{\pi} V_\text{probe} \right)^{1/3} =
+    \left( \frac{6}{\pi} \frac{M_w}{N_\text{A} \rho} \right)^{1/3}
+\end{eqnarray}
+The molecular mass of probes proteins in this dataset was kept constant at $\sim$ 28 kDa (Table~\ref{tbl:attr_probes}), corresponding to an effective probe diameter between 4.0 and 4.5 nm, or between 5.2 and 5.9 when normalized by the segement length $a = 0.76 \text{ nm}$.
+To simulate this system, we used $d_\text{probe} = 6$, i.e., the nearest even integer value compatible with our discretized model.
+
+Since the osmotic pressure in the pure FG droplets is negligible, only surface interactions contribute to the insertion free energy $\Delta F_\text{FG droplet}$, such that:
+\begin{eqnarray}
+    \Delta F_\text{FG droplet} =
+    \frac{\pi d_\text{probe}^3}{6} \cdot \gamma\left(
+    \phi_\text{FG droplet}, \chi_\text{PC}^\text{FG},
+    \chi_\text{PS}^\text{FG}
+    \right) \\
+    P = \frac{c_\text{droplet}}{c_\text{dilute}} = e^{-\Delta F_\text{FG droplet}}
+\end{eqnarray}
+This set of equations enabled mapping of $\chi_\text{PC}^\text{FG}$ values to the measured partition coefficients $P$ between the droplet and dilute phases for each probe protein (Figure 8b), from the estbalished estimates for $\phi_\text{FG droplet}$, $\chi_{\text{PS}}^{\text{FG}}$, and $d_\text{probe}$.
+
+Lastly, to predict the probe translocation rates shown in Figure 8b, we assumed that the effective solvent strengths in the NPC is $\chi_\text{PS} = 0.6$, consistent with the prior calculations for non-sticky probes (Figure 8a).
 
 \begin{figure}[]
     \centering
     \includegraphics[width=3.5in]{fig/flux_vs_PC_SI.png}
-    \caption{%
+    \caption{
     Gating of colloids by their affinity as in Figure~8b ($\rho_{\text{probe}} =1.3 \text{g/cm}^{-3}$).
     Shaded bands indicate parameter uncertainty $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.
+    \todo{RR: Mikhail, the legend does not seem to match the figure. Presumably, the shaded area explores the effect of FG domain concentration?}
     }
     \label{fig:flux_vs_PC}
 \end{figure}
 
-Frey \textit{et al}~\cite{Frey2018} examined permeability of similarly sized colloidal particles with varying surface properties, ranging from inert to FG-domain-affine.
-To characterize these surfaces, FG-domain hydrogels were prepared to study colloid partitioning.
 
-The authors prepared droplets of Mac98A FG-domains via rapid dilution, inducing phase separation. 
-%following the protocol of Ref.~\cite{Schmidt2015}.
-The estimated protein concentration in the gel phase is $\approx 275 \, \text{mg}/\text{ml}$, which corresponds to a volume fraction $\phi_{\text{gel}} \approx 0.2$, assuming a typical dry protein density of $1.35 \, \text{g}/\text{ml}$.
-
-Similarly, droplets of Nup116 FG-domains were prepared with an estimated intra-particle protein concentration of $\phi_{\text{gel}} \approx 400 \, \text{mg}/\text{ml}$, corresponding to $\phi_{\text{gel}} \approx 0.4$. A compromise value $\phi_{\text{gel}} = 0.3$ was used in \todo{Figure~8}.
-Within the range $0.2 < \phi_{\text{gel}} < 0.4$, the results are not sensitive to the exact value of $\phi_{\text{gel}}$.
-
-Upon dilution, FG-domains undergo phase separation due to chain cohesiveness, demixing into a dilute FG-poor phase and a condensed FG-rich gel.
-The polymer concentration in the bulk phase, $\phi_{\text{gel}}^{\text{out}}$, approximately equals the critical concentration for phase separation.
-
-For a two-component system (FG-domain + buffer), phase separation occurs at:
-$
-\chi_{\text{PS}}^{\text{FG}} > \frac{1}{2} + \frac{1}{\sqrt{N}} \gtrsim 0.5
-$
-according to mean-field theory (assuming $N \gg 1$). 
-Both chemical potentials and osmotic pressures are equal in the rich and poor phases \cite{Vovk2016, Zilman2018}.
-
-The estimated critical concentration for Nup116 and Nup98A FG-domains is $1 \, \mu\text{g}/\text{ml}$, corresponding to \mbox{$\phi_{\text{gel}}^{\text{out}} \approx 10^{-6}$} \cite{Schmidt2015}.
-This extremely low value implies the osmotic pressure is effectively zero in both phases:
-
-\begin{eqnarray}
-    \Pi(\phi_{\text{gel}}) = \Pi(\phi_{\text{gel}}^{\text{out}}) \approx 0
-\end{eqnarray}
-
-This allows us to estimate the solvent quality $\chi_{\text{PS}}^{\text{FG}}$ using the condition for vanishing osmotic pressure Eq.~(16):
-
-\begin{eqnarray}
-    \chi_{\text{PS}}^{\text{FG}} = \frac{-\ln(1-\phi_{\text{gel}}) - \phi_{\text{gel}}}{\phi_{\text{gel}}^2}
-\end{eqnarray}
-
-Assuming that FG-domains in the gel are chemically similar to those in nuclear pores, we take the polymer-colloid interaction to be unchanged: $\chi_{\text{PC}}^{\text{gel}} \approx \chi_{\text{PC}}$.
-
-Combining this information, we estimate the insertion free energy $\Delta F_{\text{gel}}$ for particles with different surface properties (i.e., varying $\chi_{\text{PC}}$) into an FG-domain gel of volume fraction $\phi_{\text{gel}}$.
-Since the osmotic pressure is negligible, only the surface interaction contributes:
-
-\begin{eqnarray}
-    \Delta F_{\text{gel}} =
-    \frac{\pi d^3}{6} \cdot \gamma\left(
-    \phi_{\text{gel}}, \chi_{\text{PC}},
-    \chi_{\text{PS}}^{\text{FG}}\{ \phi_{\text{gel}} \}
-    \right) \\
-    \text{PC}_{\text{gel}} = \left(\frac{c_{\text{in}}}{c_{\text{out}}}\right)_{\text{gel}} = e^{-\Delta F_{\text{gel}}}
-\end{eqnarray}
-
-Owing to the uncertainty in the volume fraction of the FG-particles, $\phi_{\text{gel}}$, we adopt a compromise value of $\phi_{\text{gel}} = 0.30$ in Figure 8b,.  
-With an average probe molar mass of \(\sim\!28\;\text{kDa}\) the particle diameter is estimated to lie in the range  $4.0\;\text{nm} \lesssim d\cdot a \lesssim 4.5\;\text{nm}$.
-Because our theoretical model is implemented for even integer diameters expressed in segment lengths ($a = 0.76\;\text{nm}$), we use the
-nearest value, $d = 6$.
-
-
-
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\onecolumn
+\section*{Supplementary Tables}
 
 \begin{table*}[h]
-\begin{minipage}{\linewidth}
-\centering
-\caption{Transport-related quantities extracted from the experimental studies.}
-\resizebox{0.9\linewidth}{!}{
-    \begin{tabular}{p{2.6cm}|p{2.6cm}|p{9cm}|p{0.7cm}|p{0.7cm}|p{0.4cm}}
-        %\hline
-        Study & Cell culture & Reported quantity & $\!\!N_{\text{pores}}$ & $V_{\text{in}}$ $[f\text{l}]$ & $\!V_{\text{out}}$ $[f\text{l}]$ \\
-        \hline
-        Ribbeck \textit{et al.}\cite{Ribbeck2001} & HeLa & Translocation rate per one NPC at $\Delta c = 1 \mu\text{M}$ & 2770 & 1130 & $\infty$ \\
-        Mohr \textit{et al.}\quad\,\cite{Mohr2009} & HeLa & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
-        Popken \textit{et al.}\,\,\cite{Popken2015} & \textit{S. cerevisiae} & Nuclear/cytoplasm concentration $c_{\text{in}}/c_{\text{out}}$ at  $t\! =\!1\text{h}$  & 161 & 4.8 & 60 \\
-        Timney \textit{et al.}\,\cite{Timney2016} & \textit{S. cerevisiae} & Characteristic time $\tau$ & 161 & 4.8 & 60 \\
-        Frey \textit{et al.}\quad\;\;\,\cite{Frey2018} & HeLa, \newline \textit{S. cerevisiae}, \newline \textit{T. thermophilia} & Rate constant $k$ for HeLa, partitioning in FG hydrogel $P_{\text{gel}}$ for \textit{S. cerevisiae} Nup116 and \textit{T. thermophilia} Nup98A & 2770 & 1130 & $\infty$ \\
-        %\hline
-    \end{tabular}
-    }
-    \label{tbl:experimental}
-\end{minipage}
-
-\hfill
-\vspace{1cm}
-
 \begin{minipage}{0.48\linewidth}
 \centering
-% \begin{table}[h]
-\caption{Translocation rates of inert probe colloids calculated from the experimental data.
-Data marked with $^{*}$ are taken directly from the source without modification.}
+\caption{Translocation rates of non-sticky peptides and globular proteins across NPCs, calculated from the experimental data reported in the literature.
+Data marked with $^{*}$ are taken directly from the source without modification.
+\todo{RR: Please replace the author names in the Reference column by the in-text citation. Also, do we want to provide the full names of proteins, for clarity?}}
 \resizebox{\linewidth}{!}{
 \begin{tabular}{p{3cm}|p{1cm}|p{2cm}|p{2.6cm}}
-Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& Study \\
+Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& Reference \\
 \hline
 Fluorescein-Cys & 0.5 & 231 & Mohr \textit{et al} \\
 11 aa peptide & 1.4 & 130 & Mohr \textit{et al} \\
@@ -1248,19 +1131,20 @@ MBP K→R & 43.0 & 0.45 & Frey \textit{et al} \\
 \end{tabular}
 }
 \label{tbl:inert_probes}
-% \end{table}
 \end{minipage}
-\hfill
-\vspace{-0.5cm}
+\end{table*}
+
+\pagebreak
+\begin{table*}[h]
 \begin{minipage}{0.48\linewidth}
 \centering
-% \begin{table}[h]
-\caption{Translocation rates probe colloids with different surface features calculated from the experimental data and their partition coefficient in the FG-gel taken directly from the source without modification from Frey \textit{et al}.\cite{Frey2018}.
-Probe colloids marked with $^{*}$ reported to form oligomers, molar weights presented for monomer state.
-}
+\caption{Translocation rates across NPCs, and partition coefficients $P$ in phases-separted droplets of pure FG domains, of mCherry and variants of GFP with modified surface features, from Frey et al. \cite{Frey2018}.
+Translocation rates were caclulated, and partition coefficients are reproduced directly, from the original paper.
+Probe colloids marked with $^{*}$ were reported to form oligomers in plain solution; molecular weights rerpesent the monomer.
+\todo{RR: Perhaps remove the Molecular weight column, as it does not add any tangible information, and also the notion of oligomers? The latter issue is not discussed in the main text, and would require some detailed discussion.}}
 \resizebox{\linewidth}{!}{
 \begin{tabular}{p{3cm}|p{1cm}|p{2cm}|p{1.2cm}|p{1.2cm}}
-Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& PC in Mac98A & PC in Nup116 \\
+Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& PC in Nup98A & PC in Nup116 \\
 \hline
 % yNTF2 (dimer) & 28 & 84 & 290 & 1400 \\
 % rNTF2 (dimer) & 28 & 95 & 3200 & 13000 \\
@@ -1294,10 +1178,31 @@ GFPNTR\_3B9 & 28.3 & 122 & 4800 & - \\
 \end{tabular}
 }
 \label{tbl:attr_probes}
-% \end{table}
+\end{minipage}
+
+\hfill
+\vspace{0.5cm}
+\pagebreak
+
+\begin{minipage}{\linewidth}
+\centering
+\caption{Transport-related quantities extracted from the experimental studies.}
+\resizebox{0.9\linewidth}{!}{
+    \begin{tabular}{p{2.6cm}|p{2.6cm}|p{9cm}|p{0.7cm}|p{0.7cm}|p{0.4cm}}
+        %\hline
+        Study & Nuclei from & Reported quantity & $N_{\text{pore}}$ & $V_{\text{in}}$ $[f_\text{l}]$ & $V_{\text{out}}$ $[f_\text{l}]$ \\
+        \hline
+        Ribbeck et al. \cite{Ribbeck2001} & HeLa cells & Translocation rate per NPC at $\Delta c = 1 \mu\text{M}$ & 2770 & 1130 & $\infty$ \\
+        Mohr et al. \cite{Mohr2009} & HeLa cells & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
+        Popken et al. \cite{Popken2015} & \textit{S. cerevisiae} & Nuclear/cytoplasm concentration $c_{\text{in}}/c_{\text{out}}$ at  $t = 1 \text{h}$ & 161 & 4.8 & 60 \\
+        Timney et al. \cite{Timney2016} & \textit{S. cerevisiae} & Characteristic time $\tau$ & 161 & 4.8 & 60 \\
+        Frey et al. \cite{Frey2018} & HeLa cells & Rate constant $k$; \newline  correlated with partitioning coefficient in phase-separated droplets of  \textit{S. cerevisiae} Nup116 and \textit{T. thermophilia} Nup98A & 2770 & 1130 & $\infty$ \\
+        %\hline
+    \end{tabular}
+    }
+    \label{tbl:experimental}
 \end{minipage}
 \end{table*}
-
 
 \begin{table*}[t]
 \centering
@@ -1306,15 +1211,15 @@ GFPNTR\_3B9 & 28.3 & 122 & 4800 & - \\
 \resizebox{0.9\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|}
 \hline
-FG nucleoporin in \textit{S. cerevisiae} & \begin{tabular}[c]{@{}c@{}}Number of amino acids\\ in IDR per protein\end{tabular} & \begin{tabular}[c]{@{}c@{}}Protein copy\\ number per NPC\end{tabular} & \begin{tabular}[c]{@{}c@{}}Number of amino acids\\ in IDRs per NPC\end{tabular} \\
+FG nucleoporin in \textit{S. cerevisiae} \textsuperscript{a)} & \begin{tabular}[c]{@{}c@{}}Number of amino acids\\ in IDR per protein \textsuperscript{b)} \end{tabular} & \begin{tabular}[c]{@{}c@{}}Protein copy\\ number per NPC \textsuperscript{c)} \end{tabular} & \begin{tabular}[c]{@{}c@{}}Number of amino acids\\ in IDRs per NPC\end{tabular} \\
 \hline
 Nsp1       & 617 & 48  & 29616  \\
 Nup49      & 251 & 32  & 8032   \\
 Nup57      & 255 & 32  & 8160   \\
 Nup145N    & 433 & 16  & 6928   \\
-Nup116\textsuperscript{d)}  & 960 & 16  & 15360  \\
+Nup116 \textsuperscript{d)}  & 960 & 16  & 15360  \\
 Nup100     & 800 & 16  & 12800  \\
-Nup60\textsuperscript{e)}   & 539 & 16  & 8624   \\
+Nup60 \textsuperscript{e)}   & 539 & 16  & 8624   \\
 Nup1       & 857 & 16  & 13712  \\
 Nup42      & 382 & 8   & 3056   \\
 Nup159     & 685 & 16  & 10960  \\
@@ -1333,7 +1238,6 @@ Nup159     & 685 & 16  & 10960  \\
 \textsuperscript{e)} The full protein was considered disordered, based on prediction.
 \end{minipage}
 \end{table*}
-
 
 
 % \pagebreak
@@ -1409,7 +1313,9 @@ Nup159     & 685 & 16  & 10960  \\
     $\chi_{\textrm{PS}}$ & Flory polymer-solvent interaction parameter \\
     %\bottomrule
 \end{tabularx}
-%
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\todo{RR: The bibliography is missing here, for some technical reason? Also, please change in-text references to number (instead of author+year) format, consistent with the main text.}
 \printbibliography
 \end{document}

@@ -158,8 +158,8 @@ def get_rigid_pore_for_given_density(density):
 
 #%%
 
-show_rigid_pore_model = True
-show_nofe_model = True
+show_rigid_pore_model = False
+show_nofe_model = False
 show_phi_band = True
 
 
@@ -238,6 +238,9 @@ for k, v in flux_vs_molar_weight.items():
     if marker_=="+":color_ = "k"
     x = data[X_label]
     y = data[Y_label]
+    # the viscosity in non-permeabilized yeast culture are about 0.005 compared to 0.00145 in HeLa
+    if flux_vs_molar_weight[k]["Culture"] != "HeLa":
+        y = y/eta*0.005
     ax.scatter(
         x,y, 
         label = v["Reference"], 
@@ -452,5 +455,5 @@ ax.minorticks_off()
 
 fig.set_size_inches(6, 2.5)
 
-fig.savefig("fig/experimental_data.svg", dpi = 600)
+# fig.savefig("fig/experimental_data.svg", dpi = 600)
 #%%
