@@ -1,20 +1,33 @@
 \documentclass[12pt, a4paper]{article}
-\usepackage{authblk}
 \usepackage{graphicx}
 \usepackage{amsmath, amssymb, amsfonts, mathtools}
 \usepackage{subcaption}
-\usepackage[
-backend=biber,
-natbib=true,
-style=numeric,
-sorting=none,
-doi=false,
-isbn=false,
-url=false,
-eprint=false
-]{biblatex}
 \usepackage{xcolor}
 \usepackage{bm}
+
+\usepackage{authblk}
+\renewcommand\Authfont{\normalsize}
+\renewcommand\Affilfont{\small}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}        % better fonts in T1
+
+\usepackage[
+  backend=biber,
+  style=nature,
+  maxnames=8,  % limit names in citations
+  doi=false,
+  url=false,
+  eprint=false,
+  isbn=false,
+]{biblatex}
+\addbibresource{biblio.bib}
+
+% % Set limits programmatically (works even on older versions)
+% \AtBeginBibliography{%
+%   \setcounter{maxnames}{99}%
+%   \setcounter{minnames}{1}%
+% }
 
 %\REMOVE BEFORE SUBMISSION
 \usepackage[right]{lineno}
@@ -33,7 +46,7 @@ eprint=false
 ]{pdfcomment}
 \newcommand{\todo}[1]{\pdfcomment{#1}} %\REMOVE ALL \todo{...} BEFORE SUBMISSION
 
-\addbibresource{biblio.bib}
+
 \title{A polymer filling enhances the rate and selectivity of colloid permeation across mesopores}
 
 \author[1]{Mikhail Y. Laktionov}
@@ -306,7 +319,7 @@ Values of $\chi_{\text{PS}}<0.5$ and $\chi_{\text{PS}}>0.5$ correspond to good a
 The polymer density profile $\phi(z,r)$ in the pore was calculated by the two-gradient self-consistent field numerical method of Scheutjens and Fleer (SF-SCF; Supplementary Note 3).
 In Figure~\ref{fig:phi_hm_grid}, one can appreciate the expected increase in polymer concentration inside the pore with decreasing solvent quality (increasing $\chi_{\text{PS}}$).
 With the selected pore and polymer parameters (Figure~\ref{fig:colloid_transport}), the polymer brush fills the entire pore cross-section within the full range of solvent qualities explored, and colloids need to navigate the polymer meshwork to traverse the pore.
-\todo{ML: Ralf, FL did not like the verb traverse much}
+\todo{ML: FL did not like the verb traverse much}
 For wider pores, shorter polymers and/or lower grafting densities, an open channel free of polymer may appear in the pore center, as detailed elsewhere~\cite{Ligoure2001,Laktionov2021}; this scenario would result in a different permeation behavior and is not considered here.
 
 \begin{figure}
@@ -465,7 +478,7 @@ Thus, diffusivity and free energy, and consequently the local resistivity, are s
 %%%%%%%%%%
 
 Figure~\ref{fig:R_vs_chi_PC} visualizes the relative contributions of the pore interior ($R_{\text{int}}$) and exterior ($R_{\text{ext}}$) to the total resistance as a function of the polymer-colloid attraction $\chi_\text{PC}$, for a selected colloid size ($d = 12$) in a good ($\chi_\text{PS} = 0.3$) and a poor ($\chi_\text{PS} = 0.7$) solvent.
-\todo{RR: I have changed the colloid size here for consistency with the figure legend. Mikhail, please check if correct.}
+% \todo{RR: I have changed the colloid size here for consistency with the figure legend. Mikhail, please check if correct.}
 A comparison of the total resistance obtained by direction numerical solution of the Smoluchowski equation (diamond symbols; Supplementary Note 6) here validates the accuracy of the analytical scheme (solid lines).
 
 A striking feature is that attracted colloids can achieve diffusive fluxes that exceed the limit of the bare pore, as indicated by the segments of the $R(\chi_{\text{PC}})$ curves that fall below the solid horizontal red line marking the bare-pore resistance $R_{0}$.
@@ -739,7 +752,7 @@ These features clearly are not essential for permselective transport through pol
 Our model may be further extended to incorporate solubility gradients and to explore such phenomena in more detail.
 
 %%%%%%%%%%
-\subsection{Towards technological applications of synthetic polymer-filled mesopores}
+\subsection[Technological applications of polymer-filled mesopores]{Towards technological applications \\ of synthetic polymer-filled mesopores}
 \todo{RR: Mikhail, for some odd reason the heading is not well formatted, with the word 'polymer' exceeding the paragraph width. Can you correct this please?}
 %%%%%%%%%%
 

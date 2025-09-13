@@ -43,7 +43,16 @@
   {}                      % Before-code (empty)
   %[\vspace{0.5em}]        % After-code (optional vertical space)
 
-\newcommand\todo[1]{\textcolor{red}{#1}}
+%\REMOVE BEFORE SUBMISSION
+\usepackage[
+  author={},         % no author shown
+  subject={},        % no subject
+  date={},           % no date/timestamp
+  color=yellow,      % note color (viewer-dependent rendering)
+  icon=Note,         % classic sticky note icon
+  open=false         % closed by default
+]{pdfcomment}
+\newcommand{\todo}[1]{\pdfcomment{#1}} %\REMOVE ALL \todo{...} BEFORE SUBMISSION
 
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 \newcommand{\sign}{\text{sign}}
@@ -76,8 +85,9 @@
 
 
 \pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%
 \section{Estimates of nucleopore geometry and polymer filling}
+%%%%%%%%
 
 According to recent structural work \cite{Zimmerli2021, Schuller2021}, the diameter, and to a lesser extent the height, of the inner FG-domain-filled channel of nuclear complexes can vary depending on the cellular environment and species.
 Diameters between 40 and 80 nm, and heights between 30 and 70 nm, were reported.
@@ -97,12 +107,13 @@ The total amount of polymer is also in close agreement with an estimated 14.5 MD
 
 
 \pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%
 \section{Analytical estimation of the pore resistance, separating internal and external contributions}
+%%%%%%%%
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=0.85\linewidth]{fig/coordinate_system.png}
+    \includegraphics[width=0.9\linewidth]{fig/coordinate_system.png}
     \caption{%
         \textbf{Left:}
         Steady-state solution of the diffusion equation for a point-like particle diffusing through an empty cylindrical pore of finite thickness.
@@ -116,10 +127,8 @@ The total amount of polymer is also in close agreement with an estimated 14.5 MD
         Semi-planes with constant angular coordinate $\theta$ are not shown.
         Local basis vectors of the intrinsic coordinate system ($\hat{e}_r$, $\hat{e}_z$) are illustrated by arrows.
         Lamé coefficients are defined by the magnitudes of the local basis vectors as $h_r = |\hat{e}_r|$, $h_z = |\hat{e}_z|$, and $h_{\theta} = |\hat{e}_{\theta}|$.
-        Pore radius $r_{\text{p}}^{0} = 20$ and thickness $L_{0} = 20$ were chosen for illustrative purposes.
-        \todo{RR: Can we use $2r_{\text{p}}^{0} = L_{0} = 56$ instead, for consistency with the remainder of the manuscript?}
+        Pore radius $r_{\text{p}}^{0} = 20$ and thickness $L_{0} = 20$ were chosen for illustrative purposes (i.e., to render all numbers clearer than what would be the case with the parameters in Figure 1).
         The membrane is illustrated in striped green.
-        \todo{RR: Can we use labels a and b instead of left and right here, for enhanced clarity?}
     }
     \label{fig:empty_pore_solution}    
 \end{figure*}
@@ -128,15 +137,14 @@ To construct an approximate analytical solution, we first consider a bare pore w
 The diffusivity $D_0$ is constant throughout the solution.
 Boundary conditions are set as $c(z=-\infty) = 1$ and $c(z=+\infty) = 0$.
 The steady-state solution of the diffusion equation, defined by $\partial c/\partial t = 0$, produces the concentration profile shown in Figure~\ref{fig:empty_pore_solution} (left).
-For a pore in an infinitely thin membrane, the iso-concentration surfaces are known to form oblate spheroids with the pore rim as their focal circle.
-\todo{RR: Mikhail, please add a reference.}
+For a pore in an infinitely thin membrane, the iso-concentration surfaces are known to form oblate spheroids with the pore rim as their focal circle \cite{Cooke1966}.
 This approximation remains valid for the exterior of the pore in a membrane of finite thickness, as considered here.
 The solution in the pore lumen is approximated by equally spaced, disk-shaped iso-concentration surfaces. 
-The flux density field, is directly related to the concentration gradient via Fick's law \mbox{$\bm{j} = -D_0 \nabla c$}.
+The flux density field is directly related to the concentration gradient via Fick's law \mbox{$\bm{j} = -D_0 \nabla c$}.
 
-A polymer filling within the pore modifies the local diffusion coefficient $D$ and generates a free-energy landscape, resulting in an effective position-dependent diffusion coefficient (conductivity) $\tilde{D}(r,z) = D\,e^{-\Delta F/k_B T}$, or local resistivity $\rho = \tilde{D}^{-1}$.
+A polymer filling within the pore modifies the local diffusion coefficient $D$ and generates a free-energy landscape, resulting in an effective position-dependent diffusion coefficient (i.e., conductivity) $\tilde{D}(r,z) = D\,e^{-\Delta F/k_B T}$, or local resistivity $\rho = \tilde{D}^{-1}$.
 Since the flux density $\bm{j}$ is a conservative vector field, we define a scalar potential function $\psi = c\,e^{\Delta F/k_B T}$, such that $\bm{j} = -\tilde{D}\nabla\psi$.
-Consequently, the steady-state iso-concentration surfaces differ from the oblate spheroids of the bare pore; however, they retain a similar structure for iso-values of $\psi$.
+Consequently, the steady-state iso-concentration surfaces differ from the oblate spheroids of the bare pore; however, they retain a similar structure for iso-values of $\psi$ (Figure 6).
 
 For the exterior region, we introduce an intrinsic curvilinear coordinate system $(r', z', \theta)$ aligned with the approximate iso-surfaces of $\psi$, as depicted in Figure~\ref{fig:empty_pore_solution} (right) and defined as follows.
 Level sets of the potential function $\psi$ form a family of oblate hemispheroids $z'$, indexed by their intersection points with the $z$-axis:
@@ -180,19 +188,22 @@ Therefore, the total resistances of the exterior and interior regions are respec
    R_{\text{int}} &=\int_{-L/2}^{+L/2}\varrho_{\text{int}}(z)\,dz.
 \end{align}
 
-We now revisit the resistance of a bare pore of finite thickness to the diffusion of a point-like colloid using Eqs.~(\ref{eq:R_ext},~\ref{eq:R_int}).
+\bigskip
+
+As a control, we revisit the resistance of a bare pore of finite thickness to the diffusion of a point-like colloid using Eqs.~(\ref{eq:R_ext},~\ref{eq:R_int}).
 For a bare pore, the effective diffusion coefficient is simply $\tilde{D} = D_0$:
 \begin{eqnarray}
     \varrho^{0}_{\text{int}}(z) &=& \frac{1}{D_0 \pi r_{\text{p}}^2},\\[4pt]
     \varrho^{0}_{\text{ext}}(z) &=& \frac{1}{2\pi D_0\left(z_{\text{ext}}^2 + r_{\text{p}}^2\right)}.
 \end{eqnarray}
-
-Integration over the full domains of $z$ yields the classical result \cite{Brunn1984}:
+Integration over the full domains of $z$ yields the classical result \cite{Brunn1984} stated in Eq. (9):
 \begin{eqnarray}
     \label{eq:r_empty}
     R_{\text{ext}}^{0} &=& 2 \int_{-\infty}^{-L/2} \varrho_{\text{ext}}^{0}(z)\,dz = \frac{1}{2 D_0 r_{\text{p}}},\\[4pt]
     R_{\text{int}}^{0} &=& \int_{-L/2}^{+L/2} \varrho_{\text{int}}^{0}(z)\,dz = \frac{L}{D_0 \pi r_{\text{p}}^2}.
 \end{eqnarray}
+
+\bigskip
 
 Our numerical approach inherently employs the discrete cylindrical lattice from the SF-SCF calculations, with discretization steps $\delta z = \delta r = 1$.
 Consequently, continuous integration across equipotential surfaces foliating space is replaced by summation over discrete conductive layers, each bounded by two adjacent equipotential surfaces. 
@@ -202,12 +213,12 @@ Layers are indexed by the first equipotential surface intersecting the $z$-axis 
     \centering
     \includegraphics[width=\linewidth]{fig/resistance_integration.png}
     \caption{
-        Schematice of the numerical integration of the local conductivity/resistance on a cylindrical lattice.    
+        Schematic of the numerical integration of the local conductivity/resistance on a cylindrical lattice.    
         \textbf{Left:}
         In the exterior region, conductivities are integrated over nested cylindrical layers (red), each indexed by $z$.
         A selected layer with radius $r_{\text{ext}}$ and height $z_{\text{ext}}$ is highlighted with a darker red color.
         Dashed red lines illustrate the boundaries of the cylindrical layers that approximate the oblate hemispheroidal equipotentials shown in Figure~\ref{fig:empty_pore_solution}.
-        In the interior region, integration is performed over disk-shaped layers (bluel), with a selected layer highlighted in darker blue.
+        In the interior region, integration is performed over disk-shaped layers (blue), with a selected layer highlighted in darker blue.
         The membrane is shown in striped green.
         \textbf{Right:}
         Perspective view to illustrate the nested cylindrical exterior layers (in different tones of red) and disk-shaped interior layers (in different tones of blue) in three dimensions.
@@ -274,8 +285,9 @@ Equation~\eqref{eq:R_total} concludes the analytical estimation scheme, giving t
 
 
 \pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%
 \section{Computing polymer density maps with the numerical Scheutjens-Fleer self-consistent field (SF-SCF) method}
+%%%%%%%%
 
 \begin{figure}[h]
     \centering
@@ -289,9 +301,10 @@ Equation~\eqref{eq:R_total} concludes the analytical estimation scheme, giving t
 
 The numerical SF-SCF method was deployed with pore, polymer brush and colloid parameters as defined in Figure~\ref{fig:sf-scf_scheme}.
 With this method, we (i) calculated the spatial polymer distribution $\phi(r,z)$ and (ii) evaluated the insertion free energy for cylindrical colloids into the brush.
-The latter data serve as a reference for the approximate analytical model.
+The latter data served as a reference for the approximate analytical model.
+
 The method is based on the minimization of the excess Helmholtz energy in the incompressible limit, that is, at each specified coordinate $(r,z)$ all volume fractions add up to unity.
-The method uses lattice approximations, a (local) mean-field approximation with short-ranged interactions parameterized by Flory-Huggins interaction parameters, and employs the freely joined chain model for conformational degrees of freedom of polymer chains composed of segments that fit on the lattice sites. 
+The method uses lattice approximations, a (local) mean-field approximation with short-ranged interactions parameterized by Flory-Huggins interaction parameters, and employs the freely jointed chain (FJC) model for conformational degrees of freedom of polymer chains composed of segments that fit on the lattice sites. 
 
 As our problem exhibits axial symmetry, space was discretized into a cylindrical lattice with a degenerate angular direction,
 implemented as a homogeneously curved two-gradient lattice defined by longitudinal $z$ and radial $r$ coordinates (Figure~\ref{fig:sf-scf_scheme}).
@@ -304,7 +317,7 @@ For $L_0/2 < z < L_0/2$, we refer to the coordinates $\{z_\text{p}\}$ inside the
 The colloid was modeled as a cylinder with height and diameter $d$ (Figure~\ref{fig:sf-scf_scheme}, yellow).
 The membrane and colloid lattice elements were modeled as impermeable to the solvent and the polymers, illustrated as crossed-out cells in matching colors in Figure~\ref{fig:sf-scf_scheme} (right).
 
-Each polymer chain was represented as a freely jointed chain (FJC) with $s=1, \cdots, N$ segments of length $a$, modeled as a step-weighted random walk on the lattice (Figure~\ref{fig:sf-scf_scheme}, right; red circles with black connecting lines).
+Each polymer chain was represented as a FJC with $s=1, \cdots, N$ segments of length $a$, modeled as a step-weighted random walk on the lattice (Figure~\ref{fig:sf-scf_scheme}, right; red circles with black connecting lines).
 The first segment $s=1$ is constrained to the coordinate next to the pore wall (grafting condition).
 The weights of each step direction were set according to the boundary conditions and the lattice curvature.
 Steps into impermeable lattice elements had zero weight.
@@ -372,13 +385,12 @@ The segment potential $\bm{u}$ acts on the 'free' segment; thus, Boltzmann stati
     G(r, z) = \exp(-u(r,z))
 \end{equation}
 
-Within the FJC approach, there are two complementary propagators used to generate all (mentioned) once integrated statistical weights:
-\todo{RR: There seems to be an issue with the syntax of this sentence. Please can you check and correct.}
+Within the FJC approach, two complementary propagators are defined, which generate the statistical weights once integrated as described above:
 \begin{eqnarray}
-    G(\{r,z\},s|1) =G(r,z) \langle  G(\{r,z\},s-1|1)\rangle \\
-    G(\{r,z\},s|N) =G(r,z) \langle  G(\{r,z\},s+1|N)\rangle   
+G({r,z},s|1) &=& G(r,z),\langle G({r,z},s-1|1)\rangle, \
+G({r,z},s|N) &=& G(r,z),\langle G({r,z},s+1|N)\rangle,
 \end{eqnarray}
-where the angular brackets are computed similarly as for the site fractions mentioned above.
+where the angular brackets denote averaging over all allowed orientations of the next segment, in analogy to the averaging used for the site fractions.
 
 The volume density distribution of segment $s$ at coordinates $\{r, z\}$ is found from the composition law:
 \begin{equation}
@@ -408,10 +420,10 @@ Hence, the SF-SCF scheme can be summarized as:
 
 The equations were solved by a Newton/quasi-Newton optimization routine which effectively leads to the minimization of the functional Eq.~\eqref{eq:fe_lagrangian}.
 During a numerical iteration step the specified guess for the segment potentials $\bm{u}$ leads to an update of the volume concentrations $\bm{\phi}$.
-It was checked whether these new volume fractions obey to the incompressibility limit, and the values of $\alpha(r, z)$ were adjusted if they did not.
-The segement potentials where then re-evaluated, and a new guess was generated when the input- and output potentials differed.
-The evaluation loop was repeated until the desired accuracy was reached, that is, when the difference between input and output potentials and errors with respect to the incompressibility constraint were less than 7 significant digits.
-From the resulting SCF solution, the excess free energy was then evaluated.
+It is checked whether these new volume fractions obey to the incompressibility limit, and the values of $\alpha(r, z)$ is adjusted if they do not.
+The segment potentials are then re-evaluated, and a new guess generated when the input and output potentials differ.
+The evaluation loop is repeated until the desired accuracy is reached, coresponding to a difference between input and output potentials and errors with respect to the incompressibility constraint of less than 7 significant digits.
+From the resulting SCF solution, the excess free energy is then evaluated.
 
 For the calculations, we used the package \emph{SFbox} developed at Wageningen University, and we refer to the literature for further computational details \cite{Evers1990b}.
 
