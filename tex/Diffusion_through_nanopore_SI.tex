@@ -16,19 +16,27 @@
 
 \usepackage{graphicx}
 \usepackage{amsmath, amssymb, amsfonts, mathtools}
-\usepackage[
-    backend=biber,
-    natbib=true,
-    style=numeric,
-    sorting=none
-    ]{biblatex}
 \usepackage{xcolor}
 \usepackage{bm}
 \usepackage{multicol}
 \usepackage{ltablex}
 \usepackage{wrapfig}
 \usepackage{float}
-\usepackage[utf8]{inputenc}
+
+% \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}        % better fonts in T1
+
+\usepackage[
+  backend=biber,
+  style=nature,
+  maxnames=8,  % limit names in citations
+  doi=false,
+  url=false,
+  eprint=false,
+  isbn=false,
+]{biblatex}
+\addbibresource{biblio.bib}
 
 %\REMOVE BEFORE SUBMISSION
 \usepackage[switch]{lineno}
@@ -386,10 +394,10 @@ The segment potential $\bm{u}$ acts on the 'free' segment; thus, Boltzmann stati
 \end{equation}
 
 Within the FJC approach, two complementary propagators are defined, which generate the statistical weights once integrated as described above:
-\begin{eqnarray}
-G({r,z},s|1) &=& G(r,z),\langle G({r,z},s-1|1)\rangle, \
-G({r,z},s|N) &=& G(r,z),\langle G({r,z},s+1|N)\rangle,
-\end{eqnarray}
+\begin{align}
+    G(r,z,s|1) &= G(r,z),\langle G(r,z,s-1|1)\rangle, \\
+    G(r,z,s|N) &= G(r,z),\langle G(r,z,s+1|N)\rangle,
+\end{align}
 where the angular brackets denote averaging over all allowed orientations of the next segment, in analogy to the averaging used for the site fractions.
 
 The volume density distribution of segment $s$ at coordinates $\{r, z\}$ is found from the composition law:
