@@ -94,7 +94,7 @@ This combination of features provides a physical explanation for the basic mecha
 \section{INTRODUCTION}
 %%%%%%%%%%
 
-Advances in macromolecular chemistry have enabled the functionalization of mesoporous materials (i.e., pores with a diameter between a few and many tens of nanometers) by anchoring polymer chains of various chemical nature to the pore wall.
+Advances in macromolecular chemistry have enabled the functionalization of mesopores (i.e., pores with a diameter between a few and many tens of nanometers) by anchoring polymer chains of various chemical nature to the pore wall.
 This creates a solvated polymer meshwork that fills the entire pore volume or remains confined to near-wall regions, depending on the polymer's molecular weight and conformational state \cite{Peleg2011, Laktionov2021}.
 Polymer-modified mesoporous materials and membranes represent a new class of functional nanostructured systems with significant potential across a wide range of technologies (\cite{Uredat2024, Pardehkhorram2022} and references therein), such as ultrafiltration, sensing, catalysis and drug delivery.
 
@@ -319,7 +319,6 @@ Values of $\chi_{\text{PS}}<0.5$ and $\chi_{\text{PS}}>0.5$ correspond to good a
 The polymer density profile $\phi(z,r)$ in the pore was calculated by the two-gradient self-consistent field numerical method of Scheutjens and Fleer (SF-SCF; Supplementary Note 3).
 In Figure~\ref{fig:phi_hm_grid}, one can appreciate the expected increase in polymer concentration inside the pore with decreasing solvent quality (increasing $\chi_{\text{PS}}$).
 With the selected pore and polymer parameters (Figure~\ref{fig:colloid_transport}), the polymer brush fills the entire pore cross-section within the full range of solvent qualities explored, and colloids need to navigate the polymer meshwork to traverse the pore.
-\todo{ML: FL did not like the verb traverse much}
 For wider pores, shorter polymers and/or lower grafting densities, an open channel free of polymer may appear in the pore center, as detailed elsewhere~\cite{Ligoure2001,Laktionov2021}; this scenario would result in a different permeation behavior and is not considered here.
 
 \begin{figure}
@@ -478,7 +477,6 @@ Thus, diffusivity and free energy, and consequently the local resistivity, are s
 %%%%%%%%%%
 
 Figure~\ref{fig:R_vs_chi_PC} visualizes the relative contributions of the pore interior ($R_{\text{int}}$) and exterior ($R_{\text{ext}}$) to the total resistance as a function of the polymer-colloid attraction $\chi_\text{PC}$, for a selected colloid size ($d = 12$) in a good ($\chi_\text{PS} = 0.3$) and a poor ($\chi_\text{PS} = 0.7$) solvent.
-% \todo{RR: I have changed the colloid size here for consistency with the figure legend. Mikhail, please check if correct.}
 A comparison of the total resistance obtained by direction numerical solution of the Smoluchowski equation (diamond symbols; Supplementary Note 6) here validates the accuracy of the analytical scheme (solid lines).
 
 A striking feature is that attracted colloids can achieve diffusive fluxes that exceed the limit of the bare pore, as indicated by the segments of the $R(\chi_{\text{PC}})$ curves that fall below the solid horizontal red line marking the bare-pore resistance $R_{0}$.
@@ -536,7 +534,6 @@ Lowering the solvent quality (increasing $\chi_{\text{PS}}$) reduces $\chi_{\tex
 Thus, a poorer solvent extends the range of facilitated permeation towards more weakly interacting colloids.
 
 The here-presented trends are qualitatively correct also for colloids with sizes smaller or larger than the $d=12$ considered here.
-\todo{RR: Ditto.}
 Naturally, the gating effect will be rather moderate for small colloids, yet even sharper for larger colloids.
 
 
@@ -641,7 +638,7 @@ This is best seen in Figure~\ref{fig:R_vs_d}a for $\chi_\text{PC}= -1.4$, where 
 
 
 %%%%%%%%%%
-\subsection{Experiments of colloid transport through nuclear pore complexes validate the theoretical predictions}
+\subsection{Experiments of colloid transport through NPCs validate the theoretical predictions}
 %%%%%%%%%%
 
 To test our theory, we analyzed literature pertinent to colloid transport across NPCs.
@@ -685,7 +682,6 @@ The satisfactory fit across all datasets suggests that the crowding of the NPC w
     \textbf{(a)} 
     Gating of non-sticky colloids (peptides and globular proteins) by size.
     NPC passage rate $k$ per pore (at $c_0$ = 1 $\mu\text{M}$) vs. molecular mass $M_w$ (symbols) extracted from the literature, as indicated (Table~S1).
-    \todo{ML:Update reference numbers before submission}
     Theoretical predictions (shaded orange area) are for the pore and brush parameters as given in Figure~\ref{fig:colloid_transport}, with $\chi_\text{PC} = 0$, $a = 0.76$ nm, $\chi_\text{PS} = 0.6$, and colloid volumes converted to masses using $\text{1 g/cm}^3 \leq \rho_\text{probe} \leq \text{1.4 g/cm}^3$.
     The best fit, shown here, was obtained with $\beta = 5.5$ in Eq. (\ref{eq:Rubinstein}).
     The predicted transport rates across a bare pore are shown (black line) for comparison.
@@ -694,8 +690,8 @@ The satisfactory fit across all datasets suggests that the crowding of the NPC w
     NPC passage rate $k$ vs. partition coefficient $P$ in phase-separated droplets of pure FG domains (Nup98A - blue lozenges, Nup116 - gray lozenges) measured by Frey et al. \cite{Frey2018} for a range of green fluorescent protein variants and mCherry (Table~S2).
     Theoretical predictions (orange lines) represent the limits of a homogeneously attractive colloid surface (dashed line) and a surface with a single sticky patch (solid line).
     The predicted transport rate across a bare pore is also shown (black line).
-    The pore and brush parameters are as given in (a); $\chi_\text{PS} = 0.6$ for both pore and pure FG domain droplets; $\chi_\text{PC}$ values (indicated at the top of the graph) were matched to the partition coefficient $P$, $d$ = 6 (Supplementary Note 7).
-    \todo{RR: Mikhail, I suggest you remove the subscript 'gel', for simplicityand consistency with the legend.}
+    The pore and brush parameters are as given in (a); $\chi_\text{PS} = 0.6$ for both pore and pure FG domain droplets; $\chi_\text{PC}$ values (indicated at the top of the graph) were matched to the partition coefficient $P$, and $d$ = 6 (Supplementary Note 7).
+    \todo{RR: Mikhail, I think the '[24]' in panel b can be removed to declutter. The reference will be clear from the figure legend.}
     }
     \label{fig:NPC_comparison}
 \end{figure}
@@ -752,8 +748,7 @@ These features clearly are not essential for permselective transport through pol
 Our model may be further extended to incorporate solubility gradients and to explore such phenomena in more detail.
 
 %%%%%%%%%%
-\subsection[Technological applications of polymer-filled mesopores]{Towards technological applications \\ of synthetic polymer-filled mesopores}
-\todo{RR: Mikhail, for some odd reason the heading is not well formatted, with the word 'polymer' exceeding the paragraph width. Can you correct this please?}
+\subsection[Towards technological applications of synthetic polymer-filled mesopores]{Towards technological applications of synthetic \\ polymer-filled mesopores}
 %%%%%%%%%%
 
 Our predictive theoretical approach paves the way for the rational design of nanoporous materials with enhanced selectivity tailored to specific functional requirements, sought after for applications in nanomedicine, biotechnology, and environmental engineering.
@@ -798,7 +793,60 @@ A homogeneous polymer-colloid interaction is preferable over one or multiple dis
 \noindent{The manufacturing of functional mesoporous membranes is an emerging art \cite{Uredat2024, Pardehkhorram2022}, and we hope that our theoretical efforts will both promote and guide future practical developments in this area.}
 
 
-%%%%
-\todo{RR: Mikhail, please can you check the reference list for consistency: all first and middle names may be abbreivated to initials, and it is preferable to show the names of all authors (at least for papers comprising less than 10 authors; show the publication year, but not the day and month; use standard abbeviations for all journal titles; include page numbers or article number for each journal article; remove 'in' for articles in journals, as this is normally reserved to books; use consistent italicisation; etc.)}
+%%%%%%%%%%
+\subsection*{Data availability}
+%%%%%%%%%%
+
+Source data are provided with this paper.
+\todo{RR: We shall need to supply the data presented in figures in numerical form. Can we do this as a single Excel file, with one worksheet per figure or panel?}
+
+
+%%%%%%%%%%
+\subsection*{Code availability}
+%%%%%%%%%%
+
+\todo{RR: Here is what Nat Commun requires. Would it perhaps be sensible to upload all required code on GitHub?
+
+Authors must make available upon request, to editors and reviewers, any previously unreported custom computer code or algorithm used to generate results that are reported in the paper and central to its main claims. Any reason that would preclude the need for code or algorithm sharing will be evaluated by the editors who reserve the right to decline the paper if important code is unavailable.
+
+For all studies using custom code or mathematical algorithm that is deemed central to the conclusions, a statement must be included under the heading "Code availability", indicating whether and how the code or algorithm can be accessed, including any restrictions to access. Code availability statements should be provided as a separate section after the data availability statement but before the references.
+
+Upon publication, Nature Portfolio journals consider it best practice to release custom computer code in a way that allows readers to repeat the published results. Code should be deposited in a DOI-minting repository such as Zenodo or Code Ocean and cited in the reference list following the guidelines described here. Authors are encouraged to manage subsequent code versions and to use a license approved by the open source initiative. Full details about how the code can be accessed and any restrictions must be described in the Code Availability statement.}
+
+
+%%%%%%%%
+\todo{RR: Mikhail, please can you check the following references for correct formatting:
+Ref. 5 is a book chapter - need to add 'In' before the book title, and include publisher.
+Please display all authors for all references. I think there is no paper with too many authors.}
 \printbibliography
+
+
+%%%%%%%%%%
+\subsection*{Acknowledgements}
+%%%%%%%%%%
+
+This work was financially supported by the Royal Society (International Exchanges
+Award IEC/R2/202035 to R.P.R.), and by the UK Biotechnology and Biological
+Sciences Research Council (grant BB/X00158X/1 to R.P.R.).
+\todo{RR: Oleg, please add as needed.}
+
+The authors thank Charley Sch\"{a}fer and Paolo Actis (both University of Leeds) for helpful discussions.
+
+%%%%%%%%%%
+\subsection*{Author contributions}
+%%%%%%%%%%
+
+R.P.R., L.K. and O.V.B. conceived the study.
+All authors developed the theoretical model.
+M.Y.L. and F.A.M.L. performed the computer simulations.
+All authors analyzed the data, and contributed to manuscript review and editing.
+\todo{RR: All, please check if you are happy with the author contribution statement, and amend as needed.}
+
+
+%%%%%%%%%%
+\subsection*{Competing interests}
+%%%%%%%%%%
+
+The authors declare no competing interests.
+
 \end{document}

@@ -97,11 +97,14 @@
 \section{Estimates of nucleopore geometry and polymer filling}
 %%%%%%%%
 
+\textbf{Nuclear pore geometry.}
 According to recent structural work \cite{Zimmerli2021, Schuller2021}, the diameter, and to a lesser extent the height, of the inner FG-domain-filled channel of nuclear complexes can vary depending on the cellular environment and species.
 Diameters between 40 and 80 nm, and heights between 30 and 70 nm, were reported.
 In our model, we took diameter and height to extend over 56 Kuhn segments, corresponding to 42.6 nm.
 This choice reflects that the plain cylinder shape with evenly distributed anchors for homopolymers in our model is a simplifcation of the more complex shape, and the heterogeneity in anchorage and composition of FG domains, in the NPC.
 
+\bigskip\noindent
+\textbf{Polymer filling.}
 To estimate the amount of intrinsically disordered protein material in the NPC, we considered the copy number, and the size of the region predicted to be intrinsically disordered, for each FG nucleoporin in \textit{S. cerevisiae} yeast NPCs.
 For the copy numbers, we used the data by Kim et al. \cite{Kim2018}, who assessed all yeast nucleoporins except Nup2 through quantitative mass spectrometry.
 A large subset of nucleoporins (though missing some major FG nucleoporins) was independently analysed by Rajoo et al. \cite{Rajoo2018} through quantitative image analysis, with consistent results.
@@ -109,7 +112,7 @@ The size of the instrinsically disordered regions had been predicted by Yamada e
 We included here the total mass of all intrinsically disordered regions irrespective of their FG motif content, as they contribute to the filling of the pore.
 The total number of FG nucleoporins (excluding Nup2 as non-essential) per NPC thus is 216, and the total content in intrinsically disordered parts amounts to  $11.7 \times 10^4$ amino acids (Supplementary Table~\ref{tbl:idr_npc}).
 
-In our model, we took a grafting density of $\sigma = 0.02$ and a degree of polymerisation of $N = 300$.
+In our model, we took a grafting density of $\sigma = 0.02$ and a degree of polymerization of $N = 300$.
 With the chosen pore geometry, a Kuhn segment length of $a = 0.76$ nm, and 2 amino acids per Kuhn segment, this corresponds to 197 polymers and a total of $11.8 \times 10^4$ amino acids, in close agreement with the properties of the yeast NPC.
 The total amount of polymer is also in close agreement with an estimated 14.5 MDa FG domain mass in human NPCs \cite{Ng2023}, which corresponds to $13.1 \times 10^4$ amino acids, considering an average mass per amino acid of 110 Da.
 
@@ -121,7 +124,7 @@ The total amount of polymer is also in close agreement with an estimated 14.5 MD
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=0.9\linewidth]{fig/coordinate_system.png}
+    \includegraphics[width=0.85\linewidth]{fig/coordinate_system.png}
     \caption{%
         \textbf{Left:}
         Steady-state solution of the diffusion equation for a point-like particle diffusing through an empty cylindrical pore of finite thickness.
@@ -141,6 +144,7 @@ The total amount of polymer is also in close agreement with an estimated 14.5 MD
     \label{fig:empty_pore_solution}    
 \end{figure*}
 
+\textbf{Development of the analytical model in continuous space.}
 To construct an approximate analytical solution, we first consider a bare pore with a set geometry (Figure 1).
 The diffusivity $D_0$ is constant throughout the solution.
 Boundary conditions are set as $c(z=-\infty) = 1$ and $c(z=+\infty) = 0$.
@@ -204,16 +208,16 @@ For a bare pore, the effective diffusion coefficient is simply $\tilde{D} = D_0$
     \varrho^{0}_{\text{int}}(z) &=& \frac{1}{D_0 \pi r_{\text{p}}^2},\\[4pt]
     \varrho^{0}_{\text{ext}}(z) &=& \frac{1}{2\pi D_0\left(z_{\text{ext}}^2 + r_{\text{p}}^2\right)}.
 \end{eqnarray}
-Integration over the full domains of $z$ yields the classical result \cite{Brunn1984} stated in Eq. (9):
+Integration over the full domains of $z$ yields the expected classical result \cite{Brunn1984} stated in Eq. (9):
 \begin{eqnarray}
     \label{eq:r_empty}
     R_{\text{ext}}^{0} &=& 2 \int_{-\infty}^{-L/2} \varrho_{\text{ext}}^{0}(z)\,dz = \frac{1}{2 D_0 r_{\text{p}}},\\[4pt]
     R_{\text{int}}^{0} &=& \int_{-L/2}^{+L/2} \varrho_{\text{int}}^{0}(z)\,dz = \frac{L}{D_0 \pi r_{\text{p}}^2}.
 \end{eqnarray}
 
-\bigskip
-
-Our numerical approach inherently employs the discrete cylindrical lattice from the SF-SCF calculations, with discretization steps $\delta z = \delta r = 1$.
+\bigskip\noindent
+\textbf{Application to a discrete cylindrical lattice.}
+Our numerical approach inherently employs the discrete cylindrical lattice from the SF-SCF calculations (Supplementary Note 3), with discretization steps $\delta z = \delta r = 1$.
 Consequently, continuous integration across equipotential surfaces foliating space is replaced by summation over discrete conductive layers, each bounded by two adjacent equipotential surfaces. 
 Layers are indexed by the first equipotential surface intersecting the $z$-axis (see Figure~\ref{fig:integration_scheme}).
 
@@ -297,6 +301,22 @@ Equation~\eqref{eq:R_total} concludes the analytical estimation scheme, giving t
 \section{Computing polymer density maps with the numerical Scheutjens-Fleer self-consistent field (SF-SCF) method}
 %%%%%%%%
 
+The numerical SF-SCF method was deployed with pore, polymer brush and colloid parameters as defined in Figure~\ref{fig:sf-scf_scheme}.
+With this method, we (i) calculated the spatial polymer distribution $\phi(r,z)$ and (ii) evaluated the insertion free energy for cylindrical colloids into the brush.
+The latter data served as a reference for the approximate analytical model.
+
+\bigskip\noindent
+\textbf{Main features of the SF-SCF method.}
+The method is based on the minimization of the excess Helmholtz energy in the incompressible limit, that is, at each specified coordinate $(r,z)$ all volume fractions add up to unity.
+The method uses lattice approximations, a (local) mean-field approximation with short-ranged interactions parameterized by Flory-Huggins interaction parameters, and employs the freely jointed chain (FJC) model for conformational degrees of freedom of polymer chains composed of segments that fit on the lattice sites. 
+
+\bigskip\noindent
+\textbf{Discretization and geometrical features of the pore.}
+As our problem exhibits axial symmetry, space was discretized into a cylindrical lattice with a degenerate angular direction,
+implemented as a homogeneously curved two-gradient lattice defined by longitudinal $z$ and radial $r$ coordinates (Figure~\ref{fig:sf-scf_scheme}).
+This $(r,z)$ coordinate system is visualized as a two-dimensional Cartesian coordinate system (Figure~\ref{fig:sf-scf_scheme}, right); however, each element of the lattice represents a square toroid (of volume $2 \pi r a^3$) instead of a square (of area $a^2$).
+The mean-field approximation is applied in the angular direction, meaning properties in the angular direction are uniform.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width = 0.95\linewidth]{fig/sf-scf_scheme.png}
@@ -306,18 +326,6 @@ Equation~\eqref{eq:R_total} concludes the analytical estimation scheme, giving t
     }
     \label{fig:sf-scf_scheme}
 \end{figure}
-
-The numerical SF-SCF method was deployed with pore, polymer brush and colloid parameters as defined in Figure~\ref{fig:sf-scf_scheme}.
-With this method, we (i) calculated the spatial polymer distribution $\phi(r,z)$ and (ii) evaluated the insertion free energy for cylindrical colloids into the brush.
-The latter data served as a reference for the approximate analytical model.
-
-The method is based on the minimization of the excess Helmholtz energy in the incompressible limit, that is, at each specified coordinate $(r,z)$ all volume fractions add up to unity.
-The method uses lattice approximations, a (local) mean-field approximation with short-ranged interactions parameterized by Flory-Huggins interaction parameters, and employs the freely jointed chain (FJC) model for conformational degrees of freedom of polymer chains composed of segments that fit on the lattice sites. 
-
-As our problem exhibits axial symmetry, space was discretized into a cylindrical lattice with a degenerate angular direction,
-implemented as a homogeneously curved two-gradient lattice defined by longitudinal $z$ and radial $r$ coordinates (Figure~\ref{fig:sf-scf_scheme}).
-This $(r,z)$ coordinate system is visualized as a two-dimensional Cartesian coordinate system (Figure~\ref{fig:sf-scf_scheme}, right); however, each element of the lattice represents a square toroid (of volume $2 \pi r a^3$) instead of a square (of area $a^2$).
-The mean-field approximation is applied in the angular direction, meaning properties in the angular direction are uniform.
 
 The shape of the membrane and any colloids were fixed.
 The membrane was modeled as a toroid with a rectangular cross-section of physical height $L_0$, a physical inner radius $r_{\text{p}}^0$, and an outer radius large enough to be effectively infinite with respect to the polymer distribution (Figure~\ref{fig:sf-scf_scheme}, green).
@@ -332,6 +340,8 @@ Steps into impermeable lattice elements had zero weight.
 Other steps were weighted according to the change in volume per lattice element, with steps towards increasing $r$ consequently being favored, and steps towards decreasing $r$ being disfavored, compared to steps along the $z$-direction.
 The resulting local polymer concentration $\phi$ is a weighted sum of all possible paths the chain can take (Eq.~\eqref{eq:sum_to_phi}).
 
+\bigskip\noindent
+\textbf{Minimization of excess Helmholtz energy.}
 The excess Helmholtz energy was minimized through a Lagrangian with multipliers $\alpha(r,z)$:
 \begin{equation}
     \label{eq:fe_lagrangian}
@@ -419,6 +429,8 @@ For the solvent, $S$, we may use
 \end{equation}
 where $\varphi_S^\text{b} = 1$ represents the plain bulk solution far from the polymer brush. 
 
+\bigskip\noindent
+\textbf{Numerical algorithm.}
 The numerical algorithm solves the Scheutjens-Fleer system of nonlinear equations such that the segment potentials $\bm{u}$ are consistent with the volume concentrations $\boldsymbol{\phi}$.
 The relationship between the segment potentials and the volume concentrations is defined in Eq.~\eqref{eq:u-phi}.
 Hence, the SF-SCF scheme can be summarized as:
@@ -586,13 +598,8 @@ Fits were performed with small colloids ($d=4$), to focus on local effects and a
 
 In a $\theta$-solvent (chosen here as a representative case) and for the selected pore geometry and brush parameters (Figure 1), we selected three $\chi_{\text{PC}}$ values (0.00, -0.75 and -1.50) to span the regimes of net repulsion, near-critical adsorption, and net attraction, respectively.
 Figure~\ref{fig:fit_SI} demonstrates that a satisfactory fit (thick solid line) to the $\Delta F_{\text{SF-SCF}}$ profiles (circles) could be obtained across all three representative datasets with a single parameter set, $b_0 = 0.7$ and $b_1 = -0.3$.
-
-Given the overall small volume contribution to the insertion free energy for small particles, the fact that $\Delta F$ remains consistently close to zero for $\chi_{\text{PC}} = -0.75$ illustrates that this interaction parameter is close to the critical value $\chi_{\text{PC}}^{\text{crit}} = \chi_{\text{crit}} + \chi_{\text{PS}} (1 - \phi)$, where the loss in polymer conformational entropy due to surface exclusion is exactly balanced by the free energy gain from favorable monomer-surface interactions.
-At this point, the surface tension $\gamma$ vanishes \cite{Fleer1993, Birshtein1979, Birshtein1983, Eisenriegler1982}.
-\todo{ML: Repeated}
-
-In contrast, neglecting local perturbations in the polymer concentration (i.e., using $b_0 = 1.0$ and $b_1 = 0.0$) results in a poor reproduction of the SF-SCF-calculated insertion free energy $\Delta F_{\text{SF-SCF}}$ for both repulsive and attractive colloids ($\gamma \neq 0$), as illustrated by the thin dashed line in Figure~\ref{fig:fit_SI}. This highlights the importance of accounting for local corrections in the theoretical model.
-Consequently, the fit considered the regimes of net repulsion and net attraction approximately equally through $\chi_{\text{PC}} = 0.00$ and $\chi_{\text{PC}} = -1.50$, respectively.
+The insertion free energies are consistently close to zero for $\chi_{\text{PC}} = -0.75$, illustrating that this value is indeed near the critical condition, $\chi_{\text{PC}}^{\text{crit}} = \chi_{\text{crit}} + \chi_{\text{PS}} (1 - \phi)$, where polymer attraction and osmotic repulsion just cancel each other.
+Consequently, the least-square fits considered the regimes of net repulsion and net attraction approximately equally through $\chi_{\text{PC}} = 0.00$ and $\chi_{\text{PC}} = -1.50$, respectively.
 In contrast, neglect of local perturbations to the polymer concentration ($b_0 = 1.0$ and $b_1 = 0.0$) reproduces $\Delta F_{\text{SF-SCF}}$ rather poorly for repulsive and attractive colloids (Figure~\ref{fig:fit_SI}, thin dashed line), thus demonstrating the importance of the correction.
 
 Although the fit was performed only for small colloids, the resulting parameters $b_{0}$ and $b_{1}$ still successfully account for the local perturbations to the polymer concentration when calculating the insertion free energy of larger colloids.
@@ -628,9 +635,11 @@ As a consequence, the pore walls also influence colloid insertion.
 
 The SF-SCF method considered in the previous sections is limited to colloids moving along the main axis of the pore.
 In reality, colloids may be located off the pore axis.
-Here, we generalize the analytical approach to calculate insertion free energies based on volume and surface contributions (assuming localized perturbations to the polymer concentration) to arbitrarily placed colloids.
+Here, we generalize the analytical approach (Supplementary Notes 2 and 4) \todo{ML: Supplementary Note 4} calculate insertion free energies based on volume and surface contributions (assuming localized perturbations to the polymer concentration) to arbitrarily placed colloids.
 In doing so, we also change the shape of the colloid, from a cylinder to a simpler sphere.
 
+\bigskip\noindent
+\textbf{Angular integration of colloid volume and surface onto the $rz$-plane in continuous space.}
 As the polymer and pore geometrical features are uniform in the angular direction, we use $r, z$ cylindrical coordinates with a degenerate angular axis.
 Any property such as the polymer volume fraction can hence be expressed as a function $f(r,z,\theta) = f(r,z)$.
 
@@ -689,8 +698,10 @@ These expressions describe the angular integration of the volume and surface pro
     \label{fig:sphere_volume_and_surface_projection}
 \end{figure}
 
+\bigskip\noindent
+\textbf{Application to a discretized lattice.}
 To find the elements of the projection matrices (each representing the volume or surface area of the spherical colloid intersecting a given lattice cell), the angularly projected volume and surface area are dicretized over finite lattice elements.
-For each grid element indexed by $i, k$, corresponding to the domain $r \in [i, i + \delta r]$ and $z \in [k, k + \delta z]$, the matrix entries  are defined as
+For each grid element indexed by $i, k$, corresponding to the domain $r \in [i, i + \delta r]$ and $z \in [k, k + \delta z]$, the matrix entries are defined as
 \begin{eqnarray}
     V\{r_{\text{c}}\}{[i, k]} = \! \iint \limits_{i, k}^{\quad \substack{i+\delta r\\ k+\delta z}} \! V_{\theta \downarrow} (r, z, r_{\text{c}}, z_{\text{c}})\, \text{d}r \text{d}z
     \\
@@ -745,8 +756,9 @@ Volume and surface projection matrices are explained geometrically in Figure~\re
 
 
 \pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%
 \section{Validating analytical approaches with numerical simulations}
+%%%%%%%%
 
 Applying Eqs.~(2, 3) and the boundary conditions reduces the Smoluchowski equation (Eq.~(1)) in the stationary state to the generalized Laplace equation:
 \begin{equation}
@@ -758,9 +770,8 @@ with the Smoluchowski diffusion operator
   \mathcal L=\nabla\!\cdot\!\bigl(\tilde D(\bm r)\nabla\bigr).
 \end{equation*}
 
-\bigskip
-\textbf{Defining the Laplace equation in a finite, discretized domain}
-
+\bigskip\noindent
+\textbf{Defining the Laplace equation in a finite, discretized domain.}
 To obtain a stationary solution of Eq.~\eqref{eq:laplace}, we consider a finite cylindrical domain large enough to exclude edge effects:
 \begin{equation*}
   (r,z) \in \Omega = [0,r_{\max}]\times[z_{\min},0],
@@ -818,9 +829,8 @@ Under this mapping, the continuous operator $\mathcal L$ becomes a sparse $[N_rN
 Once Eq.~\eqref{eq:matrix_form} is solved for $\bm{\psi}$, the resulting vector is reshaped into the $rz$-grid, giving $\psi(r,z)$ and recovering the colloid concentration $c(r,z)$.
 This enabled examination of the non-equilibrium partitioning of colloids in the presence of position-dependent insertion free energies for given boundary conditions.
 
-\bigskip
-\textbf{Defining the impermeable wall (no-flux elements)}
-
+\bigskip\noindent
+\textbf{Defining the impermeable wall (no-flux elements).}
 The impermeable regions are inherited from the SF-SCF calculations and define the finite volume elements inaccessible to diffusing colloids.
 We define the original impermeable wall grid elements as:
 \begin{eqnarray}
@@ -861,9 +871,8 @@ with the structuring element $\textbf{Colloid}$ being a coarse-grained circle in
     \label{fig:excluded_volume}
 \end{figure}
 
-\bigskip
-\textbf{Defining the colloid source}
-
+\bigskip\noindent
+\textbf{Defining the colloid source.}
 We place source nodes at a finite axial distance, chosen to align with an oblate hemispheroidal surface (or a half ellipse in the $rz$-plane) intersecting the $z$-axis at $z_{\text{min}} + \delta z$.
 The half ellipse has foci located at $(\pm r_{\text{p}}, -L/2)$, such that the pore rim acts as the focal circle.
 This defines the major semi-axis $r_{\text{max}} - \delta r$ and hence the radial extent of the discrete computational domain:
@@ -890,9 +899,8 @@ The set is constructed as:
 This boundary condition ensures that the solution approximates that of an idealized system with a source located infinitely far away ($z \to -\infty$).
 We effectively reproduce the shape of iso-concentration lines in the exterior region of a bare pore, thereby maintaining a realistic flux geometry.
 
-\bigskip
+\bigskip\noindent
 \textbf{Defining the colloid sink}
-
 Exploiting the system's symmetry, we impose a Dirichlet boundary condition $\psi = \psi_{\text{sink}}$ at the $z+$ face of all finite volume elements with $k = N_z - 1$.
 This corresponds to placing the absorbing boundary condition at the mid-plane $z = 0$.
 Due to symmetry, there is no radial component of the flux at $z = 0$, so no flux crosses the $r-$ or $r+$ faces of these finite volume elements.
@@ -912,9 +920,8 @@ For these elements, the divergence term simplifies to account for the fixed pote
     + 2 \lambda^{z} D_{i,k_0}^{z-} (\psi_{i,k_0} - \psi_{i,k_0-1})
 \end{equation}
 
-\bigskip
-\textbf{Constructing the Laplace operator matrix}
-
+\bigskip\noindent
+\textbf{Constructing the Laplace operator matrix.}
 The matrix $\mathbf{L}$ is constructed using a five-point stencil (Figure~\ref{fig:stencil}a) that adapts near boundaries.
 The diagonal entries are defined as
 \begin{equation}
@@ -968,9 +975,9 @@ The right-hand side vector $\bm{b}$ enforces the boundary condition from the sou
 
 The resulting sparse linear system in Eq.~\eqref{eq:matrix_form} is solved using the \texttt{scipy.sparse.linalg} package.
 
-\bigskip
-\textbf{Extracting pore resistance}
 
+\bigskip\noindent
+\textbf{Extracting pore resistance.}
 The total colloid flux was computed by summing the fluxes through the $z+$ faces of the finite volume elements at $k = N_z - 1$, corresponding to the pore cross-section at the mid-plane $z = 0$.
 Due to symmetry, the radial flux vanishes at this plane, so only the axial ($z$-direction) components contribute:
 \begin{equation}
@@ -985,21 +992,24 @@ This corresponds to a concentration difference of $\Delta c = 1.0$ across the fu
 \end{equation}
 Here, $R_{(|z_{\text{min}} - L/2|, -\infty)}$ is the analytically estimated resistance of the truncated semi-infinite reservoir, as given by Eq.~\eqref{eq:r_reservoir}.
 
+
 \pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%
 \section{Mapping our model to experimental data for biocolloid transport across NPCs}
+%%%%%%%%
 
-Figure~\ref{fig:experiments_overview} and Table~\ref{tbl:experimental} summarise the most relevant spects of the published experimental quantifications of biocolloid transport rates across NPCs in the nuclear envelope of cells, along with partition coefficients for sticky colloids in phase-separated droplets of pure FG domain. 
-The nucleus is represented as a well-mixed compartment of volume $V_\text{nucleus}$ bounded by an impermeable envelope that is perforated by $N_\text{NPC}$ NPCs.
-The NPC are assumed to be sufficiently far apart for transport through each NPC to be independent.
+Figure~\ref{fig:experiments_overview} and Table~\ref{tbl:experimental} summarize the most relevant aspects of the published experimental quantifications of biocolloid transport rates across NPCs in the nuclear envelope of cells, along with partition coefficients for sticky colloids in phase-separated droplets of pure FG domain. 
+The nucleus is represented as a well-mixed compartment of volume $V_\text{nucleus}$ bounded by an impermeable envelope that is perforated by $N_\text{NPC}$ nuclear pore complexes.
+The NPCs are assumed to be sufficiently far apart for transport through each NPC to be independent.
 Assuming (somewhat simplistically) that the nuclei are spherical, one can estimate a root-mean-square distances between NPCs of 0.44 $\mu$m for HeLa and 0.29 $\mu$m for yeast cells, based on the nuclear characteristics (Table~\ref{tbl:experimental}).
-These values exceed the NPC transport channel diameter by at least 5-fold, and should indeed be sufficent for quasi-independent transport in most cases (Figure 6) \cite{Fabrikant1985}.
+These values exceed the NPC transport channel diameter by at least 5-fold, and should indeed be sufficent for quasi-independent transport in most cases (as illustrated in Figure 6) \cite{Fabrikant1985}.
 In mapping our model to the experimental data, we naturally ignore the chemical heterogeneity of FG domains and biocolloids.
-Instead, we demonstrate the this level of detail is dispensible for a basic yet quantitative description of the NPC permselectivity barrier.
+Instead, we demonstrate that this level of detail is dispensible for a basic yet quantitative description of the NPC permselectivity barrier.
 
-\bigskip
+\bigskip\noindent
 \textbf{Extracting NPC resistances from the experimental data}
     
+\noindent
 Table~\ref{tbl:experimental} highlights that the experimental conditions vary, and so do the reported transport rate observables.
 To enable direct comparisons, we first converted all observables into resistances of individual NPCs.
 To provide intuitively accessible numbers, we further considered translocation rates per NPC at a set probe colloid concentration of $\Delta c = 1 \mu \text{M}$.
@@ -1018,17 +1028,20 @@ The results are given in Tables~\ref{tbl:inert_probes} and \ref{tbl:attr_probes}
     \label{fig:experiments_overview}
 \end{figure}
 
-\textbf{Permeablised human cells.} In several studies \cite{Ribbeck2001, Mohr2009, Frey2018}, the plasma membrane of human HeLa cells was digitonin-permeabilised whilst leaving the nuclear membrane intact, fluorescent probe colloids were then delivered and the initial rate of probe concentration increase in the nucleus was quantified.
+\bigskip\noindent
+\textbf{Permeabilized human cells.}
+In several studies \cite{Ribbeck2001, Mohr2009, Frey2018}, the plasma membrane of human HeLa cells was digitonin-permeabilized whilst leaving the nuclear membrane intact, fluorescent probe colloids were then delivered and the initial rate of probe concentration increase in the nucleus was quantified.
 Here, the external solution represents a quasi-infinite reservoir with constant probe concentration $c_0$.
 Under these conditions, the probe concentration in the nucleus initially increases linearly with time, $c_\text{nucleus} \approx k t c_0$ for $t \ll k^{-1}$, with the measured rate constant $k$.
 From the rate constant, the experimentally determined resistance of each NPC in the nuclear envelope is obtained through: 
 \begin{equation}
-    R_\text{exp} = \frac{N_\text{NPC}}{k V_\text{nucleus}},
+    R_\text{exp} = \frac{N_\text{NPC}}{k V_\text{nucleus}}.
     \label{eq:Exp_Resistance_1}
 \end{equation}
-where $N_\text{NPC}$ is the number of NPCs per nucleus, and $V_\text{nucleus}$ is the volume of the nucleus.
 
-\textbf{Intact yeast cells.} Two studies \cite{Popken2015,Timney2016} photobleached the nuclear pool of fluorescent probe colloids in intact \textit{S. cerevisiae} cells, and then quantified the rate of influx of fluorescent probe molecules from the cytosol.
+\bigskip\noindent
+\textbf{Intact yeast cells.}
+Two studies \cite{Popken2015,Timney2016} photobleached the nuclear pool of fluorescent probe colloids in intact \textit{S. cerevisiae} cells, and then quantified the rate of influx of fluorescent probe molecules from the cytosol.
 Here, the nuclear and cytosolic volumes are both finite, and the rate constant defining the transport process is given by
 \begin{equation}
     k = t^{-1}\ln
@@ -1045,7 +1058,7 @@ From the rate constant $k$, or equivalently the characteristic time $\tau = k^{-
     \label{eq:Exp_Resistance_2}
 \end{equation} 
 
-\bigskip
+\bigskip\noindent
 \textbf{Determining translocation rates per NPC.}
 From the expirimentally determined NPC resistances, the translocation rates per NPC for a given molar probe concentration are readily obtained as:
 \begin{equation}
@@ -1055,155 +1068,162 @@ From the expirimentally determined NPC resistances, the translocation rates per 
 
 Naturally, this relation was also used to convert the theoretically predicted pore resistances into translocation rates.
 Here, the solvent viscosity and temperature (which affect $D_0$) were set to $\eta_{\text{S}} = 1.45 \times 10^{-3} \text{ Pa s}$ and $T = 293 \text{ K}$, respectively, matching the conditions used for the experiments with HeLa cells \cite{Ribbeck2001}.
-\todo{RR: Mikhail, a quick search suggests that the yeast cytoplasm at similar temperature has a viscosity of $\eta_{\text{S}} = 5 \times 10^{-3} \text{ Pa s}$.
-Do we want to/can we address this discrepancy somehow?
-ML: you are correct in Figure S12 and 
-}
 
-\bigskip
+\bigskip\noindent
 \textbf{Mapping model and experimental parameters for the transport of sticky colloids} 
 
 Frey et al. \cite{Frey2018} used probe protein variants (GFP and mCherry) with varying FG domain attraction but similar size, to correlate their translocation rates across HeLa cell NPCs with their partition coefficients $P$ in phase-separated droplets of pure FG domains of either Nup116 from \textit{S. cerevisiae} or Nup98A from \textit{T. thermophilia}.
 
 To compare these data with the predictions of our model, we estimated the effective solvent quality $\chi_\text{PS}^\text{FG}$ of the pure FG domain droplets, and the effective interaction strength $\chi_\text{PC}^\text{FG}$  between the colloids and the pure FG domains, as follows.
 
-\bigskip
+\bigskip\noindent
 \textbf{Estimating $\chi_\text{PS}^\text{FG}$.} 
 Nup98A and Nup116 FG domains undergo spontaneous phase separation due to chain cohesiveness, demixing into a dilute FG-poor phase and condensed FG-rich droplets.
-The polymer concentration in the dilute phase, $\phi_\text{FG dilute}$, approximately equals the critical concentration for phase separation.
-For a two-component system (here comprising the FG domain and the solvent), phase separation occurs at
-$\chi_\text{PS}^\text{FG} > \frac{1}{2} + \frac{1}{\sqrt{N}} \gtrsim 0.5$
-according to mean-field theory (assuming $N \gg 1$), and both chemical potentials and osmotic pressures are equal in the dilute and condensed phases \cite{Vovk2016, Zilman2018}.
+The polymer concentration in the dilute phase, $\phi_\text{FG dilute}$, approximately equals the critical concentration for phase separation, and both chemical potentials and osmotic pressures are equal in the dilute and condensed phases \cite{Vovk2016, Zilman2018}.
 
 The estimated critical concentration of Nup116 and Nup98A FG domains is $1 \mu\text{g}/\text{ml}$, corresponding to a FG domain volume fraction in the dilute phase of $\phi_\text{FG dilute} \approx 10^{-6}$ \cite{Schmidt2015}.
-This extremely low value implies that the osmotic pressure is effectively zero in both the droplet and dilute phases, and allows to estimate the solvent quality from the condition for vanishing osmotic pressure (Eq.~(16)):
+This extremely low value implies that the osmotic pressure is effectively zero, and allows to estimate the solvent quality from the condition for vanishing osmotic pressure (Eq.~(16)):
 \begin{eqnarray}
     \chi_{\text{PS}}^{\text{FG}} = \frac{-\ln(1-\phi_\text{FG droplet}) - \phi_\text{FG droplet}}{\phi_\text{FG droplet}^2}
 \end{eqnarray}
 
 The concentration of Nup98A in phase-separated droplets was in a later study \cite{Ng2023} quantifed at 474 $\pm$ 32 mg/mL, and corresponds to a volume fraction $\phi_\text{Nup98A droplet}$ between 0.31 and 0.51 considering the range of plausible densities ($1.0 \text{ g/mL} < \rho < 1.4 \text{ g/mL}$, taking into account that some solvent may contribute to the effective FG domain volume).
-The concentration of 116 was not quantified, but it is likely that it is lower than for Nup98A.
+The concentration of Nup116 was not quantified, but it is likely that it is lower than for Nup98A.
 \todo{RR: Mikhail, you wrote that $c_\text{FG droplet} \approx 400 \text{mg/ml}$ was estimated, but I could not find this info anywhere. Can you please advise where to find it? We should reference it.}
-An intermediate value of $\phi_\text{FG droplet} = 0.3$ was thus chosen to reprent both FG domain types, corresonding to $\chi_{\text{PS}}^{\text{FG}} = 0.63$.
+
+For simplicity, we used $\chi_{\text{PS}}^{\text{FG}} = 0.6$ to represent the Nup98A and Nup116 droplets, consistent with our assumption for all NPCs.
+This corresponds to a volume fraction of $\phi_\text{FG droplet} = 0.3$, i.e., between the real values for Nup98A and Nup116.
 Within the range $0.2 < \phi_\text{FG droplet} < 0.4$, or $0.58 < \chi_{\text{PS}}^{\text{FG}} < 0.69$, the dependence of the transport rate on the partition coefficient $P$ is not very sensitive to the exact value of $\phi_\text{FG droplet}$ (Figure~\ref{fig:flux_vs_PC}).
 \todo{RR: Mikhail, please check if I have revised the above correctly.}
 
-\bigskip
+\bigskip\noindent
 \textbf{Estimating $\chi_\text{PC}^\text{FG}$ for each probe protein.} 
-The effective volume of the probe proteins was determined from the molecular mass $M_w$ as $V_\text{probe} = M_w / (N_\text{A} \rho)$, with $N_\text{A}$ Avogadro's number and $1.0 \text{ g/mL} < \rho < 1.4 \text{ g/mL}$.
-The effective size of the probe was taken as the diameter of a sphere of equivalent volume:
+The effective volume of the probe proteins was determined from the molecular mass $M_w$ as $V_\text{probe} = M_w / (N_\text{A} \rho)$, with Avogadro's number $N_\text{A}$ and $1.0 \text{ g/mL} < \rho < 1.4 \text{ g/mL}$.
+The effective size of the probes was taken as the diameter of a sphere of equivalent volume:
 \begin{eqnarray}
     d_\text{probe} =
     \left( \frac{6}{\pi} V_\text{probe} \right)^{1/3} =
     \left( \frac{6}{\pi} \frac{M_w}{N_\text{A} \rho} \right)^{1/3}
 \end{eqnarray}
-The molecular mass of probes proteins in this dataset was kept constant at $\sim$ 28 kDa (Table~\ref{tbl:attr_probes}), corresponding to an effective probe diameter between 4.0 and 4.5 nm, or between 5.2 and 5.9 when normalized by the segement length $a = 0.76 \text{ nm}$.
+The molecular mass of probe proteins in this dataset was kept constant at $\sim$ 28 kDa (Table~\ref{tbl:attr_probes}), corresponding to an effective probe diameter between 4.0 and 4.5 nm, or between 5.2 and 5.9 when normalized by the segment length $a = 0.76 \text{ nm}$.
 To simulate this system, we used $d_\text{probe} = 6$, i.e., the nearest even integer value compatible with our discretized model.
 
 Since the osmotic pressure in the pure FG droplets is negligible, only surface interactions contribute to the insertion free energy $\Delta F_\text{FG droplet}$, such that:
-\begin{eqnarray}
+\begin{equation}
     \Delta F_\text{FG droplet} =
-    \frac{\pi d_\text{probe}^3}{6} \cdot \gamma\left(
+    \frac{\pi d_\text{probe}^2}{6} \cdot \gamma\left(
     \phi_\text{FG droplet}, \chi_\text{PC}^\text{FG},
     \chi_\text{PS}^\text{FG}
-    \right) \\
+    \right)
+    \label{eq:FG_droplet_IFE}
+\end{equation}
+\begin{equation}
     P = \frac{c_\text{droplet}}{c_\text{dilute}} = e^{-\Delta F_\text{FG droplet}}
-\end{eqnarray}
-This set of equations enabled mapping of $\chi_\text{PC}^\text{FG}$ values to the measured partition coefficients $P$ between the droplet and dilute phases for each probe protein (Figure 8b), from the estbalished estimates for $\phi_\text{FG droplet}$, $\chi_{\text{PS}}^{\text{FG}}$, and $d_\text{probe}$.
-
-Lastly, to predict the probe translocation rates shown in Figure 8b, we assumed that the effective solvent strengths in the NPC is $\chi_\text{PS} = 0.6$, consistent with the prior calculations for non-sticky probes (Figure 8a).
+    \label{eq:FG_droplet_P}
+\end{equation}
+This set of equations enabled mapping of $\chi_\text{PC}^\text{FG}$ values to the measured partition coefficients $P$ between the droplet and dilute phases for each probe protein (Figure 8b), with the established estimates of $\phi_\text{FG droplet} = 0.3$, $\chi_{\text{PS}}^{\text{FG}} = 0.6$, and $d_\text{probe} = 6$.
+\todo{RR: Mikhail, please check if the values stated here are all correct.}
 
 \begin{figure}[]
     \centering
     \includegraphics[width=3.5in]{fig/flux_vs_PC_SI.png}
     \caption{
-    Gating of colloids by their affinity as in Figure~8b ($\rho_{\text{probe}} =1.3 \text{g/cm}^{-3}$).
-    Shaded bands indicate parameter uncertainty $1.0 \le \rho_{\text{probe}} \le 1.4\;\text{g/cm}^{-3}$.
-    \todo{RR: Mikhail, the legend does not seem to match the figure. Presumably, the shaded area explores the effect of FG domain concentration?}
+    Effect of the polymer volume fraction in the FG domain droplet, $\phi_\text{FG droplet}$, on the relationship between the translocation rate across NPCs and the partitioning into FG domain droplets. 
+    Theoretical predictions are presented as in Figure~8b for a colloid surface with a single sticky patch.
+    % \todo{RR: Mikhail, please check if correct and amend as needed.}
+    All parameters are as in Figure~8b, except for $\phi_\text{FG droplet}$ which was varied between 0.2 and 0.5 (as indicated), corresponding to $\chi_{\text{PS}}^{\text{FG}}$ between 0.58 and 0.77.
+    $\chi_\text{PC}^\text{FG}$ values (not shown) were mapped through Eqs.~(\ref{eq:FG_droplet_IFE}-\ref{eq:FG_droplet_P}) to compute the translocation rates.
+    \todo{RR: Mikhail, the figure needs adjusting, for consistency of axis labels. I propose we remove the experimental data here. I have here tentatively suggested that we use a volume fraction range from 0.2 to 0.5 - let's review this once we have agreed on the estimates for Nup116.}
     }
     \label{fig:flux_vs_PC}
 \end{figure}
 
 
 \pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \onecolumn
+%%%%%%%%
 \section*{Supplementary Tables}
+%%%%%%%%
 
 \begin{table*}[h]
-\begin{minipage}{0.48\linewidth}
+\begin{minipage}{\linewidth}
 \centering
 \caption{Translocation rates of non-sticky peptides and globular proteins across NPCs, calculated from the experimental data reported in the literature.
-Data marked with $^{*}$ are taken directly from the source without modification.
-\todo{RR: Please replace the author names in the Reference column by the in-text citation. Also, do we want to provide the full names of proteins, for clarity?}}
-\resizebox{\linewidth}{!}{
-\begin{tabular}{p{3cm}|p{1cm}|p{2cm}|p{2.6cm}}
-Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& Reference \\
-\hline
-Fluorescein-Cys & 0.5 & 231 & Mohr \textit{et al} \\
-11 aa peptide & 1.4 & 130 & Mohr \textit{et al} \\
-Insulin & 5.8 & 59 & Mohr \textit{et al} \\
-Aprotinin & 6.5 & 21.1 & Mohr \textit{et al} \\
-% \todo{Profilin} & ? & 13.4 & Mohr \textit{et al} \\
-Ubiquitin & 8.5 & 8.7 & Mohr \textit{et al} \\
-z-domain & 8.2 & 9.9 & Mohr \textit{et al} \\
-Thioredoxin & 13.9 & 5.0 & Mohr \textit{et al} \\
-Lactalbumin & 14.2 & 3.54 & Mohr \textit{et al} \\
-GFP & 27.0 & 0.50 & Mohr \textit{et al} \\
-PBP & 37.0 & 0.064 & Mohr \textit{et al} \\
-MBP & 43.0 & 0.054 & Mohr \textit{et al} \\
-GFP-HIS & 26.8 & 1.11 & Timney \textit{et al} \\
-GFP-1PrA & 34.2 & 0.268 & Timney \textit{et al} \\
-GFP-2PrA & 40.7 & 0.146 & Timney \textit{et al} \\
-GFP-3PrA & 46.8 & 0.092 & Timney \textit{et al} \\
-GFP-4PrA & 53.6 & 0.067 & Timney \textit{et al} \\
-GFP-6PrA & 66.8 & 0.040 & Timney \textit{et al} \\
-GFP-1PrG & 34.7 & 0.83 & Timney \textit{et al} \\
-GFP-2PrG & 42.3 & 0.25 & Timney \textit{et al} \\
-MGM & 109 & 0.0091 & Popken \textit{et al} \\
-MGM2 & 149 & 0.00250 & Popken \textit{et al} \\
-MGM4 & 230 & 0.00116 & Popken \textit{et al} \\
-MG3 & 122 & 0.0052 & Popken \textit{et al} \\
-MG4 & 150 & 0.00368 & Popken \textit{et al} \\
-MG5 & 177 & 0.00197 & Popken \textit{et al} \\
-BSA & 68 & $<0.1^{*}$ & Ribbeck \textit{et al} \\
-GFP & 29.0 & $2^{*}$ & Ribbeck \textit{et al} \\
-mCherry & 28.0 & 0.140 & Frey \textit{et al} \\
-EGFP & 28.0 & 0.49 & Frey \textit{et al} \\
-efGFP\_8R & 30.0 & 2.66 & Frey \textit{et al} \\
-sffrGFP4 18xR→K & 28.0 & 0.53 & Frey \textit{et al} \\
-sffrGFP4 25xR→K & 27.0 & 0.224 & Frey \textit{et al} \\
-MBP & 43.0 & 0.0112 & Frey \textit{et al} \\
-MBP K→R & 43.0 & 0.45 & Frey \textit{et al} \\
-\end{tabular}
-}
+See references for details on the probe colloid constructs.}
 \label{tbl:inert_probes}
+\begin{tabular}{p{6cm}|p{2cm}|p{3.7cm}|p{2cm}}
+Probe colloid & $M_w$ [kDa] & Translocation rate per NPC at $\Delta c = 1\mu\text{M}$ $[\text{s}^{-1}]$ & Reference \\
+\hline
+Fluorescein-cysteine & 0.5 & 231 & \cite{Mohr2009} \textsuperscript{a)} \\
+11 amino acid peptide & 1.4 & 130 &  \\
+Insulin & 5.8 & 59 &  \\
+Aprotinin & 6.5 & 21.1 &  \\
+Ubiquitin & 8.5 & 8.7 &  \\
+Protein A z-domain & 8.2 & 9.9 &  \\
+Thioredoxin & 13.9 & 5.0 &  \\
+Lactalbumin & 14.2 & 3.54 &  \\
+Green fluorscent protein (GFP) & 27.0 & 0.50 &  \\
+Phosphate binding potein (PBP) & 37.0 & 0.064 &  \\
+Maltose binding protein (MBP) & 43.0 & 0.054 &  \\
+\hline
+GFP & 26.8 & 1.11 & \cite{Timney2016} \textsuperscript{b)} \\
+GFP-Protein A domain (PrA) & 34.2 & 0.268 &  \\
+GFP-2$\times$PrA & 40.7 & 0.146 &  \\
+GFP-3$\times$PrA & 46.8 & 0.092 &  \\
+GFP-4$\times$PrA & 53.6 & 0.067 &  \\
+GFP-6$\times$PrA & 66.8 & 0.040 &  \\
+GFP-Protein G C2 domain & 34.7 & 0.83 &  \\
+GFP-Protein G C2 and C3 domains & 42.3 & 0.25 &  \\
+\hline
+MBP-GFP-MBP & 109 & 0.0091 & \cite{Popken2015} \textsuperscript{b)} \\
+MBP-GFP-2$\times$MBP & 149 & 0.00250 &  \\
+MBP-GFP-4$\times$MBP & 230 & 0.00116 &  \\
+MBP-3$\times$GFP & 122 & 0.0052 &  \\
+MBP-4$\times$GFP & 150 & 0.00368 &  \\
+MBP-5$\times$GFP & 177 & 0.00197 &  \\
+\hline
+%Bovine serum albumin (BSA) & 68 & $<0.1$ \textsuperscript{c)} & \cite{Ribbeck2001} \textsuperscript{d)} \\
+%GFP & 29.0 & 2 \textsuperscript{c)} &  \\
+%\hline
+\todo{RR: Mikhail, I have here removed the data by Ribbeck et al. as these do not add any tangible data as far as I can see - BSA had an upper limit, which I suppose you did not include in Figure 8, and GFP data duplicated what was done in subsewquent studies by the same lab, albeit with slightly different results. See what you think, and let me know if you have a good reason to keep the data in!}
+mCherry & 28.0 & 0.140 & \cite{Frey2018} \textsuperscript{d)} \\
+GFP & 28.0 & 0.49 &  \\
+efGFP\_8R & 30.0 & 2.66 &  \\
+sffrGFP4 with 18$\times$R→K mutations & 28.0 & 0.53 &  \\
+sffrGFP4 with 25$\times$R→K mutations & 27.0 & 0.224 &  \\
+MBP & 43.0 & 0.0112 &  \\
+MBP with K→R mutations & 43.0 & 0.45 &  \\
+\end{tabular}
+\end{minipage}
+\vspace{0.5em}
+\begin{minipage}{\textwidth}
+\footnotesize
+\textsuperscript{a)} Data for all probes in this source were included, except the profilin construct for which the molecular mass is unclear: the Stokes radius stated in the paper appears to small for the full human profilin 1 protein (15 kDa), suggesting only a part of the protein may have been used.
+\textsuperscript{b)} Data for all probes in this source were included.
+\textsuperscript{c)} Selected data from this source were included, representing inert probes.
+%\textsuperscript{d)} Data taken directly from the source without modification.
 \end{minipage}
 \end{table*}
 
-\pagebreak
+
 \begin{table*}[h]
-\begin{minipage}{0.48\linewidth}
+\begin{minipage}{\linewidth}
 \centering
-\caption{Translocation rates across NPCs, and partition coefficients $P$ in phases-separted droplets of pure FG domains, of mCherry and variants of GFP with modified surface features, from Frey et al. \cite{Frey2018}.
-Translocation rates were caclulated, and partition coefficients are reproduced directly, from the original paper.
-Probe colloids marked with $^{*}$ were reported to form oligomers in plain solution; molecular weights rerpesent the monomer.
-\todo{RR: Perhaps remove the Molecular weight column, as it does not add any tangible information, and also the notion of oligomers? The latter issue is not discussed in the main text, and would require some detailed discussion.}}
-\resizebox{\linewidth}{!}{
-\begin{tabular}{p{3cm}|p{1cm}|p{2cm}|p{1.2cm}|p{1.2cm}}
-Probe & Molar weight [kDa] & Translocation rate $[\text{s}^{-1}]$ \mbox{per one NPC} \mbox{at $\Delta c = 1\mu\text{M}$}& PC in Nup98A & PC in Nup116 \\
+\caption{Translocation rates across NPCs, and partition coefficients $P$ in phase-separated droplets of pure FG domains, of mCherry and variants of GFP with modified surface features, from Frey et al. \cite{Frey2018}.
+See original paper for details on the probe protein constructs.}
+\label{tbl:attr_probes}
+\begin{tabular}{p{4cm}|p{2cm}|p{4.1cm}|p{2cm}|p{2cm}}
+Probe protein & Protomer $M_w$ [kDa] & Translocation rate per NPC at $\Delta c = 1\mu\text{M}$ $[\text{s}^{-1}]$ \textsuperscript{a)} & $P$ in Nup98A droplets \textsuperscript{b)} & $P$ in Nup116 droplets \textsuperscript{b)} \\
 \hline
-% yNTF2 (dimer) & 28 & 84 & 290 & 1400 \\
-% rNTF2 (dimer) & 28 & 95 & 3200 & 13000 \\
 mCherry & 28 & 0.140 & - & 0.09 \\
-EGFP & 28 & 0.49 & 0.11 & 0.33 \\
+GFP & 28 & 0.49 & 0.11 & 0.33 \\
 efGFP\_0W & 28 & 0.84 & 0.09 & 0.42 \\
-efGFP\_3W* & 27.5 & 11.5 & 1.50 & 14 \\
-efGFP\_5W* & 28 & 12.2 & 2.20 & 15 \\
-efGFP\_8F* & 28.3 & 6.0 & 8.30 & 51 \\
-efGFP\_8L* & 26.8 & 4.6 & 1.80 & 10 \\
-efGFP\_8I* & 28.2 & 9.5 & 2.90 & 23 \\
-efGFP\_8M* & 28.2 & 15.4 & 3 & 17 \\
+efGFP\_3W & 27.5 & 11.5 & 1.50 & 14 \\
+efGFP\_5W & 28 & 12.2 & 2.20 & 15 \\
+efGFP\_8F & 28.3 & 6.0 & 8.30 & 51 \\
+efGFP\_8L & 26.8 & 4.6 & 1.80 & 10 \\
+efGFP\_8I & 28.2 & 9.5 & 2.90 & 23 \\
+efGFP\_8M & 28.2 & 15.4 & 3 & 17 \\
 efGFP\_8R & 30 & 2.66 & 0.50 & 1.90 \\
 sffrGFP4 & 29 & 22.4 & 14 & 50 \\
 sffrGFP4 & 29 & 22.4 & 14 & 50 \\
@@ -1214,85 +1234,85 @@ sffrGFP4 & 29 & 22.4 & 14 & 50 \\
 sffrGFP5 & 28 & 9.0 & 0.67 & 5.50 \\
 sffrGFP6 & 29 & 39.2 & 100 & 160 \\
 sffrGFP7 & 29 & 43 & 200 & 200 \\
-GFP\_MaxR\_5W* & 28 & 116 & 2100 & 4000 \\
-GFP\_MaxR\_8i* & 27.6 & 182 & 2000 & 4100 \\
-GFPNTR\_2B7* & 27.1 & 224 & 1200 & 1600 \\
-GFPNTR\_7B3* & 26.3 & 238 & 1700 & 1400 \\
-GFPNTR\_3B1* & 28.5 & 60 & 290 & - \\
-GFPNTR\_3B7* & 27.5 & 106 & 3000 & - \\
-GFPNTR\_3B8* & 27.5 & 94 & 1800 & - \\
+GFP\_MaxR\_5W & 28 & 116 & 2100 & 4000 \\
+GFP\_MaxR\_8i & 27.6 & 182 & 2000 & 4100 \\
+GFPNTR\_2B7 & 27.1 & 224 & 1200 & 1600 \\
+GFPNTR\_7B3 & 26.3 & 238 & 1700 & 1400 \\
+GFPNTR\_3B1 & 28.5 & 60 & 290 & - \\
+GFPNTR\_3B7 & 27.5 & 106 & 3000 & - \\
+GFPNTR\_3B8 & 27.5 & 94 & 1800 & - \\
 GFPNTR\_3B9 & 28.3 & 122 & 4800 & - \\
 \end{tabular}
-}
-\label{tbl:attr_probes}
 \end{minipage}
-
-\hfill
-\vspace{0.5cm}
-\pagebreak
-
-\begin{minipage}{\linewidth}
-\centering
-\caption{Transport-related quantities extracted from the experimental studies.}
-\resizebox{0.9\linewidth}{!}{
-    \begin{tabular}{p{2.6cm}|p{2.6cm}|p{9cm}|p{0.7cm}|p{0.7cm}|p{0.4cm}}
-        %\hline
-        Study & Nuclei from & Reported quantity & $N_{\text{pore}}$ & $V_{\text{in}}$ $[f_\text{l}]$ & $V_{\text{out}}$ $[f_\text{l}]$ \\
-        \hline
-        Ribbeck et al. \cite{Ribbeck2001} & HeLa cells & Translocation rate per NPC at $\Delta c = 1 \mu\text{M}$ & 2770 & 1130 & $\infty$ \\
-        Mohr et al. \cite{Mohr2009} & HeLa cells & Rate constant $k$ & 2770 & 1130 & $\infty$ \\
-        Popken et al. \cite{Popken2015} & \textit{S. cerevisiae} & Nuclear/cytoplasm concentration $c_{\text{in}}/c_{\text{out}}$ at  $t = 1 \text{h}$ & 161 & 4.8 & 60 \\
-        Timney et al. \cite{Timney2016} & \textit{S. cerevisiae} & Characteristic time $\tau$ & 161 & 4.8 & 60 \\
-        Frey et al. \cite{Frey2018} & HeLa cells & Rate constant $k$; \newline  correlated with partitioning coefficient in phase-separated droplets of  \textit{S. cerevisiae} Nup116 and \textit{T. thermophilia} Nup98A & 2770 & 1130 & $\infty$ \\
-        %\hline
-    \end{tabular}
-    }
-    \label{tbl:experimental}
+\vspace{0.5em}
+\begin{minipage}{\textwidth}
+\footnotesize
+\textsuperscript{a)} Translocation rates were calculated from the data in the original paper, as described in Supplementary Note 7.
+\textsuperscript{b)} Partition coefficients are reproduced from the original paper.
 \end{minipage}
 \end{table*}
 
-\begin{table*}[t]
+
+\begin{table*}[h]
+\begin{minipage}{\linewidth}
 \centering
-\caption{Analysis of the content of intrinsically disordered FG nucleoporin material in NPCs.}
+\caption{Analysis of the content of intrinsically disordered regions (IDRs) in FG nucleoporins in yest NPCs.}
 \label{tbl:idr_npc}
-\resizebox{0.9\textwidth}{!}{%
-\begin{tabular}{|l|c|c|c|}
+\begin{tabular}{p{4cm}|p{4cm}|p{4cm}|p{4cm}}
+FG nucleoporin in \textit{S. cerevisiae} \textsuperscript{a)} & Number of amino acids in IDR per protein \textsuperscript{b)} & Protein copy number per NPC \textsuperscript{c)} & Number of amino acids in IDRs per NPC \\
+        \hline
+Nsp1       & 617 & 48  & 29616 \\
+Nup49      & 251 & 32  & 8032  \\
+Nup57      & 255 & 32  & 8160  \\
+Nup145N    & 433 & 16  & 6928  \\
+Nup116 \textsuperscript{d)}  & 960 & 16  & 15360 \\
+Nup100     & 800 & 16  & 12800 \\
+Nup60 \textsuperscript{e)}   & 539 & 16  & 8624  \\
+Nup1       & 857 & 16  & 13712 \\
+Nup42      & 382 & 8   & 3056  \\
+Nup159     & 685 & 16  & 10960 \\
 \hline
-FG nucleoporin in \textit{S. cerevisiae} \textsuperscript{a)} & \begin{tabular}[c]{@{}c@{}}Number of amino acids\\ in IDR per protein \textsuperscript{b)} \end{tabular} & \begin{tabular}[c]{@{}c@{}}Protein copy\\ number per NPC \textsuperscript{c)} \end{tabular} & \begin{tabular}[c]{@{}c@{}}Number of amino acids\\ in IDRs per NPC\end{tabular} \\
-\hline
-Nsp1       & 617 & 48  & 29616  \\
-Nup49      & 251 & 32  & 8032   \\
-Nup57      & 255 & 32  & 8160   \\
-Nup145N    & 433 & 16  & 6928   \\
-Nup116 \textsuperscript{d)}  & 960 & 16  & 15360  \\
-Nup100     & 800 & 16  & 12800  \\
-Nup60 \textsuperscript{e)}   & 539 & 16  & 8624   \\
-Nup1       & 857 & 16  & 13712  \\
-Nup42      & 382 & 8   & 3056   \\
-Nup159     & 685 & 16  & 10960  \\
-\hline
-\textbf{Total} &       & 216 & \textbf{117248} \\
-\hline
-\end{tabular}
-}
+Total      &     & 216 & 117248\\
+    \end{tabular}
+\end{minipage}
 \vspace{0.5em}
-\begin{minipage}{0.9\textwidth}
+\begin{minipage}{\textwidth}
 \footnotesize
-\textsuperscript{a)} Nup2 was excluded as this protein is non-essential. \\
-\textsuperscript{b)} According to Yamada et al.~\cite{Yamada2010}. \\
-\textsuperscript{c)} According to Kim et al.~\cite{Kim2018}. \\
-\textsuperscript{d)} The full C-terminal region up to amino acid 960 was considered IDR. \\
+\textsuperscript{a)} Nup2 was excluded as this protein is non-essential.
+\textsuperscript{b)} According to Yamada et al.~\cite{Yamada2010}.
+\textsuperscript{c)} According to Kim et al.~\cite{Kim2018}.
+\textsuperscript{d)} The full C-terminal region up to amino acid 960 was considered IDR.
 \textsuperscript{e)} The full protein was considered disordered, based on prediction.
 \end{minipage}
 \end{table*}
 
 
-% \pagebreak
+\begin{table*}[h]
+\begin{minipage}{\linewidth}
+\centering
+\caption{Transport-related quantities extracted from the experimental studies.}
+\label{tbl:experimental}
+\begin{tabular}{p{2.8cm}|p{7cm}|p{2cm}|p{1cm}|p{1cm}|p{1cm}}
+Study & Reported quantity & Nuclei from & $N_\text{NPC}$ & $V_\text{nucleus}$ [fL] & $V_\text{cytosol}$ [fL] \\
+\hline
+Ribbeck et al. \cite{Ribbeck2001} & Translocation rate per NPC at $\Delta c = 1 \mu\text{M}$ & HeLa cells & 2770 & 1130 & $\infty$ \\
+Mohr et al. \cite{Mohr2009} & Rate constant $k$ &  &  &  &  \\
+Frey et al. \cite{Frey2018} & Rate constant $k$; \newline  correlated with partitioning coefficient in phase-separated droplets of  \textit{S. cerevisiae} Nup116 and \textit{T. thermophilia} Nup98A &  &  &  &  \\
+\hline
+Popken et al. \cite{Popken2015} & Nuclear/cytoplasm concentration $c_{\text{in}}/c_{\text{out}}$ at $t = 1 \text{h}$ & \textit{S. cerevisiae} & 161 & 4.8 & 60 \\
+Timney et al. \cite{Timney2016} & Characteristic time $\tau$ &  &  &  &  \\
+\end{tabular}
+\end{minipage}
+\end{table*}
+
+
+\pagebreak
 \onecolumn
+%%%%%%%%
 \subsection*{List of variables and abbreviations}
 \todo{TO BE REVISED}
+%%%%%%%%
 
-%
 \begin{tabularx}{\linewidth}{l X}
     % \toprule
     % \textbf{Variable} & \textbf{Definition} \\
