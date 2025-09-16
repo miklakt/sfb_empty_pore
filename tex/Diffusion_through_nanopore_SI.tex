@@ -27,10 +27,14 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}        % better fonts in T1
 
+\usepackage{authblk}
+\renewcommand\Authfont{\normalsize}
+\renewcommand\Affilfont{\small}
+
 \usepackage[
   backend=biber,
   style=nature,
-  maxnames=8,  % limit names in citations
+  maxnames=12,  % limit names in citations
   doi=false,
   url=false,
   eprint=false,
@@ -65,29 +69,61 @@
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 \newcommand{\sign}{\text{sign}}
 
-% Add S prefix to figures, equations and tables
+% Add S prefix to figures, equations, tables and references
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\theequation}{S\arabic{equation}}
 \renewcommand{\thetable}{S\arabic{table}}
 \makeatletter
 \renewcommand{\fnum@table}{\textbf{Table~\thetable}}
 \makeatother
+\DeclareFieldFormat{labelnumber}{S#1}
 
 
 \addbibresource{biblio.bib}
 \onecolumn
 
-\title{SUPPLEMENTARY INFORMATION}
+\title{SUPPLEMENTARY INFORMATION
+\\A polymer filling enhances the rate and selectivity of colloid permeation across mesopores}
 
-\author{}
+\author[1]{Mikhail Y. Laktionov}
+\author[2]{Frans A. M. Leermakers}
+\author[3]{Ralf P. Richter}
+\author[4,5]{Leonid I. Klushin}
+\author[1]{Oleg V. Borisov}
+
+\affil[1]{CNRS, Université de Pau et des Pays de l'Adour, UMR 5254, 
+Institut des Sciences Analytiques et de Physico-Chimie pour l'Environnement et les Matériaux, 64053 Pau, France}
+
+\affil[2]{Physical Chemistry and Soft Matter, Wageningen University, Stippeneng 4, 6708 WE, Wageningen, The Netherlands}
+
+\affil[3]{University of Leeds, School of Biomedical Sciences, Faculty of Biological Sciences, 
+School of Physics and Astronomy, Faculty of Engineering and Physical Sciences, 
+Astbury Centre for Structural Molecular Biology, 
+and Bragg Center for Materials Research, Leeds, LS2 9JT, United Kingdom}
+
+\affil[4]{Branch of Petersburg Nuclear Physics Institute 
+named by B.P. Konstantinov of National Research Centre ''Kurchatov Institute'', 
+Institute of Macromolecular Compounds, 199004 St. Petersburg, Russia}
+
+\affil[5]{American University of Beirut, Department of Physics, Beirut 1107 2020, Lebanon}
+
 \date{}
 
 \begin{document}
 \maketitle
 
 
+\vspace{-8ex}
 \begin{center}
-    \textbf{This file includes:} Supplementary Notes 1 to 7, Supplementary Tables S1 to S4, and Supplementary References.
+\small{
+All authors contributed equally to this work.\\
+$^{*}$Corresponding author:  \href{mailto:r.richter@leeds.ac.uk}{r.richter@leeds.ac.uk}
+}
+\end{center}
+\vspace{1ex}
+
+\begin{center}
+        \textbf{This file includes:} Supplementary Notes 1 to 7, Supplementary Tables S1 to S4, and Supplementary References.
 \end{center}
 \twocolumn
 
@@ -479,9 +515,8 @@ where $\Delta F_{\text{cyl}}(b_0,b_1)$ is the analytical result for the coaxial 
 Below, we discuss both methods in detail and present the fitted values of $b_0$ and $b_1$.
 
 
-\bigskip
+\bigskip\noindent
 \textbf{Analytical estimation of $\Delta F_{\text{cyl}}^{\text{osm}}$ and $\Delta F_{\text{cyl}}^{\text{sur}}$ for cylindrical colloids on a discrete lattice}
-
 Following Eq.~(15) the insertion free energy a coaxial cylindrical colloid:
 \begin{equation}
     \Delta F_{\text{cyl}}(b_0, b_1) = \Delta F_{\text{cyl}}^{\text{osm}} + \Delta F_{\text{cyl}}^{\text{sur}}(b_0, b_1).
@@ -566,9 +601,8 @@ where the matrix elements for $\boldsymbol{\Pi}\{z_{\text{c}}\}$ and $\boldsymbo
 % \end{equation*}
 % Convolution was performed via fast Fourier transform for computational efficiency.
 
-\bigskip
+\bigskip\noindent
 \textbf{Extracting insertion free energy from SF-SCF data}
-
 As illustrated in Figure~\ref{fig:sf-scf_scheme}, a cylindrical colloid is positioned coaxially along the $z$-axis as impermeable lattice elements.
 Consequently, the polymer-brush chains adjust to the available space and the polymer-colloid interaction strength, producing a change in the system's total free energy, $F_{\text{cyl}}(z_{\text{c}})$.
 
@@ -580,8 +614,8 @@ To isolate the insertion free energy, we apply a ground-state correction and def
 \end{equation}
 where $F_{\text{SF-SCF}}(z_{\text{c}}^{\text{bulk}})$ is the system free energy when the colloid is placed far away from the pore.%, and $z_{\text{c}}$ denotes the colloid center coordinate along the $z$-axis.
 
-\paragraph{Fitting $b_0$ and $b_1$ to match analytical model to SF-SCF data}
-
+\bigskip\noindent
+\textbf{Fitting $b_0$ and $b_1$ to match analytical model to SF-SCF data}
 The optimal coefficients $b_0$ and $b_1$ were found using the least-squares method, i.e., minimizing Eq.~(\ref{eq:b0_b1_fit}) across a range of $\chi_{\text{PS}} \in [0,1]$  and $\chi_{\text{PC}} \in [-2,0]$ for the relevant colloid positions $0 \leq |z_{\text{c}}| \leq 60$.
 Fits were performed with small colloids ($d=4$), to focus on local effects and avoid added effects that may arise due to global perturbations of the polymer distribution in the pore.
 
@@ -635,7 +669,7 @@ As a consequence, the pore walls also influence colloid insertion.
 
 The SF-SCF method considered in the previous sections is limited to colloids moving along the main axis of the pore.
 In reality, colloids may be located off the pore axis.
-Here, we generalize the analytical approach (Supplementary Notes 2 and 4) \todo{ML: Supplementary Note 4} calculate insertion free energies based on volume and surface contributions (assuming localized perturbations to the polymer concentration) to arbitrarily placed colloids.
+Here, we generalize the analytical approach (Supplementary Note 4) to calculate insertion free energies based on volume and surface contributions (assuming localized perturbations to the polymer concentration) to arbitrarily placed colloids.
 In doing so, we also change the shape of the colloid, from a cylinder to a simpler sphere.
 
 \bigskip\noindent
@@ -1008,7 +1042,7 @@ Instead, we demonstrate that this level of detail is dispensible for a basic yet
 
 \bigskip\noindent
 \textbf{Extracting NPC resistances from the experimental data}
-    
+
 \noindent
 Table~\ref{tbl:experimental} highlights that the experimental conditions vary, and so do the reported transport rate observables.
 To enable direct comparisons, we first converted all observables into resistances of individual NPCs.
@@ -1023,7 +1057,6 @@ The results are given in Tables~\ref{tbl:inert_probes} and \ref{tbl:attr_probes}
     Biocolloids (yellow circles) are mobile, and a concentration difference $\Delta c$ drives their diffusive flux into the nucleus where they accumulate over time $c_\text{nucleus}(t)$.
     \textbf{Top right:} Isolated FG domain polymers phase-separate in a poor solvent with solvent strength $\chi_{\text{PS}}^{\text{FG}}$, forming droplets (red spheres) with polymer volume fraction $\phi_{\text{droplet}}$.
     \textbf{Bottom right:} Colloids equilibrate between the dilute and condensed droplet phases, characterized by the partition coefficient $P = c_\text{droplet}/c_\text{dilute}$.
-    \todo{RR: Mikhail, can you please adjust the nomenclature in the Figure to match the legend. Thanks!}
     }
     \label{fig:experiments_overview}
 \end{figure}
@@ -1089,12 +1122,15 @@ This extremely low value implies that the osmotic pressure is effectively zero, 
 
 The concentration of Nup98A in phase-separated droplets was in a later study \cite{Ng2023} quantifed at 474 $\pm$ 32 mg/mL, and corresponds to a volume fraction $\phi_\text{Nup98A droplet}$ between 0.31 and 0.51 considering the range of plausible densities ($1.0 \text{ g/mL} < \rho < 1.4 \text{ g/mL}$, taking into account that some solvent may contribute to the effective FG domain volume).
 The concentration of Nup116 was not quantified, but it is likely that it is lower than for Nup98A.
-\todo{RR: Mikhail, you wrote that $c_\text{FG droplet} \approx 400 \text{mg/ml}$ was estimated, but I could not find this info anywhere. Can you please advise where to find it? We should reference it.}
+\todo{RR: Mikhail, you wrote that $c_\text{FG droplet} \approx 400 \text{mg/ml}$ was estimated, but I could not find this info anywhere. Can you please advise where to find it? We should reference it.
+ML: Schmidt2015 estimated Nup98 200-300mg/ml among several taxa, and Nup116 particles to be approx 350 mg/ml for Saccharomyces cerevisiae,  Frey2007 thresholds by 200 mg/ml minimum for FG-domain}
+
 
 For simplicity, we used $\chi_{\text{PS}}^{\text{FG}} = 0.6$ to represent the Nup98A and Nup116 droplets, consistent with our assumption for all NPCs.
-This corresponds to a volume fraction of $\phi_\text{FG droplet} = 0.3$, i.e., between the real values for Nup98A and Nup116.
-Within the range $0.2 < \phi_\text{FG droplet} < 0.4$, or $0.58 < \chi_{\text{PS}}^{\text{FG}} < 0.69$, the dependence of the transport rate on the partition coefficient $P$ is not very sensitive to the exact value of $\phi_\text{FG droplet}$ (Figure~\ref{fig:flux_vs_PC}).
-\todo{RR: Mikhail, please check if I have revised the above correctly.}
+This corresponds to a volume fraction of $\phi_\text{FG droplet} = 0.3$ \todo{ML: 0.245 to be precise, though it should not be important as we show in Fig S12}, i.e., between the real values for Nup98A and Nup116.
+% Within the range $0.2 < \phi_\text{FG droplet} < 0.$, or $0.58 < \chi_{\text{PS}}^{\text{FG}} < 0.69$, the dependence of the transport rate on the partition coefficient $P$ is not very sensitive to the exact value of $\phi_\text{FG droplet}$ (Figure~\ref{fig:flux_vs_PC}).
+Within the range $0.2 < \phi_\text{FG droplet} < 0.$, or $0.58 < \chi_{\text{PS}}^{\text{FG}} < 0.77$, the dependence of the transport rate on the partition coefficient $P$ is not very sensitive to the exact value of $\phi_\text{FG droplet}$ (Figure~\ref{fig:flux_vs_PC}).
+\todo{RR: We may want to state briefly what Figure S12 shows in terms of the magnitude of variations.}
 
 \bigskip\noindent
 \textbf{Estimating $\chi_\text{PC}^\text{FG}$ for each probe protein.} 
@@ -1122,7 +1158,7 @@ Since the osmotic pressure in the pure FG droplets is negligible, only surface i
     \label{eq:FG_droplet_P}
 \end{equation}
 This set of equations enabled mapping of $\chi_\text{PC}^\text{FG}$ values to the measured partition coefficients $P$ between the droplet and dilute phases for each probe protein (Figure 8b), with the established estimates of $\phi_\text{FG droplet} = 0.3$, $\chi_{\text{PS}}^{\text{FG}} = 0.6$, and $d_\text{probe} = 6$.
-\todo{RR: Mikhail, please check if the values stated here are all correct.}
+% \todo{RR: Mikhail, please check if the values stated here are all correct.}
 
 \begin{figure}[]
     \centering
@@ -1133,7 +1169,7 @@ This set of equations enabled mapping of $\chi_\text{PC}^\text{FG}$ values to th
     % \todo{RR: Mikhail, please check if correct and amend as needed.}
     All parameters are as in Figure~8b, except for $\phi_\text{FG droplet}$ which was varied between 0.2 and 0.5 (as indicated), corresponding to $\chi_{\text{PS}}^{\text{FG}}$ between 0.58 and 0.77.
     $\chi_\text{PC}^\text{FG}$ values (not shown) were mapped through Eqs.~(\ref{eq:FG_droplet_IFE}-\ref{eq:FG_droplet_P}) to compute the translocation rates.
-    \todo{RR: Mikhail, the figure needs adjusting, for consistency of axis labels. I propose we remove the experimental data here. I have here tentatively suggested that we use a volume fraction range from 0.2 to 0.5 - let's review this once we have agreed on the estimates for Nup116.}
+    % \todo{RR: Mikhail, the figure needs adjusting, for consistency of axis labels. I propose we remove the experimental data here. I have here tentatively suggested that we use a volume fraction range from 0.2 to 0.5 - let's review this once we have agreed on the estimates for Nup116.}
     }
     \label{fig:flux_vs_PC}
 \end{figure}
@@ -1185,7 +1221,9 @@ MBP-5$\times$GFP & 177 & 0.00197 &  \\
 %Bovine serum albumin (BSA) & 68 & $<0.1$ \textsuperscript{c)} & \cite{Ribbeck2001} \textsuperscript{d)} \\
 %GFP & 29.0 & 2 \textsuperscript{c)} &  \\
 %\hline
-\todo{RR: Mikhail, I have here removed the data by Ribbeck et al. as these do not add any tangible data as far as I can see - BSA had an upper limit, which I suppose you did not include in Figure 8, and GFP data duplicated what was done in subsewquent studies by the same lab, albeit with slightly different results. See what you think, and let me know if you have a good reason to keep the data in!}
+\todo{RR: Mikhail, I have here removed the data by Ribbeck et al. as these do not add any tangible data as far as I can see - BSA had an upper limit, which I suppose you did not include in Figure 8, and GFP data duplicated what was done in subsewquent studies by the same lab, albeit with slightly different results. See what you think, and let me know if you have a good reason to keep the data in!
+ML: the goal was to give a sence of variations between experimental studies. There is data for BSA and GFP from Ribbeck et al. in Figure 8a (blue squares), should we remove it?
+}
 mCherry & 28.0 & 0.140 & \cite{Frey2018} \textsuperscript{d)} \\
 GFP & 28.0 & 0.49 &  \\
 efGFP\_8R & 30.0 & 2.66 &  \\
@@ -1260,7 +1298,7 @@ GFPNTR\_3B9 & 28.3 & 122 & 4800 & - \\
 \label{tbl:idr_npc}
 \begin{tabular}{p{4cm}|p{4cm}|p{4cm}|p{4cm}}
 FG nucleoporin in \textit{S. cerevisiae} \textsuperscript{a)} & Number of amino acids in IDR per protein \textsuperscript{b)} & Protein copy number per NPC \textsuperscript{c)} & Number of amino acids in IDRs per NPC \\
-        \hline
+\hline
 Nsp1       & 617 & 48  & 29616 \\
 Nup49      & 251 & 32  & 8032  \\
 Nup57      & 255 & 32  & 8160  \\
@@ -1273,7 +1311,7 @@ Nup42      & 382 & 8   & 3056  \\
 Nup159     & 685 & 16  & 10960 \\
 \hline
 Total      &     & 216 & 117248\\
-    \end{tabular}
+\end{tabular}
 \end{minipage}
 \vspace{0.5em}
 \begin{minipage}{\textwidth}
@@ -1331,22 +1369,18 @@ Timney et al. \cite{Timney2016} & Characteristic time $\tau$ &  &  &  &  \\
     $\Delta F_{\text{osm}}$ & Osmotic contribution to $\Delta F$ for a spherical particle\\
     $\Delta F_{\text{SF-SCF}}$ & Insertion free energy penalty to place a cylindrical particle calculated using the Scheutjens-Fleer approach \\
     $\Delta F_{\text{sur}}$ & Surface contribution to $\Delta F$ for a spherical particle\\
-    $\Delta \phi$ & Change in polymer segment volume concentration due to the presence of a colloid particle \\
     $p(z)$ & Prefactor introduced to correct the difference between the resistance calculated using half-cylinder shells and oblate spheroid shells \\
     $G$ & Statistical weight of a subchain \\
     $\gamma$ & Surface tension coefficient \\
     $h_{r}$, $h_{z}$, $h_{\theta}$ & Lam\'e coefficients (scale factors) in curvilinear coordinate transformations \\
+    $\tilde{h}$ & Effective metric factor \\
     $i$, $k$ & Indices of the discretized grid in radial $r$ and axial $z$ directions, respectively \\
-    $J$ & Net flux of colloid particles through the pore in the steady state \\
-    $j$ & Colloid particle flux density in the steady state \\
     $k_B$ & Boltzmann constant \\
     $L_{0}$ & Membrane thickness \\
     $L$ & Effective length of the pore considering volume exclusion \\
     $N$ & Number of Kuhn segments in the brush-forming chains \\
     $\Pi$ & Flory mean-field local osmotic pressure \\
     $\phi$ & Local volume fraction of polymer segments in a polymer brush \\
-    $\phi^{\ast}$ & Apparent local volume fraction of polymer segments \\
-    $\phi^{\text{ins}}$ & Local volume fraction of polymer segments disturbed by an inserted particle \\
     $\psi$ & Scalar potential function introduced to express the steady state solution \\
     $\rho$ & Local resistivity (inverse conductivity) to colloid particle diffusion \\
     $r$ & Radial coordinate in cylindrical coordinates \\
@@ -1382,7 +1416,5 @@ Timney et al. \cite{Timney2016} & Characteristic time $\tau$ &  &  &  &  \\
 \end{tabularx}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\todo{RR: The bibliography is missing here, for some technical reason? Also, please change in-text references to number (instead of author+year) format, consistent with the main text.}
 \printbibliography
 \end{document}
