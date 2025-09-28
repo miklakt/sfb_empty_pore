@@ -46,7 +46,6 @@
 ]{pdfcomment}
 \newcommand{\todo}[1]{\pdfcomment{#1}} %\REMOVE ALL \todo{...} BEFORE SUBMISSION
 
-
 \title{A polymer filling enhances the rate and selectivity of colloid permeation across mesopores}
 
 \author[1]{Mikhail Y. Laktionov}
@@ -105,9 +104,9 @@ Polymer-modified mesoporous materials and membranes represent a new class of fun
 
 The interaction of the polymer meshwork with colloids, i.e., nanoparticles or (macro)molecules in the solution phase, essentially determines the absorption and separation properties of the polymer-modified mesoporous materials.
 Interactions can be attractive or repulsive, and of varying specificity, controlled by a broad spectrum of parameters \cite{Low2019} such as pH and ion strength, valency and specificity \cite{Lee2010}, solvent quality and temperature \cite{Halperin2011, Stetsyshyn2020}, and more specific 'ligand binding' features.
-This opens up novel opportunities for highly selective and controlled uptake and transport of colloids through polymer-filled mesoscopic channels \cite{Sirkin2020}.
+This opens up novel opportunities for highly selective and controlled uptake and transport of colloids through polymer-filled mesoscopic channels \cite{Sirkin2020, Smook2025}.
 
-Past experimental and theoretical efforts have focused on triggering the transient opening of a polymer free path through an external stimulus to gate transport \cite{Alberti2015, Emilsson2018, Caspi2008}.
+Past experimental and theoretical efforts have focused on triggering the transient opening of a polymer free path through an external stimulus to gate transport \cite{Alberti2015, Emilsson2018, Caspi2008, Smook2025}.
 However, the polymer phase itself can potentially also provide high selectivity to colloids as a function of their size and attraction by the polymer.
 We thus hypothesized that even mesopores filled with a polymer meshwork across their entire cross-section can effectively gate transport.
 If successful, this approach would enable more robust gating as it does not rely on careful tuning of the diameter of a polymer-free channel, and higher transport rates as the full pore cross-section can participate in colloid transport.
@@ -669,15 +668,6 @@ To match the theoretical colloid volumes to protein molecular masses, we conside
 This reflects that an unknown (and possibly variable) amount of solvent contributes to the effective volume of the proteins during their transport across the NPC.
 The only adjustable fitting parameter in our model was the prefactor $\beta$ in the scaling-based expression for the diffusion coefficient, Eq.~(\ref{eq:Rubinstein}).
 
-Figure~\ref{fig:NPC_comparison}a demonstrates that the theory reproduces the experimentally observed increase in pore resistance with colloid size very well.
-The best fit was obtained with $\beta = 5.5$ and this value was hence fixed  throughout the paper.
-The quality of the fit is quite remarkable given the large range of masses and transport rates covered, and the relative simplicity of our theory.
-Some scatter in the experimental data is though notable.
-This may be due to some proteins not being strictly non-sticky but interacting weakly with FG domains.
-Indeed, Frey et al. \cite{Frey2018} reported a three-fold enhanced transport rate of green fluorescent protein over mCherry despite these proteins being of similar molecular mass and considered inert.
-Moreover, whilst some studies had washed out cytosolic proteins in their assay (with HeLa cells), thus leaving behind intact nuclear pores filled with a plain FG domain brush but lacking most transport factors \cite{Ribbeck2001, Mohr2009, Frey2018}, others used intact yeast cells with all transport factors present \cite{Popken2015, Timney2016}.
-The satisfactory fit across all datasets suggests that the crowding of the NPC with transport factors has a comparatively weak effect on the transport of non-sticky proteins across the NPC, consistent with a moderate effect of transport factor depletion observed in vivo \cite{Kalita2022}.  
-
 \begin{figure}
     \centering
     %REMOVE \CENTERLINE BEFORE SUBMISSION
@@ -699,6 +689,15 @@ The satisfactory fit across all datasets suggests that the crowding of the NPC w
     }
     \label{fig:NPC_comparison}
 \end{figure}
+
+Figure~\ref{fig:NPC_comparison}a demonstrates that the theory reproduces the experimentally observed increase in pore resistance with colloid size very well.
+The best fit was obtained with $\beta = 5.5$ and this value was hence fixed  throughout the paper.
+The quality of the fit is quite remarkable given the large range of masses and transport rates covered, and the relative simplicity of our theory.
+Some scatter in the experimental data is though notable.
+This may be due to some proteins not being strictly non-sticky but interacting weakly with FG domains.
+Indeed, Frey et al. \cite{Frey2018} reported a three-fold enhanced transport rate of green fluorescent protein over mCherry despite these proteins being of similar molecular mass and considered inert.
+Moreover, whilst some studies had washed out cytosolic proteins in their assay (with HeLa cells), thus leaving behind intact nuclear pores filled with a plain FG domain brush but lacking most transport factors \cite{Ribbeck2001, Mohr2009, Frey2018}, others used intact yeast cells with all transport factors present \cite{Popken2015, Timney2016}.
+The satisfactory fit across all datasets suggests that the crowding of the NPC with transport factors has a comparatively weak effect on the transport of non-sticky proteins across the NPC, consistent with a moderate effect of transport factor depletion observed in vivo \cite{Kalita2022}.  
 
 
 %%%%%%%%%%
@@ -759,12 +758,12 @@ Our predictive theoretical approach paves the way for the rational design of nan
 Mixtures of biological colloids such as folded proteins and other biomacromolecular complexes, as well as synthetic colloids such as nanoparticles, may be effectively separated, not only according to their size but also their surface (bio-)chemistry.
 
 Individual pores, as considered here, are routinely deployed in current nanopore sensing technologies.
-These technologies enable detection and characterization of individual macromolecules as they travel across the pore.
-Our findings suggest polymer fillings as an attractive tool to optimize the performance of nanopore sensing.
+These technologies enable detection and characterization of individual macromolecules as they travel across the pore \cite{Xue2020, Lu2025}.
+Our findings suggest polymer fillings as an attractive tool to develop the next generation of biomolecular sensors with improved sensing capabilities \cite{Liu2025}.
 Placing a suitable polymer filling upstream the pore's sensing region would enable pre-selection of target solutes from complex mixtures for a focused analysis by the pore.
 Polymer fillings may also be placed in the very sensing region of the pore to enhance both selectivity and sensitivity.
 
-Individual pores will though typically be insufficient in applications that focus on high-throughput separation (such as filtration systems) or delivery (such as porous particles).
+Individual pores will though typically be insufficient in applications that focus on high-throughput separation (such as filtration systems) delivery (such as porous particles) or catalysis.
 This limitation can be overcome by multiplexing, e.g., with materials featuring a large array of mesopores.
 Our theoretical approach remains valid for such arrays as long as the distance between pores remains sufficiently large for the diffusion trajectories of adjacent pores not to substantially interfere.
 Fortunately, this condition can be met with a relatively tight packing of pores (see iso-concentration lines in Figure~\ref{fig:colloid_concentration}) \cite{Fabrikant1985}.
@@ -802,27 +801,20 @@ A homogeneous polymer-colloid interaction is preferable over one or multiple dis
 %%%%%%%%%%
 
 Source data are provided with this paper.
-\todo{RR: We shall need to supply the data presented in figures in numerical form. Can we do this as a single Excel file, with one worksheet per figure or panel?}
-
 
 %%%%%%%%%%
 \subsection*{Code availability}
 %%%%%%%%%%
 
-\todo{RR: Here is what Nat Commun requires. Would it perhaps be sensible to upload all required code on GitHub?
-
-Authors must make available upon request, to editors and reviewers, any previously unreported custom computer code or algorithm used to generate results that are reported in the paper and central to its main claims. Any reason that would preclude the need for code or algorithm sharing will be evaluated by the editors who reserve the right to decline the paper if important code is unavailable.
-
-For all studies using custom code or mathematical algorithm that is deemed central to the conclusions, a statement must be included under the heading "Code availability", indicating whether and how the code or algorithm can be accessed, including any restrictions to access. Code availability statements should be provided as a separate section after the data availability statement but before the references.
-
-Upon publication, Nature Portfolio journals consider it best practice to release custom computer code in a way that allows readers to repeat the published results. Code should be deposited in a DOI-minting repository such as Zenodo or Code Ocean and cited in the reference list following the guidelines described here. Authors are encouraged to manage subsequent code versions and to use a license approved by the open source initiative. Full details about how the code can be accessed and any restrictions must be described in the Code Availability statement.}
-
+SF-SCF simulations were performed with Namics.
+\todo{Mikhail, please can you add the following reference here: F. A. M. Leermakers, R. Varadharajan, D. Emmery and A. Kazakov, Namics - MD-SCF Hybrid simulation tool, 2023, https://github.com/leermakers/Namics. I am not sure how to integrate web links into the bib file.}
+Custom code for other modelling and data aanalysis is available on \url{https://github.com/miklakt/diffusion_polymer_mesopores}.
 
 %%%%%%%%
 \todo{RR: Mikhail, please can you check the following references for correct formatting:
 Ref. 5 is a book chapter - need to add 'In' before the book title, and include publisher.
 Your extra code below does not seem to do this properly.
-Also,pPlease display all authors for all references. I think there is no paper with too many authors.
+Also,please display all authors for all references. I think there is no paper with too many authors.
 Thanks!}
 % --- Force "In:" for incollection entries by default printed is in nature style biblatex---
 \renewbibmacro*{in:}{%
@@ -835,9 +827,9 @@ Thanks!}
 \subsection*{Acknowledgements}
 %%%%%%%%%%
 
-This work was financially supported by the Royal Society (International Exchanges
-Award IEC/R2/202035 to R.P.R.), the UK Biotechnology and Biological
-Sciences Research Council (grant BB/X00158X/1 to R.P.R.), and the Russian Science Foundation (grant 23-13-00174).
+R.P.R. acknowledges financial support by the Royal Society (International Exchanges Award IEC/R2/202035) and the UK Biotechnology and Biological
+Sciences Research Council (grant BB/X00158X/1).
+M.Y.L. acknowledges support from Agence Nationale de La Recherche (ANR), France, and Deutsche Forschungsgesellschaft (DFG), Germany, within grant  ANR-20-CE92-0044. The work was also supported by the Russian Science Foundation (grant 23-13-00174).
 
 The authors thank Charley Schaefer and Paolo Actis (both University of Leeds) for helpful discussions.
 
